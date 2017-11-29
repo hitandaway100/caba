@@ -1,0 +1,444 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+% if album['contenttype'] == Defines.MemoryContentType.MOVIE and is_android and os_version < '4.0.0':
+	<%def name="viewport()">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+	</%def>
+%endif
+
+<%def name="head()">
+	<link href="${url_static_css}album.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<style>
+		.video_frame{
+			width: 320px;
+			height : 196px;
+			position: relative;
+			z-index:1;
+			text-align: center;
+		}
+		.video_frame
+		.circle {
+			border-color: #fff;
+			border-style: solid;
+			border-width: 5px;
+			border-radius:52px;
+			-webkit-border-radius:52px;
+			-moz-border-radius:52px;
+			width: 64px;
+			height: 64px;
+			top:66px;
+			left:128px;
+			position: absolute;
+			
+			-webkit-box-shadow: 0px 0px 8px #2F4F4F;
+			-moz-box-shadow: 0px 0px 8px #2F4F4F;
+			box-shadow: 0px 0px 8px #2F4F4F;
+			z-index:2;
+			pointer-events: none;
+		}
+		.video_frame
+		.triangle {
+			z-index: 3;
+			border-left: 32px solid #fff;
+			border-right: 32px solid #fff;
+			border-top: 16px solid #fff;
+			border-bottom: 16px solid #fff;
+			border-right-color: transparent;
+			border-top-color: transparent;
+			border-bottom-color: transparent;
+			height: 0;
+			width: 0;
+			position: absolute;
+			top: 16px;
+			left: 20px;
+			pointer-events: none;
+		}
+		%if album['contenttype'] == Defines.MemoryContentType.VOICE:
+		.voice_frame{
+			width: 320px;
+			height : 196px;
+			position: relative;
+			z-index:1;
+			text-align: center;
+		}
+		.voice_frame
+		.circle {
+			border-color: #fff;
+			border-style: solid;
+			border-width: 5px;
+			border-radius:52px;
+			-webkit-border-radius:52px;
+			-moz-border-radius:52px;
+			width: 64px;
+			height: 64px;
+			top:66px;
+			left:128px;
+			position: absolute;
+			
+			-webkit-box-shadow: 0px 0px 8px #2F4F4F;
+			-moz-box-shadow: 0px 0px 8px #2F4F4F;
+			box-shadow: 0px 0px 8px #2F4F4F;
+			z-index:2;
+			pointer-events: none;
+		}
+		.voice_frame
+		.triangle {
+			z-index: 3;
+			border-left: 32px solid #fff;
+			border-right: 32px solid #fff;
+			border-top: 16px solid #fff;
+			border-bottom: 16px solid #fff;
+			border-right-color: transparent;
+			border-top-color: transparent;
+			border-bottom-color: transparent;
+			height: 0;
+			width: 0;
+			position: absolute;
+			top: 16px;
+			left: 20px;
+			pointer-events: none;
+		}
+		%endif
+	</style>
+	${self.videoscript()}
+	${self.voicescript()}
+</%def>
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			ハメ管理度が上がると<br />
+			思い出写真やハメムービーが増えてくるぞ<br />
+			ハメムービーが開放されているので<br />
+			先ほどのハメ管理の様子を見てみるか。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	
+	<div style="margin:8px 0px;">
+		<a class="btnlong_p" href="${get_html_param('url_next', '')}"><div>スカウトへ進む</div></a>
+	</div>
+</%def>
+
+<%def name="videoscript()">
+	%if album['contenttype'] == Defines.MemoryContentType.MOVIE:
+	<script>
+		var onLoaded = false;
+		var setUp = false;
+		var is_playing = false;
+		
+		function resize(video){
+			var parent = $(video).parent();
+			var movieW = 320;
+			var movieH = 180;
+			var scW = $(window).width();
+			
+			var videoW = scW;
+			var videoH = parseInt(movieH * scW / movieW);
+			if(video.width != videoW || video.height != videoH){
+				video.setAttribute("width", videoW);
+				video.setAttribute("height", videoH);
+				parent.attr({"width" : videoW, "height" : videoH});
+				parent.css("width", videoW);
+				parent.css("height", videoH);
+				parent.css("left", parseInt((movieW - videoW) / 2));
+				var btn_play = document.getElementById('btn_play');
+				if(btn_play){
+					$(btn_play).css("left", parseInt((videoW - 64) / 2));
+					$(btn_play).css("top", parseInt((videoH - 64) / 2));
+				}
+			}
+		}
+		function setUpAndPlay(video){
+			if(!onLoaded){
+				return;
+			}
+			var btn_play = document.getElementById('btn_play');
+			
+			if(is_playing){
+				if(btn_play){
+					$(btn_play).css("display", "");
+				}
+				video.pause();
+				is_playing = false;
+			}
+			else{
+				if(btn_play){
+					$(btn_play).css("display", "none");
+				}
+				video.play();
+				is_playing = true;
+			}
+			
+			if(!setUp){
+				setUp = true;
+				resize(video);
+				setInterval(function(){resize(video);}, 1000);
+			}
+		}
+		addWindowOnLoad(function() {
+			var video_comment = document.getElementById("video_comment");
+			if(video_comment){
+				video_comment.innerHTML = "タップすると再生します";
+			}
+			var video = document.getElementById("video");
+			if(video){
+				resize(video);
+			}
+			var btn_play = document.getElementById('btn_play');
+			if(btn_play){
+				$(btn_play).css("display", "");
+			}
+			onLoaded = true;
+		});
+	</script>
+	%endif
+</%def>
+
+<%def name="voicescript()">
+	%if album['contenttype'] == Defines.MemoryContentType.VOICE:
+	<script>
+		var voice_state = false;
+		addWindowOnLoad(function() {
+			voice_state = false;
+			var voice_frame = document.getElementById('voice_frame');
+			if(voice_frame){
+				voice_frame.addEventListener('ended',voice_end,true);
+				voice_frame.addEventListener('click',voice_click,true);
+			}
+			var voice_comment = document.getElementById("voice_comment");
+			if(voice_comment){
+				voice_comment.innerHTML = "タップすると再生します";
+			}
+			var btn_play = document.getElementById('btn_play');
+				if(btn_play){
+					$(btn_play).css("display", "");
+				}
+		});
+		function voice_end() {
+			var voice_comment = document.getElementById("voice_comment");
+			var btn_play = document.getElementById('btn_play');
+			if(voice_comment){
+				voice_comment.innerHTML = "タップすると再生します";
+			}
+			if(btn_play){
+				$(btn_play).css("display", "");
+			}
+		};
+		function voice_click(event) {
+			var voice_comment = document.getElementById("voice_comment");
+			var btn_play = document.getElementById('btn_play');
+			if (voice_state == false) {
+				voice_state = true;
+				document.getElementById('voice_src').play();
+				if(voice_comment){
+					voice_comment.innerHTML = "タップすると停止します";
+				}
+				if(btn_play){
+					$(btn_play).css("display", "none");
+				}
+			} else {
+				voice_state = false;
+				document.getElementById('voice_src').pause();
+				if(voice_comment){
+					voice_comment.innerHTML = "タップすると再生します";
+				}
+				if(btn_play){
+					$(btn_play).css("display", "");
+				}
+			}
+		}
+	</script>
+	%endif
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">思い出アルバム</p>
+	</div>
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${cardmaster['iconUrl']}" width="28px" height="28px">
+		</div>
+		<span class="wrapper">
+			${album['name'] | h}
+		</span>
+		<%doc>
+			<div class="memory">
+				思い出${cardmaster['hklevel']}
+			</div>
+		</%doc>
+	</div>
+	
+	% if album['contenttype'] == Defines.MemoryContentType.IMAGE:
+		<img src="${album['dataUrl'][0]}" width="320" height="400"/>
+	% elif album['contenttype'] == Defines.MemoryContentType.MOVIE:
+		%if is_android:
+			%if os_version < '4.0.0':
+				<object type="application/x-shockwave-flash" data="${url_static}swf/player.swf" width="320" height="180">
+					<param name="movie" value="${url_static}swf/player.swf" />
+					<param name="FlashVars" value="flv=${album['flvUrl']}&autoplay=1&width=320&height=180" />
+				</object>
+			%else:
+				<div id="video_comment" class="wrapper yellow">動画情報を取得しています</div>
+				<div class="video_frame" id="video_frame">
+					<video id="video" src="${album['dataUrl'][0]}" width="320" height="196" poster="${album['thumbUrl']}" onclick="setUpAndPlay(this);">
+					</video>
+					<div class="circle" id="btn_play" style="display: none;">
+						<div class="triangle">
+						</div>
+					</div>
+				</div>
+				<div>
+					<a class="btnlong" href="${album['dataUrl'][0]}" target="_blank" onclick="return true;"><div>再生できない場合はコチラ</div></a>
+				</div>
+			% endif
+		%elif is_ios:
+			<video width="320" height="196" poster="${album['thumbUrl']}" controls>
+				%for dataUrl in album['dataUrl']:
+					<source src="${dataUrl}" />
+				%endfor
+			</video>
+		% endif
+	% elif album['contenttype'] == Defines.MemoryContentType.VOICE:
+		<div class="voice_frame" id="voice_frame">
+			<img src="${album['thumbUrl']}" width="140" height="176"/>
+			<audio id="voice_src" preload="auto">
+				<source src="${album['dataUrl'][0]}" type="audio/aac">
+				<source src="${album['dataUrl'][1]}" type="audio/ogg">
+			</audio>
+			<div id="voice_comment" class="wrapper yellow">音声情報を取得しています</div>
+				<div class="circle" id="btn_play" style="display: none;">
+					<div class="triangle">
+					</div>
+				</div>
+			</div>
+		</div>
+	% endif
+	
+	<!--カード詳細-->
+	<div class="albumstatus">
+		<div class="albumstatus_set">${album['text'] | h}</div>
+	</div>
+	
+	<div class="back_black">
+		<div class="cardalbum">
+			思い出アルバム
+		</div>
+		
+		%if movie_list:
+			<div class="topcap" style="font-size:12px;">
+				動画再生の際は音声が流れます<br />
+				ご注意ください
+			</div>
+		%endif
+		
+		%if memories_list:
+			<table class="albumlook" align="center">
+				<tr>
+					% for idx, memories in enumerate(memories_list):
+						%if idx != 0 and idx % Defines.MEMORIES_COLUMN_CONTENT_NUM == 0:
+							</tr></table>
+							<table class="albumlook" align="center"><tr>
+						% endif
+						<td>
+							% if memories['acquisition'] or (is_tutorial and memories['id'] == album['id']):
+								% if memories['id'] == album['id'] or is_tutorial:
+								<div class="albumitem">
+								%else:
+								<div class="albumitem" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', memories)}';">
+								%endif
+									% if memories['is_new'] and memories['id'] != album['id']:
+										<!--NEW表示-->
+										<div class="album_new"><img src="${url_static_img}06/new.png" width="62" height="22" /></div>
+									% endif
+									
+									<div class="photo_flame"><img src="${url_static_img}06/card_albam_photo_frame.png" width="70px" height="88px" /></div>
+									<div class="album_thumb"><img src="${memories['thumbUrl']}" width="70px" height="88px" /></div>
+								</div>
+							% else:
+								<div class="albumitem">
+									<div class="album_thumb"><img src="${url_static_img}06/card_albam_frame_look.png" width="70px" height="88px" /></div>
+								</div>
+							% endif
+						</td>
+					% endfor
+				</tr>
+			</table>
+		%endif
+		
+		%if movie_list:
+			<div align="center">
+				%for movie in movie_list:
+					% if movie['acquisition'] or (is_tutorial and movie['id'] == album['id']):
+						% if movie['id'] == album['id'] or is_tutorial:
+						<div class="mvlook">
+						%else:
+						<div class="mvlook" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', movie)}';">
+						%endif
+							<div class="mvthumb">
+								<img src="${movie['thumbUrl']}" width="151px" height="88px" />
+							</div>
+							<div class="mvframe">
+								<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+							</div>
+							% if movie['is_new'] and movie['id'] != album['id']:
+								<div class="mvnew">
+									<img src="${url_static_img}06/new.png" width="62" height="22" />
+								</div>
+							%endif
+						</div>
+					%else:
+						<div class="mvframe_close">
+							<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+						</div>
+					%endif
+					<br />
+				%endfor
+			</div>
+		%endif
+		
+		%if voice_list:
+			<div align="center">
+				%for voice in voice_list:
+					% if voice['acquisition']:
+						<div class="mvlook" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', voice)}';">
+							<div class="mvthumb">
+								<img src="${voice['thumbUrl']}" width="151px" height="88px" />
+							</div>
+							<div class="mvframe">
+								<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+							</div>
+							% if movie['is_new']:
+								<div class="mvnew">
+									<img src="${url_static_img}06/new.png" width="62" height="22" />
+								</div>
+							%endif
+						</div>
+					%else:
+						<div class="mvframe_close">
+							<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+						</div>
+					%endif
+					<br />
+				%endfor
+			</div>
+		%endif
+		
+		%if is_tutorial:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="2" />
+		%else:
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="${get_html_param('url_detail', 'sp/album/album.html')}"><span style="margin-left:14px;">キャスト詳細へ戻る</span></a>
+			</div>
+		% endif
+	</div>
+	
+	%if is_tutorial:
+		<div style="padding: 12px 0px;">
+			<a class="btnlong_p" href="${get_html_param('url_next', '')}"><div>スカウトへ進む</div></a>
+		</div>
+	% endif
+</%def>

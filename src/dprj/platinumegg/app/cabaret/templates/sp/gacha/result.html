@@ -1,0 +1,359 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+<%def name="head()">
+    ${parent.head()}
+    <link href="${url_static_css}/gacha/result.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="card_info(card)">
+	%if card.get('autosell'):
+		<div class="confirm"><!--
+			%if _gold_add:
+				-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}${_gold_add}${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}<!--
+			%endif
+			%if _ckt:
+				%if _gold_add:
+					-->と<br /><!--
+				%endif
+				-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}${_ckt}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}<!--
+			%endif
+			-->で退店させました。<br />
+			%if _gold_add:
+				${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}：${max(0, player['gold'] - _gold_add)}⇒<span class="red">${player['gold']}</span><br/>
+			%endif
+			%if _ckt:
+				${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}：${max(0, player['cabaretking'] - _ckt)}⇒<span class="red">${player['cabaretking']}</span><br/>
+			%endif
+		</div>
+	%endif
+	
+	<div class="cardname">
+		%if card['master']['kind'] == Defines.CardKind.NORMAL:
+			<div class="type">
+				<img src="${card['master']['iconUrl']}" width="28px" height="28px" />
+			</div>
+		%endif
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	%if Defines.Rarity.RARE <= card['master']['rare']:
+		<canvas id="kiraCardCanvas" width="320" height="400">
+		</canvas>
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${card['master']['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	%else:
+		<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" />
+	%endif
+	<%include file="../includes/carddetail.html" args="card=card, url_static_img=url_static_img, framename='card_st_back.png', test_skill=False"/>
+</%def>
+
+<%def name="card_info_mini(card)">
+	<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, test_skill=True, Defines=Defines"/>
+	%if card.get('autosell'):
+		<div class="confirm"><!--
+			%if card.get('sellprice', 0):
+				-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}${card['sellprice']}${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}<!--
+			%endif
+			%if card.get('sellprice_treasure', 0):
+				%if card.get('sellprice', 0):
+					-->と<br /><!--
+				%endif
+				-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}${card['sellprice_treasure']}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}<!--
+			%endif
+			-->で退店させました<br />
+		</div>
+	%endif
+</%def>
+
+<%def name="present_message(presents)">
+  %if presents:
+	  <div class="wrapper yellow">
+		  プレゼントボックスに送信しました
+	  </div>
+	  <div style="margin: 0px 30px 8px 30px; padding: 10px; border: double #ffff00;">
+		  %for p in presents:
+			  ${p | h}<br />
+		  %endfor
+	  </div>
+  %endif
+</%def>
+
+<%def name="contents()">
+	<div class="back_black" style="width:320;">
+		<div class="titlebar">
+			<p>引抜ガチャ</p>
+		</div>
+		
+		%if point_single:
+			<div class="wrapper">
+				同伴Ptを<span class="yellow">${point_single}</span>Pt獲得!!<br />
+				%if point_total:
+					累計同伴Pt：<span class="yellow">${point_total}</span>Pt
+				%endif
+			</div>
+		%endif
+		
+    ${present_message(omakelist)}
+    ${present_message(boxgachaprizes)}
+
+		%if lottery_point:
+			<div class="trade_shop_point">
+				<div class="wrapper">
+					<span class="yellow">${lottery_point}</span>Pt獲得!!<br />
+				</div>
+			</div>
+		%endif
+
+		%if is_rarity_fixed:
+			<div id="srfixed">
+				<div id="message">
+					確定キャスト
+				</div>
+				%for rarity_fixed_card in rarity_fixed_cardlist:
+					${self.card_info_mini(rarity_fixed_card)}
+				%endfor
+
+				<div id="underline">
+				</div>
+			</div>
+		%endif
+		
+		%if len(cardlist) == 1:
+			${self.card_info(cardlist[0])}
+		%else:
+			%if _card_num:
+				<div class="confirm">キャスト${_card_num}人を<!--
+					%if _gold_add:
+						-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}${_gold_add}${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}<!--
+					%endif
+					%if _ckt:
+						%if _gold_add:
+							-->と<br /><!--
+						%endif
+						-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}${_ckt}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}<!--
+					%endif
+					-->で退店させました。<br />
+					%if _gold_add:
+						${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}：${max(0, player['gold'] - _gold_add)}⇒<span class="red">${player['gold']}</span><br/>
+					%endif
+					%if _ckt:
+						${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}：${max(0, player['cabaretking'] - _ckt)}⇒<span class="red">${player['cabaretking']}</span><br/>
+					%endif
+				</div>
+			%endif
+			%if is_paging:
+				${self.pagenation()}
+			%endif
+			%for card in cardlist:
+				${self.card_info_mini(card)}
+			%endfor
+			%if is_paging:
+				${self.pagenation()}
+			%endif
+		%endif
+		
+		<%doc>シート情報</%doc>
+		${self.drawSeatInfo(gachaseatinfo, viewresult=True)}
+		<%
+			gachaconsumetype_dict = {}
+			_premium_dict = {}
+			for gacha in gachadata.values():
+				consumetype = gacha['consumetype']
+				gachaconsumetype_dict[consumetype] = gachaconsumetype_dict.get(consumetype) or []
+				gachaconsumetype_dict[consumetype].append(gacha)
+				if consumetype == Defines.GachaConsumeType.PAYMENT:
+					dic = _premium_dict[gacha['boxid']] = _premium_dict.get(gacha['boxid']) or {}
+					dic[gacha['continuity']] = gacha['unique_name']
+			do_draw_explain = False
+		%>
+		%for arr in gachaconsumetype_dict.values():
+			%if gacha['consumetype']  == Defines.GachaConsumeType.PAYMENT:
+				%for dic in _premium_dict.values():
+					${self.drawGachaPremium(dic.get(12), dic.get(6), dic.get(1), True)}
+				%endfor
+			%elif gacha['consumetype']  == Defines.GachaConsumeType.SR_SSR_PROBABILITY_UP or gacha['consumetype'] == Defines.GachaConsumeType.PTCHANGE:
+        <%
+          if 0 < gacha['tradeshopid']:
+            continuityformat = 'Ptを貯めて豪華ラインナップと交換しよう!'
+          else:
+            continuityformat = ''
+        %>
+        ${self.drawGachaPaymentProbability(lastgacha_unique_name, gacha['continuity'], False, continuityformat, index=0, is_values_list=True)}
+        <% do_draw_explain = True %>
+      %elif gacha['consumetype']  == Defines.GachaConsumeType.FIXEDSR:
+        ${self.drawGachaPaymentProbability(lastgacha_unique_name, gacha['continuity'], False, "SR以上のキャストを確実ゲット！", index=0)}
+				<% do_draw_explain = True %>
+			%elif consumetype == Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM:
+				${self.drawGachaPaymentProbability(lastgacha_unique_name, gacha['continuity'], False, "", index=0, is_values_list=True)}
+				<% do_draw_explain = True %>
+			%else:
+				<%
+					arr.sort(key=lambda x:x['continuity'], reverse=True)
+				%>
+				%for gacha in arr:
+					<%
+						unique_name = gacha['unique_name']
+						topic = Defines.GachaConsumeType.TO_TOPIC.get(gacha['consumetype'])
+						if topic != Defines.GachaConsumeType.GachaTopTopic.FREE:
+							do_draw_explain = True
+					%>
+					%if gacha['consumetype'] == Defines.GachaConsumeType.PREMIUM:
+						${self.drawGachaPayment(unique_name, gacha['continuity'], True)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.DAILY_DISCOUNT:
+						${self.drawGachaDiscount(unique_name, gacha['continuity'], True)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO:
+						${self.drawGachaFukubukuro(unique_name, gacha['continuity'], True)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO2016:
+						${self.drawGachaFukubukuro(unique_name, gacha['continuity'], True)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO2017:
+						${self.drawGachaFukubukuro(unique_name, gacha['continuity'], True)}
+					%elif gacha['consumetype'] in {Defines.GachaConsumeType.OMAKE, Defines.GachaConsumeType.OMAKE2}:
+						${self.drawGachaRandomOmake(unique_name, gacha['continuity'], True, is_values_list=True)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.XMAS_OMAKE:
+						${self.drawGachaRandomOmake(unique_name, gacha['continuity'], True)}
+					%elif consumetype in {Defines.GachaConsumeType.SEAT, Defines.GachaConsumeType.SEAT2}:
+						${self.drawGachaSeat(unique_name)}
+					%elif consumetype == Defines.GachaConsumeType.MINI_SEAT:
+						${self.drawGachaMiniSeat(unique_name)}
+					%elif consumetype == Defines.GachaConsumeType.LIMIT_SHEET:
+						${self.drawGachaSeat(unique_name)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.CHRISTMAS:
+						${self.drawGachaChristmas(unique_name, True)}
+					%elif gacha['consumetype'] in {Defines.GachaConsumeType.MINI_BOX, Defines.GachaConsumeType.MINI_BOX2}:
+						%if gacha["continuity"] == 1 or gacha["total_group_totalnum"] > gacha["continuity"]:
+							${self.drawGachaMiniBox(unique_name, gacha['continuity'], is_values_list=True)}
+						%endif
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.LIMITED_RESET_BOX:
+						${self.drawGachaMiniBox(unique_name, gacha['continuity'])}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.ONE_TWO_THREE:
+						${self.drawOneTwoThreeInfo(unique_name)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.STEPUP:
+						${self.drawStepupInfo(unique_name)}
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.STEPUP2:
+						${self.drawStepupInfo(unique_name, True)}
+					%elif consumetype == Defines.GachaConsumeType.RANKING:
+						${self.drawRankingGacha(unique_name, True)}
+					%elif consumetype == Defines.GachaConsumeType.CONTINUITY_20:
+						${self.drawGachaContinuity20(unique_name, True)}
+					%elif consumetype == Defines.GachaConsumeType.SCOUTEVENT:
+						%if scouteventscore:
+							${self.drawGachaScoutEvent(unique_name, scouteventscore['point_gacha'], True, etime=scoutevent_gacha_etime)}
+						%endif
+						%if url_scoutevent_top:
+							<div>
+								<a class="btnlong" href="${get_html_param("url_scoutevent_top", "sp/scoutevent/top.html")}">イベントTOP</a>
+							</div>
+						%endif
+					%elif gacha['consumetype'] == Defines.GachaConsumeType.TRYLUCKTICKET:
+						${self.drawGachaTicket(unique_name, player['tryluckticket'], True)}
+					%elif topic == Defines.GachaConsumeType.GachaTopTopic.FREE:
+						${self.drawGachaFree(unique_name, False)}
+					%elif topic == Defines.GachaConsumeType.GachaTopTopic.TICKET:
+						%if gacha['consumetype'] == Defines.GachaConsumeType.RAREOVERTICKET:
+							${self.drawGachaTicket(unique_name, player['rareoverticket'], True)}
+						%elif gacha['consumetype'] == Defines.GachaConsumeType.EVENTTICKET:
+							${self.drawGachaTicket(unique_name, raideventscore['ticket'], True, is_event_ticket=True)}
+						%elif gacha['consumetype'] in Defines.GachaConsumeType.ADDITIONAL_TICKETS.keys():
+							${self.drawGachaTicket(unique_name, gacha_ticket_nums.get(Defines.GachaConsumeType.ADDITIONAL_TICKETS[gacha['consumetype']], 0), True)}
+						%endif
+					%endif
+				%endfor
+			%endif
+		%endfor
+	</div>
+	
+	%if do_draw_explain:
+		<%doc>注意事項等の画面下部テキスト</%doc>
+		%if explain_text:
+			${self.drawFooterTextByExplainText(explain_text)}
+		%else:
+			<section class="basicinfo" style="padding-bottom:10px;">
+				<div class="basictop">
+					<p>注意</p>
+					<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+				</div>
+
+				<div class="basicBack">
+					<ul>
+						<li>
+							%for consumetype in gachaconsumetype_dict.keys():
+								<%
+									topic = Defines.GachaConsumeType.TO_TOPIC.get(consumetype)
+								%>
+								%if consumetype in (Defines.GachaConsumeType.PREMIUM, Defines.GachaConsumeType.PAYMENT):
+									${self.drawExplainTextBox()}
+								%elif consumetype in {Defines.GachaConsumeType.MINI_BOX, Defines.GachaConsumeType.MINI_BOX2}:
+									${self.drawExplainTextMiniBox()}
+								%elif consumetype == Defines.GachaConsumeType.LIMITED_RESET_BOX:
+									${self.drawExplainTextLimitedResetBox()}
+								%elif consumetype in {Defines.GachaConsumeType.SEAT, Defines.GachaConsumeType.SEAT2}:
+									${self.drawExplainTextSheet()}
+								%elif consumetype == Defines.GachaConsumeType.MINI_SEAT:
+									%for gacha in gachaconsumetype_dict[consumetype]:
+										${self.drawExplainTextMiniSheet(gacha)}
+									%endfor
+								%elif consumetype == Defines.GachaConsumeType.DAILY_DISCOUNT:
+									%for gacha in gachaconsumetype_dict[consumetype]:
+										${self.drawExplainTextDiscount(gacha)}
+									%endfor
+								%elif consumetype == Defines.GachaConsumeType.SR_SSR_PROBABILITY_UP or consumetype == Defines.GachaConsumeType.PTCHANGE:
+									${self.drawExplainTextProbability(gacha['tradeshopid'])}
+								%elif consumetype == Defines.GachaConsumeType.FIXEDSR:
+									${self.drawExplainTextFixedSR1()}
+								%elif consumetype in {Defines.GachaConsumeType.STEPUP, Defines.GachaConsumeType.STEPUP2}:
+									${self.drawExplainTextStepUp(consumetype)}
+								%elif gacha['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO:
+									${self.drawExplainTextFukubukuro()}
+								%elif gacha['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO2016:
+									${self.drawExplainTextFukubukuro()}
+								%elif gacha['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO2017:
+									${self.drawExplainTextFukubukuro()}
+								%elif consumetype == Defines.GachaConsumeType.CHRISTMAS:
+									${self.drawExplainTextChristmas()}
+								%elif consumetype == Defines.GachaConsumeType.OMAKE:
+									${self.drawExplainTextOmake()}
+								%elif consumetype == Defines.GachaConsumeType.OMAKE2:
+									${self.drawExplainTextOmake2()}
+								%elif consumetype == Defines.GachaConsumeType.ONE_TWO_THREE:
+									${self.drawExplainText123()}
+								%elif consumetype == Defines.GachaConsumeType.RANKING:
+									<%
+										rankingdata = gacharankingdata.get(gacha['boxid'])
+									%>
+									${self.drawExplainTextRanking(rankingdata and rankingdata['master']['is_support_totalranking'])}
+								%elif consumetype == Defines.GachaConsumeType.CONTINUITY_20:
+									${self.drawExplainTextContinuity20()}
+								%elif consumetype == Defines.GachaConsumeType.EVENTTICKET:
+									${self.drawExplainTextEventTicket()}&nbsp;<br />
+									${self.drawExplainTextTicket()}
+								%elif consumetype == Defines.GachaConsumeType.SCOUTEVENT:
+									${self.drawExplainTextScoutEvent(gachaconsumetype_dict[consumetype])}
+								%elif topic == Defines.GachaConsumeType.GachaTopTopic.TICKET:
+									${self.drawExplainTextTicket()}
+								%elif consumetype == Defines.GachaConsumeType.XMAS_OMAKE:
+									${self.drawExplainTextXmasOmake()}
+								%elif consumetype == Defines.GachaConsumeType.LIMIT_SHEET:
+									${self.drawExplainTextLimitSheet(gacha)}
+								%elif consumetype == Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM:
+									${self.drawExplainTextNewStoreSupport()}
+								%endif
+							%endfor
+						</li>
+					</ul>
+					<div style="font-size:0px;">
+						&nbsp;
+					</div>
+				</div>
+				<div class="basicbtm">&nbsp;
+				</div>
+			</section>
+		%endif
+	%endif
+</%def>

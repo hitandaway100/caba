@@ -1,0 +1,18 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	${self.happeningtop()}
+	
+	<div class="wrapper">
+		本当に接客を諦めますか?
+	</div
+	
+	<div style="padding-top:14px;">
+		<a class="btnlong" href="${get_html_param('url_happeningcancel_do', 'sp/raidevent/failed.html')}"><div>接客を諦める</div></a>
+	</div>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_raidevent_battlepre', 'sp/raidevent/bossappear.html')}"><div>接客に戻る</div></a>
+	</div>
+	
+	${self.eventfooter()}
+</%def>

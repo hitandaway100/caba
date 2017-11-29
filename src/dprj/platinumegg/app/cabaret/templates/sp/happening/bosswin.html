@@ -1,0 +1,70 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+
+<%def name="happeningtop()">
+	<img src="${url_static_img}11/tutorial_win.png" width="320px" height="60px" />
+	<div class="scouttop">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" style="width:320px;height:180px;"/>
+		</div>
+		<div class="scoutpic2">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180"/>
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">超太客来店中</span>
+		</div>
+		<div class="scouttime" style="top:136;">
+			<%include file="../includes/inc_tutorialsatisfaction.html" args="hp=happening['raid']['hp'],hpmax=happening['raid']['hpmax'],damage=damage" />
+		</div>
+		<div class="boss_coment">
+			<div class="coment_text">
+				${happening['raid']['commentwin'] | h}
+			</div>
+		</div>
+	</div>
+</%def>
+
+<%def name="happeningbodybottom()">
+	%if scoutevent_tanzaku and tanzaku_num_add:
+		<div class="back_black">
+			<table style="width:260px; height:90px;margin: 0 auto;">
+				<tr>
+					<td width="70">
+						<img src="${scoutevent_tanzaku['tanzakuthumb']}" width="20" height="20" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext">
+							${scoutevent_tanzaku['tanzakuname'] | h}を<span class="yellow">${tanzaku_num_add}</span>${scoutevent_tanzaku['tanzakuunit'] | h}獲得した<br />
+							所持数：${tanzaku_num_pre}⇒<span class="yellow">${tanzaku_num_post}</span>${scoutevent_tanzaku['tanzakuunit'] | h}
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	%endif
+	<div style="margin-top:20px; margin-bottom:20px;">
+		%if happening_backinfo:
+			<a class="btnlong" href="${get_html_param('url', 'sp/scout/top.html', happening_backinfo)}"><div><!--
+			%if happening_backinfo['type'] == 'scout':
+				-->スカウトへ<!--
+			%elif happening_backinfo['type'] == 'scoutevent':
+				-->イベントスカウトへ<!--
+			%endif
+			--></div></a>
+		%endif
+		<a class="btnlong" href="${get_html_param('url_happeningend', 'sp/happening/prizeget.html')}"><div>報酬を獲得する</div></a>
+	</div>
+	%if cardlist:
+		<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img, skilllist=skilllist, helpplayerlist=playerlist" />
+	%endif
+</%def>
+
+<%def name="playerstatus()"></%def>
+<%def name="areastatus()"></%def>
+<%def name="cancelbutton()"></%def>
+<%def name="areastatus()"></%def>
+<%def name="drawTreasureInfo()"></%def>
+<%def name="drawFriendHelpList()"></%def>
+<%def name="happeningFooter()"></%def>
+<%doc>↓ハプニングでスカウトをやるってなったらこのdefタグを消す</%doc>
+<%def name="prizelist()"></%def>

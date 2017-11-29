@@ -1,0 +1,26 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%doc>ステップアップガチャ案内ページ</%doc>
+
+<%def name="head()">
+	<link href="${url_static_css}gachacardlist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}gachacardlist.js"></script>
+</%def>
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p>STEP UPガチャとは?</p>
+	</div>
+	
+	<div style="text-align:center;">
+	<img src="${url_static_img}banner/gacha/Jul/stepup_gacha_05_bnr_480_120.png" width="240" height="60"  style="padding-bottom:8px;" />
+	</div>
+	
+	<img src="${url_static_img}banner/gacha/Jun/stepup_gacha_01_setsumei_640_1580.png" width="320" height="790" />
+	
+	<!-- 戻る -->
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_gacha', 'sp/gacha/gacha_stepup.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>

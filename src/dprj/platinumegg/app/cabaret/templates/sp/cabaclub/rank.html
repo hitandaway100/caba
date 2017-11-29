@@ -1,0 +1,80 @@
+#coding:utf-8
+<%inherit file="cabaclub_base.html" />
+
+<%def name="contents()">
+
+	${self.today_total_sales(today_proceeds, show_top_header=True)}
+
+	<%doc>開催期間</%doc>
+	${self.eventperiod(event_start_time, event_end_time, is_event_open)}
+
+	<%doc>タブ</%doc>
+	${self.eventtopic()}
+
+	<div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/><br />
+		<div class="wrapper">総売上ランキング
+			<div class="btmcap1">
+				※  ランキングの更新はリアルタイムではありません。<br/>
+				期間終了の集計時に順位が変動する可能性があります。<br/>
+			</div>
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+
+	<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-left:5px;">
+		%if is_view_myrank:
+			<a href="${get_html_param('url_ranking', 'sp/cabaclub/rank.html')}" class="yellow">上位ランキング</a>
+			|
+			あなたの順位
+		%else:
+			上位ランキング
+			|
+			<a href="${get_html_param('url_myrank', 'sp/cabaclub/rank.html')}" class="yellow">あなたの順位</a>
+		%endif
+	</div>
+
+	${self.pagenation()}
+	<div style="padding-top:10px; padding-bottom:10px;">
+		%if player_rank_list:
+			%for player in player_rank_list:
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td style="width:60px;">
+						<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td style="width:240px;">
+						<div class="itemtext">
+							${player['rank']}位<br />
+							%if player.get('is_me'):
+								<span class="yellow">あなた</span><br />
+							%else:
+								<a href="${get_html_param('url', 'sp/profile.html', player)}"><span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span></a><br />
+							%endif
+							全店舗総売上&nbsp; :&nbsp; <span class="yellow">${player['sales']}</span>
+						</div>
+					</td>
+				</table>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+			%endfor
+		%else:
+			%if is_view_myrank:
+				<div style="margin-bottom:24px;">
+					<div class="caution">
+						あなたのランキングデータがありません
+					</div>
+				</div>
+			%else:
+				<div class="list_not_found caution">
+					ランキングデータまだありません
+				</div>
+			%endif
+		%endif
+	</div>
+
+	${self.pagenation()}
+
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+
+</%def>

@@ -1,0 +1,76 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	${self.eventslide()}
+	
+	<div class="red" style="padding: 4px 12px; font-size: 12px;">
+		※新店舗ランキングはイベント開催から30日前以内に登録したユーザーが対象となります。
+	</div>
+	
+	<%doc>タブ</%doc>
+	<div style="padding: 8px 0px;text-align:center;">
+		<div class="${'btn_pink_s' if not is_view_beginer else 'btn_pink_s_off'}" style="margin-bottom:0px;">
+			<a href="${get_html_param('url_raidevent_myrank' if is_view_myrank else 'url_raidevent_ranking', 'sp/raidevent/top.html') if is_view_beginer else 'javascript:void(0);'}"><div>全&nbsp;体</div></a>
+		</div>　
+		<div class="${'btn_pink_s' if is_view_beginer else 'btn_pink_s_off'}" style="margin-bottom:0px;">
+			<a href="${get_html_param('url_raidevent_myrank_beginer' if is_view_myrank else 'url_raidevent_ranking_beginer', 'sp/raidevent/top.html') if not is_view_beginer else 'javascript:void(0);'}"><div>新店舗</div></a>
+		</div>
+	</div>
+	
+	%if not is_view_beginer or is_beginer:
+		<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-left:5px;"><!--
+			%if is_view_myrank:
+				--><a href="${get_html_param('url_raidevent_ranking_beginer' if is_view_beginer else 'url_raidevent_ranking', 'sp/raidevent/ranking.html')}" style="color: #FFff00;">上位ランキング</a>
+				|
+				あなたの順位
+			%else:
+				-->上位ランキング
+				|
+				<a href="${get_html_param('url_raidevent_myrank_beginer' if is_view_beginer else 'url_raidevent_myrank', 'sp/raidevent/ranking.html')}" style="color: #FFff00;">あなたの順位</a>
+			%endif
+		</div>
+	%endif
+	
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			%if is_view_beginer:
+				新店舗ランキング
+			%else:
+				獲得秘宝ランキング
+			%endif
+		</div>
+	</div>
+	
+	%if ranking_playerlist:
+		%for idx,player in enumerate(ranking_playerlist):
+			%if 0 < idx:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+			%endif
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td>
+					<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td>
+					<div class="itemtext">
+						${player['event_rank']}位<br />
+						<span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span><br />
+						獲得数&nbsp; :&nbsp; <span class="yellow">${player['event_score']}</span>個
+					</div>
+				</td>
+			</table>
+		%endfor
+		${self.pagenation()}
+	%else:
+		%if is_view_myrank:
+			<div class="list_not_found caution">
+				ランキングデータがありません
+			</div>
+		%else:
+			<div class="list_not_found caution">
+				まだありません
+			</div>
+		%endif
+	%endif
+	${self.eventfooter()}
+
+</%def>

@@ -1,0 +1,65 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			${area['name'] | h}で有名な太客が来店した!<br />
+			接客して攻略しよう。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="drawBattleButton()">
+	<div class="btn_ontext">
+		<a href = "${get_html_param('url_bossbattle', 'sp/boss/boss_swf.html')}"><img src="${url_static_img}01/id_01_20/btn_boss.png" style="width:232px;height:49px;"/></a>
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="scouttop" style="height:242px;">
+			<div class="scoutpic" style="position:relative;">
+				<img src="${area['thumbUrl']}" width="320px" height="180px" />
+			</div>
+			<div class="scoutpic2">
+				<img src="${boss['thumbUrl']}" width="320" height="180"/>
+			</div>
+			<div class="scoutflame">
+				<span class="wrapper">${area['name'] | h}</span>
+			</div>
+			<div class="boss_coment">
+				<div class="coment_text">
+					${boss['commentappear'] | h}
+				</div>
+			</div>
+		</div>
+		
+		<%doc>エイプリル仕様</%doc>
+		${self.drawChampagneCall()}
+		${self.drawBattleButton()}
+		
+		<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img" />
+		
+		%if not is_tutorial:
+			<div style="padding:16px 0 16px 0;">
+				<a class="btnlong" href="${get_html_param('url_deck', 'sp/deck/deck.html')}"><div>キャストの編成</div></a>
+			</div>
+		%endif
+		
+		%if url_scoutevent_top:
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+			</div>
+		%endif
+		%if url_raidevent_top:
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="${get_html_param('url_raidevent_top', 'sp/raidevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+			</div>
+		%endif
+	</div>
+</%def>

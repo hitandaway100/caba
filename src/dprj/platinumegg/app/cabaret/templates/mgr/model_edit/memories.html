@@ -1,0 +1,204 @@
+#coding:utf-8
+<%inherit file="base_index.html" />
+
+<%def name="additionalJS()">
+	<script type="text/javascript">
+		$(function(){
+			var contenttype_selector = "select[id$='contenttype']";
+			
+			function rstrip(src, s){
+				var start = 0;
+				var to = src.length;
+				if(src.lastIndexOf(s) == (src.length - s.length)){
+					to = src.length - s.length;
+				}
+				return src.slice(start, to);
+			}
+			
+			function updateContentDataValue(selector){
+				var contentdata_tags = $(selector);
+				for(var i=0; i<contentdata_tags.length; i++){
+					var contentdata_tag = contentdata_tags[i];
+					var value = "";
+					
+					switch(contentdata_tag.tagName){
+					case "INPUT":
+					case "input":
+						value = contentdata_tag.value;
+						break;
+					case "SELECT":
+					case "select":
+						value = contentdata_tag.options[contentdata_tag.selectedIndex].value;
+						break;
+					}
+					var hidden_contentdata_id = rstrip(rstrip(contentdata_tag.id, "_input"), "_select1");
+					var hidden_contentdata_id = rstrip(contentdata_tag.id, "_input");
+					hidden_contentdata_id = rstrip(hidden_contentdata_id, "_select1");
+					hidden_contentdata_id = rstrip(hidden_contentdata_id, "_select2");
+					hidden_contentdata_id = rstrip(hidden_contentdata_id, "_select3");
+					$("#"+hidden_contentdata_id).attr({value:value});
+				}
+			}
+			
+			function updateContentDataField(selector){
+				var select_tags = $(selector);
+				for(var i=0; i<select_tags.length; i++){
+					var select_tag = select_tags[i];
+					var options = select_tag.options;
+					var contentdata_id = select_tag.id.replace("contenttype", "contentdata");
+					var input_contentdata = $("input[id="+contentdata_id+"_input]");
+					var select_contentdata1 = $("select[id="+contentdata_id+"_select1]");
+					var select_contentdata2 = $("select[id="+contentdata_id+"_select2]");
+					var select_contentdata3 = $("select[id="+contentdata_id+"_select3]");
+					
+					switch(options[options.selectedIndex].value){
+					case "1":
+						input_contentdata.css("display", "");
+						select_contentdata1.css("display", "none");
+						select_contentdata2.css("display", "none");
+						select_contentdata3.css("display", "none");
+						updateContentDataValue(input_contentdata);
+						break;
+					case "2":
+						input_contentdata.css("display", "none");
+						select_contentdata1.css("display", "");
+						select_contentdata2.css("display", "none");
+						select_contentdata3.css("display", "none");
+						updateContentDataValue(select_contentdata1);
+						break;
+					case "3":
+						input_contentdata.css("display", "none");
+						select_contentdata1.css("display", "none");
+						select_contentdata2.css("display", "");
+						select_contentdata3.css("display", "none");
+						updateContentDataValue(select_contentdata2);
+						break;
+					case "4":
+						input_contentdata.css("display", "none");
+						select_contentdata1.css("display", "none");
+						select_contentdata2.css("display", "none");
+						select_contentdata3.css("display", "");
+						updateContentDataValue(select_contentdata3);
+						break;
+					}
+				}
+			}
+			
+			// contentdataの切り替え.
+			(function(){
+				var select_tags = $(contenttype_selector);
+				select_tags.change(function(event){
+					var target = event.target;
+					updateContentDataField("#" + target.id);
+				});
+			})();
+			
+			(function(){
+				var playlist_format1 = $("#playlist_format1");
+				var playlist_format2 = $("#playlist_format2");
+				var playlist_format3 = $("#playlist_format3");
+				var select_tags = $(contenttype_selector);
+				
+				for(var i=0; i<select_tags.length; i++){
+					var select_tag = select_tags[i];
+					var contentdata = $("#" + select_tag.id.replace("contenttype", "contentdata"))[0];
+					var contentdata_id = contentdata.id;
+					var contentdata_name = contentdata.name;
+					var value = contentdata.value;
+					var parent = $(contentdata).parent();
+					var playlist1 = playlist_format1.clone()[0];
+					var playlist2 = playlist_format2.clone()[0];
+					var playlist3 = playlist_format3.clone()[0];
+					var options1 = playlist1.options;
+					var options2 = playlist2.options;
+					var options3 = playlist3.options;
+					
+					for(var j=0; j<options1.length; j++){
+						var option = options1[j];
+						if(option.value == value){
+							playlist1.selectedIndex = j;
+							break;
+						}
+					}
+					for(var j=0; j<options2.length; j++){
+						var option = options2[j];
+						if(option.value == value){
+							playlist2.selectedIndex = j;
+							break;
+						}
+					}
+					for(var j=0; j<options3.length; j++){
+						var option = options3[j];
+						if(option.value == value){
+							playlist3.selectedIndex = j;
+							break;
+						}
+					}
+					
+					function change(event){
+						var target = event.target;
+						updateContentDataValue(target);
+					}
+					$(contentdata).change(change);
+					$(playlist1).change(change);
+					$(playlist2).change(change);
+					$(playlist3).change(change);
+					
+					$(playlist1).attr({
+						id: contentdata_id + "_select1",
+						name:contentdata_name + "_select1",
+					}).css("display", "none").appendTo(parent);
+					$(playlist2).attr({
+						id: contentdata_id + "_select2",
+						name:contentdata_name + "_select2",
+					}).css("display", "none").appendTo(parent);
+					$(playlist3).attr({
+						id: contentdata_id + "_select3",
+						name:contentdata_name + "_select3",
+					}).css("display", "none").appendTo(parent);
+					
+					$(contentdata).attr({id: contentdata_id + "_input", name:contentdata_name + "_input"});
+					
+					// 実際に値をPOSTするのはこっち.
+					$("<input>").attr({
+						type : "hidden",
+						id: contentdata_id,
+						name:contentdata_name,
+					}).appendTo(parent);
+				}
+				updateContentDataField(contenttype_selector);
+			})();
+			
+		});
+	</script>
+</%def>
+
+<%def name="renderInfosFooter()">
+	<div style="display: none;">
+		<select id="playlist_format1">
+			<option value="">------------</option>
+			%for movieplaylist in movieplaylist_all:
+				<option value="${movieplaylist.id}">${movieplaylist.name | h}(ID:${movieplaylist.id})</option>
+			%endfor
+		</select>
+	</div>
+
+	<div style="display: none;">
+		<select id="playlist_format2">
+			<option value="">------------</option>
+			%for voiceplaylist in voiceplaylist_all:
+				<option value="${voiceplaylist.id}">${voiceplaylist.name | h}(ID:${voiceplaylist.id})</option>
+			%endfor
+		</select>
+	</div>
+
+	<div style="display: none;">
+		<select id="playlist_format3">
+			<option value="">------------</option>
+			%for pcmovieplaylist in pcmovieplaylist_all:
+				<option value="${pcmovieplaylist.id}">${pcmovieplaylist.name | h}(ID:${pcmovieplaylist.id})</option>
+			%endfor
+		</select>
+	</div>
+</%def>
+

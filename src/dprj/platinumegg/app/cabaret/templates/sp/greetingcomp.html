@@ -1,0 +1,43 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">あいさつ</p>
+	</div>	
+	
+	<div class="wrapper">
+		${person['nickname'] | h}さんにあいさつしました<br />
+		${gachapt_name | h}:${gacha_pt_pre}⇒<span style="color:#ff0000;">${gacha_pt_post}</span><br /><!-- 引き抜きポイント-->
+	</div>
+		
+	% if is_duplicate:
+		<div class="btmcap1">
+			2時間以内のあいさつでは${gachapt_name | h}を獲得できません<br/>
+		</div>
+	% endif
+	
+	<form action="${url_self}" method="post" style="width:320px;">
+		<input type="hidden" name="logid" value="${logid}">
+		<div style="text-align: center;">
+			<input type="textbox" name="comment" value="${text_comment}">
+			% if is_errtext:
+				<div class="btmcap1">
+					コメントは全角${comment_max | h}文字以内で正しく入力して下さい
+				</div>
+			% endif
+		</div>
+		<input type="submit" class="button" style="margin-left:111px; margin-top:12px;" value="書き込み" />
+	</form>
+	
+	<div>
+		<a class="btnlong" style="margin:10px auto 20px auto;" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><div>続けてあいさつする</div></a>
+	</div>
+	
+	<div class="btmcap2">
+		あいさつをすると5${gachapt_name | h}獲得出来ます。フレンドへのあいさつではさらに5${gachapt_name | h}を獲得出来ます。<br/>
+		※あいさつできる回数は1日300回までです。同じ人にして${gachapt_name | h}がもらえるのは2時間に1回です。<br/>
+		※コメントは全角文字で${comment_max | h}文字までです。${comment_max | h}文字以内で入力して下さい。
+	</div>
+</%def>
+

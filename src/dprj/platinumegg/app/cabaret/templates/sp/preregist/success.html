@@ -1,0 +1,27 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="session_script()">
+	<script type="text/javascript">
+		if($("#body_main").css("display") == "none"){
+			$("#body_main").css("display", "");
+		}
+	</script>
+</%def>
+
+<%def name="header()">
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">事前登録しました</p>
+	</div>
+	<img src="${url_static_img}common/preregist.png" width="320px" height="1600px" />
+	<div>
+		<a class="btnpinkbig" href="http://www.dmm.co.jp" target="_top"><p class="caption">DMMトップへ</p></a>
+	</div>
+	
+</%def>
+
+<%def name="footer()">
+</%def>

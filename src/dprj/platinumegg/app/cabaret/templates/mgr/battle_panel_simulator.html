@@ -1,0 +1,119 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="content()">
+	<div class="page-header">
+		<h1>バトルパネルシミュレータ</h1>
+	</div>
+
+	<div class="well">
+		<div>
+			<form action="" method="post">
+				<p>
+					一覧から:<br />
+					<select name="_mid">
+						<option value="">--------</option>
+						%for battleevent in battleeventmaster_list:
+							%if cur_battleevent and cur_battleevent.id == battleevent.id:
+								<option value="${battleevent.id}" selected="selected">${battleevent.name | h}(ID:${battleevent.id})</option>
+							%else:
+								<option value="${battleevent.id}">${battleevent.name | h}(ID:${battleevent.id})</option>
+							%endif
+						%endfor
+					</select>
+				</p>
+				<p>
+					バトルイベントランクID:<br />
+					<input type="text" name="_eventrankid" value="${battleeventrank_id if battleeventrank_id else 0}" />
+				</p>
+				<p>
+					実行回数:<br />
+					<input type="text" name="_cnt" value="${cnt if cnt else 0}" />
+				</p>
+				<input type="submit" value="実行" class="btn" />
+			</form>
+		</div>
+	</div>
+
+	%if battle_panel_dict and battle_panel_group_list:
+		<div class="well">
+			<h3>結果 (グループ別)</h3>
+			<table id="group_input_table" class="table">
+				<thead>
+					<th>パネル名ー</th>
+					<th>出現回数</th>
+					<th>確率[％]</th>
+					<th>設定値[％]</th>
+				</thead>
+
+				<tbody>
+					%for group in battle_panel_group_list:
+						<tr>
+							<td>
+								${group['prize_name']}
+							</td>
+							<td>
+								${group['occurrences']}
+							</td>
+							<td>
+								${'%.2f' % group['rate']}
+							</td>
+							<td>
+								${group['bonus_rate_s']}
+							</td>
+						</tr>
+					%endfor
+					<%
+						total_occurrences = sum([x['occurrences'] for x in battle_panel_group_list])
+						total_rate = sum([x['rate'] for x in battle_panel_group_list])
+					%>
+					<tr>
+						<td>合計</td>
+						<td>${total_occurrences}</td>
+						<td>${'%.2f' % total_rate}</td>
+						<td>${'%.2f' % total_set_rate}</td>
+					</tr>
+				</tbody>
+			 </table>
+		</div>
+
+		%for idx, battle_panel in battle_panel_dict.items():
+			<div class="well">
+				<h3>結果 (${battle_panel['prize_name']})</h3>
+				<table id="input_table" class="table">
+					<thead>
+						<th>ピースナンバー</th>
+						<th>出現回数</th>
+						<th>確率[％]</th>
+					</thead>
+
+                    <tbody>
+					%for number, values in battle_panel['items'].items():
+						<tr>
+							<td>
+								piece_${number}
+							</td>
+							<td>
+								${values['occurrences']}
+							</td>
+							<td>
+								${'%.2f' % values['rate']}
+							</td>
+						</tr>
+					%endfor
+					<%
+						items = battle_panel['items'].values()
+						total_occurrences = sum([x['occurrences'] for x in items])
+						total_rate = sum([x['rate'] for x in items])
+					%>
+					<tr>
+						<td>合計</td>
+						<td>${total_occurrences}</td>
+						<td>${'%.2f' % total_rate}</td>
+					</tr>
+                    </tbody>
+				</table>
+			</div>
+		%endfor
+	%endif
+
+</%def>

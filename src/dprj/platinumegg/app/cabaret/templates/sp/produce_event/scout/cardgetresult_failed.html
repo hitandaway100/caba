@@ -1,0 +1,22 @@
+#coding:utf-8
+<%inherit file="cardgetresult.html" />
+
+<%def name="drawCardGetResultTop()">
+	<img src="${url_static_img}01/id_01_45/banner_01_45_02.png" width="320" height="100"/ >
+
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px">
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	<div>
+		<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" style="position: absolute; z-index: 0;" />
+		<div class="scoutresult">
+			<img src="${url_static_img}01/id_01_45/card_miss.png" width="320" height="400"/>
+		</div>
+	</div>
+
+</%def>

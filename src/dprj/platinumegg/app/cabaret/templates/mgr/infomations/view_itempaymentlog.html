@@ -1,0 +1,166 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			アイテム毎課金履歴
+		</h1>
+	</div>
+	<div class="well">
+		<form method="post" id="form_main">
+			<select name="_serchtype">
+				%if _serchtype == 'uid':
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid" selected="selected">アプリ内ユーザIDから</option>
+				%else:
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid">アプリ内ユーザIDから</option>
+				%endif
+			</select>
+			<p>
+				<input type="text" name="_value" value="${_value or ''}" />
+			</p>
+			<p>
+				アイテム種別:<button id="button_add" class="btn">+</button><br />
+				<div id="itemtype_block">
+				</div>
+			</p>
+			<p>
+				ステータス:<br />
+				<select name="_is_complete">
+					%if _is_complete:
+						<option value="0">未完了</option>
+						<option value="1" selected="selected">完了済</option>
+					%else:
+						<option value="0" selected="selected">未完了</option>
+						<option value="1">完了済</option>
+					%endif
+				</select>
+			</p>
+			<input type="submit" class="btn btn-primary" value="表示" />
+		</form>
+	</div>
+	% if paymentlist:
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>日付</th>
+					<th>件数</th>
+					<th>合計数量</th>
+					<th>合計金額</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for payment in paymentlist:
+					<tr>
+						<td>${payment['date'] | h}</td>
+						<td>${payment['num']}</td>
+						<td>${payment['volume']}</td>
+						<td>${payment['tprice']}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	%endif
+	<div style="display: none;" id="ori_itemtype_select">
+		<select>
+			%for (val,name) in itemlist['item']:
+				<option value="${val}">${val}:${name | h}</option>
+			%endfor
+		</select>
+	</div>
+	<script>
+		var iidToIndex = {};
+		%for idx, data in enumerate(itemlist['item']):
+		iidToIndex[${data[0]}] = ${idx};
+		%endfor
+		
+		$(function(){
+			var button = $("#button_add")[0];
+			var parentObj = $("#itemtype_block")[0];
+			
+			function addItemList(value, can_delete){
+				var div = document.createElement("div");
+				
+				// select.
+				var itemselect = $("#ori_itemtype_select select")[0].cloneNode(true);
+				var options = itemselect.options;
+				options.selectedIndex = iidToIndex[value] || 0;
+				$(itemselect).addClass("itemtype_select");
+				div.appendChild(itemselect);
+				
+				if(can_delete){
+					// delete.
+					var button_delete = document.createElement("button");
+					button_delete.innerText = "x";
+					$(button_delete).addClass("btn");
+					$(button_delete).addClass("btn-danger");
+					$(button_delete).click(function(){
+						event.preventDefault();
+						parentObj.removeChild(div);
+						return false;
+					});
+					div.appendChild(button_delete);
+				}
+				
+				// br.
+				var br = document.createElement("br");
+				div.appendChild(br);
+				
+				parentObj.appendChild(div);
+			}
+			%if _itemtype_list:
+				%for idx,_itemtype in enumerate(_itemtype_list):
+			addItemList(${_itemtype}, ${"true" if 0 < idx else "false"});
+				%endfor
+			%else:
+				addItemList(0, false);
+			%endif
+			
+			$(button).click(function(event){
+				event.preventDefault();
+				addItemList(0, true);
+				return false;
+			});
+			
+			$("#form_main").submit(function(event){
+				event.preventDefault();
+				
+				function appendPostValue(name, value){
+					if(!value){
+						return;
+					}
+					var obj = document.createElement("input");
+					obj.type = "hidden";
+					obj.name = name;
+					obj.value = value;
+					form.appendChild(obj);
+					return obj;
+				}
+				function copyPostValue(name){
+					var value = form_ori.elements[name].value;
+					return appendPostValue(name, value);
+				}
+				var form_ori = $("#form_main")[0];
+				var form = document.createElement("form");
+				form.action = "${url_view_itempaymentlog}";
+				
+				copyPostValue("_serchtype");
+				copyPostValue("_value");
+				copyPostValue("_is_complete");
+				
+				var itemtype_select_list = $(".itemtype_select");
+				for(var i=0; i<itemtype_select_list.length; i++){
+					var options = itemtype_select_list[i];
+					appendPostValue("_itemtype"+i, options[options.selectedIndex].value);
+				}
+				
+				document.body.appendChild(form);
+				form.submit();
+				
+				return false;
+			});
+		});
+	</script>
+</%def>

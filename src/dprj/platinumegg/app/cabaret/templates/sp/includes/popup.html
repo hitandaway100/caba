@@ -1,0 +1,21 @@
+#coding:utf-8
+<%doc>ポップアップ</%doc>
+
+<%page>
+	<div class="pop_back" align="center" id="popup_block" style="display: none;">
+		<br />
+		<div id="popup_window">
+			<div class="pop_flame">
+				<div class="pop_title">
+					<span id="popup_title"></span>
+				</div>
+				<div style="width:250px; height:260px; overflow-y:auto; margin:0px auto; position: relative; top:60px;">
+					<img id="popup_img" class="pop_img"/>
+				</div>
+				<a id="popup_link_banner_anchor" href="javascript:void();"><img src="" alt="バナー" id="popup_link_banner" class="pop_banner" height="auto" style="max-height: 83px;"/></a>
+				<img src="" alt="バナー" id="popup_banner" class="pop_banner" height="auto" style="display: none;max-height: 83px;"/>
+				<div class="pop_button" id="popup_close"></div>
+			</div>
+		</div>
+	</div>
+</%page>

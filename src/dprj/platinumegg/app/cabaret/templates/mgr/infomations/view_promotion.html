@@ -1,0 +1,75 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	
+	<script type="text/javascript">
+		function onChangeApps(app_select_tag){
+			var option = app_select_tag.options[app_select_tag.options.selectedIndex];
+			location.href = location.pathname + '?appname=' + option.value;
+		}
+	</script>
+	
+	<div class="page-header">
+		<h1>
+			${nickname | h}のクロスプロモーション情報
+		</h1>
+	</div>
+	
+	<div>
+		<select onchange="onChangeApps(this);">
+			%for appname in promotion_apps:
+				%if promotion_appname == appname:
+					<option value="${appname}" selected="selected">${appname | h}</option>
+				%else:
+					<option value="${appname}">${appname | h}</option>
+				%endif
+			%endfor
+		</select>
+	</div>
+	
+	<div class="row">
+		<div class="span6">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							ID
+						</th>
+						<th>
+							名前
+						</th>
+						<th>
+							達成確認時間
+						</th>
+						<th>
+							報酬受取り時間
+						</th>
+						<th>
+							状態
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					%for promotionprize in promotionprizelist:
+						<tr>
+							<td>${promotionprize['id']}</td>
+							<td>${promotionprize['name'] | h}</td>
+							<td>${promotionprize['atime']}</td>
+							<td>${promotionprize['rtime']}</td>
+							<td>
+								%if promotionprize['status'] == Defines.PromotionStatus.ACHIEVED:
+									<span class="label label-yellow">${promotionprize['str_status'] | h}</span>
+								%elif promotionprize['status'] == Defines.PromotionStatus.RECEIVED:
+									<span class="label label-blue">${promotionprize['str_status'] | h}</span>
+								%else:
+									<span class="label label-red">${promotionprize['str_status'] | h}</span>
+								%endif
+							</td>
+						</tr>
+					%endfor
+				</tbody>
+			</table>
+		</div>
+	</div>
+</%def>

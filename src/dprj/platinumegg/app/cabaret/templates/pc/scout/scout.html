@@ -1,0 +1,42 @@
+#coding:utf-8
+<%inherit file="../../sp/scout/scout.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+		function onClickScout(url){
+			var chkbox = $("#scoutskip");
+			if(0 < chkbox.length){
+				chkbox = chkbox[0];
+				var v;
+				if(chkbox.checked){
+					v = 1;
+				}
+				else{
+					v = 0;
+				}
+				if(url.indexOf("?") == -1){
+					url = url + "?${Defines.URLQUERY_SKIP}=" + v;
+				}
+				else{
+					url = url + "&${Defines.URLQUERY_SKIP}=" + v;
+				}
+			}
+			if(window.parent.reserveGetStatus){
+				window.parent.reserveGetStatus();
+			}
+			location.href=url;
+		}
+	</script>
+	
+	<script type="text/javascript">
+		$(function(){
+			setInterval(function(){
+				$('.s_blink').fadeTo('500',0.5, function(){$(this).fadeTo('500',1)});
+			}, 1000);
+		});
+	</script>
+	
+	${self.drawChampagneCallHostCss()}
+	${self.drawChampagneCallHostScript()}
+</%def>

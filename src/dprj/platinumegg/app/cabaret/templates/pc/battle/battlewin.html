@@ -1,0 +1,10 @@
+#coding:utf-8
+<%inherit file="../../sp/battle/battlewin.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+	<script type="text/javascript">
+		parent.getStatus();
+	</script>
+</%def>

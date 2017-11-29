@@ -1,0 +1,63 @@
+#coding:utf-8
+<%inherit file="eventmoviebase.html" />
+
+<%def name="head_opt()">
+	<link href="${url_static_css}album.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<%doc>ページタイトル</%doc>
+	<div class="titlebar">
+		<p class="caption">イベント思い出アルバム</p>
+	</div>
+	
+	<%doc>イベント名</%doc>
+	<div class="cardname">
+		<span class="wrapper">
+			${scoutevent['name'] | h}
+		</span>
+	</div>
+	
+	<%doc>イベントヘッダ画像</%doc>
+	${self.eventhdr()}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="caution">
+		イベント終了後は動画の閲覧が<br />
+		できなくなります
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<%doc>イベント思い出詳細へ</%doc>
+	<div>
+		<a class="btnpinkbig" href="${get_html_param('url_eventmovie_detail', 'sp/scoutevent/ev_memories.html')}"><p style="font-size:20px;">思い出再生へ</p></a>
+	</div>
+	
+	%if scoutevent['is_opened']:
+		<div style="text-align: center; padding-bottom:10px;">
+			<a href="${get_html_param('url_scoutevent_scouttop', 'sp/scout/scout.html')}">
+				<img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_event_scout.png" width="300" height="60"/>
+			</a>
+		</div>
+		<div class="topcap">
+			ご褒美動画は、イベントエリアを<br>
+			進行すことで開放されます
+		</div>
+	%endif
+	
+	<%doc>イベント動画一覧</%doc>
+	${self.movielist()}
+	
+	%if scoutevent['is_opened']:
+		<%doc>イベントスカウトへ誘導</%doc>
+		<div style="text-align: center;padding: 8px 0px;">
+			<div>
+				<a href="${get_html_param('url_scoutevent_scouttop', 'sp/scoutevent/scout.html')}">
+					<img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_event_scout.png" width="300" height="60"/>
+				</a>
+			</div>
+		</div>
+	%endif
+	
+	${self.eventfooter()}
+</%def>

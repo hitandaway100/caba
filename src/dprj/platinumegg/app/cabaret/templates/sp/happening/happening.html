@@ -1,0 +1,19 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+<%def name="happeningtop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">超太客来店中</span>
+		</div>
+		${self.happeningtime()}
+		<div class="boss_coment">
+			<div class="coment_text">
+				スカウトしながら店に戻るか・・・
+			</div>
+		</div>
+	</div>
+</%def>
+

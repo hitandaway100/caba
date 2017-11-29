@@ -1,0 +1,75 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		%if is_first:
+			<div class="tutorial_ms">
+				なんとかオーナーの店を譲り受ける事ができた<br />
+				この店を昔のように賑わう店にしてみせるぞ!<br />
+			</div>
+			<div class="tutorial_ms">
+				まずはNO1キャストを決めないとな・・・<br />
+				この店で一緒に働いていたキャストを<br />
+				説得して店に戻ってきてもらおうか。
+			</div>
+		%else:
+			<div class="tutorial_ms" style="padding:20px;10px;">
+				このタイプで決定しますか?
+			</div>
+		%endif
+		
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+<%def name="confirm_body(banner)">
+	<div>
+		<div style="text-align: center;">
+			<img src="${banner}" width="240px" height="60" />
+				<div class="titlesub">
+					<div class="topcap">
+						所属するキャスト
+					</div>
+				</div>
+			<%include file="../includes/listcard.html" args="card=leader, url_static_img=url_static_img, is_tutorial=True, Defines=Defines" />
+		</div>
+	</div>
+</%def>
+
+<%def name="contents()">
+	%if is_first:
+		<div class="topcap">
+			おすすめのタイプ
+		</div>
+	%endif
+	%if ptype == Defines.CharacterType.TYPE_001:
+		${self.confirm_body(url_static_img+'tutorial_new/tutorial_01_select_type_banner_01.png')}
+	%elif ptype == Defines.CharacterType.TYPE_002:
+		${self.confirm_body(url_static_img+'tutorial_new/tutorial_01_select_type_banner_02.png')}
+	%elif ptype == Defines.CharacterType.TYPE_003:
+		${self.confirm_body(url_static_img+'tutorial_new/tutorial_01_select_type_banner_03.png')}
+	%endif
+	
+	<div style="margin-top:20px;">
+		<div>
+			<a class="btnlong_p" href="${get_html_param('url_write', 'sp/regist/decide.html')}"><div>このタイプに決定する</div></a>
+		</div>
+		<div>
+			<a class="btnlong_p" href="${get_html_param('url_back', 'sp/regist/select.html')}"><div>タイプを選びなおす</div></a>
+		</div>
+	</div>
+	
+	<div class="back_black" width="320px"> 
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" style="margin-bottom:4px;"/>
+		<div style="margin:auto; width:300px; text-align:left; font-size:13px;">
+				※一度選択したタイプの変更はゲーム開始後には<br />
+				&nbsp; 変更出来ませんのでご注意ください。<br />
+				※選択したタイプの女の子が一人手に入ります。<br />
+				※ゲームを開始すると選択したタイプ以外の女の子<br />
+				&nbsp; も入手可能です。
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" style="margin-bottom:4px;"/>
+	</div>
+</%def>
+
+<%def name="footer()"></%def>

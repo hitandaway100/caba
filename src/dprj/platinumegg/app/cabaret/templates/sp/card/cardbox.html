@@ -1,0 +1,33 @@
+#coding:utf-8
+<%inherit file="cardlistbase.html" />
+
+<%def name="tabs()">
+	<div class="selltab">
+		<ul class="tabs clearFix" id="tabs" style="width: 320px; margin:4 0 4 12;">
+			<li id="tab1">
+				<a onclick="return false;">一 &nbsp; 覧</a>
+			</li>
+			<li id="tab2">
+				<a href="${get_html_param('url_sell', 'sp/card/sell.html')}">退 &nbsp; 店</a>
+			</li>
+			<li id="tab3" >
+				<a href="${get_html_param('url_transfer', 'sp/card/transfer.html')}">異 &nbsp; 動</a>
+			</li>
+		</ul>
+		<script type="text/javascript">
+			topics(1); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+</%def>
+
+<%def name="draw_cardlist()">
+	%if cardlist:
+		%for card in cardlist:
+			<a href="${get_html_param('url_detail', 'sp/card/carddetail.html', card)}"><%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, Defines=Defines"/></a>
+		%endfor
+	%else:
+		<div class="list_not_found">
+			対象のキャストがいません
+		</div>
+	%endif
+</%def>

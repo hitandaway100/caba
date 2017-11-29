@@ -1,0 +1,79 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>マスターデータの管理　<small>マスターデータ出力・転送・更新を行えます</small></h1>
+	</div>
+	
+	<div class="well">
+		<p><strong>マスターデータ出力</strong>　json形式でマスターデータを出力します</p>
+		<p><a href="${url_download}" class="btn btn-primary" target="_blank">マスターデータ出力</a></p>
+	</div>
+	
+	<div class="well">
+		<p><strong>現在のマスターデータ</strong></p>
+		%if cur_zipfile:
+			<table id="infos" class="table table-bordered table-striped">
+				<tbody>
+					<tr>
+						<td>
+							${cur_zipfile['name']}
+						</td>
+						<td>
+							${cur_zipfile['ctime']}
+						</td>
+						<td>
+							<button class="btn btn-primary" onclick="location.href='${cur_zipfile['url_download']};'"><i class="icon-th-large icon-download-alt"></i></button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		%else:
+			ありません
+		%endif
+	</div>
+	<div class="well">
+		<p><strong>ステージング上のマスターデータ</strong></p>
+		<table id="infos" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>
+						ファイル名
+					</th>
+					<th>
+						作成時間
+					</th>
+					<th>
+						操作
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				%for data in zipfilelist:
+					<%
+					class_name = ''
+					if data['ctime'] is None:
+						class_name = 'class="danger"'
+					%>
+					<tr ${class_name}>
+						<td>
+							${data['name']}
+						</td>
+						<td>
+							${data['ctime']}
+						</td>
+						<td>
+							<form action="${url_update}" method="post" onsubmit="return confirm('${data['name']}でマスターデータを更新しますか？') && confirm('本当に更新しますか？');">
+								<input type="hidden" name="_name" value="${data['name']}" />
+								%if data['ctime'] is not None:
+									<input type="submit" class="btn btn-primary" value="更新" />
+								%endif
+							</form>
+						</td>
+					</tr>
+				%endfor
+			</tbody>
+		</table>
+	</div>
+</%def>

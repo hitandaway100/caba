@@ -1,0 +1,222 @@
+#coding:utf-8
+<%inherit file="base_index.html" />
+
+<%def name="additionalJS()">
+	<script type="text/javascript">
+		$(function(){
+			var trigger_selector = ".input_type";
+			
+			function rstrip(src, s){
+				var start = 0;
+				var to = src.length;
+				if(src.lastIndexOf(s) == (src.length - s.length)){
+					to = src.length - s.length;
+				}
+				return src.slice(start, to);
+			}
+			
+			function isSelectTypeId(textid){
+				if(0 < textid.length){
+					var select_format = $(".select_format")[0];
+					var options = select_format.options;
+					for(var i=0; i<options.length; i++){
+						if(options[i].value == textid){
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+			
+			function updateIdValue(selector){
+				var id_tags = $(selector);
+				for(var i=0; i<id_tags.length; i++){
+					var id_tag = id_tags[i];
+					var value = "";
+					var hidden_id_id = rstrip(rstrip(id_tag.id, "_input"), "_select");
+					
+					switch(id_tag.tagName){
+					case "INPUT":
+					case "input":
+						value = id_tag.value;
+						break;
+					case "SELECT":
+					case "select":
+						value = id_tag.options[id_tag.selectedIndex].value;
+						break;
+					}
+					$("#"+hidden_id_id).attr({value:value});
+				}
+			}
+			
+			function updateIdField(selector){
+				var select_tags = $(selector);
+				for(var i=0; i<select_tags.length; i++){
+					var select_tag = select_tags[i];
+					var options = select_tag.options;
+					var id_id = rstrip(select_tag.id, "_it");
+					
+					var input_contentdata = $("input[id="+id_id+"_input]");
+					var select_contentdata = $("select[id="+id_id+"_select]");
+					
+					switch(options[options.selectedIndex].value){
+					case "1":
+						input_contentdata.css("display", "");
+						select_contentdata.css("display", "none");
+						updateIdValue(input_contentdata);
+						break;
+					case "0":
+						input_contentdata.css("display", "none");
+						select_contentdata.css("display", "");
+						updateIdValue(select_contentdata);
+						break;
+					}
+				}
+			}
+			
+			// contentdataの切り替え.
+			(function(){
+				var select_tags = $(trigger_selector);
+				select_tags.change(function(event){
+					var target = event.target;
+					updateIdField(target);
+				});
+			})();
+			
+			function initModel(select_tag){
+				var select_format = $(".select_format");
+				var id_inputfield = $("#" + rstrip(select_tag.id, "_it"))[0];
+				var id_inputfield_id = id_inputfield.id;
+				var id_inputfield_name = id_inputfield.name;
+				var value = id_inputfield.value;
+				var parent = $(id_inputfield).parent();
+				var id_selectfield = select_format.clone()[0];
+				
+				var options = id_selectfield.options;
+				var selected = false;
+				for(var j=0; j<options.length; j++){
+					var option = options[j];
+					if(option.value == value){
+						id_selectfield.selectedIndex = j;
+						selected = true;
+						break;
+					}
+				}
+				if(selected){
+					select_tag.options.selectedIndex = 0;
+				}
+				else{
+					select_tag.options.selectedIndex = 1;
+				}
+				
+				function change(event){
+					var target = event.target;
+					updateIdValue(target);
+				}
+				$(id_inputfield).change(change);
+				$(id_selectfield).change(change);
+				
+				$(id_selectfield).attr({
+					id: id_inputfield_id + "_select",
+					name:id_inputfield_name + "_select",
+				}).css("display", "none").appendTo(parent);
+				
+				$(id_inputfield).attr({id: id_inputfield_id + "_input", name:id_inputfield_name + "_input"});
+				
+				// 実際に値をPOSTするのはこっち.
+				$("<input>").attr({
+					type : "hidden",
+					id: id_inputfield_id,
+					name:id_inputfield_name,
+				}).appendTo(parent);
+				
+				updateIdField(select_tag);
+			}
+			
+			(function(){
+				var select_tags = $(trigger_selector);
+				for(var i=0; i<select_tags.length; i++){
+					var select_tag = select_tags[i];
+					initModel(select_tag);
+				}
+			})();
+			
+		});
+	</script>
+</%def>
+
+<%def name="renderInfosFooter()">
+	<div style="display: none;">
+		<select class="select_format">
+			<option value="">------------</option>
+			%for v,text in Defines.TextMasterID.NAMES.items():
+				<option value="${v}">${text | h}(ID:${v})</option>
+			%endfor
+		</select>
+	</div>
+</%def>
+
+<%def name="renderFormColumns(columns)">
+	%for column in columns:
+		%if column['name'] == 'id':
+			<th>
+				設定方法
+			</th>
+		%endif
+		<th>
+			<span title="${column['name']}:${column['db_type']}">${column['label']}</span>
+			%if column['help_text']:
+				<a href="#" rel="popover" data-content="${column['help_text']}" data-original-title="${column['label']}について"><i class="icon-question-sign"></i></a>
+			%endif
+		</th>
+	%endfor
+</%def>
+
+<%def name="renderFormFields(form)">
+	%for field in form:
+		%if field.field.widget.is_hidden:
+			${field}
+		%else:
+			%if field.name == 'id':
+				<td>
+					<select class="input_type" id="id_${field.html_name}_it">
+						<option value="0">IDを選択</option>
+						<option value="1">自由設定</option>
+					</select>
+				</td>
+			%endif
+			%if field.errors:
+				<td style="background-color:#F4C8C5;">
+			%else:
+				<td>
+			%endif
+				<div>
+					<span class="sort_value" style="display:none;">${field.value}</span>
+					${field}
+					%for error in field.errors:
+						<span class="help-inline red">${error}</span>
+					%endfor
+				</div>
+			</td>
+		%endif
+	%endfor
+</%def>
+
+<%def name="renderAdditionalForm(form)">
+	%for field in form:
+		%if field.name == 'id':
+			<td>
+				<select class="input_type" id="id_${field.html_name}_it">
+					<option value="0">IDを選択</option>
+					<option value="1">自由設定</option>
+				</select>
+			</td>
+		%endif
+		<td>
+			<div>
+				<span class="sort_value" style="display:none;">${field.value}</span>
+				${field}
+			</div>
+		</td>
+	%endfor
+</%def>

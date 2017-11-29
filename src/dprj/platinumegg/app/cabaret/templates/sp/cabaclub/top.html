@@ -1,0 +1,103 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%namespace file="storecommon.html", name="storecommon" />
+<%namespace file="cabaclub_base.html" name="cabaclub_base" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="contents()">
+	${cabaclub_base.show_cabaclub_top_header()}
+	
+	<%doc>イベント発生表示</%doc>
+	${storecommon.drawStoreEventIcon(cabaclubstoreevent, True, style='text-align:center;margin:8px 0px;')}
+	
+	<%doc>現在経営情報</%doc>
+	<%
+		status_items = (
+			('全店舗総売上', cabaclub_management_info['proceeds']),
+			('全店舗総来客数', cabaclub_management_info['customer']),
+			('所持経営マネー', cabaclub_management_info['money']),
+			('所持%s' % Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT], cabaclub_management_info['point']),
+		)
+	%>
+	<div style="margin:8px 0px;">
+		${storecommon.drawCabaClubStatus4Items('現在の経営状況', status_items)}
+	</div>
+	
+	<%doc>次回集計までの時間</%doc>
+	<div class="wrapper red">
+		次回集計まで残り${storecommon.drawStoreLimitTime(section_timelimit)}
+	</div>
+	
+	<%doc>店舗画面への遷移ボタン</%doc>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_store', 'sp/cabaclub/store_rental.html')}">店舗へ</a>
+	</div>
+
+	<%doc>今週のランキングページへの遷移ボタン</%doc>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_current_week_rank', 'sp/cabaclub/rank.html')}">経営ランキングへ</a>
+	</div>
+
+	<%doc>称号交換所への遷移ボタン</%doc>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_title', 'sp/title/top.html')}">称号交換所へ</a>
+	</div>
+	<%doc>ショップへの遷移ボタン</%doc>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_shop', 'sp/shop/shop.html')}">ショップへ</a>
+	</div>
+
+	<%doc>ヘルプ</%doc>
+	<%
+		help_messages = (
+			('経営について', [
+				'・経営マネーを使い、店舗をレンタルすることで支店を運営することができます。',
+				'・毎週月曜日のAM12時(正午)に集計され、それまでに獲得した売上に応じて名誉ptを獲得することができます。',
+				'・集計後はそれまでに獲得した来客数と売上はリセットされます。',
+			]),
+			('経営マネーについて', [
+				'・経営を行う上で、様々な用途で消費される通貨です。',
+				'・経営マネーの入手は、ショップにて交換を行うことができます。',
+			]),
+			('店舗について', [
+				'・経営マネーを消費して一定期間レンタルすることができます。',
+				'・店舗にはそれぞれ特徴があり、キャストを設置して開店することで集客や売上をあげることができるようになります。',
+				'・店舗を閉店状態にすることで、キャストの設定し直しなどの設定変更を行うことができます。',
+				'・<span class="red">また、アイテム「スカウトマン雇用」は使用したい店舗が閉店中にのみ使用することができます。</span>',
+				'・15分毎に店舗ごとに売上と来客数が集計され更新されます。',
+				'　',
+				'※1度の集計にて、来客数が店舗の最大収容人数を超えている場合、最大収容人数以上はカウントされません。',
+			]),
+			('発生イベントについて', [
+				'・店舗を開店している場合、それぞれの店舗にてイベントが発生する場合があります。',
+				'・来客数や売上が上昇する良いイベントや、逆に来客数や売上が下がってしまう悪いイベントがあり、これらに対して対策をすることができます。',
+				'　',
+				'・対策は経営マネーを消費して行うことができ、良いイベントへの対策は来客数や売上の上昇をより効果的にし、悪いイベントへの対策は発生しているイベントを終了させることができます。',
+			]),
+			('称号について', [
+				'・称号を獲得すると一定期間の間、称号に応じた効果がオーナーに適応されます。',
+				'・称号の効果期間が残っている間に別の称号を交換した場合、それまでの称号に上書きされ、新しい称号の効果が発揮されるようになります。',
+				'・称号は専用の交換所にて名誉ptと交換することができます。',
+			]),
+		)
+	%>
+	<div style="padding:10px 0px;">
+		%for help_title, help_body_list in help_messages:
+			<div>
+				<div class="help_slide">
+					<input type="submit" value="${help_title}" class="help_btn" style="font-size: 13px;"/>
+				</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+					%for help_body in help_body_list:
+						<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+							${help_body}
+						</div>
+					%endfor
+				</div>
+			</div>
+		%endfor
+	</div>
+</%def>

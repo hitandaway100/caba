@@ -1,0 +1,56 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+	<script>
+		function onClickOutSideLink(url){
+			jumpTuOutSidePage(url, "「レッドドラゴン」のページを見に行く");
+		}
+	</script>
+
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p style="font-size: 16px; line-height: 2.5;">
+			レッドドラゴンコラボ特設ページ
+		</p>
+	</div>
+	
+	<img src="${url_static_img}banner/campaign/r_dragon/reddc_header.png" width="320" height="auto"/>
+	
+	<div class="topcap">
+		現役のAV女優がキャストとして働く<br />
+		キャバクラ店<span style="font-size: 15px; color:orange;">「レッドドラゴン」</span>!!
+	</div>
+	<div class="wrapper" style="margin-bottom: 8px;">
+		<div style="line-height:2;">
+			<span class="yellow" style="font-size:13;">↓詳細はこちらから!!↓</span>
+		</div>
+		<a href="javascript:void(0);" onclick="onClickOutSideLink('http://www.r-dragon.jp/index2.php')">
+			<img src="${url_static_img}banner/campaign/r_dragon/reddc_banner_01.png" width="240" height="auto"/>
+		</a>
+	</div>
+	
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		<div class="wrapper">こちらのキャストと会えるかも!?</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div style="text-align: center;">
+		<img src="${url_static_img}card/kasumi_risa_3/H1/Card_thumb_320_400.png" width="260" height="auto" style="margin: 4px 0;"/>
+		<img src="${url_static_img}card/hatsune_minori/H1/Card_thumb_320_400.png" width="260" height="auto" style="margin: 4px 0;"/>
+		<img src="${url_static_img}card/meguri_2/H1/Card_thumb_320_400.png" width="260" height="auto" style="margin: 4px 0;"/>
+	</div>
+	
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div class="wrapper" style="margin-bottom: 8px;">
+		<a href="http://www.r-dragon.jp/index2.php" onclick="onClickOutSideLink()">
+			<img src="${url_static_img}banner/campaign/r_dragon/reddc_banner_01.png" width="240" height="auto"/>
+		</a>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+</%def>

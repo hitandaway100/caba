@@ -1,0 +1,141 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			バトルイベントグループID:${group['id']}の情報
+		</h1>
+	</div>
+	
+	<div class="row">
+		<div class="span6">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							要素
+						</th>
+						<th>
+							値
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td width="30%">ID</td>
+						<td>
+							${group['id']}
+						</td>
+					</tr>
+					<tr>
+						<td>イベント</td>
+						<td>
+							${group['eventname'] | h}(ID:${group['eventid']})
+						</td>
+					</tr>
+					<tr>
+						<td>ランク</td>
+						<td>
+							${group['rank']}
+						</td>
+					</tr>
+					<tr>
+						<td>ランクマスター</td>
+						<td>
+							${group['rankname'] | h}(ID:${group['rankid']})
+						</td>
+					</tr>
+					<tr>
+						<td>日付</td>
+						<td>
+							${group['cdate'] | h}
+						</td>
+					</tr>
+					<tr>
+						<td>参加人数</td>
+						<td>
+							${group['usernum']}/${group['usernum']}
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	
+	<div class="well">
+		<h2>
+			参加者
+		</h2>
+		%if playerlist:
+			<%include file='../../inc_pagination.html' />
+			<div class="row">
+				<div class="span10">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									順位
+								</th>
+								<th>
+									ID
+								</th>
+								<th>
+									名前
+								</th>
+								<th>
+									獲得バトルPT
+								</th>
+								<th>
+									獲得名声PT
+								</th>
+								<th>
+									ランク増減
+								</th>
+								<th>
+									最大連勝数
+								</th>
+								<th>
+									プレイヤー情報
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for player in playerlist:
+								<tr>
+									<td>
+										${player['grouprank']}
+									</td>
+									<td>
+										${player['id']}
+									</td>
+									<td>
+										${player['person']['nickname'] | h}(DMMID:${player['dmmid']})
+									</td>
+									<td>
+										${player['point']}
+									</td>
+									<td>
+										${player['fame']}
+									</td>
+									<td>
+										${player['rankup']}
+									</td>
+									<td>
+										${player['winmax']}
+									</td>
+									<td>
+										<a href="${player['url']}">⇛詳細</a>
+									</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<%include file='../../inc_pagination.html' />
+		%else:
+			いません
+		%endif
+	</div>
+</%def>

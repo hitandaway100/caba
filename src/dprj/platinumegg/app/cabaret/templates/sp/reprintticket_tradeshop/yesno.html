@@ -1,0 +1,61 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head()">
+    ${parent.head()}
+    <link href="${url_static_css}/tradeshop/yesno.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+  <div class="titlebar">
+    <p class="caption">チケット交換確認</p>
+  </div>
+  
+  <div class="cardthumb">
+    <img src="${item['thumbUrlMiddle']}" width="110px" height="138px" />
+  </div>
+  
+  <div class="wrapper">
+    <div class="message">
+      %if 1 < usenum:
+        ${item['name']} x${tradenum}を<br />
+        交換しますか？<br />
+      %else:
+        ${item['name']}を
+        <br />交換しますか？<br />
+      %endif
+    </div>
+    <div class="point_text">
+      ${item['ticket_name']}所持枚数<br />
+    </div>
+    <%
+      balance = item['player_ticketnum'] - tradenum * item['use_ticketnum']
+    %>
+    %if 0 <= balance:
+      ${item['player_ticketnum']}枚 => ${balance}枚<br />
+    %else:
+      ${item['ticket_name']}が足りません<br />
+    %endif
+  </div>
+  
+  <div>
+    %if err_mess:
+      <div class="caution">
+        ${err_mess | h}
+      </div>
+    %else:
+      <table class="tablecenter">
+        <tr>
+          <td>
+            <a class="button" style="margin-top:10px;" href="${get_html_param('url_reprintticket_tradeshop')}"><div>キャンセル</div></a>
+          </td>
+          %if 0 <= balance:
+          <td>
+            <a class="button" style="margin-top:10px;" href="${get_html_param('next_url','',item)}"><div>交換する</div></a>
+          </td>
+          %endif
+        </tr>
+      </table>
+    %endif
+    <br>
+  </div>
+</%def>

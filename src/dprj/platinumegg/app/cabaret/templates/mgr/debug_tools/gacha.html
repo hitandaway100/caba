@@ -1,0 +1,309 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>プレイ回数</strong>　ガチャのプレイ回数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_gacha_playcount" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in gachalist:
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          回数:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="設定" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>BOXリセット</strong>　ガチャのBOXをリセットします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_gacha_box" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in gachalist:
+            %if gacha.consumetype in (Defines.GachaConsumeType.PREMIUM, Defines.GachaConsumeType.MINI_BOX):
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="リセット" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ステップ数</strong>　ガチャのステップ数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_gacha_step" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in gachalist:
+            %if gacha.consumetype in (Defines.GachaConsumeType.STEPUP, Defines.GachaConsumeType.ONE_TWO_THREE):
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          ステップ数:(0=&gt;1ステップ目)<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>シートの状態を変更</strong>　シートの状態を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_gacha_sheet_state" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in gachalist:
+            %if gacha.consumetype in (Defines.GachaConsumeType.SEAT, Defines.GachaConsumeType.MINI_SEAT, Defines.GachaConsumeType.SEAT2, Defines.GachaConsumeType.LIMIT_SHEET):
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          シートの状態:<br />
+          <%
+          SHEET_PANEL_NUM = 9
+          COLNUM = 3
+          %>
+          %for i in xrange(SHEET_PANEL_NUM):
+          <label for="sheet${i}" style="display:inline;">${i+1}</label><input type="checkbox" name="sheet${i}" value="1" />
+          %if i % COLNUM == (COLNUM-1):
+          <br />
+          %endif
+          %endfor
+        </p>
+        <p>
+          シート周回数:(未入力の場合は変更しません)<br />
+          <input type="text" name="_value" value="" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>同伴ガチャ総計Pt</strong>　同伴ガチャの総計Ptを変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_rankinggacha_wholepoint" />
+        <p>
+          同伴ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in rankinggachalist:
+            %if gacha.is_support_wholepoint:
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          総計Pt:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>同伴ガチャ単発Pt</strong>　同伴ガチャの単発Ptを変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_rankinggacha_singlepoint" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          同伴ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in rankinggachalist:
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          単発Pt:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>同伴ガチャ累計Pt</strong>　同伴ガチャの累計Ptを変更します。</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_rankinggacha_totalpoint" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          同伴ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in rankinggachalist:
+            %if gacha.is_support_totalranking:
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          累計Pt:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>同伴ガチャを未プレイ状態に変更</strong>　単発のPtと累計のポイントも0になります。ガチャのプレイ回数は操作しません。</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="delete_rankinggacha_score" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          同伴ガチャ:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for gacha in rankinggachalist:
+            %if gacha.is_support_totalranking:
+            <option value="${gacha.id}">${gacha.name | h}(ID:${gacha.id})</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>BOXガチャのリセット回数を変更</strong>条件付きリセットBOXガチャのリセット回数を変更します。</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_boxgacha" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          リセット回数:<br />
+          <input type="text" name="_resetcount" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p>全ユーザのBOXガチャのリセットを手動で実行します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="boxgacha_reset" />
+        <p>
+          <input class="btn" type="submit" value="実行" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

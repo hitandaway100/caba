@@ -1,0 +1,128 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}/raidevent/nominatecast.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<%
+		int_flag_skill = True
+	%>
+	${self.topheader(produceevent['id'])}
+	
+	<div class="wrapper">
+		特効キャストを接客力が大幅アップするぞ!
+	</div>
+	
+	<%doc>タブ</%doc>
+	<div>
+		${self.eventtopic()}
+		<script type="text/javascript">
+			topics(2); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+	
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			特効キャスト一覧
+		</div>
+	</div>
+	
+	<%doc>drawNominateCard('画像のパス', '属性画像', '名前', 接客力, 人件費, ハメ管理度, ダメージ倍率, 'スキル名', 'スキルの説明')</%doc>
+	%if specialcardlist:
+		<div id="special_cast">
+			%for specialcard in specialcardlist:
+				<%
+					skillname = None
+					skilltext = None
+					if specialcard['skill']:
+						skillname = specialcard['skill']['name']
+						skilltext = specialcard['skill']['text']
+				%>
+				${self.drawNominateCard(specialcard['thumbnail']['middle'],specialcard['iconUrl'],specialcard['name'],specialcard['maxpower'],specialcard['cost'],specialcard['hklevel'],specialcard['specialpowup'],skillname,skilltext)}
+			%endfor
+		</div>
+	%endif
+	
+	${self.eventfooter()}
+	
+</%def>
+
+<%def name="drawNominateCard(thumbUrl, iconUrl, name, power, cost, hklevel, powerup, skillname, skilltext)">
+	%if skillname:
+	<div style="background: url(${url_static_img}common/card_frame_07.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:201; background-size:310px 201px;">
+	%else:
+	<div style="background: url(${url_static_img}common/card_frame_08.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:153; background-size:310px 153px;">
+	%endif
+		<table class="castbox_top">
+			<td>
+				<div class="cardspace">
+					<img src="${thumbUrl}" width="110px" height="138px" />
+				</div>
+			</td>
+			<td>
+				<table class="nominate_name">
+					<tr>
+						<td class="name_st1l"><img src="${iconUrl}" width="28px" height="28px" /></td>
+						<td class="name_st2l name">${name | h}</td>
+					</tr>
+				</table>
+				<table class="nominate_set2">
+					<tr>
+						<td class="nominate_st1">
+							最大接客力
+						</td>
+						<td class="nominate_st2">
+							${power}
+						</td>
+					</tr>
+					<tr>
+						<td class="nominate_st1">
+							人件費
+						</td>
+						<td class="nominate_st2">
+							${cost}
+						</td>
+					</tr>
+				</table>
+				<table class="bonus_param">
+					<tr>
+						<td class="hame" colspan="2">
+							ハメ管理度
+							% for _ in xrange(hklevel - 1):
+								<img src="${url_static_img}common/heart.png" width="12px" height="12px" />
+							% endfor
+						</td>
+					</tr>
+					<tr class="">
+						<td class="nominate_big">
+							<div style="font-size:12px">
+							最大接客力<span style="font-size:24px; color:#ffff00;">${powerup}</span>倍
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</table>
+		%if skillname:
+			<table class="nominate_set3">
+				<tr>
+					<td class="nominate_st3">
+						サービス
+					</td>
+					<td class="nominate_st4">
+						<b>&nbsp; ${skillname | h}</b>
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class="nominate_st5">
+						%if skilltext:
+							${skilltext | h}
+						%endif
+					</td>
+				</tr>
+			</table>
+		%endif
+	</div>
+</%def>

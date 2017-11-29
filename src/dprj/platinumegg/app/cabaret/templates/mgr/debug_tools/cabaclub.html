@@ -1,0 +1,211 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>集計</strong>　毎週の集計を手動で実行します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="cabaclub_aggregate" />
+        <p>
+          週(YYYYWW)：<br />
+          <input type="text" name="week" value="${cabaclub_last_week.strftime("%Y%W")}" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="実行" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>集計フラグリセット</strong>　毎週の集計済みフラグをリセットします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="cabaclub_reset_aggregate_flag" />
+        <p>
+          週(YYYYWW)：<br />
+          <input type="text" name="week" value="${cabaclub_last_week.strftime("%Y%W")}" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="実行" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>店舗全解約</strong>　店舗を全て解約します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="cabaclub_all_cancel" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="解約" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>店舗の設定</strong>　店舗のパラメータを変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_cabaclub_store_params" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          店舗:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for cabaclubstore in cabaclubstorelist:
+              <option value="${cabaclubstore.id}">${cabaclubstore.name | h}(ID:${cabaclubstore.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          借り入れ期限:<br />
+          <input type="text" name="_limit_time" value="${now}" />
+        </p>
+        <p>
+          状態:<br />
+          <select name="_is_open">
+            <option value="1">開店</option>
+            <option value="0">閉店</option>
+          </select>
+        </p>
+        <p>
+          スカウトマン増加数:<br />
+          <input type="number" name="_scoutman" value="0" />
+        </p>
+        <p>
+          発生中のイベント:<br />
+          <select name="_eventid">
+            <option value="0">無し</option>
+            %for cabaclubevent in cabaclubeventlist:
+              <option value="${cabaclubevent.id}">${cabaclubevent.name | h}(ID:${cabaclubevent.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          イベント発生時間:<br />
+          <input type="text" name="_event_time" value="${now}" />
+        </p>
+        <p>
+          <input type="checkbox" id="_ua_flag" name="_ua_flag" value="1" /><label for="_ua_flag" style="display:inline;">発生イベントに対するユーザアクションのフラグ</label>
+        </p>
+        <p>
+          最後に集客を確認した時間:<br />
+          <input type="text" name="_update_time" value="${now}" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>優待券配布の設定</strong>　優待券配布状態を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_cabaclub_preferential" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          アイテム:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for item in itemlist:
+              %if item.id == Defines.ItemEffect.CABACLUB_PREFERENTIAL:
+                <option value="${item.id}">${item.name | h}(ID:${item.id})</option>
+              %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          有効期限:<br />
+          <input type="text" name="_limit_time" value="${now}" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>バリアアイテムの設定</strong>　バリアアイテム状態を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_cabaclub_barrier" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          アイテム:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for item in itemlist:
+              %if item.id == Defines.ItemEffect.CABACLUB_BARRIER:
+                <option value="${item.id}">${item.name | h}(ID:${item.id})</option>
+              %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          有効期限:<br />
+          <input type="text" name="_limit_time" value="${now}" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>週間スコア情報の設定</strong>　週間スコア情報を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_cabaclub_weekly_score" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          集客数:<br />
+          <input type="text" name="_customer" value="0" />
+        </p>
+        <p>
+          売上:<br />
+          <input type="text" name="_proceeds" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p>全ユーザの売り上げの更新を手動で実行します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="exe_agre_caba_batch" />
+        <p>
+          <input class="btn" type="submit" value="実行" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

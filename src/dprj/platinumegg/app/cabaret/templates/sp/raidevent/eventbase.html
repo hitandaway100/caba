@@ -1,0 +1,511 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}ev_slider.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+	<script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}help.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			setInterval(function(){
+				$('.blink').fadeOut(1200, function(){$(this).fadeIn(200)});
+			}, 1400);
+		});
+	</script>
+</%def>
+
+<%def name="topheader()">
+	<img src="${url_static_img}banner/event/raidevent/${raidevent['codename']}/${raidevent['codename']}_header.png" width="320" style="margin-bottom:20px;"/>
+</%def>
+
+<%def name="feavertime()">
+	%if happening['raid']['fever']:
+		<div style="background-color:rgba(255,0,0,0.8); position:absolute; text-align:center; width:84px; height:auto; vertical-align: middle; top:40px; left:10; z-index: 3; border-radius: 6px; padding:4 4; font-size:12px; border: 0;">
+			<span class="blink" style="color:#ffff00;">Fever中</span><br />
+			残り${self.drawTimeLimitText(happening['raid']['fever']['timelimit'])}
+		</div>
+	%endif
+</%def>
+
+<%def name="participant()">
+	%if happening['raid']['combobonus']:
+		<%
+			combobonus = happening['raid']['combobonus']
+		%>
+		%if 0 < combobonus['powup']:
+			<div style="background-color:rgba(100,0,255,0.8); position:absolute; text-align:center; width:84px; height:auto; line-height:1.4em; vertical-align: middle; top:40px; left:220px; z-index: 3; padding:4 4; border-radius: 6px; font-size:12px;">
+				<span class="blink" style="color:#ffff00;">${combobonus['cnt']}連コンボ中</span><br />
+				<span class="orange">満足度</span><br />
+				${combobonus['powup']}%UP中<br />
+			</div>
+		%endif
+	%endif
+</%def>
+
+<%def name="eventtime()">
+	<div class="scouttime">
+		残り時間:${self.drawTimeLimitText(happening['timelimit'])}
+	</div>
+</%def>
+
+<%def name="eventsatisfaction()">
+	<div class="scouttime" style="margin-top:-21px;">
+		満足度:${happening['raid']['hpmax'] - happening['raid']['hp']}/${happening['raid']['hpmax']}
+	</div>
+</%def>
+
+<%def name="discoverer()">
+	<%doc>超太客属性表示(dummy)</%doc>
+	%if happening['raid']['ctype'] != Defines.CharacterType.NONE:
+	<div style="background-color:#a426df ; width:320; color:#ffffff; text-align:center;padding:6 0 6 0"  >
+		イベント太客属性：<span style="color:${Defines.CharacterType.COLORS.get(happening['raid']['ctype'],'#ffffff')}">${happening['raid']['str_ctype'] | h}</span><br />
+	%else:
+	<div style="background-color:#a426df ; width:320; height:28; color:#ffffff; text-align:center; line-height:2;"  >
+	%endif
+		%if happening['raid']['is_mine']:
+			発見者&nbsp;:&nbsp;あなた
+		%else:
+			発見者&nbsp;:&nbsp;${happening['raid']['o_nickname'] | h}さん
+		%endif
+	</div>
+</%def>
+
+<%doc>秘宝ボーナスを表示</%doc>
+<%def name="hihoubonus()">
+	%if happening and happening['raid']['fastbonus']:
+		<div style="background-color:#ffff00 ; opacity: 0.60; width:320; height:28; color:#000000; text-align:center; line-height:2;"  >
+			${self.drawTimeLimitText(happening['raid']['fastbonus']['timelimit'])}以内に満足で${raidevent['ticketname'] | h}${happening['raid']['fastbonus']['str_rate']}倍
+		</div>
+	%endif
+</%def>
+
+<%doc>コンボボーナスを表示</%doc>
+<%def name="combobonus()">
+	%if happening['raid']['combobonus']:
+		<%
+			combobonus = happening['raid']['combobonus']
+		%>
+		%if 0 < combobonus['powup_next'] and (not combobonus.get('is_last_user') or combobonus['cnt'] < 1):
+			<div style="background-color:#ffff00 ; opacity: 0.60; width:320; height:28; color:#000000; text-align:center; line-height:2;"  >
+				${self.drawTimeLimitText(combobonus['timelimit'])}以内に接客で${combobonus['cnt'] + 1}連コンボ成立!!
+			</div>
+		%endif
+	%endif
+</%def>
+
+<%def name="eventbonus()">
+	%if destroypoint_info or happening.get('prize') or champagne_num_add or material:
+		<!--報酬-->
+		<div class="titlesub">
+			<div class="wrapper">
+				報酬
+			</div>
+		</div>
+		<div>
+			<%
+				bar = False
+				champagne_codename = 'rdev_16' or raidevent['codename']
+			%>
+			<%doc>エイプリル仕様</%doc>
+			%if champagne_num_add:
+				<table align="center" style="padding-top:10; padding-bottom:10px;">
+					<td width="80px">
+						<img src="${url_static_img}item/rdevent/${champagne_codename}/${champagne_codename}_Champagne_s.png" width="60" height="60" class="itemimg"/>
+					</td>
+					<td width="216px">
+						<div class="itemtext">
+							シャンパンを<span class="yellow">${champagne_num_add}</span>個獲得<br />
+							所持数：${champagne_num_pre}⇒<span class="yellow">${champagne_num_post}</span><br />
+						</div>
+					</td>
+				</table>
+				<%
+					bar = True
+				%>
+			%endif
+			
+			<%doc>エイプリル仕様</%doc>
+			%if material:
+				%if bar:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+				%endif
+				<table align="center" style="padding-top:10; padding-bottom:10px;">
+					<td width="80px">
+						<img src="${material['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td width="216px">
+						<div class="itemtext">
+							${material['name'] | h}を<span class="yellow">${material['num_add']}</span>${material['unit'] | h}獲得<br />
+							所持数：${material['num'] - material['num_add']}⇒<span class="yellow">${material['num']}</span><br />
+						</div>
+					</td>
+				</table>
+				<%
+					bar = True
+				%>
+			%endif
+			
+			%if destroypoint_info:
+				%if bar:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+				%endif
+				<table align="center" style="padding-top:10; padding-bottom:10px;">
+					<td width="80px">
+						<img src="${raidevent['pointThumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td width="216px">
+						<div class="itemtext">
+							${raidevent['pointname'] | h}を<span class="yellow">${destroypoint_info['total'] + destroypoint_info['bonusscore']}</span>個獲得<br />
+							%if destroypoint_info['owner']:
+								(発見者報酬<span class="yellow">${destroypoint_info['owner']}</span>個)<br />
+							%endif
+							%if destroypoint_info['help']:
+								(ヘルプ報酬<span class="yellow">${destroypoint_info['help']}</span>個)<br />
+							%endif
+							%if destroypoint_info['mvp']:
+								(MVP報酬<span class="yellow">${destroypoint_info['mvp']}</span>個)<br />
+							%endif
+							%if destroypoint_info['bonusscore']:
+								(特効報酬<span class="yellow">${destroypoint_info['bonusscore']}</span>個)<br />
+							%endif
+							%if raideventscore:
+								所持数&nbsp;:&nbsp;<br />${raideventscore['point'] - (destroypoint_info['total'] + destroypoint_info['bonusscore'])}⇒<span class="yellow">${raideventscore['point']}</span><br />
+							%endif
+						</div>
+					</td>
+				</table>
+				<%
+					bar = True
+				%>
+			%endif
+			%if happening.get('prize'):
+				<%
+					prize = happening['prize']
+				%>
+				%if prize['listitem_list']:
+					%if bar:
+						<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+					%endif
+					%for idx,prizeitem in enumerate(prize['listitem_list']):
+						%if 0 < idx:
+							<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+						%endif
+						<table align="center" style="padding-top:10; padding-bottom:10px;">
+							<td width="80px">
+								<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+							</td>
+							<td width="216px">
+								<div class="itemtext">
+									${prizeitem['name'] | h}<br />
+									%if prizeitem['sep']:
+										<span style="color:#ff9900;">獲得数:</span><span style="color:#fff000;">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+									%else:
+										${prizeitem['num']}${prizeitem['unit'] | h}
+									%endif
+								</div>
+							</td>
+						</table>
+					%endfor
+				%endif
+			%endif
+		</div>
+	%endif
+</%def>
+
+<%def name="eventdata()">
+	<div class="titlesub">
+		<div class="wrapper">
+			イベントデータ
+		</div>
+	</div>
+	<div style="width:300px; margin:10px;">
+		太客成功回数：<span class="yellow">${raideventscore['destroy']}</span>回<br /> 
+		%if raidevent['is_big_opened']:
+			大ボス接客成功回数：<span class="yellow">${raideventscore['destroy_big']}</span>回<br /> 
+		%endif
+		累計獲得秘宝数：<span class="yellow">${raideventscore['point_total']}</span>個<br /> 
+		所持秘宝数：<span class="yellow">${raideventscore['point']}</span>個<br /> 
+		%if raideventscore['rank']:
+			ランキング：<span class="yellow">${raideventscore['rank']}</span>位<br /> 
+		%else:
+			ランキング：<span class="yellow">--</span>位<br /> 
+		%endif
+		%if is_beginer:
+			%if raideventscore['rank_beginer']:
+				新店舗ランキング：<span class="yellow">${raideventscore['rank_beginer']}</span>位<br /> 
+			%else:
+				新店舗ランキング：<span class="yellow">--</span>位<br /> 
+			%endif
+		%endif
+	</div>
+</%def>
+
+<%def name="specialcard()">
+	%if specialcardinfo:
+		<div class="titlesub">
+			<div class="wrapper">
+				使用する特効キャスト
+			</div>
+		</div>
+		<table align="center">
+			<tr>
+				<%
+					specialcard_num = len(specialcardinfo['cardlist'])
+					cardimg_width = 70 * 4 / max(4, specialcard_num)
+					cardimg_height = 88 * 4 / max(4, specialcard_num)
+				%>
+				%for sc_info in specialcardinfo['cardlist']:
+					<td>
+						%if sc_info['deck']:
+							<img src="${sc_info['master']['thumbnail']['small']}" width="${cardimg_width}px" height="${cardimg_height}px" />
+						%else:
+							<img src="${url_static_img}06/card_albam_frame_look.png" width="${cardimg_width}px" height="${cardimg_height}px" />
+						%endif
+					</td>
+				%endfor
+			</tr>
+		</table>
+		
+		<div style="width:320; color:#ffffff; text-align:center; line-height:1.8;"  >
+			<span class="yellow">特効キャスト</span>でイベント太客の<span class="yellow">満足度大アップ</span><br />
+			%if specialcardinfo['need_edit']:
+				デッキに入っていない特効キャストがいます<br />
+				<a href="${get_html_param('url_deck_raid', '')}" class="red">デッキに入れる</a>
+			%endif
+		</div>
+		<%doc>イベントガチャバナー
+		<div style="margin:8 0 4 0px;">
+			<div class="topcap">
+				期間限定ガチャで特効キャストをゲットしよう!!
+			</div>
+			<div style="text-align: center; padding-bottom:10px;">
+				<a href="${get_html_param('url_gacha_seat', 'sp/gacha/gacha_seat.html')}">
+					<img src="${url_static_img}banner/gacha/${raidevent['codename']}/${raidevent['codename']}_sheetgacha_banner.png" width="240" height="60"/>
+				</a>
+			</div>
+		</div>
+		</%doc>
+	%endif
+</%def>
+
+<%def name="mvpuser()">
+	%if damagerecordlist and mvp_uidlist:
+		<div class="titlesub">
+			<div class="wrapper">
+				MVP
+			</div>
+		</div>
+		<div>
+			<%
+				cnt = 0
+			%>
+			%for damagerecord in damagerecordlist:
+				%if mvp_uidlist and damagerecord['id'] in mvp_uidlist:
+					%if 0 < cnt:
+						<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+					%endif
+					<div style="width:280px; margin:8 20 8 20; ">
+						%if damagerecord['is_me']:
+							あなた<br />
+						%else:
+							<a href="${get_html_param('url_profile', 'sp/profile.html', damagerecord)}" style="color:#ff0000;">${damagerecord['nickname'] | h}さん</a><br />
+						%endif
+						獲得満足度&nbsp;:&nbsp;${damagerecord['damage']}
+					</div>
+					<%
+						cnt += 1
+					%>
+				%endif
+			%endfor
+		</div>
+	%endif
+</%def>
+
+<%def name="joinuser()">
+	%if damagerecordlist:
+		<div class="titlesub">
+			<div class="wrapper">
+				参加中のオーナー
+			</div>
+		</div>
+		<div>
+			%for damagerecord in damagerecordlist:
+				<div style="width:280px; margin:8 20 8 20; ">
+					%if damagerecord['is_me']:
+						あなた<br />
+					%else:
+						<a href="${get_html_param('url_profile', 'sp/profile.html', damagerecord)}" style="color:#ff0000;">${damagerecord['nickname'] | h}さん</a><br />
+					%endif
+					獲得満足度&nbsp;:&nbsp;${damagerecord['damage']}<br />
+					%if damagerecord['id'] != happening['oid'] and 0 < damagerecord['rest']:
+						(あと満足度${damagerecord['rest']}で報酬GET)
+					%endif
+				</div>
+			%endfor
+		</div>
+	%endif
+</%def>
+
+<%def name="helpuser()">
+	%if damagerecordlist and not (mvp_uidlist and len(mvp_uidlist) == len(damagerecordlist)):
+		<div class="titlesub">
+			<div class="wrapper">
+				ヘルプしたオーナー
+			</div>
+		</div>
+		<div>
+			<%
+				cnt = 0
+			%>
+			%for damagerecord in damagerecordlist:
+				%if not (mvp_uidlist and damagerecord['id'] in mvp_uidlist):
+					%if 0 < cnt:
+						<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+					%endif
+					<div style="width:280px; margin:8 20 8 20; ">
+						%if damagerecord['is_me']:
+							あなた<br />
+						%else:
+							<a href="${get_html_param('url_profile', 'sp/profile.html', damagerecord)}" style="color:#ff0000;">${damagerecord['nickname'] | h}さん</a><br />
+						%endif
+						獲得満足度&nbsp;:&nbsp;${damagerecord['damage']}
+						%if damagerecord['id'] != happening['oid'] and damagerecord['rest'] < 1:
+							<span class="yellow">[報酬GET]</span>
+						%endif
+					</div>
+					<%
+						cnt += 1
+					%>
+				%endif
+			%endfor
+		</div>
+	%endif
+</%def>
+
+<%def name="contents()">
+	${self.happeningtop()}
+	${self.discoverer()}
+	${self.timebonus()}
+	${self.eventbonus()}
+	${self.specialcard()}
+	${self.mvpuser()}
+	${self.joinuser()}
+	${self.helpuser()}
+</%def>
+
+
+<%def name="happeningtop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position: absolute; z-index:0; top:0;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic" style="position: relative; z-index:1;">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">${happening['raid']['name'] | h}Lv${happening['raid']['level']}来店中</span>
+		</div>
+		${self.eventsatisfaction()}
+		${self.eventtime()}
+		<div class="boss_coment" style="margin-bottom:8;">
+			<div class="coment_text">
+				${happening['raid']['commentappear'] | h}
+			</div>
+			%if damagerecordnum:
+				<div class="caution" style="margin-top:-2px;">
+					${damagerecordnum}人接客中!!
+				</div>
+			%endif
+		</div>
+	</div>
+</%def>
+
+<%def name="eventtopic()">
+	<div style="padding: 8px 0px;text-align:center;">
+		<div class="btn_pink_s" style="margin-bottom:0px;">
+			<a href="${get_html_param('url_explain_detail', 'sp/raidevent/manual.html')}"><div>ルール</div></a>
+		</div>
+		<div class="btn_pink_s" style="margin-bottom:0px;">
+			<a href="${get_html_param('url_explain_prizes', 'sp/raidevent/successbonus.html')}"><div>報酬一覧</div></a>
+		</div>
+		<div class="btn_pink_s" style="margin-bottom:0px;">
+			<a href="${get_html_param('url_explain_nomination', 'sp/raidevent/nominatecast.html')}" style="font-size:13px; 	line-height: 2.7;"><div>特効キャスト</div></a>
+		</div>
+	</div>
+</%def>
+
+<%def name="drawEventtopic(flag, url, text)">
+	%if flag:
+		<a href="${url}" class="yellow">${text | h}</a>
+	%else:
+		${text | h}
+	%endif
+</%def>
+
+<%def name="eventtopic2()">
+	<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-top:-8px; margin-left:5px;">
+		${self.drawEventtopic(current_topic!='detail', get_html_param('url_explain_detail', 'sp/raidevent/manual.html'), 'イベント概要')}
+		|
+		${self.drawEventtopic(current_topic!='prizes', get_html_param('url_explain_prizes', 'sp/raidevent/successbonus.html'), '報酬')}
+		%if raidevent['is_opened']:
+			|
+			${self.drawEventtopic(current_topic!='nomination', get_html_param('url_explain_nomination', 'sp/raidevent/nominatecast.html'), '指名')}
+		%endif
+		|
+		${self.drawEventtopic(current_topic!='faq', get_html_param('url_explain_faq', 'sp/raidevent/eventfaq.html'), 'FAQ')}
+	</div>
+</%def>
+
+<%def name="eventtopic3()">
+	<div align="center" style="background-color: #8D35B8; width:310px; height:56px; border-radius: 3px; line-height:2; margin-left:5px;">
+		%if raidevent['is_big_opened']:
+			${self.drawEventtopic(current_prize!='destroy', get_html_param('url_prizes_destroy', 'sp/raidevent/successbonus.html'), '接客成功数報酬')}
+			|
+			${self.drawEventtopic(current_prize!='destroy_big', get_html_param('url_prizes_destroy_big', 'sp/raidevent/successbonus.html'), '大ボス接客成功数報酬')}
+			<br />
+			${self.drawEventtopic(current_prize!='ranking', get_html_param('url_prizes_ranking', 'sp/raidevent/rankbonus.html'), 'ランキング報酬')}
+			|
+			${self.drawEventtopic(current_prize!='ranking_beginer', get_html_param('url_prizes_ranking_beginer', 'sp/raidevent/rankbonus.html'), '新店舗ランキング報酬')}
+		%else:
+			${self.drawEventtopic(current_prize!='destroy', get_html_param('url_prizes_destroy', 'sp/raidevent/successbonus.html'), '接客成功数報酬')}
+			|
+			${self.drawEventtopic(current_prize!='ranking', get_html_param('url_prizes_ranking', 'sp/raidevent/rankbonus.html'), 'ランキング報酬')}
+			<br />
+			${self.drawEventtopic(current_prize!='ranking_beginer', get_html_param('url_prizes_ranking_beginer', 'sp/raidevent/rankbonus.html'), '新店舗ランキング報酬')}
+		%endif
+	</div>
+</%def>
+
+<%def name="eventfooter()">
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_raidevent_top', 'sp/raidevent/top.html')}" ><div style="margin-left:14px;">イベントトップへ</div></a>
+	</div>
+</%def>
+
+<%def name="event_schedule()"><!--
+	<%
+		event_stime = raidevent['starttime']
+		event_etime = raidevent['endtime']
+	%>
+-->開催期間：${event_stime.month}/${event_stime.day} ${event_stime.hour}:${'%02d' % event_stime.minute}〜${event_etime.month}/${event_etime.day} ${event_etime.hour}:${'%02d' % event_etime.minute}<!--
+--></%def>
+
+
+<%def name="eventslide()">
+	%if raidevent['appeal']:
+	<div class="flexslider" style="padding-bottom: 4px;">
+		<ul class="slides">
+			%for img in raidevent['appeal']:
+			<li>
+				<img src="${img}" width="320" height="380" />
+			</li>
+			%endfor
+		</ul>
+	</div>
+	%endif
+</%def>

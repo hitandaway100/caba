@@ -1,0 +1,44 @@
+#coding:utf-8
+<%inherit file="listbase.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">ユーザーを探す</p>
+		</div>
+		
+		<div class="topcap">
+			現在のフレンド数:${friendnum}/${friendnummax}<br/>
+			% if 0 < restnum:
+				※あと${restnum}人に申請することができます<br/>
+			% else:
+				※これ以上フレンド申請を送ることができません<br/>
+			% endif
+			${player['person']['nickname'] | h}さんにフレンド申請を送りますか?
+		</div>
+	</div>
+		<section class="basicinfo">
+			<div class="basictop_s">
+			</div>
+			<div class="basicBack">
+				${self.playerinfo(player=player)}
+				<div style="font-size:0px;">
+					.
+				</div>
+			</div>
+			<div class="basicbtm">.
+			</div>
+		</section>
+		
+		<div>
+			<a class="btnlong" style="margin-top:10px;" href="${get_html_param('player.url_friendrequest_send', 'sp/friend/sendcomplete.html')}"><div>フレンド申請する</div></a>
+		</div>
+		
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_search', 'sp/friend/search.html')}"><span style="margin-left:14px;">フレンド検索へ戻る</span></a>
+		</div>
+		<div class="link_arrow_re">
+			<a class="btnfoot" style="margin-top:0;" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><span style="margin-left:14px;">フレンドTOPへ戻る</span></a>
+		</div>
+
+</%def>

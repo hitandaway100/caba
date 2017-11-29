@@ -1,0 +1,72 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawGachaList()">
+	%for gacha in gachadata.values():
+		%if gacha['consumetype'] == Defines.GachaConsumeType.STEPUP and gacha['tabengname'] == current_tab:
+			${self.drawStepUpPage(gacha['unique_name'])}
+		%endif
+	%endfor
+</%def>
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.STEPUP)}
+</%def>
+
+
+<%def name="drawStepUpPage(unique_name)">
+	
+	${self.drawSchedule(unique_name)}
+	
+	<%doc>縦幅大きいバナー</%doc>
+	${self.drawBoxBanner(unique_name)}
+	${self.drawHeader(unique_name)}
+	${self.drawSlide(unique_name)}
+	${self.reaSetsumei()}
+	${self.drawStepupInfo(unique_name)}
+	
+	<div class="titlebar">
+		<p>STEP UPガチャとは?</p>
+	</div>
+	
+	${self.drawStepupImage(unique_name)}
+	
+	<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+		&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[unique_name])}" class="orange">取得可能キャスト</a>&nbsp;
+	</div>
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(unique_name)}
+	
+	${self.drawStepupInfo(unique_name)}
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextStepUp(Defines.GachaConsumeType.STEPUP)}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				&nbsp;
+			</div>
+		</div>
+		<div class="basicbtm">&nbsp;
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>
+
+

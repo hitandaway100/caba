@@ -1,0 +1,15 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">ログインボーナス演出</p>
+	</div>
+	%if flag_template_test:
+		<div class="btnlong" style="margin-top:10px;">
+			<a href="${get_html_param('url_next', 'sp/present.html')}">次へ</a><br />
+		</div>
+	%else:
+		1秒後に次のページへ移動します。
+		<meta http-equiv="refresh" content="1;url=${url_next}">
+	%endif
+</%def>

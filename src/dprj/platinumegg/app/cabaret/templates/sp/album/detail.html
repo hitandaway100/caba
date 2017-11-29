@@ -1,0 +1,240 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}album.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}gacha.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<%
+		obj = cardmaster or card['master']
+	%>
+	%if Defines.Rarity.RARE <= obj['rare']:
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${obj['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	%endif
+	<script>
+		function onClickOutSideLink(url){
+			jumpTuOutSidePage(url, "DMM動画紹介ページを見に行く");
+		}
+	</script>
+	<style>
+.btnpinks_p{
+	text-align : center;
+	font-size: large;
+	color:#FFFFFF;
+	line-height: 2.1;
+	font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif';
+	text-decoration:none;
+	font-weight: bold;
+	text-shadow: 0px -1px 0px #260b34,
+               2px  0px 0px #260b34,
+               0px  2px 0px #260b34,
+              -1px  0px 0px #260b34;}
+	</style>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">キャスト詳細</p>
+	</div>
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px">
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	
+	<%
+		obj = cardmaster or card['master']
+	%>
+	<div class="back_black">
+		%if Defines.Rarity.RARE <= obj['rare']:
+			<canvas id="kiraCardCanvas" width="320" height="400">
+			</canvas>
+		%else:
+			<img src="${obj['thumbnail']['large']}" width="320" height="400"/>
+		%endif
+		
+		%if cardmasterlist and 1 < len(cardmasterlist):
+			<div style="text-align:center;padding: 8px 0px;">
+				%for cm in cardmasterlist:
+					<a href="${get_html_param('url', 'sp/album/detail.html', cm)}"><img src="${cm['thumbUrl']}" width="60" height="60"/></a>
+				%endfor
+			</div>
+		%endif
+	</div>
+	
+	<div class="gacyha_st">
+		<table class="gacyha_st_area" align="center" border="0" cellpadding="0" cellspacing="0" style="padding: 4 0 4 0;">
+			<tr height="100%">
+				<td class="gacyha_st1">
+					接客力
+				</td>
+				<td class="gacyha_st2">
+					<div>
+						${card.get('power', 0)}
+					</div>
+				</td>
+				<td class="gacyha_st_space">
+				</td>
+				<td class="gacyha_st3">
+					人件費
+				</td>
+				<td class="gacyha_st4">
+					<div>
+						${card['master'].get('cost', 0)}
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!--カード詳細-->
+	<div class="albumstatus">
+		<div class="albumstatus_set" style="font-size: 13px">${card['master']['text'] | h}</div>
+	</div>
+	
+	%if url_transferreturn or flag_template_test:
+		<div class="wrapper">
+			異動した人数：<span class="yellow">${stocknum}</span>人
+		</div>
+		%if cardlimit <= cardnum:
+			<div class="caution red">
+				所属キャストが上限に達しているため<br />呼び戻せません
+			</div>
+		%elif stocknum:
+			<form action="${get_html_param('url_transferreturn', 'sp/card/transferreturncomplete.html')}" method="post">
+				<table class="pullmenuset">
+						<tr>
+							<td class="pullmenu1" style="margin: auto;">
+								<select name="${Defines.URLQUERY_NUMBER}" class="select_type" style="width: 116px; height: 31px;">
+									%for n in xrange(1, min(stocknum, 10, cardlimit - cardnum) + 1):
+										<option value="${n}">${n}人</option>
+									%endfor
+								</select>
+								<div id="pull1"></div>
+							</td>
+						</tr>
+				</table>
+				<input type="submit" value="呼び戻す" class="btnpink_s btnpinks_p" style="margin-top: 10px">
+			</form>
+		%endif
+	%endif
+	
+	<div class="back_black" style="margin-top:10px;">
+		% if memories_list or movie_list:
+			<div class="cardalbum">
+				思い出アルバム
+			</div>
+			
+			%if movie_list:
+				<div class="topcap" style="font-size:12px;">
+					動画再生の際は音声が流れます<br />
+					ご注意ください
+				</div>
+			%endif
+			
+			%if memories_list:
+				<table class="albumlook" align="center">
+					<tr>
+						% for idx, memories in enumerate(memories_list):
+							%if idx != 0 and idx % Defines.MEMORIES_COLUMN_CONTENT_NUM == 0:
+								</tr></table>
+								<table class="albumlook" align="center"><tr>
+							% endif
+							<td>
+								% if memories['acquisition']:
+									<div class="albumitem" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', memories)}';">
+										% if memories['is_new']:
+											<!--NEW表示-->
+											<div class="album_new"><img src="${url_static_img}06/new.png" width="62" height="22" /></div>
+										% endif
+										<div class="photo_flame"><img src="${url_static_img}06/card_albam_photo_frame.png" width="70px" height="88px" /></div>
+										<div class="album_thumb"><img src="${memories['thumbUrl']}" width="70px" height="88px" /></div>
+									</div>
+								% else:
+									<div class="albumitem">
+										<div class="album_thumb"><img src="${url_static_img}06/card_albam_frame_look.png" width="70px" height="88px" /></div>
+									</div>
+								% endif
+							</td>
+						% endfor
+					</tr>
+				</table>
+			%endif
+			
+			%if movie_list:
+				<div align="center">
+					%for movie in movie_list:
+						% if movie['acquisition']:
+							<div class="mvlook" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', movie)}';">
+								<div class="mvthumb">
+									<img src="${movie['thumbUrl']}" width="151px" height="88px" />
+								</div>
+								<div class="mvframe">
+									<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+								</div>
+								% if movie['is_new']:
+									<div class="mvnew">
+										<img src="${url_static_img}06/new.png" width="62" height="22" />
+									</div>
+								%endif
+							</div>
+						%else:
+							<div class="mvframe_close">
+								<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+							</div>
+						%endif
+					%endfor
+				</div>
+			%endif
+			
+			%if voice_list:
+				<div align="center">
+					%for voice in voice_list:
+						% if voice['acquisition']:
+							<div class="mvlook" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', voice)}';">
+								<div class="mvthumb">
+									<img src="${voice['thumbUrl']}" width="151px" height="88px" />
+								</div>
+								<div class="mvframe">
+									<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+								</div>
+								% if movie['is_new']:
+									<div class="mvnew">
+										<img src="${url_static_img}06/new.png" width="62" height="22" />
+									</div>
+								%endif
+							</div>
+						%else:
+							<div class="mvframe_close">
+								<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+							</div>
+						%endif
+					%endfor
+				</div>
+			%endif
+			
+			%if card['master']['url_dmm']:
+				%for urldata in card['master']['url_dmm']:
+					<div style="text-align: center;padding-top:16px;padding-bottom:16px;">
+						<button id="outside_link" class="btnlong2" onclick="onClickOutSideLink('${urldata['url'] | h}');" style=" font-size:13px;">
+							<div>${urldata.get('text', '%sをもっと見る' % card['master']['name']) | h}</div>
+						</button>
+					</div>
+				%endfor
+			%endif
+		% endif
+		
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_album', 'sp/album/album.html')}"><span style="margin-left:14px;">キャスト名鑑トップへ戻る</span></a>
+		</div>
+	</div>
+</%def>

@@ -1,0 +1,87 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="pagenation()">
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="count" style="font-size:12px; white-space: nowrap; font-weight: bold;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+</%def>
+
+	<%def name="tutorialtext()">
+		<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			パートナーを選択してくれ<br />
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">ハメ管理</p>
+	</div>
+		
+		<table style="font-size:14; width:320;" align="center">
+			<tr>
+				<td>
+					<span class="orange" style="text-align:right;">${gold_name | h}:</span>
+				</td>
+				<td>
+				<span style="text-align:left;">${player['gold']}</span>
+				</td>
+				<td>
+					<span class="orange" style="text-align:right;">キャスト:</span>
+				</td>
+				<td>
+				<span style="text-align:left; margin:0;">${cardnum}人</span>
+				</td>
+			</tr>
+		</table>
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+			<div class="topcap">
+				ハメ管理を行うキャスト
+			</div>
+		<%
+			clickable=True
+			if is_tutorial:
+				clickable=False
+		%>
+		<%include file="../includes/listcard.html" args="card=basecard, url_static_img=url_static_img, card_select_type='evbasechange', get_html_param=get_html_param, clickable=clickable, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		<div class="wrapper">
+			パートナーを選択
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320" height="12" style="margin-bottom:10px;"/>
+	
+		%if cardlist:
+			%for card in cardlist:
+				<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='evmaterialselect', get_html_param=get_html_param, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+			%endfor
+	</div>
+			${self.pagenation()}
+		%else:
+			<div class="list_not_found">
+				条件に合うキャストがいません
+			</div>
+		%endif
+	
+</%def>

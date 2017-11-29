@@ -1,0 +1,9 @@
+#coding:utf-8
+<%inherit file="../../sp/scout/cardget.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+		parent.getStatus();
+	</script>
+</%def>

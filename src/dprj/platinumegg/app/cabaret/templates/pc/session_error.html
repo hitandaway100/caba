@@ -1,0 +1,21 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="session_script()">
+	<script type="text/javascript">
+		window.alert("セッションが切れました\nTOPページに戻ります");
+		top.location.href="${url_dmm_top}";
+	</script>
+</%def>
+<%def name="checkFlashPlayer()"></%def>
+
+<%def name="header()"></%def>
+<%def name="contents()">
+	<div id="error_mess" style="display:none;">
+		<div class="titlebar">
+			<p class="caption">セッションが切れました</p>
+		</div>
+	</div>
+</%def>
+<%def name="footer()"></%def>
+

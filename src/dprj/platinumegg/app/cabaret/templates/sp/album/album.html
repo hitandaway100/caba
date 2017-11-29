@@ -1,0 +1,117 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+	<link href="${url_static_css}album.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">キャスト名鑑</p>
+	</div>
+	
+	<form action="${get_html_param('url_post', 'sp/album/album.html')}" method="post">
+		<table class="pullmenuset">
+			<tr>
+				<td class="pullmenu3">
+					<select class="select_type" name="${Defines.URLQUERY_CTYPE}" style="width: 80px; height: 31px;">
+						<option value=${Defines.CharacterType.ALL}>全て</option>
+						%for ct,ctname in Defines.CharacterType.NAMES.items():
+							%if ctype == ct:
+								<option selected="selected" value=${ct}>${ctname | h}</option>
+							%else:
+								<option value="${ct}">${ctname | h}</option>
+							%endif
+						%endfor
+					</select>
+					<div id="pull3"></div>
+				</td>
+				<td class="pullmenu1">
+					<select class="select_type" name="${Defines.URLQUERY_RARE}" style="width: 116px;; height: 31px; left:92;">
+						<option value=${Defines.Rarity.ALL}>全レア度</option>
+						%for v,vname in Defines.Rarity.NAMES.items():
+							%if rare == v:
+								<option selected="selected" value=${v}>${vname | h}</option>
+							%else:
+								<option value="${v}">${vname | h}</option>
+							%endif
+						%endfor
+					</select>
+					<div id="pull1"></div>
+				</td>
+				<td>
+					<input type="submit" class="buttonshort" value="選択" />
+				</td>
+			</tr>
+		</table>
+		
+	</form>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+	<div class="albumset">
+		<table class="photobox" width="320" align="center"><!--アルバム全体-->
+			%for y in xrange(Defines.ALBUM_LINE_CONTENT_NUM):
+				<tr>
+					%for x in xrange(Defines.ALBUM_COLUMN_CONTENT_NUM):
+						<%
+							index = y * Defines.ALBUM_COLUMN_CONTENT_NUM + x
+						%>
+						%if index < len(album_list):
+							<%
+								album = album_list[index]
+							%>
+							<td>
+								%if album['is_open']:
+									<div style="width:60px;height:60px;">
+										<div style="position:absolute;">
+											<a href="${get_html_param('url', 'sp/album/detail.html', album)}"><img src="${album['thumbUrl']}" width="60px" height="60px"/></a>
+										</div>
+										%if 0 < album['stocknum']:
+											<%
+												str_stocknum = '   %d' % album['stocknum']
+											%>
+											<div style="text-align:right;position:relative;z-index:1;top:46px;">
+												<span style="background-color: black;font-size:12px;">${str_stocknum[-3:].replace(' ', '&nbsp;')}</span>
+											</div>
+										%endif
+									</div>
+								%else:
+									<img src="${url_static_img}06/id_06_01/albam_photo_secret.png" width="60px" height="60px" style="margin:0 -1 0 -1 ;"/>
+								%endif
+							</td>
+						%else:
+							<td style="width: 60px; height: 60px; margin:0 -1 0 -1 ;">
+								　
+							</td>
+						%endif
+					%endfor
+				</tr>
+			%endfor
+		</table>
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2">
+	
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="68px">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				% else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				% endif
+			</td>
+			<td class="wrapper" style="font-size:12px;">&#40;${cur_page}/${page_max}&#41;</td>
+			<td width="68px">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				% else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				% endif
+			</td>
+		</tr>
+	</table>
+</%def>

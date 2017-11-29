@@ -1,0 +1,41 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p class="caption">持ち物</p>
+	</div>
+	
+	<div class="wrapper">
+		%if is_error:
+			%if is_duplicate:
+				${item['master']['name'] | h}を使用しました
+			%elif is_not_enough:
+				${item['master']['name'] | h}をうまく使用できませんでした<br />
+				所持数が足りません
+			%elif is_overlimit:
+				${item['master']['name'] | h}をこれ以上使用できません
+			%else:
+				${item['master']['name'] | h}をうまく使用できませんでした<br />
+			%endif
+		%else:
+			${item['master']['name'] | h}を使用しました
+		%endif
+	</div>
+	
+	<div class="icon_l">
+		<img src="${item['master']['thumbUrl']}" width="90" height="90"/>
+	</div>
+	
+	<div class="wrapper">
+		<span  class="orange">所持数:</span>${before_num}${item['master']['unit'] | h}⇒<span  class="red">${item['num']}</span>${item['master']['unit'] | h}<br/>
+	</div>
+	
+	${self.drawBackPageLink('sp/battle/battle.html', btn_class='btnlong', btn_style='margin-top:10px;')}
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_itemlist', 'sp/item/itemlist.html')}"><span style="margin-left:14px;">アイテムTOPへ戻る</span></a>
+	</div>
+	
+</%def>

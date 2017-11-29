@@ -1,0 +1,112 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="head_extend()">
+	<script type="text/javascript">
+		var FORM_ID = "change_rank_form";
+		function onChangeRank(e){
+			var options = e.target.options;
+			var opt_selected = options[options.selectedIndex];
+			var form = document.getElementById(FORM_ID);
+			var obj = document.getElementById("${Defines.URLQUERY_CURRENT}");
+			
+			if("${battleevent_rank_number}" == opt_selected.value){
+				return;
+			}
+			
+			if(!form){
+				form = document.createElement("form");
+				form.action = "${url_prizes_battlepoint}";
+				form.method = "post";
+				document.body.appendChild(form);
+			}
+			if(!obj){
+				obj = document.createElement("input");
+				obj.id = "${Defines.URLQUERY_CURRENT}";
+				obj.name = "${Defines.URLQUERY_CURRENT}";
+				obj.type = "hidden";
+				form.appendChild(obj);
+			}
+			obj.value = opt_selected.value;
+			
+			form.submit();
+		}
+	</script>
+</%def>
+
+<%def name="contents()">
+	${self.eventslide()}
+	${self.eventtopic()}
+	${self.eventtopic3(bar=False)}
+	
+	<%
+		rank_selectobj = battleevent_rank_selectobj or rankmaster_list[0]
+	%>
+	
+	<table class="pullmenuset" style="margin:8px auto 8px 80px;">
+		<td class="pullmenu2">
+			<select class="select_type" style="width: 173px; height: 31px; left:73px; margin-left: -73px;" onchange="onChangeRank(event);">
+				%for rankmaster in rankmaster_list:
+					%if rankmaster['rank'] == battleevent_rank_number:
+						<option selected="selected" value="${rankmaster['rank']}">${rankmaster['name'] | h}</option>
+					%else:
+						<option value="${rankmaster['rank']}">${rankmaster['name'] | h}</option>
+					%endif
+				%endfor
+			</select>
+			<div id="pull2"></div>
+		</td>
+	</table>
+	
+	<div class="wrapper" style="padding: 8px 0px;">
+		<span class="yellow">現在の${rank_selectobj['name'] | h}の好感度PT</span><br />
+		<span class="orange">${point}</span>PT
+	</div>
+	
+	%for pointprize in pointprizelist:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				%if pointprize.get('repeat'):
+					以降${pointprize.get('interval', 1)}PT獲得ごとに…
+				%else:
+					${pointprize['point']}PT獲得
+				%endif
+			</div>
+		</div>
+		%if pointprize['prizeinfo']['listitem_list']:
+			%for idx,prizeitem in enumerate(pointprize['prizeinfo']['listitem_list']):
+				%if 0 < idx:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+				%endif
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td  width="70">
+						<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext" style="margin-top:-24px;">
+							%if pointprize.get('repeat'):
+								
+							%elif pointprize['received']:
+								<span class="yellow">[受取済み]</span><br />
+							%else:
+								[未達成]<br />
+							%endif
+							%if prizeitem['icon']:
+								<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+							%else:
+								<span><!--
+							%endif
+							-->${prizeitem['name'] | h}<!--
+							%if prizeitem['rare'] is not None:
+								-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+							%endif
+							-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+						</div>
+					</td>
+				</table>
+			%endfor
+		%endif
+	%endfor
+	
+	${self.eventfooter()}
+
+</%def>

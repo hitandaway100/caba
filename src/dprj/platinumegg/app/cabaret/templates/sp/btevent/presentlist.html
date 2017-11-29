@@ -1,0 +1,183 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head_extend()">
+	<style>
+		.omake_tab {
+			text-align:center;
+			font-weight:normal;
+			margin:0;
+			background-size:cover;
+			height:34px;
+		}
+		.omake_tab a div {
+			display:inline-block;
+			padding-top:6px;
+			font-size:10px;
+		}
+		.omake_tabsub {
+			text-align:center;
+			font-weight:normal;
+			margin:0;
+			background-size:cover;
+			height:34px;
+		}
+		.omake_tabsub a div {
+			display:inline-block;
+			padding-top:6px;
+			font-size:10px;
+		}
+		.omake_tab_off {
+			background: url(${url_static_img}common/btn_97_off.png) no-repeat;
+		}
+		.omake_tab_off a div {
+			color:#9c957d;
+		}
+	</style>
+	<script>
+		var selectSpecial = function(){};
+		(function(){
+			var cur_omake = null;
+			var cur_omake_idx = null;
+			
+			updateOmakeListName = function(gachaid){
+				var obj = $("#omake_name_"+gachaid);
+				var listname = null;
+				if(obj.length < 1){
+					listname = "おまけ";
+				}
+				else{
+					listname = obj[0].innerHTML;
+				}
+				$(".omake_name").html(listname);
+			};
+			
+			selectSpecial = function (gachaid){
+				if(cur_omake == gachaid){
+					// 現在と同じ.
+					return;
+				}
+				// タブ切り替え.
+				$(".omake_tab").addClass("omake_tab_off");
+				$("#omake_tab_"+gachaid).removeClass("omake_tab_off");
+				
+				// バナー切り替え.
+				$(".omake_banner").css("display", "none");
+				$("#omake_banner_"+gachaid).css("display", "");
+				
+				// コンテンツ切り替え.
+				$(".omake_content").css("display", "none");
+				$("#omake_content_"+gachaid).css("display", "");
+				
+				// 一覧名を変更.
+				updateOmakeListName(gachaid);
+				
+				// 現在のタブを更新.
+				cur_omake = gachaid;
+				cur_omake_idx = null;
+			}
+			%if battleeventpresent_contentlist:
+			$(function(){
+				updateOmakeListName(${battleeventpresent_contentlist[0]['id']});
+			});
+			%endif
+		})();
+	</script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p>贈り物内容一覧</p>
+	</div>
+	%if battleeventpresent_contentlist:
+		
+		<%doc>タブ</%doc>
+		%if 1 < len(battleeventpresent_contentlist):
+			<%
+				if len(battleeventpresent_contentlist) % 2 == 0:
+					td_width = 160
+					cellspacing = 0
+					colnum = 2
+				else:
+					td_width = 106
+					cellspacing = 1
+					colnum = 3
+			%>
+			<table align="center" width="320" border="0" cellpadding="0" cellspacing="${cellspacing}" style="margin:10px auto 0 auto;">
+				<tr>
+					%for idx, battleeventpresent_content in enumerate(battleeventpresent_contentlist):
+						<td width="${td_width}px" style="text-align: center;">
+							% if idx == 0:
+							<div class="btn_pink_s omake_tab" style="width:${td_width}px;" id="omake_tab_${battleeventpresent_content['id']}">
+							%else:
+							<div class="btn_pink_s omake_tab omake_tab_off" style="width:${td_width}px;" id="omake_tab_${battleeventpresent_content['id']}">
+							%endif
+								<a href="javascript:void(0);" onclick="selectSpecial(${battleeventpresent_content['id']});"><div>${battleeventpresent_content['name'] | h}</div></a>
+							</div>
+						</td>
+						%if idx % colnum == colnum - 1:
+						</tr><tr>
+						%endif
+					%endfor
+				</tr>
+			</table>
+		%endif
+		
+		<%doc>コンテンツ</%doc>
+		%for idx,battleeventpresent_content in enumerate(battleeventpresent_contentlist):
+			${self.drawbattleeventpresent_content(battleeventpresent_content, idx==0)}
+		%endfor
+	%endif
+	
+	<div class="wrapper">
+		<a href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}">
+			<img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_banner.png" width="240" height="auto"/>
+		</a>
+	</div>
+	
+	<!-- 戻る -->
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battleevent_present', 'sp/btevent/present.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>
+
+<%def name="drawbattleeventpresent_content(battleeventpresent_content, view)">
+	<div id="omake_content_${battleeventpresent_content['id']}" class="omake_content" style="${'' if view else 'display:none;'}">
+		<%doc>ガチャ名</%doc>
+		<div class="titlesub">
+			<div class="wrapper">
+				${battleeventpresent_content['name'] | h}
+			</div>
+		</div>
+		
+		<%doc>おまけ</%doc>
+		%for idx,prizeinfo in enumerate(battleeventpresent_content['prizelist']):
+			<div id="omake_content_${battleeventpresent_content['id']}_${idx}" class="omake_contentsub">
+				%if 0 < idx:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+				%endif
+				%for prizeitem in prizeinfo['listitem_list']:
+					<table style="margin-left:8px; width:300px; height:90px;">
+						<td  width="70">
+							<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+						</td>
+						<td>
+							<div class="itemtext" style="margin-top:-24px;">
+								%if prizeitem['icon']:
+									<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+								%else:
+									<span><!--
+								%endif
+								-->${prizeitem['name'] | h}<!--
+								%if prizeitem['rare'] is not None:
+									-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+								%endif
+								-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+							</div>
+						</td>
+					</table>
+				%endfor
+			</div>
+		%endfor
+	</div>
+</%def>

@@ -1,0 +1,18 @@
+#coding:utf-8
+<%inherit file="../../sp/gacha/gacha_stepup.html" />
+
+<%doc>PC課金用の仕掛け</%doc>
+<%def name="footer()">
+	<iframe style="height:0px;width:0px;visibility:hidden" src="about:blank" name="hidden_frame", id="payment_hidden_frame">
+	</iframe>
+</%def>
+<%def name="target_pc(is_pay)">
+%if is_pay and is_pc:
+	target="hidden_frame"
+%endif
+</%def>
+
+<%doc>PC用課金スクリプト</%doc>
+<%def name="payment_script_pc()">
+	<%include file="../includes/payment_script_pc.html" args="web_global_host=web_global_host,is_dev=is_dev" />
+</%def>

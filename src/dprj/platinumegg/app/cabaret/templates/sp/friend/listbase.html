@@ -1,0 +1,141 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="drawtitle()">
+</%def>
+<%def name="drawtitlesub()">
+</%def>
+<%def name="drawplayerinfo(targetplayer)">
+</%def>
+<%def name="setdefaulttopic()">
+</%def>
+
+<%def name="drawtopic()">
+	<div class="evotab">
+		<ul class="tabs clearFix" id="tabs">
+			<%
+				table = (
+					(1, 'tab1', get_html_param('url_friendlist', 'sp/friend/friend.html'), 'フレンド'),
+					(2, 'tab2', get_html_param('url_requestlist', 'sp/friend/requestlist.html'), '申請中'),
+					(3, 'tab3', get_html_param('url_receivelist', 'sp/friend/receivelist.html'), '承認待ち'),
+				)
+			%>
+			%for topicid, tabid, clickurl, text in table:
+				<li id="${tabid}">
+					%if cur_topic == topicid and not flag_template_test:
+						<a onclick="return false;">${text}</a>
+					%else:
+						<a href="${clickurl}">${text}</a>
+					%endif
+				</li>
+			%endfor
+		</ul>
+		${self.setdefaulttopic()}
+	</div>
+</%def>
+
+<%def name="pagenation()">
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="count" style="font-size:12px; white-space: nowrap; font-weight: bold;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+</%def>
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+</%def>
+
+<%def name="playerinfo(player)">
+	<ul class="link_arrow">
+		<li style="height:60px; background-color:rgba(255,255,255,0.1); ">
+			<a href="${get_html_param('url', 'sp/profile.html', player)}"><img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" align="left" />
+				${player['person']['nickname'] | h}<br/>
+				Lv${player['level']}<br/>
+				仲間:${player['friendnum']}/${player['friendlimit']}<br/>
+			</a>
+		</li>
+	</ul>
+</%def>
+
+<%def name="contents()">
+	
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">${self.drawtitle()}</p>
+		</div>
+		
+		<div class="wrapper">
+				フレンドを増やすと<br />
+				最大体力が1上昇するよ!
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		
+		%if error_overlimit:
+			<div class="wrapper red">
+				これ以上フレンド申請を送ることができません
+			</div>
+		%elif error_nodata:
+			<div class="wrapper red">
+				フレンド候補が見つかりませんでした
+			</div>
+		%endif
+		
+		<div class="topcap">
+			現在のフレンド数:${friendnum}/${friendnummax}<br/>
+			%if 0 < restnum:
+				※あと${restnum}人に申請することができます
+			% else:
+				※これ以上フレンド申請を送ることができません
+			% endif
+		</div>
+		
+		
+		%if 0 < restnum:
+			<div>
+				<a class="btnlong" href="${get_html_param('url_friendsearch', 'sp/friend/search.html')}"><div>ユーザーを探す</div></a>
+			</div>
+			
+			<div>
+				<a class="btnlong" href="${get_html_param('url_friendrequest_auto', 'sp/friend/packsendcomp.html')}"><div>お任せ申請する</div></a>
+			</div>
+		%endif
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+			<div class="wrapper">${self.drawtitlesub()}</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+		${self.drawtopic()}
+		<%doc>これはtabのfloat用</%doc>
+		<div style="clear:both; padding-top:8px;"></div>
+	</div>
+	
+	%if playerlist:
+		%for p in playerlist:
+			${self.drawplayerinfo(targetplayer=p)}
+		%endfor
+	%else:
+		<div class="list_not_found">
+			${self.drawNotFoundText()}
+		</div>
+	%endif
+	
+	${self.pagenation()}
+</%def>

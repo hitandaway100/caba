@@ -1,0 +1,61 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+<div class="back_black">
+	<div class="titlebar">
+		<p class="caption">ユーザーを探す</p>
+	</div>
+		
+	<div class="topcap">
+		現在のフレンド数:4/10<br/>
+		※これ以上フレンド申請を送る事ができません<br/>
+		以下の6人にフレンド申請を送りました
+	</div>
+</div>
+	<section class="basicinfo">
+		<div class="basictop_s">
+		</div>
+			<div class="basicBack">
+			<ul class="link_arrow">
+				<li style="height:60px; background-color:rgba(255,255,255,0.1); ">
+					<img src="${url_static_img}common/item.png" width="60" height="60" align="left" />
+					ユーザー<br/>
+					Lv100<br/>
+					フレンド:0/10<br/>
+				</li>
+			</ul>
+		<div style="font-size:0px;">
+			.
+		</div>
+	</div>
+		<div class="basicbtm">
+		</div>
+	</section>
+	
+	<section class="basicinfo">
+		<div class="basictop_s">
+		</div>
+			<div class="basicBack">
+			<ul class="link_arrow">
+				<li style="height:60px; background-color:rgba(255,255,255,0.1); ">
+					<img src="${url_static_img}common/item.png" width="60" height="60" align="left" />
+					ユーザー<br/>
+					Lv100<br/>
+					フレンド:0/10<br/>
+				</li>
+			</ul>
+		<div style="font-size:0px;">
+			.
+		</div>
+	</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+	
+	<div>
+		<a class="btnlong" style="margin-top:10px; margin-bottom:20px;" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><div>フレンド申請TOPへ</div></a>
+	</div>
+</div>
+
+</%def>

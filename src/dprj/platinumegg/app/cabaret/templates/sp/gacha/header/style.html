@@ -1,0 +1,319 @@
+<style>
+ #castdata {
+     border: 0px;
+     overflow: hidden;
+     width:320px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+ }
+ #castdata ul {
+     list-style: none;
+     height: 208px;
+     margin : 0;
+     padding : 0;
+     position : relative;
+ }
+ #castdata ul li {
+     float: left;
+     width: 320px;
+     height: 208px;
+     margin : 0;
+     padding : 0;
+     list-style-position:outside;
+     position : absolute;
+ }
+ 
+ #castdata_once {
+     border: 0px;
+     overflow: hidden;
+     width:320px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+ }
+ #castdata_once ul {
+     list-style: none;
+     height: 208px;
+     margin : 0;
+     padding : 0;
+     position : relative;
+ }
+ #castdata_once ul li {
+     float: left;
+     width: 320px;
+     height: 208px;
+     margin : 0;
+     padding : 0;
+     list-style-position:outside;
+     position : absolute;
+ }
+ 
+ #castdata_icon {
+     display: inline-block;;
+ }
+ #castdata_icon div.active {
+     display: table-cell;
+     width:12px;
+     height:12px;
+     background-image: url(${url_static_img}common/bnr_scroll_02.png);
+     background-size:12px 12px;
+     background-repeat: no-repeat;
+ }
+ #castdata_icon div.disactive {
+     display: table-cell;
+     width:12px;
+     height:12px;
+     background-image: url(${url_static_img}common/bnr_scroll_01.png);
+     background-size:12px 12px;
+     background-repeat: no-repeat;
+ }
+ 
+ #headerdata {
+     border: 0px;
+     overflow: hidden;
+     width:320px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+ }
+ #headerdata ul {
+     list-style: none;
+     height: 204px;
+     margin : 0;
+     padding : 0;
+     position : relative;
+ }
+ #headerdata ul li {
+     float: left;
+     width: 320px;
+     height: 144px;
+     margin : 0;
+     padding : 0;
+     list-style-position:outside;
+     position : absolute;
+ }
+ #headerdata ul li table {
+     vertical-align: bottom;
+ }
+ #headerdata_once {
+     border: 0px;
+     overflow: hidden;
+     width:320px;
+     margin-bottom: 5px;
+     margin-left: 0px;
+ }
+ #headerdata_once ul {
+     list-style: none;
+     height: 204px;
+     margin : 0;
+     padding : 0;
+     position : relative;
+ }
+ #headerdata_once ul li {
+     float: left;
+     width: 320px;
+     height: 144px;
+     margin : 0;
+     padding : 0;
+     list-style-position:outside;
+     position : absolute;
+ }
+ #headerdata_once ul li table {
+     vertical-align: bottom;
+ }
+ #headerdata_icon {
+     display: inline-block;;
+ }
+ #headerdata_icon div.active {
+     display: table-cell;
+     width:12px;
+     height:12px;
+     background-image: url(${url_static_img}common/bnr_scroll_02.png);
+     background-size:12px 12px;
+     background-repeat: no-repeat;
+ }
+ #headerdata_icon div.disactive {
+     display: table-cell;
+     width:12px;
+     height:12px;
+     background-image: url(${url_static_img}common/bnr_scroll_01.png);
+     background-size:12px 12px;
+     background-repeat: no-repeat;
+ }
+ 
+ .minibox{
+     position: relative;
+     display:block;
+     background: url(${url_static_img}banner/event/crosspromo/01/gacha_state.png)no-repeat;
+     background-size:100%;
+     width:320px;
+     height:80px;
+     z-index: 2;
+ }
+ .box_sr1{
+     position: absolute;
+     font-size:20px;
+     top:38px;
+     left:66px;
+     color:yellow;
+ }
+ .box_sr2{
+     position: absolute;
+     font-size:12px;
+     top:48px;
+     left:96px;
+ }
+ .box_hr1{
+     position: absolute;
+     font-size:20px;
+     top:38px;
+     left:160px;
+     color:yellow;
+ }
+ .box_hr2{
+     position: absolute;
+     font-size:12px;
+     top:48px;
+     left:190px;
+ }
+ .box_r1{
+     position:absolute;
+     font-size:20px;
+     top:38px;
+     left:250px;
+     color:yellow;
+ }
+ .box_r2{
+     position: absolute;
+     font-size:12px;
+     top:48px;
+     left:284px;
+ }
+ 
+ .sheet_base{
+     position: relative;
+     display:block;
+     background: url(${url_static_img}gacha/sheet/common/gessho_sheet_gacha_320_320.png)no-repeat;
+     background-size:320px 320px;
+     width:320px;
+     height:320;
+     z-index: auto;
+ }
+ 
+ .sheet_item{
+     position: absolute;
+     display:block;
+     z-index: 1;
+ }
+ 
+ .sheet_item2{
+     position: absolute;
+     display:block;
+     z-index: 2;
+ }
+ .slide_flame{
+     position: absolute;
+     z-index: 0;
+ }
+ .slide_card{
+     display: table-cell;
+     position: relative;
+     left:2px;
+     z-index: 2;
+ }
+
+ .slide_capture{
+     display: table-cell;
+     position: relative;
+     left:4px;
+     z-index: 2;
+ }
+
+ .slide_header{
+     margin-bottom: 2px;
+     height:26px;
+ }
+
+ .slide_name{
+     display:inline-block;
+     position: relative;
+     overflow:hidden;
+     margin-top:4px;
+     width:99px;
+     height:24px;
+     left:27px;
+     z-index: 2;
+     text-align : left;
+     font-size: 14;
+     color:#ffd700;
+     font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif';
+     text-decoration:none;
+     font-weight: bold;
+     text-shadow: 0px -1px 0px #260b34,
+     2px  0px 0px #260b34,
+     0px  2px 0px #260b34,
+     -1px  0px 0px #260b34;
+ }
+
+ .slide_rare{
+     margin-top:4px;
+     margin-bottom:3px;
+     display:inline-block;
+     position: relative;
+     vertical-align: top;
+     width:39px;
+     left:20px;
+     z-index: 2;
+     text-align : right;
+ }
+ .slide_power, .slide_cost{
+     margin-top:6px;
+     margin-bottom:4px;
+     font-size:12px;
+     vertical-align: top;
+     display:inline-block;
+     position: relative;
+     font-weight:normal;
+     z-index: 2;
+     text-align : right;
+ }
+
+ .slide_power{
+     width:39px;
+     left:73px;
+ }
+
+ .slide_cost{
+     width:16px;
+     left:109px;
+ }
+
+ .slide_service{
+     font-size:10px;
+     display:inline-block;
+     position: absolute;
+     font-weight:normal;
+     top:6px;
+     width:120px;
+     color:yellow;
+     left:46px;
+     z-index: 2;
+     text-align : left;
+ }
+
+ .slide_servicetext{
+     font-size:10px;
+     display:inline-block;
+     position: absolute;
+     font-weight:normal;
+     color:#ffffff;
+     top:6px;
+     left:170px;
+     z-index: 2;
+     text-align : left;
+ }
+ .fottertextline{
+     text-align:left;
+     text-indent:-1em;
+     padding-left:1em;
+     margin:4px 0;
+ }
+</style>

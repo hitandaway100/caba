@@ -1,0 +1,12 @@
+#coding:utf-8
+<%inherit file="battleresultbase.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+</%def>
+
+<%def name="drawResultTop()">
+	<img src="${url_static_img}02/id_02_03/lose_move.png" width="320" height="100" />
+</%def>

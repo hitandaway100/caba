@@ -1,0 +1,95 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>音声の管理　<small>音声の登録・確認ができます</small></h1>
+	</div>
+	
+	%if is_dev:
+		<div class="well">
+			<form enctype="multipart/form-data" action="${url_voice}" method="post" id="uploadform" onsubmit="return confirm('本当に保存しますか？');">
+				<input type="hidden" name="_proc" value="upload" />
+				<dl>
+					<dt>動画ファイル:</dt>
+					<dd>
+						<fieldset>
+							%for field in uploadform:
+								<p>${field}</p>
+								%for error in field.errors:
+									<span class="help-inline">${error}</span>
+								%endfor
+							%endfor
+						</fieldset>
+					</dd>
+					<dt>コンテンツ名:</dt>
+					<dd>
+						<input type="text" name="_name" value="" />
+					</dd>
+				</dl>
+				<div class="actions" style="padding-left:0;padding-bottom:0;">
+					<input type="submit" class="btn btn-primary" value="動画アップロード" />
+				</div>
+			</form>
+		</div>
+	%endif
+	
+	<table id="infos" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<th>
+					ID
+				</th>
+				<th>
+					コンテンツ名
+				</th>
+				<th>
+					プレイファイル名
+				</th>
+				%if downloadable:
+					<th>
+						更新
+					</th>
+					<th>
+						更新フラグ
+					</th>
+				%endif
+			</tr>
+		</thead>
+		<tbody>
+			%for voiceinfo in voicelist:
+				<tr>
+					<td>
+						${voiceinfo['id']}
+					</td>
+					<td>
+						${voiceinfo['name'] | h}
+					</td>
+					<td>
+						${voiceinfo['filename'] | h}
+					</td>
+					%if downloadable:
+						<td>
+							<form action="${url_self}" method="POST" onsubmit="return confirm('本当に更新しますか？');">
+								<input type="hidden" name="_proc" value="update" />
+								<input type="hidden" name="_name" value="${voiceinfo['filename']}" />
+								<input type="submit" class="btn btn-primary" value="更新" />
+							</form>
+						</td>
+						<td>
+							%if voiceinfo['stgonly']:
+								<span class="label label-yellow">新規</span>
+							%elif voiceinfo['is_old']:
+								<span class="label label-red">更新あり</span>
+							%else:
+								<span class="label label-blue">最新です</span>
+							%endif:
+						</td>
+					%endif
+				</tr>
+			%endfor
+		</tbody>
+	</table>
+	
+</%def>
+

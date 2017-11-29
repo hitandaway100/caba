@@ -1,0 +1,75 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+%if Defines.Rarity.RARE <= card['master']['rare']:
+	<%def name="head()">
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${basecard_post['master']['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	</%def>
+%endif
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms">
+			ハメ管理に成功!<br />
+			って勢いで本当にハメてしまった・・・<br />
+			その時のハメムービーが<br />
+			思い出アルバムで見られるので<br />
+			確認してみよう。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="contents()">
+	
+	<div class="topcap">
+		ハメ管理完了
+	</div>
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${basecard_post['master']['iconUrl']}" width="28px" height="28px"/>
+		</div>
+		<span class="wrapper">
+			${basecard_post['master']['name'] | h}
+		</span>
+	</div>
+	%if Defines.Rarity.RARE <= basecard_post['master']['rare']:
+		<canvas id="kiraCardCanvas" width="320" height="400">
+		</canvas>
+	%else:
+		<img src="${basecard_post['master']['thumbnail']['large']}" width="320px" height="400px" />
+	%endif
+	
+	<%include file="../includes/carddetail.html" args="card=basecard_post, url_static_img=url_static_img, test_skill=True"/>
+	
+	<div>
+		<a class="btnpink" href="${get_html_param('master.url_album', 'sp/album/detail.html', basecard_post)}"><p class="caption">思い出部屋を覗く</p></a>
+	</div>
+	
+	%if not is_tutorial:
+		%if basecard_post['is_can_composition']:
+			<div>
+				<a class="btnpink" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', basecard_post)}"><p class="caption">教育する</p></a>
+			</div>
+		%endif
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_evolution', 'sp/evolution/baseselect.html')}"><div>ハメ管理合成TOPへ</div></a>
+		</div>
+		
+		%if not basecard_post['deckmember']:
+			<div>
+				<a class="btnlong" href="${get_html_param('url_deck', 'sp/deck/deck.html', basecard_post)}"><div>キャスト編成へ</div></a>
+			</div>
+		%endif
+	%endif
+
+</%def>

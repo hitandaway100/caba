@@ -1,0 +1,87 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head()">
+    ${parent.head()}
+    <link href="${url_static_css}/tradeshop/top.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+<%def name="drawSlide()"></%def>
+
+<%def name="itemdata_body(item)">
+	<div>
+    ${self.itemtitle(item)}
+		<div class="itembox">
+			<table class="tablecenter" style="310px;">
+				<td class="itemimg">
+					<img src="${item['thumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext">
+					<div class="pt_text">
+					必要交換Pt
+					</div>
+					${item['use_point']}Pt<br />
+				</td>
+			</table>
+			<div style="clear:both;"></div>
+			
+      %if not item['is_inf']:
+			<div class="wrapper">
+				交換可能回数残り：${max(item['stock'] - item['trade_cnt'], 0)} 回
+			</div>
+      %endif
+      <form action="${get_html_param('next_url', 'sp/tradeshop/yesno.html', item)}" method="post" class="trade_form">
+				%if not item["is_can_trade_stock"]:
+					<div class="alert_message">
+						これ以上は交換できません。
+					</div>
+				%elif not item["is_can_trade_trademax"]:
+					<div class="alert_message">
+						交換ポイントが足りません。
+					</div>
+        %else:
+        <table class="pullmenuset" style="margin-left:120px;">
+          <tr>
+            <td class="pullmenu3">
+              <select class="select_type" name="${Defines.URLQUERY_NUMBER}" style="width: 80px; height: 31px;">
+								%for num in (1, 2, 3, 4, 5, 10):
+									%if item['stock'] == 0 and num <= item['trade_max']:
+										<option value="${num}">${num}</option>
+                  %elif num <= item["trade_max"] and num <= max(item['stock'] - item['trade_cnt'], 0):
+                    <option value="${num}">${num}</option>
+									%endif
+								%endfor
+							</select>
+              <div id="pull1"></div>
+            </td>
+            <td style="width:98px;"><input type="submit" value="交換する" class="buttonshop" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/></td>
+          </tr>
+        </table>
+        %endif
+      </form>
+    </div>
+    %if need_bar:
+    <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+    %endif
+	</div>
+</%def>
+
+<%def name="contents()">
+  <div class="titlebar">
+    <p class="caption">Pt交換所</p>
+  </div>
+	%if headerlist:
+  <div>
+    <img src="${headerlist[0]}" width="320" />
+  </div>
+	%endif
+
+	${self.drawSlide()}
+
+	<div>
+	%for item in itemdata:
+		${self.itemdata_body(item)}
+	%endfor
+    <div class="link_arrow_re">
+      <a class="btnfoot" href="${get_html_param('url_gacha', 'sp/gacha/top.html')}"><span style="margin-left:14px;">ガチャトップへ</span></a>
+    </div>
+  </div>
+</%def>

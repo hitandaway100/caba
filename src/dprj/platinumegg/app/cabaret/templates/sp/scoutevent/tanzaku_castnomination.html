@@ -1,0 +1,138 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">キャスト指名</p>
+	</div>
+	<div class="topcap">
+		指名するキャストを選択して下さい
+	</div>
+	<table class="pullmenuset" style="margin:8px auto 8px 80px;">
+		<td class="pullmenu2">
+			<select id="select_tanzaku" class="select_type" style="width: 173px; height: 31px; left:73px; margin-left: -73px;">
+				%for tanzaku in scoutevent_tanzaku_list:
+					<option value="${tanzaku['number']}">${tanzaku['castname'] | h}</option>
+				%endfor
+			</select>
+			<div id="pull2"></div>
+		</td>
+	</table>
+	
+	<dl class="tip_flame" style="background-color: #BA55D3;">
+		<dt class="tip_text"><span class="tanzakuname"></span>&nbsp;所持枚数</dt>
+		<dd class="tip_text_3 tanzaku_user_num"></dd>
+	</dl>
+	
+	<div class="caution" style="margin-bottom: 10px;">
+		※所持${scoutevent['lovetime_pointname'] | h}が0枚の場合<br />
+		キャスト指名出来ません。<br />
+	</div>
+	%if 0 < scouteventscore['tip']:
+		<div style="margin-bottom: -10px;">
+			<a class="sell_on btn_nominate" href="javascript:void();"><div>指名する</div></a>
+		</div>
+		<div class="wrapper">
+			└${scoutevent['tanzaku_name'] | h}<span class="orange tanzakunum"></span><span class="tanzakuunit"></span>┘
+		</div>
+	%else:
+		<div class="wrapper">
+			${scoutevent['lovetime_pointname'] | h}を持っていません
+			<div class="topcap">
+				<div>
+					<a class="btnlong" href="${get_html_param('url_scoutevent_tiptrade', 'sp/scoutevent/tip_trade.html')}"><div>${scoutevent['tanzaku_name'] | h}を交換</div></a>
+				</div>
+			</div>
+		</div>
+	%endif
+	
+	${self.drawTip()}
+	
+	<div class="titlesub">
+		<div class="wrapper">
+			あなたがあげた${scoutevent['lovetime_pointname'] | h}枚数
+		</div>
+	</div>
+	%for tanzaku in scoutevent_tanzaku_list:
+		<table class="itemtext" width="300px" style="text-align: right;">
+			<td width="70">
+				<img src="${tanzaku['castthumb_small']}" width="52px" height="52px" />
+			</td>
+			<td>
+				<span style="height:52px; vertical-align:10%;">　${tanzaku['userdata']['tip']}</span>
+			</td>
+		</table>
+	%endfor
+	
+	${self.eventfooter()}
+	<script>
+		$(function(){
+			// 現在の情報.
+			var tanzaku_data = {};
+			%for tanzaku in scoutevent_tanzaku_list:
+			tanzaku_data["${tanzaku['number']}"] = {'number':${tanzaku['number']}, 'name':"${tanzaku['tanzakuname']}", 'unit':"${tanzaku['tanzakuunit']}", 'cost':${tanzaku['tanzaku']}, 'num':${tanzaku['userdata']['tanzaku']}};
+			%endfor
+			
+			function getCurrentTanzakuData(){
+				var obj = $("#select_tanzaku")[0];
+				var opt = obj.options[obj.options.selectedIndex];
+				var data = tanzaku_data[opt.value];
+				return data;
+			}
+			
+			function updateHtml(){
+				var data = getCurrentTanzakuData();
+				
+				// 短冊名.
+				$(".tanzakuname").html(data.name);
+				
+				// 短冊所持数.
+				$(".tanzaku_user_num").html(""+data.num+data.unit);
+				
+				// 短冊必要数.
+				$(".tanzakunum").html(""+data.cost);
+				
+				// 短冊の単位.
+				$(".tanzakuunit").html(data.unit);
+				
+				if(data.cost <= data.num){
+					// 交換可能.
+					if(!$(".btn_nominate").hasClass("sell_on")){
+						$(".btn_nominate").removeClass("sell_off").addClass("sell_on");
+					}
+				}
+				else{
+					// 交換不可能.
+					if(!$(".btn_nominate").hasClass("sell_off")){
+						$(".btn_nominate").removeClass("sell_on").addClass("sell_off");
+					}
+				}
+			}
+			$("#select_tanzaku").change(updateHtml);
+			updateHtml();
+			
+			function onClickNominateButton(event){
+				event.preventDefault();
+				
+				if($(".btn_nominate").hasClass("sell_off")){
+					return;
+				}
+				// フォームを作成.
+				var form = document.createElement("form");
+				form.method = "POST";
+				form.action = "${get_html_param('url_self', 'sp/scoutevent/tip_populate.html')}";
+				
+				var data = getCurrentTanzakuData();
+				var obj = document.createElement("input");
+				obj.type = "hidden";
+				obj.name = "${Defines.URLQUERY_ID}";
+				obj.value = data.number;
+				form.appendChild(obj);
+				
+				document.getElementById("body_main").appendChild(form);
+				form.submit();
+			}
+			$(".btn_nominate").click(onClickNominateButton);
+		});
+	</script>
+</%def>

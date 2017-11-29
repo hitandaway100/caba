@@ -1,0 +1,23 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="head()">
+<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">異動完了</p>
+	</div>
+	
+	<div class="confirm" style="margin-top:20px";>
+		キャスト${_card_num}人を異動させました。<br/>
+	</div>
+	
+	<div>
+		<a class="btnlong" style="margin-bottom:10px;" href="${get_html_param('url_transfer', 'sp/card/transfer.html')}"><div>異動を続ける</div></a>
+	</div>
+	
+	<div>
+		<a class="btnlong" style="margin-bottom:30px;" href="${get_html_param('url_cardbox', 'sp/card/cardbox.html')}"><div>キャスト一覧へ</div></a>
+	</div>
+</%def>

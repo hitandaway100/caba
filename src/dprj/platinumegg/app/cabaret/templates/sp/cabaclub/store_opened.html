@@ -1,0 +1,122 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%namespace file="storecommon.html", name="storecommon" />
+
+<%def name="contents()">
+	<%
+		cabaclubstoremaster = cabaclubstore['master']
+	%>
+	<div class="titlebar">
+		<p class="caption">店舗</p>
+	</div>
+	
+	<%doc>現在の店舗の状態</%doc>
+	<div class="wrapper">
+		<span class="red">・現在の店舗の状態(開店中)</span>
+	</div>
+	
+	<%doc>店舗の画像</%doc>
+	<div>
+		<table>
+			<tr>
+				%if url_prev or flag_template_test:
+					<td><a href="${get_html_param('url_prev', 'sp/cabaclub/store_rental.html')}"><img src="${url_static_img}common/bnr_arrow_left.png" width="20px" height="16px" alt="◁" /></a></td>
+				%endif
+				<td>
+					${storecommon.drawStoreThumbnail(cabaclubstore['master'], store_state='opened', cabaclubstoreevent=cabaclubstore['event'])}
+				</td>
+				%if url_next or flag_template_test:
+					<td><a href="${get_html_param('url_next', 'sp/cabaclub/store_closed.html')}"><img src="${url_static_img}common/bnr_arrow_right.png" width="20px" height="16px" alt="▷" /></a></td>
+				%endif
+			<tr>
+		</table>
+	</div>
+	
+	${storecommon.drawItemTimeLimitInfo(cabaclubitemdata)}
+	
+	<%doc>イベント発生中情報</%doc>
+	%if cabaclubstore['event']:
+		<div style="margin:8px 0px;">
+			<div style="background: url(${url_static_img}cb_system/cb_system_event_happen_bg.png) no-repeat; width:320px; height:200px; background-size:320px 200px; -moz-background-size:320px 200px;">
+				<div style="padding:24px 12px;">
+					<div class="yellow" style="text-align:center;margin: 4px 0px;">
+						${cabaclubstore['event']['master']['name'] | h}
+					</div>
+					<div style="margin-top: 28px">
+						<div style="text-align:center;font-size:12px;">
+							残り時間：${storecommon.drawStoreLimitTime(cabaclubstore['event']['timelimit'])}<br />
+							%if cabaclubstore['event']['ua_flag']:
+								<%
+									ua_value = cabaclubstore['event']['master']['ua_value']
+									ua_value = (ua_value / 100.0) if ua_value % 100 != 0 else int(ua_value / 100)
+								%>
+								%for v in (cabaclubstore['event']['customer_up'], cabaclubstore['event']['proceeds_up']):
+									%if v != 100:
+										効果が${ua_value}倍　${'' if v < 100 else '+'}${v - 100}％<br />
+									%endif
+								%endfor
+							%else:
+								%for name,v in (('集客数',cabaclubstore['event']['customer_up']), ('売上', cabaclubstore['event']['proceeds_up'])):
+									%if v != 100:
+										${name | h}　${'' if v < 100 else '+'}${v - 100}％<br />
+									%endif
+								%endfor
+							%endif
+						</div>
+						<div>
+							%if cabaclubstore['event']['ua_flag']:
+								<span class="btnpink_dark" style="padding-top:0px;margin-bottom:0px;line-height:3;"><p style="margin:0px;">対策する</p></span>
+								<div style="text-align:center;font-size:10px;">└実行済みです┘</div>
+							%else:
+								<a class="btnpink_txl" style="padding-top:0px;margin-bottom:0px;line-height:3;" href="${get_html_param('url_uayesno', 'sp/cabaclub/uayesno.html', cabaclubstore['event'])}"><div>対策する</div></a>
+								<div style="text-align:center;font-size:10px;">└消費経営マネー：${cabaclubstore['event']['master']['ua_cost']}┘</div>
+							%endif
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	%endif
+	
+	<div class="back_black">
+		<%doc>現在表示されている店舗の情報</%doc>
+		<div>
+			${storecommon.drawStoreStatus(cabaclubstore)}
+		</div>
+		
+		<div>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					発動中経営スキル
+				</div>
+			</div>
+			${storecommon.drawCabaClubSkills(cabaclub_skills)}
+		</div>
+		<%doc>設定中のキャスト</%doc>
+		<div>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					設定中のキャスト(${len(cardlist)}/${cabaclubstoremaster['cast_num_max']})
+				</div>
+			</div>
+			%for card in cardlist:
+				${storecommon.drawCabaClubCardInfo(card)}
+			%endfor
+		</div>
+	</div>
+	
+	<div style="margin:32px 0px;">
+		<%doc>店舗の状態切り替えボタン</%doc>
+		<div>
+			<a class="btnlong" href="${get_html_param('url_close', 'sp/cabaclub/store_closed.html', cabaclubstore)}">閉店する</a><br />
+		</div>
+		<%doc>店舗解約ボタン</%doc>
+		<div>
+			<a class="btnlong" href="${get_html_param('url_cancel', 'sp/cabaclub/cancelyesno.html', cabaclubstore)}">店舗解約</a>
+		</div>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

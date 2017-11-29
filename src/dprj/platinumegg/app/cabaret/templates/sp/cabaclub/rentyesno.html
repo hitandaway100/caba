@@ -1,0 +1,35 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">レンタル確認</p>
+	</div>
+	<div class="wrapper orange">
+		本当にレンタルしますか？
+	</div>
+	
+	<div class="wrapper">
+		所持経営マネー<br />
+		${cabaclub_management_info['money']}&nbsp;→&nbsp;<span class="red">${cabaclub_management_info['money'] - dict(cabaclubstoremaster['days_cost_items'])[days]}</span>
+	</div>
+	
+	<div style="margin:8px 0px;">
+		%if cabaclub_management_info['money'] < dict(cabaclubstoremaster['days_cost_items'])[days]:
+			<div class="red wrapper">
+				経営マネーが足りません
+			</div>
+		%else:
+			<div>
+				<a class="btnpink_txl" href="${get_html_param('url_write', 'sp/cabaclub/rentend.html')}">レンタルする</a>
+			</div>
+		%endif
+		<div>
+			<a class="btnlong" href="${get_html_param('url_store', 'sp/cabaclub/store_rental.html', cabaclubstoremaster)}">戻る</a>
+		</div>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

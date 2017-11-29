@@ -1,0 +1,22 @@
+#coding:utf-8
+<%inherit file="../../sp/tutorial/complete.html" />
+
+<%def name="contents()">
+	${self.load_parent()}
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" style="margin-top:20px;" />
+	
+	<%include file="../includes/prize_info.html" args="prize=prize, url_static_img=url_static_img" />
+	
+	<div>
+		<a class="btnpink" style="margin-top:8px;" href="${url_myframe}&contents=${get_html_param('url_mypage', 'sp/mypage.html') | u}" onclick="loadParent(this);return false;"><p class="caption">ゲームを開始</p></a>
+	</div>
+	
+</%def>
+
+<%def name="load_parent()">
+	<script type="text/javascript">
+		function loadParent(obj) {
+			parent.location.href = obj.href;
+		}
+	</script>
+</%def>

@@ -1,0 +1,79 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>フレンド</strong>　フレンド状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_friendstate" />
+        <input type="hidden" name="${Defines.URLQUERY_STATE}" value="${Defines.FriendState.ACCEPT}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>と
+        </p>
+        <p>
+          <select name="_oid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>を
+        </p>
+        <input class="btn" type="submit" value="フレンドにする" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>フレンド申請</strong>　フレンド申請を送信します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_friendstate" />
+        <input type="hidden" name="${Defines.URLQUERY_STATE}" value="${Defines.FriendState.SEND}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>から
+        </p>
+        <p>
+          <select name="_oid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>へ
+        </p>
+        <input class="btn" type="submit" value="送信" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>フレンド解除</strong>　フレンド・フレンド申請を削除します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="delete_friendstate" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>と
+        </p>
+        <p>
+          <select name="_oid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>を
+        </p>
+        <input class="btn" type="submit" value="解除" />
+      </form>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,1623 @@
+#coding:utf-8
+<%inherit file="/sp/gacha/base.html" />
+
+<%doc>ガチャのブロック</%doc>
+<%def name="drawGacha(unique_name, priceprefix, priceformat, cnt=1, banner=True, curnum_text=None, curnum=0, errinfo=None, price_mul=None, is_pay=False, price=None, listlinktext=None, listlinkurl=None, continuityformat=None, old_button=False, cnt_button=True, cnt_button_probability=False,message=None, index=None, is_valentine=None, is_values_list=None, is_ticket=None)">
+  <div class="gacha_button_component">
+    %if gachadata.has_key(unique_name):
+      <%
+        gacha = gachadata[unique_name]
+        if price_mul is None:
+          price_mul = cnt
+        if price is None:
+          price = gacha['price_once'] * price_mul
+      %>
+      %if banner:
+        <!-- バナー -->
+        ${self.drawGachaBanner(unique_name)}
+        %if is_valentine:
+          <div class="yellow" style="margin-top:10px; text-align:center; font-size:13px;">
+            撮りおろし特別仕様！<br />
+            SSR早川瀬里奈・SR吉川あいみをゲット！
+          </div>
+        %endif
+        %if listlinktext and listlinkurl:
+          <div style="text-align:right;">
+            <a href="${listlinkurl}" style="color:#ffff00;">${listlinktext | h}</a>
+          </div>
+        %endif
+      %endif
+      
+      %if gacha['omake']:
+        <!-- おまけ -->
+        <div style="text-align:center;">
+          【セット内容】
+        </div>
+        <div style="margin: 8px 20px 8px 20px; padding: 10px; border: double #ffff00; text-align: left;">
+          ・${gacha['name'] | h}${cnt}回<br />
+          <!-- おまけ -->
+          %for omake in gacha['omake']['listitem_list']:
+            ・${omake['text'] | h}<br />
+          %endfor
+        </div>
+      %endif
+      
+      <div style="margin-top:10px;margin-bottom:10px;">
+        %if continuityformat or curnum_text:
+          <div style="text-align:center; font-size:13px">
+            %if continuityformat:
+              ${continuityformat or ''}<br />
+            %endif
+            %if curnum_text:
+              ${curnum_text | h}:<span class="orange">${curnum | h}</span>
+            %endif
+          </div>
+        %endif
+
+        %if index == 0 and (gacha["consumetype"] == Defines.GachaConsumeType.SR_SSR_PROBABILITY_UP or gacha["consumetype"] == Defines.GachaConsumeType.PTCHANGE) and 0 < gacha['tradeshopid']:
+
+          <div class="tradeshop">
+            <div class="point">
+              所持交換Pt<br>
+              ${user_point}Pt
+            </div>
+
+            <a class="button" href="${get_html_param('url_tradeshop', 'sp/tradeshop/top.html')}">
+              <div>Pt交換所へ</div>
+            </a>
+          </div>
+        %endif
+
+        %if gacha['stock'] is not None and gacha['stock'] < 1:
+          <div style="text-align: center; color: red; margin-bottom:6px;">
+            <b>これ以上引き抜けません<br />このガチャは${'' if gacha['schedulewday'] == Defines.WeekDay.ALL else '1日'}${gacha['stockmax']}回までです</b>
+          </div>
+        %elif errinfo:
+          <div style="text-align: center; color: red; margin-bottom:6px;">
+            <b>${errinfo | h}</b>
+          </div>
+        %else:
+          %if gacha['stock'] is not None and 0 < gacha['stock']:
+            <div style="text-align: center; margin-bottom:6px;">
+              <b>${'' if gacha['schedulewday'] == Defines.WeekDay.ALL else '本日'}残り回数${gacha['stock']}回</b>
+            </div>
+          %endif
+          <!-- ガチャ実行 -->
+          <div>
+            ${drawGacha}
+          </div>
+          <div>
+            <form action="${get_html_param('url_do', 'sp/gacha/gacha_swf.html', gacha)}" method="post" style="margin-bottom:0px;margin-top:0px;" ${self.target_pc(is_pay)}>
+              <input type="hidden" name="${num_key}" value="${cnt}" />
+              %if old_button:
+                %if is_pay:
+                  <input type="submit" class="btnpink_submit" value="引き抜く" style="margin: 0 auto;" />
+                %elif 1 < cnt:
+                  <input type="submit" class="btnpink_submit" value="${cnt}人連続で引き抜く" style="margin: 0 auto;" />
+                %else:
+                  <input type="submit" class="btnpink_submit" value="引き抜く" style="margin: 0 auto;" />
+                %endif
+              %elif is_pay:
+                %if cnt_button:
+                  %if cnt == 12:
+                    <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/05_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+                  %elif cnt == 10:
+                    <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/04_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+                  %elif cnt == 6:
+                    <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/03_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+                  %else:
+                    <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/01_btn_436_84.png)no-repeat; width:218px; height:42px; background-size: 218px 42px;" />
+                  %endif
+                %else:
+                  <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/01_btn_436_84.png)no-repeat; width:218px; height:42px; background-size: 218px 42px;" />
+                %endif
+              %else:
+                %if gacha['is_first'] and gacha['price_first'] == 0:
+                  <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/02_btn_436_84.png)no-repeat; width:218px; height:42px; background-size: 218px 42px;" />
+                %elif cnt == 10:
+                  <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/04_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+                %else:
+                  <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/01_btn_436_84.png)no-repeat; width:218px; height:42px; background-size: 218px 42px;" />
+                %endif
+              %endif
+            </form>
+          </div>
+        %endif
+        <div style="text-align:center; font-size:13px; padding-top:5px">
+          %if is_values_list and gacha['values_list']:
+            %if gacha['consumetype'] != Defines.GachaConsumeType.OMAKE:
+              ${self.drawGachaPricesByValuesList(gacha['values_list'])}
+            %endif
+          %endif
+          %if gacha['consumetype'] == Defines.GachaConsumeType.OMAKE and gacha['playcount']+1 < len(gacha['values_list']):
+            %if gacha['playcount'] == 0:
+              1回<span class="orange">${priceformat % gacha['price_origin'] | h}</span>⇒初回${priceprefix | h}<span class="yellow">${priceformat % price | h}</span><br />
+            %elif gacha['playcount'] < len(gacha['values_list']):
+              1回<span class="orange">${priceformat % gacha['price_origin'] | h}</span>⇒${gacha['playcount']+1}回目${priceprefix | h}<span class="yellow">${priceformat % price | h}</span><br />
+            %endif
+          %else:
+            %if is_ticket:
+              ${self.drawGachaPrice(gacha, price, is_ticket=is_ticket)}
+            %elif gacha['consumetype'] == Defines.GachaConsumeType.GACHAPT:
+              ${self.drawGachaPrice(gacha, gacha['price_once'], price_mul=price_mul)}
+            %else:
+              ${self.drawGachaPrice(gacha, gacha['price_once'])}
+            %endif
+          %endif
+        </div>
+        %if 0 < gacha['stockmax'] and gacha['schedulewday'] != Defines.WeekDay.ALL:
+          <div style="text-align: center;" class="yellow">
+            残り回数は${'AM' if gacha['scheduleshour'] < 12 else 'PM'}${gacha['scheduleshour'] % 12}:${'%02d' % gacha['schedulesmin']}にリセットされます。
+          </div>
+        %endif
+      </div>
+    %endif
+  </div>
+</%def>
+
+<%def name="drawSubmitButton(image_url='gacha/common/01_btn_436_84.png', width=218, height=42)">
+  <input type="submit" class="bt_gacha" value="　" style="background:url(${self.create_imageFullPath(image_url)})no-repeat; width:${width}px; height:${height}px; background-size: ${width}px ${height}px;" />
+</%def>
+
+<%def name="create_imageFullPath(image_url)">
+  ${url_static_img}${image_url}
+</%def>
+
+<%doc>無料ガチャ</%doc>
+<%def name="drawGachaFree(unique_name, banner)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        errinfo = None
+        if overlimit:
+          errinfo = '所属キャストが上限に達しています'
+      %>
+      %if gacha['is_first']:
+        
+        <%doc>1日1回無料</%doc>
+        ${self.drawGacha(unique_name, '', '%dPt', cnt=1, banner=banner, curnum_text=None, curnum=player['gachapt'], errinfo=errinfo)}
+        
+      %elif gacha_ticket_cost <= player['gachaticket']:
+        
+        <%doc>引抜チケット</%doc>
+        ${self.drawGacha(unique_name, 'チケット', '%d枚', cnt=1, banner=banner, curnum_text='所持チケット', curnum=player['gachaticket'], errinfo=errinfo, price=gacha_ticket_cost)}
+        
+      %else:
+        <%
+          if not errinfo and gacha['continuity'] < 1:
+            errinfo = '引抜Ptが不足しています'
+        %>
+        <%doc>引抜Pt</%doc>
+        ${self.drawGacha(unique_name, '', '%dPt', cnt=1, banner=banner, curnum_text=None, curnum=player['gachapt'], errinfo=errinfo, old_button=True)}
+        
+        %if 1 < gacha['continuity']:
+          <%doc>10連引抜Pt</%doc>
+          ${self.drawGacha(unique_name, '', '%dPt', cnt=gacha['continuity'], banner=False, curnum_text=None, curnum=player['gachapt'], errinfo=errinfo, old_button=True)}
+        % endif
+      %endif
+    </div>
+  %endif
+</%def>
+
+<%doc>チケットガチャ</%doc>
+<%def name="drawGachaTicket(unique_name, ticketnum, banner, listlinktext=None, listlinkurl=None, continuityformat=None, etime=None, is_event_ticket=False)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        errinfo = None
+        continuity = gacha['continuity'];
+        if continuity < 1:
+          errinfo = 'チケットが足りません'
+        elif overlimit:
+          errinfo = '所属キャストが上限に達しています'
+      %>
+      %if not is_event_opened and etime:
+        <%doc>裏社会チケットの期限表示</%doc>
+        <div class="caution blink" style="font-size:12px;" id="blink">
+          チケットの使用期限は${etime.month}/${etime.day}　${etime.strftime("%H:%M")}まで!!<br />
+          期限を過ぎると消滅します!<br />
+          次のイベントまで持ち越す事は出来ません!
+        </div>
+      %endif
+      <%
+        if gachadata[unique_name].has_key("total_group_totalnum"):
+          total_group_totalnum = gachadata[unique_name]["total_group_totalnum"]
+        else:
+          total_group_totalnum = -1
+      %>
+
+      <%doc>裏社会ガチャでかつボックスガチャなら</%doc>
+      %if is_event_ticket and total_group_totalnum != -1:
+        %if total_group_totalnum == 0:
+          <%doc>Boxの中身がないなら、ガチャ台を表示しない</%doc>
+          ${self.drawGachaBanner(unique_name)}
+          %if listlinkurl and listlinktext:
+            <div style="text-align:right;">
+              <a href="${listlinkurl}" style="color:#ffff00;">${listlinktext | h}</a>
+            </div>
+          %endif
+          <br>
+          <div style="text-align: center; color: red; margin-bottom:6px;">
+            <b>全て獲得しました</b>
+          </div>
+        %else:
+          ${self.drawGacha(unique_name, 'チケット', '%d枚', cnt=1, banner=banner, curnum_text='所持チケット', curnum=ticketnum, errinfo=errinfo, continuityformat=continuityformat, listlinktext=listlinktext, listlinkurl=listlinkurl, is_ticket=True)}
+        
+          %if continuity == 10 and total_group_totalnum >= 10:
+            ${self.drawGacha(unique_name, 'チケット', '%d枚', cnt=continuity, banner=False, curnum_text=None, curnum=ticketnum, errinfo=errinfo, is_ticket=True)}
+          %endif
+        %endif
+      %else:
+        ${self.drawGacha(unique_name, 'チケット', '%d枚', cnt=1, banner=banner, curnum_text='所持チケット', curnum=ticketnum, errinfo=errinfo, continuityformat=continuityformat, listlinktext=listlinktext, listlinkurl=listlinkurl, is_ticket=True)}
+        
+        %if continuity == 10:
+          <%doc>10連引抜Pt</%doc>
+          ${self.drawGacha(unique_name, 'チケット', '%d枚', cnt=continuity, banner=False, curnum_text=None, curnum=ticketnum, errinfo=errinfo, is_ticket=True)}
+        %endif
+      %endif
+    </div>
+  %endif
+</%def>
+
+<%doc>スカウトイベントガチャ</%doc>
+<%def name="drawGachaScoutEvent(unique_name, gachapt, banner, etime=None)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        errinfo = None
+        continuity = gacha['continuity'];
+        if continuity < 1:
+          errinfo = '%sが足りません' % scoutevent['gachaptname']
+        elif overlimit:
+          errinfo = '所属キャストが上限に達しています'
+      %>
+      %if etime:
+        <div class="caution blink" style="font-size:12px;" id="blink">
+          ${scoutevent['gachaptname'] | h}の使用期限は${etime.month}/${etime.day}　${etime.strftime("%H:%M")}まで!!<br />
+          期限を過ぎると消滅します!<br />
+          次のイベントまで持ち越す事は出来ません!
+        </div>
+      %endif
+      ${self.drawGacha(unique_name, scoutevent['gachaptname'], '%d個', cnt=1, banner=banner, curnum_text='所持%s' % scoutevent['gachaptname'], curnum=gachapt, errinfo=errinfo, is_valentine=True)}
+      
+      %if continuity == 10:
+        <%doc>10連引抜Pt</%doc>
+        ${self.drawGacha(unique_name, scoutevent['gachaptname'], '%d個',cnt=continuity, banner=False, curnum_text=None, curnum=gachapt, errinfo=errinfo)}
+      %endif
+    </div>
+  %endif
+</%def>
+
+<%doc>有料ガチャ</%doc>
+<%def name="drawGachaTopic(flag, url, text)"><!--
+  %if flag:
+    --><a href="${url}" class="yellow">${text | h}</a><!--
+  %else:
+    -->${text | h}<!--
+  %endif
+--></%def>
+
+<%def name="drawGachaPayment(unique_name, cnt, banner)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        continuityformat = "本ボックスから%d人<br />レア以上のキャストが出現！" % (gacha['continuity'])
+      %>
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=cnt, banner=banner, price_mul=1, is_pay=True, continuityformat=continuityformat)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaPaymentProbability(unique_name, cnt, banner, continuityformat=None, index=None, is_values_list=None)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+      %>
+      <div style="text-align: center;">
+        <img src="${gacha['thumbUrl']}" width="280px;" style="margin-top:8px;" />
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=gacha['continuity'], banner=banner, price_mul=1, is_pay=True, continuityformat=continuityformat, cnt_button=False, cnt_button_probability=True, index=0, is_values_list=is_values_list)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaRandomOmake(unique_name, cnt, banner, is_values_list=None)">
+  
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        continuityformat = "レア以上のキャストが%d人出現<br />さらにおまけがついてくる！" % (gacha['continuity'])
+      %>
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=cnt, banner=banner, price_mul=1, is_pay=True, continuityformat=continuityformat, is_values_list=is_values_list)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaFukubukuro(unique_name, cnt, banner, is_values_list=None)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=cnt, banner=banner, price_mul=1, is_pay=True, cnt_button=False, is_values_list=is_values_list)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaDiscount(unique_name, cnt, banner)">
+  
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+      %>
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=gacha['continuity'], banner=banner, price_mul=1, is_pay=True)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaPremium(name12, name6, name1, banner)">
+  %if gachadata.has_key(name1) or gachadata.has_key(name6) or gachadata.has_key(name12):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        is_exists_1 = gachadata.has_key(name1)
+        continuityformat = "レア以上のキャストを獲得できるチャンス"
+        namelist = [name12, name6, name1]
+      %>
+      %for name in namelist:
+        %if gachadata.has_key(name):
+          <%
+            gacha = gachadata[name]
+          %>
+          ${self.drawGacha(name, '', '%dポイント', cnt=gacha['continuity'], banner=banner, price_mul=1, is_pay=True, continuityformat=continuityformat)}
+          <%
+            banner = False
+            continuityformat = None
+          %>
+        %endif
+      %endfor
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaContinuity20(unique_name, banner)">
+  
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        if 0 < gacha['stockmax']:
+          continuityformat = u'%s回限定のオトクなガチャ!!' % gacha['stockmax']
+        else:
+          continuityformat = u'プレミアムよりもオトクなガチャ!!'
+      %>
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=20, banner=banner, price_mul=1, is_pay=True, continuityformat=continuityformat)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaChristmas(unique_name, banner)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        cnt = gacha['continuity']
+      %>
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=cnt, banner=banner, price_mul=1, is_pay=True)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawRankingGacha(unique_name, banner)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 0 8px; ">
+      <%
+        gacha = gachadata[unique_name]
+        cnt = gacha['continuity']
+        continuityformat = u'%s連続でガチャを引き抜き、<br />獲得キャストでランキングを競え！' % cnt
+      %>
+      ${self.drawGacha(unique_name, '', '%dポイント', cnt=cnt, banner=banner, price_mul=1, is_pay=True, continuityformat=continuityformat)}
+    </div>
+  %endif
+</%def>
+
+<%def name="drawScheduleByTime(stime, etime, stime_text=None, etime_text=None)">
+  <%
+    stime_text = stime_text or (('%d/%d %02d:%02d' % (stime.month,stime.day,stime.hour,stime.minute)) if stime else None)
+    etime_text = etime_text or (('%d/%d %02d:%02d' % (etime.month,etime.day,etime.hour,etime.minute)) if etime else None)
+  %>
+  %if stime_text and etime_text:
+    <div class="wrapper">
+      期間：${stime_text | h}〜${etime_text | h}
+    </div>
+  %elif stime_text:
+    <div class="wrapper">
+      期間：${stime_text | h}から
+    </div>
+  %elif etime_text:
+    <div class="wrapper">
+      期間：${etime_text | h}まで！！
+    </div>
+  %endif
+</%def>
+<%def name="drawSchedule(unique_name)">
+  %if gachadata.has_key(unique_name):
+    <%
+      gacha = gachadata[unique_name]
+    %>
+    %if gacha.get('etime') or gacha.get('stime') or gacha.get('stime_text') or gacha.get('etime_text'):
+      ${self.drawScheduleByTime(gacha['stime'], gacha['etime'], stime_text=gacha.get('stime_text'), etime_text=gacha.get('etime_text'))}
+    %endif
+  %endif
+</%def>
+
+<%def name="drawGachaMiniBoxSchedule(unique_name)">
+  ${self.drawSchedule(unique_name)}
+</%def>
+
+<%def name="drawGachaSeatSchedule(unique_name)">
+  ${self.drawSchedule(unique_name)}
+</%def>
+
+<%def name="drawOmakeInfo(gacha, cnt)">
+  %if gacha['omake']:
+    <div style="text-align:center;">
+      【セット内容】
+    </div>
+    <div style="margin: 8px 30px 8px 30px; padding: 10px; border: double #ffff00;">
+      ・${gacha['name'] | h}${cnt}回<br />
+      <!-- おまけ -->
+      %for omake in gacha['omake']['listitem_list']:
+        ・${omake['text'] | h}<br />
+      %endfor
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaMiniBox(unique_name, cnt=1, errinfo=None, is_values_list=None)">
+  %if gachadata.has_key(unique_name):
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <div style="margin-top:10px; margin-bottom:10px;">
+        <%
+          gacha = gachadata[unique_name]
+          price = gacha['price_once']
+          is_empty = gacha['is_empty']
+        %>
+        
+        ${self.drawGachaBanner(unique_name)}
+        ${self.drawOmakeInfo(gacha, cnt)}
+        
+        %if is_empty:
+          <div style="text-align: center; color: red; margin-bottom:6px;">
+            <b>全て獲得しました</b>
+          </div>
+        %else:
+          %if gacha['stock'] is not None and gacha['stock'] < 1:
+            <div style="text-align: center; color: red; margin-bottom:6px;">
+              <b>これ以上引き抜けません<br />このガチャは${gacha['stockmax']}回までです</b>
+            </div>
+          %elif errinfo:
+            <div style="text-align: center; color: red; margin-bottom:6px;">
+              <b>${errinfo | h}</b>
+            </div>
+          %else:
+            <!-- ガチャ実行 -->
+            <form action="${get_html_param('url_do', 'sp/gacha/gacha_swf.html', gacha)}" method="post" style="margin-bottom:0;" ${self.target_pc(True)}>
+              <input type="hidden" name="${num_key}" value="${cnt}" />
+              <input type="submit" class="btnpink_submit" value="引き抜く" style="margin-bottom:0;margin-top:0;" />
+            </form>
+          %endif
+          <!-- 価格 -->
+          <div style="text-align:center; font-size:13px; padding-top:5px;">
+            %if is_values_list:
+              ${self.drawGachaPricesByValuesList(gacha['values_list'])}
+            %endif
+            ${self.drawGachaPrice(gacha, price)}
+          </div>
+        %endif
+      </div>
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaProbability(name10, name5, name1, continuityformat=None, is_values_list=None)">
+  %if gachadata.has_key(name1) or gachadata.has_key(name5) or gachadata.has_key(name10):
+      <%
+        namelist = [name10, name5, name1]
+        for i, name in enumerate(namelist):
+            if name is None:
+                del namelist[i]
+      %>
+      <div class="gacha_buttons">
+          %for index, name in enumerate(namelist):
+          <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+            %if gachadata.has_key(name):
+              <%doc>SR_SSRガチャ png_name = "Probabilityup_01/Probabilityup01_" + str(gacha['continuity']) + "_banner.png"</%doc>
+              <%
+                gacha = gachadata[name]
+              %>
+              <div style="text-align: center">
+                <img src="${gachadata[name]['thumbUrl']}" width="280px" style="margin-top:8px;" />
+              </div>
+
+              ${self.drawGacha(name, '', '%dポイント', cnt=gacha['continuity'], banner=false, price_mul=1, is_pay=True, cnt_button=False, continuityformat=continuityformat, index=index, is_values_list=is_values_list)}
+
+              <%
+                banner = False
+                continuityformat = None
+              %>
+            %endif
+          </div>
+        %endfor
+      </div>
+  %endif
+</%def>
+
+<%def name="drawGachaProbabilityOne(name, continuityformat=None)">
+  %if gachadata.has_key(name):
+      <div class="gacha_buttons">
+        <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+          %if gachadata.has_key(name):
+            <%doc>SR_SSRガチャ png_name = "Probabilityup_01/Probabilityup01_" + str(gacha['continuity']) + "_banner.png"</%doc>
+            <%
+              gacha = gachadata[name]
+            %>
+            <div style="text-align: center">
+              <img src="${gachadata[name]['thumbUrl']}" style="margin-top:8px; margin-left:width:280px; height:60px; width:280px" />
+            </div>
+
+            ${self.drawGacha(name, '', '%dポイント', cnt=gacha['continuity'], banner=false, price_mul=1, is_pay=True, cnt_button=False, continuityformat=continuityformat)}
+
+            <%
+              banner = False
+              continuityformat = None
+            %>
+          %endif
+        </div>
+      </div>
+  %endif
+</%def>
+
+<%def name="gachaProbability(name, continuityformat=None)">
+  <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+  %if gachadata.has_key(name):
+  <%
+    gacha = gachadata[name]
+    png_name = "Probabilityup01_" + str(gacha['continuity']) + "_banner.png"
+  %>
+    <div style="text-align: center;">
+      <img src="${self.create_imageFullPath('banner/gacha/Probabilityup_01/' + png_name)}" width="280px" style="margin-top: 4px;" />
+    </div>
+
+  ${self.drawGacha(name, '', '%dポイント', cnt=gacha['continuity'], banner=false, price_mul=1, is_pay=True, continuityformat=continuityformat, cnt_button=False)}
+  <%
+    banner = False
+    continuityformat = None
+  %>
+  %endif
+  </div>
+</%def>
+
+<%def name="drawGachaSeat(unique_name, errinfo=None)">
+  %if gachadata.has_key(unique_name):
+    <%
+      gacha = gachadata[unique_name]
+      price = gacha['price_once']
+      cnt = gacha['continuity']
+    %>
+    <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+      <div style="margin: 8px 0;">
+        ${self.drawGachaBanner(unique_name)}
+      </div>
+      
+      <img src="${url_static_img}common/kyoutsu_bar_05.png" width="300" height="2"/>
+        <div class="wrapper">${gacha['name'] | h}</div>
+      <img src="${url_static_img}common/kyoutsu_bar_05.png" width="300" height="2"/>
+      
+      ${self.drawGachaSeatSchedule(unique_name)}
+      
+      <div style="font-size:11px; text-align:center; padding:0px 10px;">
+        ガチャを引くとシートのおまけがランダムでついてくる!<br />
+        シートのおまけでSSRが手に入るチャンス!
+      </div>
+      
+      ${self.drawOmakeInfo(gacha, cnt)}
+      
+      <div style="margin: 10px 0;">
+        %if gacha['stock'] is not None and gacha['stock'] < 1:
+          <div style="text-align: center; color: red; margin-bottom:6px;">
+            <b>全て獲得しました</b>
+          </div>
+        %elif errinfo:
+          <div style="text-align: center; color: red; margin-bottom:6px;">
+            <b>${errinfo | h}</b>
+          </div>
+        %else:
+          <!-- ガチャ実行 -->
+          <form action="${get_html_param('url_do', 'sp/gacha/gacha_swf.html', gacha)}" method="post" style="margin-top:0px;margin-bottom:0px;" ${self.target_pc(True)}>
+            <input type="hidden" name="${num_key}" value="${cnt}" />
+            %if cnt == 12:
+              <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/05_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+            %elif cnt == 10:
+              <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/04_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+            %elif cnt == 6:
+              <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/03_btn_516_136.png)no-repeat; width:258px; height:68px; background-size: 258px 68px;" />
+            %else:
+              <input type="submit" class="bt_gacha" value="　" style="background:url(${url_static_img}/gacha/common/01_btn_436_84.png)no-repeat; width:218px; height:42px; background-size: 218px 42px;" />
+            %endif
+          </form>
+          
+          <!-- 価格 -->
+          <div style="text-align:center; font-size:13px">
+            ${self.drawGachaPrice(gacha, price)}
+          </div>
+        %endif
+      </div>
+    </div>
+  %endif
+</%def>
+
+<%def name="drawGachaPrice(gacha, price, is_ticket=None, price_mul=1)">
+  <%def name="gacha_price(default_price, special_price=None, text='')">
+    %if special_price:
+      1回${default_price}ポイント⇒<span class="yellow">${text | h}${special_price}ポイント</span>
+    %else:
+      └1回<span class="orange">${default_price}ポイント</span>┘<br />
+    %endif
+  </%def>
+
+  %if gacha['is_first'] and 0 < gacha['first_stock']:
+    %if gacha['price_first'] == 0:
+      ${gacha['firsttype_text'] | h}無料!!
+    %else:
+      ${gacha_price(gacha['price_origin'], special_price=gacha['price_first'], text=gacha['firsttype_text'])}
+    %endif
+  %elif is_ticket:
+    └1回チケット<span class="orange">${price}枚</span>┘<br />
+  %elif price != gacha['price_origin']:
+    ${gacha_price(gacha['price_origin'], special_price=price)}
+  %else:
+    ${gacha_price(gacha['price_origin'] * price_mul)}
+  %endif
+</%def>
+
+<%def name="drawGachaPricesByValuesList(values_list)">
+  %for i, v in enumerate(values_list[:-1], 1):
+    %if i == 1:
+      初回特価 <span class="red">${v}ポイント</span><br />
+    %else:
+      ${i}回目特価 <span class="red">${v}ポイント</span><br />
+    %endif
+  %endfor
+</%def>
+
+<%def name="drawGachaMiniSeat(unique_name, errinfo=None)">
+  %if gachadata.has_key(unique_name):
+    <%
+      if errinfo is None:
+        gacha = gachadata[unique_name]
+        seatinfo = gacha.get('seatinfo')
+        if seatinfo and 0 < seatinfo.get('lap', 0):
+          errinfo = '全て獲得しました'
+    %>
+    ${drawGachaSeat(unique_name, errinfo=errinfo)}
+  %endif
+</%def>
+
+<%def name="drawGachaBanner(unique_name)">
+  %if gachadata.has_key(unique_name):
+    %if gachadata[unique_name]['consumetype'] == Defines.GachaConsumeType.SR_SSR_PROBABILITY_UP:
+    <div style="text-align: center;">
+      <img src="${url_static_img}banner/gacha/Probabilityup_01/Probabilityup01_gacha_banner.png" width="280" height="60px" style="margin-top:4px;"/>
+    </div>
+    %elif gachadata[unique_name]['thumbUrl']:
+    <div style="text-align: center;">
+      <img src="${gachadata[unique_name]['thumbUrl']}" width="280" height="auto" style="margin-top:4px;"/>
+    </div>
+    %endif
+  %endif
+</%def>
+
+<%def name="drawBoxBanner(unique_name)">
+  %if gachadata.has_key(unique_name) and gachadata[unique_name]['banner']:
+    <%doc>縦幅大きいバナー</%doc>
+    <img src="${gachadata[unique_name]['banner']}" width="320" height="auto" style="margin-bottom:20px;"/>
+  %endif
+</%def>
+
+<%def name="drawSeatThumbnail(unique_name)">
+  %if gachadata.has_key(unique_name):
+    <%
+      seatinfo = gachadata[unique_name].get('seatinfo')
+    %>
+    %if seatinfo and seatinfo['thumb']:
+      <img src="${seatinfo['thumb']}" width="320" height="auto"/>
+    %endif
+  %endif
+</%def>
+
+<%def name="drawHeader(unique_name)">
+  
+  %if gachaheaderdata and gachaheaderdata.has_key(unique_name) and gachaheaderdata[unique_name]:
+    <div class="back_black">
+      <img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+      %if 1 < len(gachaheaderdata[unique_name]):
+      <div id="headerdata">
+      %else:
+      <div id="headerdata_once">
+      %endif
+        <ul style="width:${len(gachaheaderdata[unique_name])*320}px;">
+          <%
+            hoge = gachaheaderdata[unique_name]
+          %>
+          %for idx,url in enumerate(hoge):
+            %if idx == 0:
+            <li style="margin-left:0px;">
+            %else:
+            <li style="margin-left:320px;">
+            %endif
+              <img src="${url}" style="width:320px;height:auto;" />
+            </li>
+          %endfor
+        </ul>
+      </div>
+      %if 1 < len(gachaheaderdata[unique_name]):
+        <div style="text-align: center;width:320px;">
+          <div id="headerdata_icon">
+            %for idx,url in enumerate(gachaheaderdata[unique_name]):
+              %if idx == 0:
+                <div class="active">　</div>
+              %else:
+                <div class="disactive">　</div>
+              %endif
+            %endfor
+          </div>
+        </div>
+      %endif
+      <img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+    </div>
+  %endif
+</%def>
+
+<%def name="drawSlide(unique_name)">
+  <%doc>新仕様のスライドカード部分</%doc>
+  %if gachaslidedata and gachaslidedata.has_key(unique_name) and gachaslidedata[unique_name]:
+    <div style="height:240px;">
+      %if 1 < len(gachaslidedata[unique_name]):
+      <div id="castdata">
+      %else:
+      <div id="castdata_once">
+      %endif
+        <ul style="width:${len(gachaslidedata[unique_name])*320}px;">
+          %for idx,carddata in enumerate(gachaslidedata[unique_name]):
+            <%
+              cardmaster, url_capture, _ = carddata
+            %>
+            %if idx == 0:
+            <li style="margin-left:0px;">
+            %else:
+            <li style="margin-left:320px;">
+            %endif
+              <%
+                ctype = cardmaster['type']
+                if ctype == Defines.CharacterType.TYPE_001:
+                  framename = 'koakuma'
+                elif ctype == Defines.CharacterType.TYPE_002:
+                  framename = 'titeki'
+                elif ctype == Defines.CharacterType.TYPE_003:
+                  framename = 'iyashi'
+                else:
+                  framename = ''
+              %>
+              <div class="slide_flame"><%doc>各属性の枠(アイコン属性も入ってる)</%doc>
+                <img src="${url_static_img}gacha/slide/st_card_scroll_${framename}_640_408.png" width="320px" height="204px" />
+              </div>
+              <div class="slide_header" width="320px" border="thin solid">
+                <div class="slide_name">
+                  ${cardmaster['name'] | h}
+                </div>
+                <div class="slide_rare" width="39px"><%doc>レアリティ表示の画像</%doc>
+                  <img src="${url_static_img}gacha/slide/${cardmaster['rare_str'].lower()}.png" width="auto" height="19px" />
+                </div>
+                <div class="slide_power" width="37px">
+                  ${cardmaster['maxpower']}
+                </div>
+                <div class="slide_cost" width="22px">
+                  ${cardmaster['cost']}
+                </div>
+              </div>
+              <div style="position:relative;height:150px;width:320px;padding:0 1px;">
+                <img src="${cardmaster['thumbnail']['large']}" width="120px" height="150px" style="padding: 0 1px;" /><!--
+                --><img src="${url_capture}" width="194px" height="150px" style="padding: 0 1px;" />
+              </div>
+              <div style="position:relative;height:20px;">
+                <span class="slide_service">${cardmaster['skill']['name'] | h}</span>
+                <span class="slide_servicetext">${cardmaster['skill']['text'] | h}</span>
+              </div>
+            </li>
+          %endfor
+        </ul>
+      </div>
+      %if 1 < len(gachaslidedata[unique_name]):
+      <div style="text-align: center;width:320px;">
+        <div id="castdata_icon">
+          %for idx,cardmaster in enumerate(gachaslidedata[unique_name]):
+            %if idx == 0:
+              <div class="active">　</div>
+            %else:
+              <div class="disactive">　</div>
+            %endif
+          %endfor
+        </div>
+      </div>
+      %endif
+    </div>
+  %endif
+</%def>
+
+<%def name="reaSetsumei()"><%doc>repair・レア度表示画像</%doc>
+  <img src="${url_static_img}gacha/common/rea_setsumei_lc.png" width="320" height="140" />
+</%def>
+
+<%def name="drawBoxGroupList(unique_name, do_draw_info=True, is_raidticket=None)">
+  %if gachadata.has_key(unique_name):
+    <%
+      gacha = gachadata[unique_name]
+      boxgrouplist = gacha['boxgrouplist']
+      url_boxreset = gacha['url_boxreset']
+    %>
+    %if boxgrouplist:
+      <div class="titlesub2" style="margin-top:16px;">
+          <div class="wrapper">
+            %if is_raidticket:
+              裏社会BOXガチャ状況
+            %else:
+              引抜BOXガチャ状況
+            %endif
+          </div>
+
+      </div>
+      <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+      
+      %if do_draw_info:
+        <div class="tex" style="font-size:13px; margin: auto; width:300px;">
+          % if gacha['total_group_totalnum'] != -1:
+            獲得状況:<span class="yellow">${gacha['total_group_totalnum']}/${gacha['total_group_restnum']}</span><br />
+          % endif
+          %if gacha.get('etime'):
+            <!-- 内容変わりますよinfo -->
+            期間:${gacha['etime'].strftime(u"%m月%d日%H時%M分") | h}まで&nbsp;<br />
+            <span class="yellow">早めにお目当てのキャストをゲットしよう!!</span>
+          %endif
+        </div>
+        <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+      %endif
+      
+      %for groupdata in boxgrouplist:
+        <%doc>レアカード表示。仕様変更で未使用に。
+        %if groupdata['card']:
+          <%
+            card = groupdata['card']
+          %>
+          <table style="width:300px; margin-left:10px; font-size:12px; font-weight: bold;">
+            <td style="width:120px;">
+              <img src="${card['master']['thumbnail']['middle']}" style="width:110px;height:138px;" />
+            </td>
+            <td style="width:180px; padding-left:2px; overflow: hidden; line-height: 16px;">
+              ${card['master']['name']}(<span style="color:${card['master']['rare_color']}">${card['master']['rare_str']}</span>)<br />
+              最大接客力：${card['master']['maxpower']}<br />
+              %if card['master']['skill']:
+                <span style="background-color:#FF8C00;">　サービス　</span><br />
+                <span class="yellow">${card['master']['skill']['name'] | h}</span><br />
+                ${card['master']['skill']['text'] | h}
+              %endif
+              % if groupdata['group_totalnum'] != -1:
+                ${groupdata['group_restnum']}/${groupdata['group_totalnum']}
+              % else:
+                ∞
+              % endif
+            </td>
+          </table>
+        %else:
+        </%doc>
+          <dl style="width:300px; text-align:center;">
+            <dt style="width:120px; clear: left; float: left;">
+              ${groupdata['name'] | h}
+            </dt>
+            <dd style="width:180px">
+              % if groupdata['group_totalnum'] != -1:
+                ${groupdata['group_restnum']}/${groupdata['group_totalnum']}
+              % else:
+                ∞
+              % endif
+            </dd>
+          </dl>
+        <%doc>%endif</%doc>
+        <img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" style="margin-left:19px;"/>
+      %endfor
+      %if url_boxreset and gacha['total_group_totalnum'] != -1:
+        %if gacha['total_group_totalnum'] < gacha['total_group_restnum']:
+          <div style="padding: 16px 0px 8px 0px;">
+            <div class="back_black">
+              <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="2" />
+              <div class="topcap">
+                BOXをリセットします
+              </div>
+              <form action="${url_boxreset}" method="post">
+                <table class="precheck">
+                  <tr>
+                    <td style="width:290px; ">
+                      <span style="font-size:14px;">本当にリセットする場合は、チェックボックスにチェックを入れてください。</span>
+                    </td>
+                    <td style="width:30px;" >
+                      <input type="checkbox" name="${Defines.URLQUERY_ACCEPT}" value="1" onclick="onClickCheckBox(this);" class="precheck" style=" position: relative; left:1px; width:20px;height:20px"  /><label><br /></label>
+                    </td>
+                  </tr>
+                </table>
+                <div style="text-align:center; margin-top:8px;">
+                  <input type="submit" value="リセットする" class="sell_on btnsell_on" style="display:none;"/>
+                  <input type="submit" value="リセットする" disabled="true" class="sell_off btnsell_off"/ >
+                </div>
+              </form>
+              <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="2" />
+            </div>
+          </div>
+        %endif
+      %else:
+        %if gacha['consumetype'] in {Defines.GachaConsumeType.MINI_BOX, Defines.GachaConsumeType.MINI_BOX2}:
+          <div class="wrapper yellow back_black" style="padding: 16px 0;margin-top: 8px;">
+            このガチャはリセットできません
+          </div>
+        %elif gacha['gachabox_player_resetcount'] >= gacha['gachabox_limit_resettime']:
+          <div class="wrapper yellow back_black" style="padding: 16px 0;margin-top: 8px;">
+            これ以上リセットできません
+          </div>
+        %else:
+          <div class="wrapper yellow back_black" style="padding: 16px 0;margin-top: 8px;">
+            リセットできる条件を満たしていません
+          </div>
+        %endif
+      %endif
+    %endif
+  %endif
+</%def>
+
+<%doc>ステップアップガチャ情報</%doc>
+<%def name="drawStepupInfo(unique_name, is_crosspromo=False)">
+  %if gachadata.has_key(unique_name):
+  <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px; ">
+    <%
+      gacha = gachadata[unique_name]
+    %>
+    <!-- バナー -->
+    <div style="text-align: center;">
+      <img src="${gacha['thumbUrl']}" width="280" height="auto"/>
+    </div>
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="300" height="auto" style="margin-top:8px;"/>
+      <div class="wrapper">
+        ${gacha['stepmax'] | h}STEP UPガチャ
+      </div>
+    <img src="${url_static_img}00/id_00_01/bar_03.png" width="300px" height="auto" />
+    
+    <div class="wrapper">
+      ${gacha['step'] | h}ステップ目<!--
+      %if 1 < gacha['lapdaymax']:
+      -->${gacha['lap'] | h}/${gacha['lapdaymax'] | h}周目のおまけ<br />
+      %else:
+      -->のおまけ<br />
+      %endif
+      <%doc>未使用になった
+      【セット内容】<br />
+      </%doc>
+      <div style="margin: 8px 30px 8px 30px; padding: 10px; border: double #ffff00; text-align: left">
+        ・プレミアムガチャ${gacha['continuity'] + gacha['rarity_fixed_num'] | h}回<br />
+        %if gacha['omake']:
+          <!-- おまけ -->
+          %for omake in gacha['omake']['listitem_list']:
+            ・${omake['text'] | h}<br />
+          %endfor
+        %endif
+        %if gacha['raremin']:
+        ・${Defines.Rarity.NAMES[gacha['raremin']] | h}以上チケット${gacha['continuity'] | h}枚<br />
+        %endif
+      </div>
+    </div>
+    
+    %if gacha['timelimitstep']:
+    <div class="wrapper">
+      %if 1 < gacha['lapdaymax']:
+        ※<span class="red">ステップ数リセット</span>まで<span class="yellow">${gacha['timelimitstep']['hours'] | h}時間${gacha['timelimitstep']['minutes'] | h}分</span>※
+      %else:
+        ※<span class="red">リセット</span>まで<span class="yellow">${gacha['timelimitstep']['hours'] | h}時間${gacha['timelimitstep']['minutes'] | h}分</span>※
+      %endif
+    </div>
+    %endif
+    %if gacha['timelimitlap'] and 1 < gacha['lapdaymax']:
+    <div class="wrapper">
+      ※<span class="red">周回数リセット</span>まで<span class="yellow">${gacha['timelimitlap']['hours'] | h}時間${gacha['timelimitlap']['minutes'] | h}分</span>※
+    </div>
+    %endif
+    
+    <!-- <img src="${url_static_img}common/kyoutsu_bar_05.png" width="300" height="auto" style="margin-top:8px;"/>
+    %if is_crosspromo:
+      <div class="wrapper">
+        ステップが上がるほどSSR、LCキャストの<br />
+        出現確率がアップ!!<br />
+        7回目では<span class="yellow">SSR出現率5倍‼</span><br/>
+        <span class="yellow">LC出現率なんと6倍‼</span>更に<br />
+        <span class="red">期間限定LC30%ガチャチケットが手に入る‼</span><br /> 
+      </div>
+    %else:
+      <div class="wrapper">
+        ステップが上がるほどSR、SSRキャストの<br />
+        出現確率がアップ!!<br />
+        7回目では
+        <span class="yellow">特効SRは最大5倍!</span><br />
+        <span class="yellow">特効SSRは最大5倍!!</span><br />
+        <span class="yellow">特効LCが最大5倍!!</span><br />
+        さらに!! <span class="red">特効SSRが1枚確定!!</span><br />
+      </div>
+    %endif -->
+
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="300" height="auto" style="margin-top:8px;"/>
+    
+    <%doc>未使用になった
+    <div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:12;">
+      &nbsp;<a href="${get_html_param('url_supinfo', 'sp/gacha/supinfo.html', gacha)}" class="orange">STEP UPガチャとは?</a>&nbsp;
+      |
+      &nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gacha)}" class="orange">取得可能キャスト</a>&nbsp;
+    </div>
+    </%doc>
+    
+    <!-- 価格 -->
+    <div style="text-align:center; margin-top:10px; padding-bottom:2px; font-size:13px">
+      <span class="red">${gacha['step'] | h}ステップ目</span>は<span class="yellow">${gacha['price'] | h}ポイント</span><br />
+      %if gacha['step'] == gacha['stepmax']:
+        <span class="red">※ステップ数は1に戻ります</span><br />
+      %endif
+    </div>
+    %if gacha['stock'] is not None and gacha['stock'] < 1:
+      <div style="text-align: center; color: red; margin-bottom:6px;">
+        <b>これ以上引き抜けません<br />このガチャは${gacha['stockmax']}回までです</b>
+      </div>
+    %elif errinfo:
+      <div style="text-align: center; color: red; margin-bottom:6px;">
+        <b>${errinfo | h}</b>
+      </div>
+    %else:
+      <!-- ガチャ実行 -->
+      <form action="${get_html_param('url_do', 'sp/gacha/gacha_swf.html', gacha)}" method="post" ${self.target_pc(True)}>
+        <input type="hidden" name="${num_key}" value="${gacha['continuity']}" />
+        <input type="submit" class="btnpink_submit" value="引き抜く" />
+      </form>
+    %endif
+  </div>
+  %endif
+</%def>
+
+<%doc>123ガチャ情報</%doc>
+<%def name="drawOneTwoThreeInfo(unique_name)">
+  %if gachadata.has_key(unique_name):
+  <div style="border:2px #ffff00 solid; width:300px; margin:8 0 8 8px;">
+    <%
+      gacha = gachadata[unique_name]
+    %>
+    <!-- バナー -->
+    <div style="text-align: center;">
+      <img src="${gacha['thumbUrl']}" width="280" height="auto"/>
+    </div>
+    <div class="wrapper">
+      ３回引けば、また<span class="yellow">100ポイント</span>に戻る！<br />
+    </div>
+    
+    <div style="padding-bottom: 12px;padding-top:4px;">
+      %if gacha['stock'] is not None and gacha['stock'] < 1:
+        <div style="text-align: center; color: red; margin-bottom:6px;">
+          <b>これ以上引き抜けません<br />このガチャは${gacha['stockmax']}回までです</b>
+        </div>
+      %elif errinfo:
+        <div style="text-align: center; color: red; margin-bottom:6px;">
+          <b>${errinfo | h}</b>
+        </div>
+      %else:
+        <!-- ガチャ実行 -->
+        <form action="${get_html_param('url_do', 'sp/gacha/gacha_swf.html', gacha)}" method="post"style="margin-bottom:0px;margin-top:0px;" ${self.target_pc(True)}>
+          <input type="hidden" name="${num_key}" value="${gacha['continuity']}" />
+          <input type="submit" class="btnpink_submit" value="${gacha['step'] | h}回目引き抜く" style="margin: 0 auto;" />
+        </form>
+      %endif
+      
+      <!-- 価格 -->
+      <div style="text-align:center; padding-bottom:2px; font-size:13px">
+        %if 300 <= gacha['price']:
+          <span class="red">${gacha['step'] | h}回目</span><span class="yellow">${gacha['price'] | h}ポイント</span><br />
+        %else:
+          通常300ポイント⇒<span class="red">${gacha['step'] | h}回目</span><span class="yellow">${gacha['price'] | h}ポイント</span><br />
+        %endif
+      </div>
+    </div>
+  </div>
+  %endif
+</%def>
+
+<%def name="drawPremiumTabs()">
+</%def>
+
+<%def name="drawPremiumTabMain(current_target)">
+  %if gacha_type_counts and gacha_type_counts.get(Defines.GachaConsumeType.PAYMENT) and gacha_premium_priority:
+    <div align="center" style="background-color: #8D35B8; width:308px; border-radius: 3px; margin:4 6 4 6px;font-size:20;">
+      %if current_target == 'usually':
+        <a href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}" class="yellow">期間限定</a>｜BOXガチャ
+      %else:
+        期間限定｜<a href="${get_html_param('url_gacha_usually', 'sp/gacha/gacha_usually.html')}" class="yellow">BOXガチャ</a>
+      %endif
+    </div>
+  %endif
+</%def>
+
+<%doc>ガチャタイプカウントが存在　かつ　ガチャタイプのキーの長さとプレミアムタイプが合致した数値が２以上の場合</%doc>
+<%def name="drawPremiumTabSub(current_target)">
+  %if gacha_premium_priority and 1 < len(gacha_premium_priority):
+    <%
+      current_target = current_tab or current_target
+      cur_index = -1
+      if current_target in gacha_premium_priority:
+        cur_index = gacha_premium_priority.index(current_target)
+    %>
+    <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+      <tr>
+        <%
+          tab_num_is_divisible_by_2 = len(gacha_premium_priority) % 2 == 0
+          tab_num_is_divisible_by_3 = len(gacha_premium_priority) % 3 == 0
+          tab_num_is_divisible_by_5 = len(gacha_premium_priority) % 5 == 0
+        %>
+        %for idx,tab in enumerate(gacha_premium_priority):
+          <%
+            consumetype = tabname_to_consumetype.get(tab, tab)
+            name = gacha_consumetype_names.get(tab, tab)
+            gtypename = Defines.GachaConsumeType.GTYPE_NAMES[consumetype]
+            tabquery = ''
+            if consumetype != tab:
+              tabquery = '&%s=%s' % (Defines.URLQUERY_GTAB, tab)
+          %>
+          <td width="96px" style="text-align: center;">
+            % if cur_index != -1 and idx == cur_index:
+              <div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background-size:cover;">
+                <a href="javascript:void(0);">${name}</a>
+              </div>
+            %else:
+              <div class="btn_pink_s" style="text-align:center; font-weight:normal; margin:0;background: url(${url_static_img}common/btn_97_off.png) no-repeat;background-size:cover;">
+                <a href="${get_html_param('url_gacha_%s' % gtypename, 'sp/gacha/gacha_%s.html' % gtypename)}${tabquery}"><span style="color:#9c957d;">${name}</span></a>
+              </div>
+            %endif
+          </td>
+          %if tab_num_is_divisible_by_2 and idx % 2 == 1:
+          </tr><tr>
+          %elif tab_num_is_divisible_by_3 and idx % 3 == 2:
+          </tr><tr>
+          %elif tab_num_is_divisible_by_5 and idx % 3 == 2:
+          </tr><tr>
+          %endif
+        %endfor
+      </tr>
+    </table>
+  %endif
+</%def>
+
+<%def name="drawProbabilityTab(current_target)">
+  %if gacha_premium_priority and 1 < len(gacha_premium_priority):
+    <%
+      current_target = current_tab or current_target
+      cur_index = -1
+      if current_target in gacha_premium_priority:
+        cur_index = gacha_premium_priority.index(current_target)
+    %>
+    <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+      <tr>
+        %for idx,tab in enumerate(gacha_premium_priority):
+          <%
+            consumetype = tabname_to_consumetype.get(tab, tab)
+            name = gacha_consumetype_names.get(tab, tab)
+            gtypename = Defines.GachaConsumeType.GTYPE_NAMES[consumetype]
+            tabquery = ''
+            if consumetype != tab:
+              tabquery = '&%s=%s' % (Defines.URLQUERY_GTAB, tab)
+          %>
+          <td width="96px" style="text-align: center;">
+            % if cur_index != -1 and idx == cur_index:
+              <div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background-size:cover;">
+                <a href="javascript:void(0);">${name}</a>
+              </div>
+            %else:
+              <div class="btn_pink_s" style="text-align:center; font-weight:normal; margin:0;background: url(${url_static_img}common/btn_97_off.png) no-repeat;background-size:cover;">
+                <a href="${get_html_param('url_gacha_%s' % gtypename, 'sp/gacha/gacha_%s.html' % gtypename)}${tabquery}"><span style="color:#9c957d;">${name}</span></a>
+              </div>
+            %endif
+          </td>
+          %if idx % 3 == 2:
+          </tr><tr>
+          %endif
+        %endfor
+      </tr>
+    </table>
+  %endif
+</%def>
+
+
+<%doc>旧式のプレミアムガチャ切り替え</%doc>
+<%def name="drawPremiumTabSubOld(current_target)">
+  
+  ##ガチャタイプカウントが存在　かつ　ガチャタイプのキーの長さとプレミアムタイプが合致した数値が２以上の場合
+  %if gacha_type_counts and 1 < len(set(gacha_type_counts.keys()) & set(Defines.GachaConsumeType.PREMIUM_TYPES)):
+    <%
+      cur_index = -1
+      if current_target in gacha_premium_priority:
+        cur_index = gacha_premium_priority.index(current_target)
+    %>
+    <div align="center" style="background-color: #8D35B8; width:308px; border-radius: 3px; margin:4 6 4 6px; padding: 2 0;"><!--
+      %for idx,consumetype in enumerate(gacha_premium_priority):
+        <%
+          name = Defines.GachaConsumeType.NAMES[consumetype]
+          gtypename = Defines.GachaConsumeType.GTYPE_NAMES[consumetype]
+        %>
+        %if cur_index < idx:
+          -->｜<!--
+        %endif
+        %if cur_index != -1 and idx == cur_index:
+          -->${name | h}<!--
+        %else:
+          --><a href="${get_html_param('url_gacha_%s' % gtypename, 'sp/gacha/gacha_%s.html' % gtypename)}" class="yellow">${name | h}</a><!--
+        %endif
+        
+        %if idx < cur_index:
+          -->｜<!--
+        %endif
+      %endfor
+    --></div>
+  %endif
+</%def>
+
+<%def name="drawSeatInfo(seatinfo, viewresult=False, fin=False)">
+  %if seatinfo:
+    <%
+      x_points = (49, 125, 201)
+      y_points = (49, 125, 201)
+      nummax = len(x_points) * len(y_points)
+    %>
+
+    <div class="sheet_base">
+      %for idx, item in enumerate(seatinfo['list'][:nummax]):
+        %if item:
+          <%
+            x_point = x_points[idx % len(x_points)]
+            y_point = y_points[int(idx / len(y_points))]
+          %>
+          <div>
+            <div class="sheet_item" style="top:${y_point}px; left:${x_point}px; ">
+              <img src="${item['thumb']}" width="70" height="70"/>
+            </div>
+            %if viewresult and item['last']:
+              <div class="sheet_item2" style="top:${y_point}px; left:${x_point}px; ">
+                <img src="${url_static_img}gacha/sheet/common/gessho_sheet_gacha_stanp_60_60.png" width="70" height="70" class="blink"/>
+              </div>
+            %elif item['got'] or fin:
+              <div class="sheet_item2" style="top:${y_point}px; left:${x_point}px; ">
+                <img src="${url_static_img}gacha/sheet/common/gessho_sheet_gacha_stanp_60_60.png" width="70" height="70"/>
+              </div>
+            %endif
+          </div>
+        %endif
+      %endfor
+    </div>
+  %endif
+</%def>
+
+<%def name="drawSeatInfoByKey(unique_name, viewresult=False, fin=False)">
+  %if gachadata.has_key(unique_name):
+    <%
+      gacha = gachadata[unique_name]
+    %>
+    ${self.drawSeatInfo(gacha.get('seatinfo'), viewresult=viewresult, fin=fin)}
+  %endif
+</%def>
+
+
+<%def name="drawRaidEventSheetGachaBanner()">
+  %if raidevent:
+    <div class="topcap">
+      新たに追加の特効キャストをゲット!!
+    </div>
+    <div style="text-align: center; padding-bottom:10px;">
+      <a href="${get_html_param('url_gacha_seat', 'sp/gacha/gacha_seat.html')}&_gtab=effectseat"><!--
+        --><img src="${url_static_img}banner/gacha/${raidevent['codename']}/${raidevent['codename']}_sheetgacha_banner.png" width="240" height="auto"/><!--
+      --></a>
+    </div>
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+  %endif
+</%def>
+
+<%namespace file="/sp/gacha/contents/explain.html" name="explain" />
+
+<%doc>ガチャ説明テキスト</%doc>
+<%def name="drawExplainTextBox()">
+  ${explain.box()}
+</%def>
+
+<%def name="drawExplainTextLimitedResetBox()">
+  ${explain.reset_box()}
+</%def>
+
+<%def name="drawExplainTextMiniBox()">
+  ${explain.mini_box()}
+</%def>
+
+<%def name="drawExplainTextSpecialCast(special_gacha_name)">
+  ${explain.special_cast()}
+</%def>
+
+<%def name="drawExplainTextStepUp(consumetype)">
+  ${explain.step_up()}
+</%def>
+
+<%def name="drawExplainTextSheet()">
+  ${explain.sheet()}
+</%def>
+
+<%def name="drawExplainTextMiniSheet(gacha_name)">
+  ${explain.mini_sheet(gacha_name)}
+</%def>
+
+<%def name="drawExplainText123()">
+  ${explain.one_two_three()}
+</%def>
+
+<%def name="drawExplainTextNewStoreSupport()">
+  ${explain.new_store_support()}
+</%def>
+
+<%def name="drawExplainTextTicket()">
+  ${explain.ticket()}
+</%def>
+
+<%def name="drawExplainTextEventTicket()">
+  ${explain.event_ticket()}
+</%def>
+
+<%def name="drawExplainTextEventTicketBox()">
+  ${explain.event_ticket_box()}
+</%def>
+
+<%def name="drawExplainTextScoutEvent(gacha_list)">
+  ${explain.scout_event(gacha_list)}
+</%def>
+
+<%def name="drawExplainTextProbability(tradeshop_id)">
+  ${explain.probability(tradeshop_id)}
+</%def>
+
+<%def name="drawExplainTextFixedSR1()">
+  ${explain.fixed_sr()}
+</%def>
+
+<%def name="drawExplainTextContinuity20()">
+  ${explain.continuity20()}
+</%def>
+
+<%def name="drawExplainTextChristmas()">
+  ${explain.xmas()}
+</%def>
+
+<%def name="drawExplainTextXmasOmake()">
+  ${explain.xmas_omake()}
+</%def>
+
+<%def name="drawExplainTextRanking(is_support_totalranking, gachalist_by_group=None)">
+  ${explain.ranking(is_support_totalranking, gachalist_by_group)}
+</%def>
+
+<%def name="drawExplainTextOmake()">
+  ${explain.omake()}
+</%def>
+
+<%def name="drawExplainTextOmake2()">
+  ${explain.omake()}
+</%def>
+
+<%def name="drawExplainTextFukubukuro()">
+  ${explain.fukubukuro()}
+</%def>
+
+<%def name="drawExplainTextDiscount(gacha)">
+  ${explain.discount(gacha)}
+</%def>
+
+<%def name="drawExplainTextLimitSheet(gacha)">
+  ${explain.limit_sheet(gacha)}
+</%def>
+
+
+<%doc>PC用定義</%doc>
+<%def name="target_pc(is_pay)"></%def>
+<%def name="payment_script_pc()"></%def>
+
+<%doc>キャスト雇用速報</%doc>
+<%def name="drawCastGetList(arr, do_render_time=True)">
+  <div>
+    <div class="titlebar">
+      <p class="caption">キャスト雇用速報</p>
+    </div>
+    <section class="basicinfo">
+      <div class="basictop_s">
+      </div>
+      <div class="basicBack">
+        %if arr:
+          <ul>
+            %for idx,gn in enumerate(arr):
+              <li style="line-height:1.6; height: auto;">
+                %if idx != 0:
+                <div style="text-align:center;padding:4px 0;">
+                  <img src="${url_static_img}common/kyoutsu_bar_06.png" width="240" height="2"/>
+                </div>
+                %endif
+                <img src="${gn['card']['thumbUrl']}" width="60" height="60" align="left" />
+                <div style="font-size:14px;" class="yellow">
+                  ${gn['player']['person']['nickname'] | h}
+                </div>
+                %if do_render_time:
+                  ${gn['time']}<br />
+                %endif
+                ${gn['card']['name'] | h}[<span style="color:${gn['card']['rare_color']}">${gn['card']['rare_str'] | h}</span>]<br />
+                <div>
+                  <a class="button" href="${get_html_param('url', 'sp/profile.html', gn['player'])}" style="margin-top: 0px;margin-left: 172px;"><div>見に行く</div></a>
+                </div>
+              </li>
+            %endfor
+          </ul>
+        %else:
+          <div class="list_not_found">
+            まだありません
+          </div>
+        %endif
+        <div style="font-size:0px;">
+          .
+        </div>
+      </div>
+      <div class="basicbtm">
+      </div>
+    </section>
+  </div>
+</%def>
+
+<%doc>トピック指定でキャスト雇用速報を表示</%doc>
+<%def name="drawCastGetListByTopic(topic)">
+  %if gachaNews_topics and gachaNews_topics.has_key(topic):
+    <%
+      arr = gachaNews_topics[topic]
+      arr.sort(key=lambda x:x['_time'], reverse=True)
+      do_render_time = topic == Defines.GachaConsumeType.GachaTopTopic.PREMIUM
+    %>
+    ${self.drawCastGetList(arr[:4], do_render_time=do_render_time)}
+  %endif
+</%def>
+
+<%doc>ユニーク名指定でキャスト雇用速報を表示</%doc>
+<%def name="drawCastGetListByUniqueName(unique_name, do_render_time=True)">
+  %if gachaNews_uniquename and gachaNews_uniquename.has_key(unique_name):
+    <%
+      arr = gachaNews_uniquename[unique_name]
+    %>
+    ${self.drawCastGetList(arr, do_render_time=do_render_time)}
+  %endif
+</%def>
+<%def name="drawCastGetListByUniqueNameList(unique_name_list, do_render_time=True)">
+  %if gachaNews_uniquename:
+    <%
+      arr = []
+      for unique_name in unique_name_list:
+        arr.extend(gachaNews_uniquename.get(unique_name) or [])
+      arr.sort(key=lambda x:x['_time'], reverse=True)
+      arr = arr[:4]
+    %>
+    ${self.drawCastGetList(arr, do_render_time=do_render_time)}
+  %endif
+</%def>
+
+<%def name="drawStepupImage(unique_name)">
+  %if gachadata.has_key(unique_name):
+    <%
+      imgdata = gachadata[unique_name]['stepup_img'] or {}
+      banner = imgdata.get('banner')
+      rule = imgdata.get('rule')
+    %>
+    %if banner:
+      <div style="text-align:center;padding-bottom:8px;">
+        <img src="${banner}" width="240" />
+      </div>
+    %endif
+    %if rule:
+      <img src="${rule}" width="320" />
+    %endif
+  %endif
+</%def>
+
+<%def name="drawRankingImage(unique_name)">
+  %if gachadata.has_key(unique_name):
+    <%
+      rankingdata = gacharankingdata.get(gachadata[unique_name]['boxid'])
+    %>
+    %if rankingdata:
+      <%
+        rule = rankingdata['master']['rule']
+      %>
+      %if rule:
+        <div>
+          <img src="${rule}" width="320" />
+        </div>
+      %endif
+    %endif
+  %endif
+</%def>
+
+<%def name="drawRankingPlayerList(unique_name, rankingtype='single', put_url_more=False, is_view_myrank=False)">
+  %if gachadata.has_key(unique_name):
+    <%
+      rankingdata = gacharankingdata.get(gachadata[unique_name]['boxid'])
+    %>
+    %if rankingdata:
+      <%
+        data = rankingdata.get(rankingtype)
+        _playerlist = data['data']
+        pointname = '獲得同伴Pt' if rankingtype == 'single' else '獲得総同伴Pt'
+      %>
+      %if _playerlist:
+        %for idx,_player in enumerate(_playerlist):
+          %if 0 < idx:
+            <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+          %endif
+          <table style="margin-left:8px; width:300px; height:90px;">
+            <td style="width:60px;">
+              <img src="${_player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+            </td>
+            <td style="width:240px;">
+              <div class="itemtext">
+                ${_player['event_rank']}位<br />
+                %if _player.get('is_me'):
+                  <span class="yellow">あなた(Lv${_player['level']})</span><br />
+                %else:
+                  <span class="yellow">${_player['person']['nickname'] | h}さん(Lv${_player['level']})</span><br />
+                %endif
+                ${pointname}：<span class="yellow">${_player['event_score']}</span>Pt
+              </div>
+            </td>
+          </table>
+        %endfor
+        %if put_url_more:
+          <div>
+            <a class="btnpink" href="${get_html_param('url', 'sp/gacha/ranking.html', data)}"><p class="caption">もっと見る</p></a>
+          </div>
+        %endif
+      %else:
+        %if is_view_myrank:
+          <div class="list_not_found caution">
+            ランキングデータがありません
+          </div>
+        %else:
+          <div class="list_not_found caution">
+            まだありません
+          </div>
+        %endif
+      %endif
+    %endif
+  %endif
+</%def>
+
+<%def name="drawRuleImage(unique_name)">
+  <%doc>ガチャルール画像</%doc>
+  %if gachadata.has_key(unique_name) and gachadata[unique_name]['ruleUrl']:
+    <div>
+      <img src="${gachadata[unique_name]['ruleUrl']}" width="320" height="auto" />
+    </div>
+  %endif
+</%def>

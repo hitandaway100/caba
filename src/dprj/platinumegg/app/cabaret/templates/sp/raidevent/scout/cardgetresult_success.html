@@ -1,0 +1,47 @@
+#coding:utf-8
+<%inherit file="cardgetresult.html" />
+
+<%def name="drawCardGetResultTop()">
+	<img src="${url_static_img}01/id_01_45/banner_01_45_01.png" width="320" height="100"/ >
+	
+	%if autosell:
+		<div class="confirm"><!--
+			%if _gold_add:
+				-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}${_gold_add}${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}<!--
+			%endif
+			%if _ckt:
+				%if _gold_add:
+					-->と<br /><!--
+				%endif
+				-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}${_ckt}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}<!--
+			%endif
+			-->で退店させました。<br />
+		</div>
+	%endif
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px" />
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	%if Defines.Rarity.RARE <= card['master']['rare']:
+		<canvas id="kiraCardCanvas" width="320" height="400">
+		</canvas>
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${card['master']['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	%else:
+		<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" />
+	%endif
+	
+	<%include file="../../includes/carddetail.html" args="card=card, url_static_img=url_static_img, test_skill=True"/>
+	
+</%def>

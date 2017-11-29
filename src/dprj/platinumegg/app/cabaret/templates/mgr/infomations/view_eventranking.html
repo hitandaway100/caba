@@ -1,0 +1,120 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			イベントランキング
+		</h1>
+	</div>
+	
+	<div class="well">
+		<form action="" method="post">
+			<p>
+				イベント:<br />
+				<select name="_target">
+					<%
+						arr = [
+							['raid', 'レイドイベント'],
+							['scout', 'スカウトイベント'],
+							['battle', 'バトルイベント'],
+							['produce', 'プロデュースイベント'],
+						]
+					%>
+					%for value,name in arr:
+						%if _target == value:
+							<option value="${value}" selected="selected">${name}</option>
+						%else:
+							<option value="${value}">${name}</option>
+						%endif
+					%endfor
+				</select>
+			</p>
+			<p>
+				種別:<br />
+				<select name="_beginer">
+					<option value="0">全体</option>
+					%if _beginer:
+						<option value="1" selected="selected">新店舗</option>
+					%else:
+						<option value="1">新店舗</option>
+					%endif
+				</select>
+			</p>
+			<input class="btn btn-info" type="submit" value="表示" />
+		</form>
+	</div>
+	
+	% if playerlist:
+		<div class="well">
+			%if url_csv:
+				<div class="btn-group"><a class="btn" href="${url_csv}">既存のCSVを保存する</a></div>
+				<div class="btn-group"><a class="btn btn-primary" href="${url_csv_update}">CSVを更新する</a></div>
+			%else:
+				<div class="btn-group"><a href="javascript:void(0);" class="btn btn-primary disabled">CSVがありません</a></div>
+				<div class="btn-group"><a class="btn btn-primary" href="${url_csv_update}">CSVを作成する</a></div>
+			%endif
+		</div>
+		
+		<div class="well">
+			<h2>対象特攻ガチャの詳細</h2>
+			<table class="table table-bordered table-striped">
+				<tr>
+					<th>ID</th>
+					<th>名前</th>
+				</tr>
+				% for gachamaster in special_gachamasters:
+					<tr>
+						<td>${gachamaster.id}</td>
+						<td>${gachamaster.name}</td>
+					</tr>
+				% endfor
+			</table>
+		</div>
+		
+		<%include file='../inc_pagination.html' />
+		
+		<table class="table table-bordered table-striped">
+			<tr>
+				<th>
+					順位
+				</th>
+				<th>
+					ユーザID
+				</th>
+				<th>
+					DMMID
+				</th>
+				<th>
+					獲得ポイント
+				</th>
+				<th>
+					名前
+				</th>
+				<th>
+					No.1キャスト
+				</th>
+				<th>
+					特効ガチャの課金額
+				</th>
+				<th>
+					詳細
+				</th>
+			</tr>
+			%for player in playerlist:
+				<tr>
+					<td>${player['rank']}</td>
+					<td>${player["id"]}</td>
+					<td>${player["dmmid"]}</td>
+					<td>${player['score']}</td>
+					<td>${player['person']['nickname'] | h}</td>
+					<td>${player['leader']['master']['name'] | h}(ID:${player['leader']['master']['id']})</td>
+					<td>${player['total_money']}</td>
+					<td><a href="${player['url']}">⇛詳細</a></td>
+				</tr>
+			%endfor
+		</table>
+		
+		<%include file='../inc_pagination.html' />
+	%endif
+</%def>

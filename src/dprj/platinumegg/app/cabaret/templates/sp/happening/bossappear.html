@@ -1,0 +1,297 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+
+<%def name="happeningtop()">
+	<div class="scouttop" style="height:242px;">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<%doc>残り時間表示に満足度を足して表示する</%doc>
+		<div class="scoutflame">
+			<span class="wrapper">超太客来店中</span>
+		</div>
+		${self.happeningsatisfaction()}
+		${self.happeningtime()}
+		<div class="boss_coment">
+			<div class="coment_text">
+				${happening['raid']['commentappear'] | h}
+			</div>
+			%if damagerecordlist:
+				<div class="caution" style="margin-top:-2px;">
+					${len(damagerecordlist)}人接客中!!
+				</div>
+			%endif
+		</div>
+	</div>
+	<%doc>
+		↓ハプニングでスカウトをやるってなったらこれを表示する
+		<div class="topcap">
+			超太客を満足させられなければ<br />
+			手に入れたものを失ってしまいます。
+		</div>
+	</%doc>
+</%def>
+
+<%def name="playerstatus()"></%def>
+<%def name="areastatus()"></%def>
+
+<%def name="happeningbodybottom()">
+	<%
+		lead_recover = False
+	%>
+	%if happening['raid']['damage_cnt'] == 0 and 0 <= happening['raid']['bpcost_first']:
+		<table style="margin-top:8px; margin-bottom:8px; width:310px;">
+			<tr>
+				<td>
+					%if player['bp'] < happening['raid']['bpcost_first']:
+						<%
+							lead_recover = True
+						%>
+						<%doc>気力が足りない</%doc>
+						<div>
+							<a class="btnpink_dark" href="javascript:;" style="margin-top:0;margin-bottom:0;"><p class="caption">通常接客</p></a>
+						</div>
+					%else:
+						<div>
+							%if is_pc:
+								<a class="btnpink" href="${get_html_param('url_exec', 'sp/happening/boss_swf.html')}" style="margin-top:0;margin-bottom:0;" onclick="window.parent.reserveGetStatus();return true;"><p class="caption">通常接客</p></a>
+							%else:
+								<a class="btnpink" href="${get_html_param('url_exec', 'sp/happening/boss_swf.html')}" style="margin-top:0;margin-bottom:0;" ><p class="caption">通常接客</p></a>
+							%endif
+						</div>
+					%endif
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:center; line-height:0.6;">
+					<br />
+					%if happening['raid']['bpcost_first'] == 0:
+						初回消費気力0
+					%else:
+						初回消費気力-${happening['raid']['bpcost_first']}
+					%endif
+				</td>
+			</tr>
+		</table>
+	%else:
+		<table style="margin-top:8px; width:310px;">
+			<tr>
+				<td>
+					%if player['bp'] < happening['raid']['bpcost']:
+						<%doc>気力が足りない</%doc>
+						<div>
+							<a  class="btnpink_s_dark" href="javascript:;"><p class="caption">通常接客</p></a>
+						</div>
+					%else:
+						<div>
+							%if is_pc:
+								<a class="btnpink_s" href="${get_html_param('url_exec', 'sp/happening/boss_swf.html')}" onclick="window.parent.reserveGetStatus();return true;"><p class="caption">通常接客</p></a>
+							%else:
+								<a class="btnpink_s" href="${get_html_param('url_exec', 'sp/happening/boss_swf.html')}" ><p class="caption">通常接客</p></a>
+							%endif
+						</div>
+					%endif
+				</td>
+				<td>
+					%if player['bp'] < happening['raid']['bpcost_strong']:
+						<%doc>気力が足りない</%doc>
+						<%
+							lead_recover = True
+						%>
+						<div>
+							<a class="btnpink_s_dark" href="javascript:;"><p class="caption">超接客</p></a>
+						</div>
+					%else:
+						<div>
+							%if is_pc:
+								<a class="btnpink_s" href="${get_html_param('url_exec_strong', 'sp/happening/boss_swf.html')}" onclick="window.parent.reserveGetStatus();return true;"><p class="caption">超接客</p></a>
+							%else:
+								<a class="btnpink_s" href="${get_html_param('url_exec_strong', 'sp/happening/boss_swf.html')}"><p class="caption">超接客</p></a>
+							%endif
+						</div>
+					%endif
+				</td>
+			</tr>
+			<tr>
+				<td style="text-align:center; line-height:0.6;">
+					<br />消費気力-${happening['raid']['bpcost']}
+				</td>
+				<td style="text-align:center;">
+					<span class="yellow" style="line-height:1; font-size:13px; font-weight: bold; font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif';">
+						接客力3倍
+					</span><br />
+					消費気力-${happening['raid']['bpcost_strong']}
+				</td>
+			</tr>
+		</table>
+	%endif
+	
+	<table class="spirit">
+		<tr>
+			<td class="spirit1">
+				気力
+			</td>
+			<td class="spirit2">
+				${player['bp']}/${player['bpmax']}
+			</td>
+			<td class="spirit3">
+				<div class="st_frame" style="height:16px;">
+					<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<div style="margin-top:10px;">
+	${self.cancelbutton()}
+	</div>
+	
+	<div>
+		<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_raidloglist', 'sp/raid/loglist.html')}"><div>超太客履歴</div></a>
+	</div>
+
+	%if lead_recover:
+		%for item in item_list:
+			<div  class="itembox">
+				<table>
+					<td>
+						<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td class="itemtext" >
+						<b>${item['master']['name'] | h}</b><br/>
+						<span style="color:#FF9900;">所持数:</span>
+							<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+					</td>
+				</table>
+				${self.drawItemLeadLinkButton(item)}
+			</div>
+		%endfor
+	%endif
+	
+	<div class="titlesub">
+		<div class="wrapper">
+			フレンドのキャストを借りる
+		</div>
+	</div>
+	<div>
+		%if friend_call_opentime:
+			<%
+				_hours = friend_call_opentime['hours']
+				_minutes = friend_call_opentime['minutes']
+				_seconds = friend_call_opentime['seconds']
+			%>
+			<div class="wrapper">
+				キャストを借りられるまであと
+				<div class="red">
+					%if _hours:
+						${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒
+					%else:
+						${_minutes}分${'%02d' % _seconds}秒
+					%endif
+				</div>
+			</div>
+		%elif playerlist:
+			<%
+				helpplayer = playerlist[0]
+			%>
+			<div class="itembox" style="margin-top:1px;">
+				<table>
+					<td>
+						<img src="${helpplayer['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${helpplayer['person']['nickname'] | h}<br />
+						Lv&nbsp; :&nbsp; ${helpplayer['level']}<br />
+						接客力&nbsp; :&nbsp; ${helpplayer['leader']['power']}<br />
+					</td>
+				</table>
+			</div>
+			<table align="center">
+			%if url_friendselect:
+				<td>
+					<a class="buttonshop" href="${get_html_param('url_friendselect', 'sp/raid/friendselect.html')}"><div>変更する</div></a>
+				</td>
+			%endif
+			<td>
+				<a class="buttonshop" href="${get_html_param('url_helpfriend_cancel', 'sp/happening/bossappear.html')}"><div>借りない</div></a>
+			</td>
+			</table>
+		%elif url_friendselect:
+			<div class="wrapper" style="margin:10px auto 20px; auto;">
+				フレンドを選択してください
+			</div>
+			<div>
+				<a class="btnlong" href="${get_html_param('url_friendselect', 'sp/raid/friendselect.html')}"><div>フレンドを選ぶ</div></a>
+			</div>
+		%else:
+			<div style="margin-top:1px;">
+				<div class="wrapper red">
+					フレンドがいません
+				</div>
+				<div>
+					<a class="button" style="font-size:13px;" href="${get_html_param('url_friendsearch', 'sp/friend/search.html')}"><div>フレンドを探す</div></a>
+				</div>
+			</div>
+		%endif
+	</div>
+	<div>
+		<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img" />
+		<div style="padding-top:4px;">
+			<a class="btnlong" href="${get_html_param('url_deck_raid', 'sp/deck/deck.html')}"><div>キャストの編成</div></a>
+		</div>
+	</div>
+</%def>
+
+<%def name="happeningFooter()">
+	
+	${self.drawTreasureInfo()}
+	
+	%if damagerecordlist:
+		<div class="titlesub2">
+			<div class="wrapper">
+				接客履歴
+			</div>
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" >
+		
+		<!--接客履歴-->
+		<div>
+			<%
+				_bar = ''
+			%>
+			%for damagerecord in damagerecordlist:
+				${_bar}
+				<table style="margin-left:8px;">
+					<td>
+						<img src="${damagerecord['thumbUrl']}" width="60" height="60"  class="itemimg"/>
+					</td>
+					<td>
+						<div style="font-size:14px;">
+							%if damagerecord['id'] == player['id']:
+								${damagerecord['nickname'] | h}[指名]<br />
+							%else:
+								${damagerecord['nickname'] | h}[ヘルプ]<br />
+							%endif
+							<span  class="orange">レベル:</span>${damagerecord['level']}<br />
+							<span  class="orange">満足度</span>を${damagerecord['damage']}上げた<br />
+						</div>
+					</td>
+				</table>
+				<%
+					_bar = '<img src="'+url_static_img+'common/kyoutsu_bar_06.png" width="320" height="5" />'
+				%>
+			%endfor
+		</div>
+	%endif
+	<!--接客履歴ここまで-->
+	
+	${self.drawFriendHelpList()}
+	
+</%def>
+
+<%doc>↓ハプニングでスカウトをやるってなったらこのdefタグを消す</%doc>
+<%def name="prizelist()"></%def>

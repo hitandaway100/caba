@@ -1,0 +1,30 @@
+#coding:utf-8
+<%doc>報酬</%doc>
+<%page args="prize, url_static_img, Defines, bar=True">
+	%if prize and prize['listitem_list']:
+		%for idx,prizeitem in enumerate(prize['listitem_list']):
+			%if bar and 0 < idx:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+			%endif
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td  width="70">
+					<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td>
+					<div class="itemtext" style="margin-top:-24px;">
+						%if prizeitem['icon']:
+							<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+						%else:
+							<span><!--
+						%endif
+						-->${prizeitem['name'] | h}<!--
+						%if prizeitem['rare'] is not None:
+							-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+						%endif
+						-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+					</div>
+				</td>
+			</table>
+		%endfor
+	%endif
+</%page>

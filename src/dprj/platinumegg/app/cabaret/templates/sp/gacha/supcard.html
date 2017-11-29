@@ -1,0 +1,396 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%doc>ガチャ出現カード一覧ページ</%doc>
+
+<%def name="head()">
+  <%
+    SCALE = 1
+  %>
+  <link href="${url_static_css}gachacardlist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="${url_static_js}gachacardlist.js"></script>
+  <style>
+  #castdata_once {
+    border: 0px;
+    overflow: hidden;
+    width:${int(320*SCALE)}px;
+    margin-bottom: ${int(5*SCALE)}px;
+    margin-left: -8px;
+  }
+  #castdata_once ul {
+    list-style: none;
+    height: ${int(208*SCALE)}px;
+    margin : 0;
+    padding : 0;
+    position : relative;
+  }
+  #castdata_once ul li {
+    float: left;
+    width: ${int(320*SCALE)}px;
+    height: ${int(208*SCALE)}px;
+    margin : 0;
+    padding : 0;
+    list-style-position:outside;
+    position : absolute;
+  }
+  .slide_flame{
+    position: absolute;
+    z-index: 0;
+  }
+  .slide_card{
+    display: table-cell;
+    position: relative;
+    left:2px;
+    z-index: 2;
+  }
+
+  .slide_capture{
+    display: table-cell;
+    position: relative;
+    left:4px;
+    z-index: 2;
+  }
+
+  .slide_header{
+      margin-bottom: ${2*SCALE}px;
+      height: ${26*SCALE}px;
+  }
+  .slide_name{
+    display:inline-block;
+    position: relative;
+    overflow:hidden;
+    margin-top: ${int(4*SCALE)}px;
+    width:${int(99*SCALE)}px;
+    height:${int(24*SCALE)}px;
+    left:${int(27*SCALE)}px;
+    z-index: 2;
+    text-align : left;
+    font-size: 14;
+    color:#ffd700;
+    font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif';
+    text-decoration:none;
+    font-weight: bold;
+    text-shadow: 0px -1px 0px #260b34,
+                 2px  0px 0px #260b34,
+                 0px  2px 0px #260b34,
+                -1px  0px 0px #260b34;
+  }
+  
+  .slide_rare{
+    margin-top: ${int(4*SCALE)}px;
+    margin-bottom: ${int(3*SCALE)}px;
+    vertical-align: top;
+    display:inline-block;
+    position: relative;
+    width:${int(39*SCALE)}px;
+    height:${int(21*SCALE)}px;
+    left:${int(20*SCALE)}px;
+    z-index: 2;
+    text-align : right;
+  }
+
+  .slide_power, .slide_cost{
+    margin-top:${6*SCALE}px;
+    margin-bottom:${4*SCALE}px;
+    vertical-align: top;
+    font-size:12px;
+    font-weight:normal;
+    display:inline-block;
+    position: relative;
+    z-index: 2;
+    text-align : right;
+  }
+
+  .slide_power{
+    width:${int(39*SCALE)}px;
+    left:${int(73*SCALE)}px;
+  }
+  
+  .slide_cost{
+    width:${int(16*SCALE)}px;
+    left:${int(109*SCALE)}px;
+  }
+  
+  .slide_service{
+    font-size:10px;
+    display:inline-block;
+    position: absolute;
+    font-weight:normal;
+    top:6px;
+    width:${int(120*SCALE)}px;
+    color:yellow;
+    left:${int(46*SCALE)}px;
+    z-index: 2;
+    text-align : left;
+  }
+  
+  .slide_servicetext{
+    font-size:10px;
+    display:inline-block;
+    position: absolute;
+    font-weight:normal;
+    color:#ffffff;
+    top:${int(6*SCALE)}px;
+    left:${int(170*SCALE)}px;
+    z-index: 2;
+    text-align : left;
+  }
+  </style>
+</%def>
+
+<%def name="contents()">
+  <%
+    SCALE = 1
+    SPECIAL_LIST = (('ring', '指輪'), ('accessories', 'アクセサリ'))
+    rate_total = gachacardlistinfo['rate_total']
+    weight_dict = gachacardlistinfo['weight_dict']
+    cardlist_dict = gachacardlistinfo['cardlist_dict']
+    cardnum = gachacardlistinfo['cardnum']
+    slidecast_list = gachaslidedata.get(gachacardlistinfo['unique_name']) or []
+    slidecast_dict = dict([(slidecast[0]['id'], slidecast) for slidecast in slidecast_list])
+    consumetype = gachacardlistinfo['consumetype']
+    etime = None
+    if gachacardlistinfo.get('etime_text'):
+      etime = gachacardlistinfo['etime_text']
+    elif gachacardlistinfo.get('etime'):
+      etime = '%d/%d' % (gachacardlistinfo['etime'].month, gachacardlistinfo['etime'].day)
+  %>
+  <div class="titlebar">
+    <p>獲得可能キャスト一覧</p>
+  </div>
+  
+  %if not gachacardlistinfo.get('is_box') and consumetype != Defines.GachaConsumeType.EVENTTICKET:
+  <div style="margin-bottom: 32px;">
+    <!-- レア度別提供割合 -->
+    <div class="titlesub">
+      <div class="wrapper">
+        レア度別提供割合
+      </div>
+    </div>
+    <%
+      tmp_percent_total = 100.0
+      cast_weight_dict = weight_dict.get(Defines.CardKind.NORMAL)
+    %>
+    %if cast_weight_dict:
+      %for rare in sorted(Defines.Rarity.LIST, reverse=True):
+        %if 0 < cast_weight_dict.get(rare, 0):
+          <table width="60%" style="margin-left: 5%">
+            <tr>
+              <td width="50%">
+                ${Defines.Rarity.NAMES[rare] | h}キャスト
+              </td>
+              <td width="50%" style="text-align: right;">
+              <%
+                percent = float('%2.1f' % min(tmp_percent_total, 100.0 * cast_weight_dict.get(rare, 0) / rate_total))
+                tmp_percent_total = max(tmp_percent_total - percent, 0)
+              %>
+              ${'%2.1f' % percent | h}%
+              </td>
+            </tr>
+          </table>
+          <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+        %endif
+      %endfor
+    %endif
+    %for key, name in SPECIAL_LIST:
+      %if weight_dict.has_key(key):
+        <table width="60%" style="margin-left: 5%">
+          <tr>
+            <td width="50%">
+              ${name}
+            </td>
+            <td width="50%" style="text-align: right;">
+            <%
+              percent = float('%2.1f' % min(tmp_percent_total, 100.0 * weight_dict.get(key, 0) / rate_total))
+              tmp_percent_total = max(tmp_percent_total - percent, 0)
+            %>
+            ${'%2.1f' % percent | h}%
+            </td>
+          </tr>
+        </table>
+        <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+      %endif
+    %endfor
+  </div>
+  %endif
+  
+  <div>
+    <!-- キャスト一覧 -->
+    <div class="titlesub">
+      <div class="wrapper">
+        提供キャスト一覧
+      </div>
+    </div>
+    
+    <%
+      cast_cardlist_dict = cardlist_dict.get(Defines.CardKind.NORMAL)
+    %>
+    <div class="wrapper">
+      %if cast_cardlist_dict:
+        <%
+          cardcnt = 0
+          for krc, rc in cast_cardlist_dict.items():
+            for kc, c in rc.items():
+              cardcnt += len(c)
+        %>
+        キャスト総数：${cardcnt | h}種<br />
+      %endif
+      %for key, name in SPECIAL_LIST:
+        %if cardlist_dict.has_key(key):
+          ${name}総数：${len(cardlist_dict[key])}種<br />
+        %endif
+      %endfor
+    </div>
+    
+    %if cast_cardlist_dict:
+      %for rare in sorted(Defines.Rarity.LIST, reverse=True):
+        <%
+          flag_draw_wrapp = False
+        %>
+        %for ctype in Defines.CharacterType.LIST:
+          <%
+            cardlist = None
+            rare_cardlist_dict = cast_cardlist_dict.get(rare)
+            if rare_cardlist_dict:
+              cardlist = rare_cardlist_dict.get(ctype)
+          %>
+          %if cardlist:
+            %if not flag_draw_wrapp:
+              <div class="titlesub2" style="margin-top:16px;">
+                <div class="wrapper">
+                  ${Defines.Rarity.NAMES[rare] | h}キャスト
+                </div>
+              </div>
+            %endif
+            ${self.drawCardList(cardlist, slidecast_dict, ctype)}
+            %if not flag_draw_wrapp:
+              <%
+                flag_draw_wrapp = True
+              %>
+            %endif
+          %endif
+        %endfor
+      %endfor
+    %endif
+    %for key, name in SPECIAL_LIST:
+      %if cardlist_dict.has_key(key):
+        <div class="titlesub2" style="margin-top:16px;">
+          <div class="wrapper">
+            ${name}
+          </div>
+        </div>
+        ${self.drawCardList(cardlist_dict[key], slidecast_dict)}
+      %endif
+    %endfor
+  </div>
+  <section class="basicinfo" style="padding-bottom:10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+    </div>
+    
+    <div class="basicBack">
+      <ul>
+        <li>
+          <div>
+          ※同レアリティ内でのキャストの出現率は一定ではありません。
+          </div>
+        </li>
+      </ul>
+      <div style="font-size:0px;">
+        .
+      </div>
+    </div>
+    <div class="basicbtm">.
+    </div>
+  </section>
+  <!-- 戻る -->
+  <div class="link_arrow_re">
+    <a class="btnfoot" href="${url_back}"><span style="margin-left:14px;">前へ</span></a>
+  </div>
+</%def>
+
+<%def name="drawCardList(cardlist, slidecast_dict, ctype=None)">
+  <%
+    SCALE = 1
+  %>
+  <div class="cardlist" style="margin: 8px 0px;">
+    %if ctype is not None:
+      <div class="cardlist_bg" style="background-color: ${Defines.CharacterType.COLORS[ctype]};">
+      </div>
+    %else:
+      <div class="cardlist_bg" style="background-color: #a0a0a0;">
+      </div>
+    %endif
+    <div class="cardlist_body" style="width:312px; margin-left: 8px;">
+      %if ctype is not None:
+        <div class="topcap">
+          ${Defines.CharacterType.NAMES[ctype] | h}
+        </div>
+      %endif
+      %for cardmaster in cardlist:
+        %if slidecast_dict.get(cardmaster['id']) and cardmaster['kind'] == Defines.CardKind.NORMAL:
+          <%doc>スライドがあるとき</%doc>
+          <%
+            _, url_capture, text = slidecast_dict[cardmaster['id']]
+          %>
+          <div style="height:${int(208*SCALE)}px;">
+            <div id="castdata_once">
+              <ul style="width:${int(320*SCALE)}px;">
+                <li>
+                  <%
+                    ctype = cardmaster['type']
+                    if ctype == Defines.CharacterType.TYPE_001:
+                      framename = 'koakuma'
+                    elif ctype == Defines.CharacterType.TYPE_002:
+                      framename = 'titeki'
+                    elif ctype == Defines.CharacterType.TYPE_003:
+                      framename = 'iyashi'
+                    else:
+                      framename = ''
+                  %>
+                  <div class="slide_flame"><%doc>各属性の枠(アイコン属性も入ってる)</%doc>
+                    <img src="${url_static_img}gacha/slide/st_card_scroll_${framename}_640_408.png" width="${int(320*SCALE)}px" height="${int(204*SCALE)}px" />
+                  </div>
+                  <div class="slide_header" width="${int(320*SCALE)}px" border="thin solid">
+                    <div class="slide_name">
+                      ${cardmaster['name'] | h}
+                    </div>
+                    <div class="slide_rare" width="${int(39*SCALE)}px"><%doc>レアリティ表示の画像</%doc>
+                      <img src="${url_static_img}gacha/slide/${cardmaster['rare_str'].lower()}.png" width="auto" height="${int(19*SCALE)}px" />
+                    </div>
+                    <div class="slide_power" width="${int(37*SCALE)}px">
+                      ${cardmaster['maxpower']}
+                    </div>
+                    <div class="slide_cost" width="${int(22*SCALE)}px">
+                      ${cardmaster['cost']}
+                    </div>
+                  </div>
+                  <div style="position:relative;height:${int(150*SCALE)}px;width:${int(320*SCALE)}px;padding:0 1px;">
+                    <img src="${cardmaster['thumbnail']['large']}" width="${int(120*SCALE)}px" height="${int(150*SCALE)}px" style="padding: 0 1px;" /><!--
+                    --><img src="${url_capture}" width="${int(194*SCALE)}px" height="${int(150*SCALE)}px" style="padding: 0 1px;" />
+                  </div>
+                  <div style="position:relative;height:${int(20*SCALE)}px;">
+                    <span class="slide_service">${cardmaster['skill']['name'] | h}</span>
+                    <span class="slide_servicetext">${cardmaster['skill']['text'] | h}</span>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+          %if text:
+          <div style="text-align:center;" class="yellow">
+            └${text | h}┘
+          </div>
+          %endif
+          %if etime:
+          <div style="text-align:center;" class="yellow">
+            ${cardmaster['name'] | h} 期間限定:${etime}まで!!
+          </div>
+          %endif
+        %else:
+          ${cardmaster['name'] | h}<br />
+        %endif
+      %endfor
+    </div>
+  </div>
+</%def>

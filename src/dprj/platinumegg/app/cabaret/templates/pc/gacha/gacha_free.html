@@ -1,0 +1,5 @@
+#coding:utf-8
+<%inherit file="../../sp/gacha/gacha_free.html" />
+
+<%def name="target_pc(is_pay)">%if not is_pay and is_pc: onsubmit="window.parent.reserveGetStatus();return true;" %endif</%def>
+

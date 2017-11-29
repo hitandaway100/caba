@@ -1,0 +1,93 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">サポートキャスト選択</p>
+		</div>
+		
+		<div style="margin:20px auto 5px auto;">
+			<div class="wrapper">
+				キャストを借りるフレンドを選ぼう
+			</div>
+		</div>
+		
+		<div class="topcap">
+			一度キャストを借りると<br />
+			２時間借りることはできません
+		<div>
+			%if playerlist:
+				<%
+					_bar = ''
+				%>
+				%for player in playerlist:
+					${_bar}
+				<section class="basicinfo" style="margin-bottom:4px;">
+					<div class="basictop_s">
+					</div>
+						<div class="basicBack">
+							<div class="itembox" style="margin-top:0px; font-size:13px;">
+								<table style="310px;">
+									<td>
+										<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg" />
+									<td>
+									<td class="itemtext">
+										ユーザー名&nbsp; : &nbsp; ${player['person']['nickname'] | h}<br />
+										Lv&nbsp; ${player['level']}<br />
+										No.1キャスト:&nbsp; ${player['leader']['master']['name'] | h}<br />
+										接客力&nbsp; :&nbsp; ${player['leader']['power'] | h}<br />
+									</td>
+								</table>
+								<div>
+									<a class="button" style="margin-left:180px; margin-bottom:-10px;" href="${get_html_param('url_friendselect', 'sp/happening/bossappear.html', player)}" ><div>選択</div></a>
+								</div>
+							<%doc>解除する場合のボタン
+								<div>
+									<a class="button" style="margin-left:180px; margin-bottom:-10px;" href="" ><div>解除</div></a>
+								</div>
+							</%doc>
+								
+							</div>
+							<div style="font-size:0px;">
+								　
+							</div>
+						</div>
+					<div class="basicbtm">
+					</div>
+			</section>
+				%endfor
+			%else:
+				<div class="caution">
+					フレンドがいませんでした
+				</div>
+			%endif
+		</div>
+		
+		<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+			<tr>
+				<td width="160px" style="text-align: left;">
+					% if url_page_prev is not UNDEFINED:
+						<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+				<td>
+					<div class="count" style="font-size:12px; white-space: nowrap;">&#40;${cur_page}/${page_max}&#41;</div>
+				</td>
+				<td width="160px" style="text-align: right;">
+					% if url_page_next is not UNDEFINED:
+						<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+			</tr>
+		</table>
+		
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="javascript:history.back()"><span style="margin-left:14px;">戻る</span></a>
+			</div>
+	</div>
+</%def>

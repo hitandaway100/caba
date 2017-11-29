@@ -1,0 +1,82 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>レイドボスのアイテムドロップシミュレータ</h1>
+    </div>
+
+	<div class="well">
+		<div>
+			<form action="" method="post">
+				<p>
+					一覧から (レイドイベント):<br />
+					<select name="_raidmid">
+						<option value="">--------</option>
+						%for eventmaster in raid_eventmaster_list:
+							%if cur_raideventmaster and cur_raideventmaster.id == eventmaster.id:
+								<option value="${eventmaster.id}" selected="selected">${eventmaster.name | h}(ID:${eventmaster.id})</option>
+							%else:
+								<option value="${eventmaster.id}">${eventmaster.name | h}(ID:${eventmaster.id})</option>
+							%endif
+						%endfor
+					</select>
+				</p>
+				<p>
+					一覧から (スカウトイベント):<br />
+					<select name="_scoutmid">
+						<option value="">--------</option>
+						%for eventmaster in scout_eventmaster_list:
+							%if cur_scouteventmaster and cur_scouteventmaster.id == eventmaster.id:
+								<option value="${eventmaster.id}" selected="selected">${eventmaster.name | h}(ID:${eventmaster.id})</option>
+							%else:
+								<option value="${eventmaster.id}">${eventmaster.name | h}(ID:${eventmaster.id})</option>
+							%endif
+						%endfor
+					</select>
+				</p>
+				<p>
+					ステージID:<br />
+					<input type="number" name="_stgid" value="${stgid if stgid else 0}" min="0" />
+				</p>
+				<p>
+					実行回数:<br />
+					<input type="number" name="_cnt" value="${cnt if cnt else 0}" min="0" />
+				</p>
+				<input type="submit" value="実行" class="btn" />
+			</form>
+		</div>
+	</div>
+
+	%if item_drop_data:
+		%for mid, itemdict in item_drop_data.items():
+			<div class="well">
+				<h3>結果(${raid_bosses[mid].name})</h3>
+				%if len(itemdict.values()) == 0:
+					<br/>
+					<p>マスターデータが設定されていません</p>
+				%else:
+					<table id="input_table" class="table">
+						<thead>
+							<th>カード名</th>
+							<th>出現回数</th>
+							<th>確率[％]</th>
+							<th>設定値[％]</th>
+						</thead>
+
+						<tbody>
+							%for prizeid, contents in itemdict.items():
+								<tr>
+									<td>${contents['name']}</td>
+									<td>${contents['occurrences']}</td>
+									<td>${'%.2f' % (float(contents['occurrences']) / cnt * 100)}</td>
+									<td>${'%.2f' % contents['rate']}</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				%endif
+			</div>
+		%endfor
+	%endif
+</%def>

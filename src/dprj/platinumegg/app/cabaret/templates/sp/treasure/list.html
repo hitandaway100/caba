@@ -1,0 +1,60 @@
+#coding:utf-8
+<%inherit file="treasurebase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">宝箱一覧</p>
+	</div>
+
+	<%doc>仮で今これ表示中</%doc>
+		<div style="text-align: center;">
+			<img src="${url_static_img}banner/treasure/takarabako_banner2.png" width="320" height="60"/>
+		</div>	
+	
+	<%doc>
+	%if thumbnaillist:
+		<div style="text-align: center;">
+			<img src="${thumbnaillist[0]}" width="240" height="60" align="center"/>
+		</div>
+	%else:
+		<div style="text-align: center;">
+			<img src="${url_static_img}banner/treasure/takarabako_banner2.png" width="320" height="60"/>
+		</div>
+	%endif
+	</%doc>
+	
+	<div class="titlesub">
+		<span class="wrapper">カギ</span>
+	</div>
+	
+	<div class="back_black">
+		<table style="margin:auto; width:300px;">
+			<tr>
+				<td>
+					<img src="${treasurekey['gold']['thumbUrl']}" width="60" height="60" style="margin-bottom:4px;"/>
+				</td>
+				<td style="font-size:12px;">
+					${treasurekey['gold']['name']| h}<br/>
+					${treasurekey['gold']['num']}${treasurekey['gold']['unit']}
+				</td>
+				<td>
+					<img src="${treasurekey['silver']['thumbUrl']}" width="60" height="60" style="margin-bottom:4px;"/>
+				</td>
+				<td style="font-size:12px;">
+					${treasurekey['silver']['name'] | h}<br />
+					${treasurekey['silver']['num']}${treasurekey['silver']['unit']}
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<div class="back_black">
+		${self.drawTreasureListInfo()}
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-bottom:8px;"/>
+		
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><span style="margin-left:14px;">マイページへ</span></a>
+		</div>
+	</div>
+</%def>

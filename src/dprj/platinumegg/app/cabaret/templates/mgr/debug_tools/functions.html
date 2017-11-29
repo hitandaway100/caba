@@ -1,0 +1,16 @@
+<%def name="drawSelectEvent(current_event, eventlist, name='_mid', label=None)">
+	%if current_event:
+		<input type="hidden" name="${name}" value="${current_event.id}" />
+	%else:
+		<p>
+			%if label:
+				${label}
+			%endif
+			<select name="${name}">
+				%for event in eventlist:
+					<option value="${event.id}">${event.name | h}(ID:${event.id})</option>
+				%endfor
+			</select>
+		</p>
+	%endif
+</%def>

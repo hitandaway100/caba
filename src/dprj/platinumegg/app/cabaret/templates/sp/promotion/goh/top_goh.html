@@ -1,0 +1,105 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+<%namespace name="top" file="top.html"/>
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+  <script type="text/javascript">
+   function onClickBanner(){
+     to_top("${get_html_param('url_goh', '')}");
+   }
+  </script>
+</%def>
+
+<%def name="contents()">
+  <%doc>ページヘッダー</%doc>
+  <img src="${url_static_img}event/crosspromo/03/cross_promo_03_header.png" width="320px" height="132px" />
+  <div style="text-align:center;margin-top:20px;margin-bottom:10px;">3/18〜3/25 12:00まで</div>
+
+  <div class="wrapper" style="margin-bottom:8px;">
+    <a href="javascript:void(0);" onclick="onClickBanner()">
+      <img src="${url_static_img}event/crosspromo/03/cross_promo_03_banner.png" width="240px" height="100px" />
+    </a>
+    <div style="line-height:1.2;">
+      <span class="yellow" style="font-size:13px;">↑ギャングオブヘブンへはこちらから</span>
+    </div>
+  </div>
+
+  <div class="back_black">
+    <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="2px" />
+    <div style="padding:8px 0px;text-align:center;line-height:1;">
+      <div style="display:inline-block;width:144px;">
+        <img src="${url_static_img}event/crosspromo/03/cross_promo_03_price02.png" width="140px" height="140px" />
+      </div>
+      <div style="display:inline-block;width:144px;">
+        <img src="${url_static_img}event/crosspromo/03/cross_promo_03_price01.png" width="140px" height="140px" />
+      </div>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="yellow" style="font-size:13px;margin-top:10px;">
+      各ゲームで貰える報酬をチェックしよう!
+    </div>
+  </div>
+
+  <%doc>ボタン</%doc>
+  <table align="center" width="256px" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+    <tr>
+      <td width="96px" style="text-align:center;">
+        <div id="tab_caba" class="btn_pink_s">
+          <a href="javascript:void(0);">キャバ王</a>
+        </div>
+      </td>
+      <td width="96px" style="text-align: center;">
+        <div id="tab_goh" class="btn_pink_s">
+          <a href="javascript:void(0);">ギャング</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <%doc>報酬一覧</%doc>
+  <%
+  missions = [
+  {'name': 'チュートリアル突破', 'jump_to': '', 'rewards': [{'thumb_dirname': 'goh_toughness_drink', 'item_name': 'タフネスドリンクLx3'}, {'thumb_dirname': 'goh_charge_max', 'item_name': '決闘チャージMAXx3'}, {'thumb_dirname': 'goh_ticket_rare', 'item_name': 'レアガチャチケットx1'}]},
+  {'name': '5日間ログイン', 'jump_to': '', 'rewards': [{'thumb_dirname': 'goh_ticket_sr', 'item_name': 'SRガチャチケットx1'}]},
+  {'name': '「経営」をプレイする', 'jump_to': 'url_cabaclubtop', 'rewards': [{'thumb_dirname': 'goh_ticket_rare', 'item_name': 'レアガチャチケットx3'}]},
+  {'name': 'レベルを10にする', 'jump_to': 'url_scout', 'rewards': [{'thumb_dirname': 'goh_strengthening_calpes', 'item_name': '強化カリペスx3'}]},
+  {'name': 'レベルを20にする', 'jump_to': 'url_scout', 'rewards': [{'thumb_dirname': 'goh_skill_rum', 'item_name': 'スキル強化ラムx5'}]},
+  {'name': '秘宝交換を行う', 'jump_to': 'url_trade', 'rewards': [{'thumb_dirname': 'goh_rebirth_calpes', 'item_name': '限界突破カリペスx1'}]},
+  {'name': 'キャバ道をプレイする', 'jump_to': 'url_battle', 'rewards': [{'thumb_dirname': 'goh_toughness_drink', 'item_name': 'タフネスドリンクLx1'}, {'thumb_dirname': 'goh_charge_max', 'item_name': '決闘チャージMAXx1'}]},
+  {'name': '「キャバ道」で連勝する', 'jump_to': 'url_battle', 'rewards': [{'thumb_dirname': 'goh_ticket_rare', 'item_name': 'レアガチャチケットx1'}]},
+  {'name': '「キャバ道」でﾗﾝｸ5になる', 'jump_to': 'url_battle', 'rewards': [{'thumb_dirname': 'goh_ticket_ssr', 'item_name': 'SSR30%ガチャチケットx1'}]},
+  ]
+  %>
+
+  ${top.print_missions(missions)}
+
+  <%doc>注意</%doc>
+  <section class="basicinfo" style="padding-bottom:10px">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}/common/kyoutsu_bar_07.png" width="282px" height="3px">
+    </div>
+    <div class="basicBack">
+      <ul>
+        <div style="margin:0px 20px 0px;">
+          <li>
+            3/18(金)12:00〜3/25(金)12:00までの期間に達成された場合報酬が配布されます。
+          </li>
+          <li>
+            また、プロモーション開始以前にミッションを達成されている場合も後日報酬を配布いたします。
+          </li>
+          <li>
+            報酬配布はイベント終了後となり、今月中を予定しております。
+          </li>
+        </div>
+      </ul>
+      <div style="font-size:0px;">
+        &nbsp;
+      </div>
+    </div>
+    <div class="basicbtm"></div>
+  </section>
+</%def>

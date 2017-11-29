@@ -1,0 +1,266 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}battleevent/battleresultbase.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+</%def>
+
+<%def name="drawResultTop()"></%def>
+<%def name="drawLeadPowerUp()"></%def>
+
+<%def name="contents()">
+	${self.drawResultTop()}
+	
+	<div>
+		<a class="btnpink" href="${get_html_param('url_battlecontinue', 'sp/btevent/battletop.html')}"><p class="caption">続けて競う</p></a>
+	</div>
+	<%
+		linenum = int((len(levelupcardlist) + Defines.BATTLE_RESULT_LINE_CARD_NUM - 1) / Defines.BATTLE_RESULT_LINE_CARD_NUM)
+	%>
+	%if 0 < linenum:
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<span class="wrapper">接客に参加したキャストのレベルアップ！</span>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+		%for y in xrange(linenum):
+			<table style="margin: 4 auto;" cellpadding="0" cellspacing="0">
+				<tr>
+					%for x in xrange(Defines.BATTLE_RESULT_LINE_CARD_NUM):
+						<%
+							idx = y * Defines.BATTLE_RESULT_LINE_CARD_NUM + x
+						%>
+						%if idx < len(levelupcardlist):
+							<%
+								card = levelupcardlist[idx]
+							%>
+							<td>
+								<img src="${card['master']['thumbnail']['small']}" width="60px" height="75px" /><br />
+								<div class="yellow" style="text-align: center;">
+									+${card['level_add']}
+								</div>
+							</td>
+						%endif
+					%endfor
+				</tr>
+			</table>
+		%endfor
+	%endif
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:-4;" />
+	
+	<table class="spirit">
+		<tr>
+			<td class="spirit1">
+				気力
+			</td>
+			<td class="spirit2">
+				${player['bp']}/${player['bpmax']}
+			</td>
+			<td class="spirit3">
+				<div class="st_frame" style="height:16px;">
+					<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	%if player['bp'] < player['bpmax']:
+		<div class="wrapper">気力は1分間で1回復します&nbsp;<span style="color:#FFFF00;">(${player['str_bprtime'] | h}に全回復)</span></div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:-4;" />
+		
+		<div class="wrapper">
+			<a href="${get_html_param('url_shop', 'sp/shop/shop.html')}"><!--
+				--><img src="${url_static_img}banner/campaign/discount/discount01.png" width="240" height="60"/><!--
+			--></a>
+		</div>
+		
+		%for item in item_list:
+			<div class="itembox">
+				<table>
+					<td>
+						<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td class="itemtext">
+						<b>${item['master']['name'] | h}</b><br/>
+						<span style="color:#FF9900;">所持数:</span>
+							<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+					</td>
+				</table>
+				${self.drawItemLeadLinkButton(item)}
+			</div>
+			<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		%endfor
+	%endif
+	
+	${self.drawLeadPowerUp()}
+	${self.feverinfo()}
+	
+	%if is_present_open:
+		<div>
+			<a class="btnpink" href="${get_html_param('url_battleevent_present', 'sp/btevent/present.html')}">
+				<p class="caption" style="line-height:3; font-size: 15px">贈り物を受け取れます！</p>
+			</a>
+		</div>
+	%endif
+	
+	${self.drawBattleItemGet()}
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" style="margin-top:4;" />
+	${self.battlepointget()}
+	
+	<%doc>出勤キャスト表示</%doc>
+	${self.battlePlayerInfo('出勤キャスト', player)}
+	${self.battlePlayerInfo('対戦相手', o_player)}
+	
+	${self.eventfooter()}
+</%def>
+
+<%def name="battlePlayerInfo(info_title, obj_player)">
+	<div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<span class="wrapper">${info_title | h}</span>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+		<table style="width:300px; margin:auto;">
+			<td width="76">
+				<img src="${obj_player['leader']['master']['thumbnail']['middle']}" width="70" height="88" />
+			</td>
+			<td>
+				<div style="padding-left:8px; font-size: 13px; line-height: 16px;">
+					${obj_player['person']['nickname'] | h} Lv：${obj_player['level']}<br />
+					NO.1キャスト：${obj_player['leader']['master']['name'] | h}<br />
+					Lv：${obj_player['leader']['level']}<br />
+					総接客力：${obj_player['power_total']}<br />
+					%if obj_player.get('spt_powup'):
+						<span class="red">(属性ボーナス:<!--
+							%if 0 <= obj_player['spt_powup']:
+								-->+${obj_player['spt_powup']}<!--
+							%else:
+								-->+0<!--
+							%endif
+						-->)</span><br />
+					%endif
+					%if obj_player.get('sp_powup'):
+						<span class="red">(特効ボーナス:<!--
+							%if 0 <= obj_player['sp_powup']:
+								-->+${obj_player['sp_powup']}<!--
+							%else:
+								-->+0<!--
+							%endif
+						-->)</span>
+					%endif
+				</div>
+			</td>
+		</table>
+		
+		<%
+			_membernum = len(obj_player['deckmember'])
+		%>
+		<%
+			rownum = int((_membernum + Defines.BATTLE_OPPONENTDECK_COL_NUM - 1) / Defines.BATTLE_OPPONENTDECK_COL_NUM)
+		%>
+		%for row in xrange(rownum):
+			<table class="battle_ob">
+				<tr >
+					<%
+						_offset = row * Defines.BATTLE_OPPONENTDECK_COL_NUM
+						_cardnum = min(max(_membernum - _offset, 0), Defines.BATTLE_OPPONENTDECK_COL_NUM)
+						_spacenum = Defines.BATTLE_OPPONENTDECK_COL_NUM - _cardnum
+					%>
+					%for col in xrange(_cardnum):
+						<td>
+							<img src="${obj_player['deckmember'][_offset+col]['master']['thumbnail']['small']}" width="60px" height="75px" />
+						</td>
+					%endfor
+				</tr>
+			</table>
+		%endfor
+		<div class="skilllist">
+			<div class="skilllist_bg" style="background-color: #cc00ff;">
+			</div>
+			<div class="skilllist_body">
+				<div class="topcap">
+					発動したテクニック
+				</div>
+				<div style="margin-left:8px;">
+					%if obj_player['skilllist']:
+						%for skill in obj_player['skilllist']:
+							%if skill['color']:
+								<span style="color:${skill['color']}">${skill['name'] | h}</span><br />
+							%else:
+								${skill['name'] | h}<br />
+							%endif
+						%endfor
+					%else:
+						無し
+					%endif
+				</div>
+			</div>
+		</div>
+	</div>
+</%def>
+
+<%def name="drawBattleItemGet()">
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<span class="wrapper">GETしたアイテム</span>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		<div style="margin-top:1px;">
+          <table style="margin-left:8px; width:300px; height:90px;">
+            <td  width="70">
+              <img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByDBString(Defines.GachaConsumeType.GachaTicketType.THUMBNAIL[Defines.GachaConsumeType.GachaTicketType.BATTLE_TICKET])}" width="60" height="60" class="itemimg" />
+            </td>
+            <td>
+              <div class="itemtext" style="margin-top:-24px;">
+                %if battle_ticket_bonus != 0:
+                  <span>バトルチケット  <span class="yellow">${battle_ticket_num}</span>+<span class="yellow">${battle_ticket_bonus}</span>枚
+                %else:
+                  <span>バトルチケット  <span class="yellow">${battle_ticket_num}</span>枚
+                %endif
+              </div>
+            </td>
+          </table>
+          <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+          <%include file="../includes/prize_info.html" args="prize=prize, url_static_img=url_static_img" />
+		</div>
+	<%doc>確認なくてよい??
+		<div>
+			<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_battleevent_present', 'sp/present.html')}"><div>プレゼントを確認</div></a>
+		</div>
+	</%doc>
+</%def>
+
+<%def name="battlepointget()">
+	%if resultdata.get('eventpoint'):
+		<section class="basicinfo" style="margin-top:1em;">
+			<div class="basictop_s">
+			</div>
+			<div class="basicBack" style="height:70px;">
+				<ul class="link_arrow">
+					<li style="height:60px;">
+						<img src="${url_static_img}event/btevent/common/event_item_60_60.png"width="60" height="60" align="left" class="itemimg"/>
+						<div class="itemtext">
+							バトルPT<span class="yellow">${resultdata['eventpoint']}</span>獲得<br />
+							本日獲得数：${battleevent_score['point'] - resultdata['eventpoint']}⇒<span class="yellow">${battleevent_score['point']}</span><br />
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="basicbtm">
+			</div>
+		</section>
+		
+		<div style="margin-top:20px;">
+			<a class="btnlong" href="${get_html_param('url_battleevent_group', 'sp/btevent/grouprank.html')}"><div>ランキングを確認</div></a>
+		</div>
+	%endif
+</%def>
+
+<%def name="eventfooter()">
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}" ><div style="margin-left:14px;">イベントトップへ</div></a>
+	</div>
+</%def>

@@ -1,0 +1,60 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	${parent.head()}	
+	<link href="${url_static_css}scountevent/performancebonus.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+		${self.eventslide()}
+	<div>
+		${self.eventtopic()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+	</div>
+	${self.eventtopic3()}
+	
+	%for tanzaku in scoutevent_tanzaku_list:
+		%if tanzaku['prize']['listitem_list']:
+			<dl>
+				<dt class="tip_text">${scoutevent['lovetime_pointname'] | h}</dt>			
+				<div class="tip_content">
+					<div class="left_text">規定数</div>
+					<div class="right_text">${tanzaku['tip_quota']}枚</div>
+				</div>
+			</dl>
+			%for idx,prizeitem in enumerate(tanzaku['prize']['listitem_list']):
+				%if 0 < idx:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+				%endif
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td  width="70">
+						<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext" style="margin-top:-24px;">
+							%if prizeitem['icon']:
+								<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+							%else:
+								<span><!--
+							%endif
+							-->${prizeitem['name'] | h}<!--
+							%if prizeitem['rare'] is not None:
+								-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+							%endif
+							-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+						</div>
+					</td>
+				</table>
+			%endfor
+		%endif
+	%endfor
+
+	<div id="caution">
+	注意	<br>
+	・報酬受け取り条件はイベント期間終了後、1位になったキャストに400枚以上のチップを渡していることとなります。<br>
+	・受け取る事が出来るキャストは1人となります。<br>
+	</div>
+	
+	${self.eventfooter()}
+</%def>

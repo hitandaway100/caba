@@ -1,0 +1,27 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+  <div class="titlebar">
+    <p class="caption">チケット交換完了</p>
+  </div>
+
+  <div class="cardthumb">
+    <img src="${item['thumbUrlMiddle']}" width="110px" height="138px"/>
+  </div>
+  
+  <div class="wrapper">
+    ${self.traderesult_text(item)}
+    <div>
+      <a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_reprintticket_tradeshop')}"><div>チケット交換所へ</div></a>
+    </div>
+  </div>
+</%def>
+
+<%def name="traderesult_text(item)">
+  %if 1 < item_num:
+    <span class="red">${item['ticket_name']}を${item['name']} x${item_num}に交換しました!</span>
+  %else:
+    <span class="red">${item['ticket_name']}を${item['name']}に交換しました!</span>
+  %endif
+</%def>

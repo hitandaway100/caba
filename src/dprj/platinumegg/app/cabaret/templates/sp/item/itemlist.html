@@ -1,0 +1,76 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="block_item(item, index)">
+	<%
+		div_class = ''
+		need_bar = False
+		if index % 2 == 1:
+			div_class = 'class="back_black"'
+			need_bar = True
+	%>
+	<div ${div_class}>
+		%if need_bar:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		%endif
+		<div class="itembox">
+			<table style="310px;">
+				<tr>
+					<td style="width:70px;">
+						<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext" style="width:240px;">
+						${item['master']['name'] | h}<br />
+						<span  class="orange">所持数:</span>
+						<span  class="yellow">${item['num']}</span>${item['master']['unit'] | h}<br />
+						<div style="font-size:12px;">
+							${item['master']['text']}
+						</div>
+					</td>
+				</tr>
+			</table>
+			
+			%if item['master']['useable']:
+				<form action="${get_html_param('master.url_useyesno', 'sp/item/useyesno.html', item)}" method="post">
+					%if item.get('usenums') and 1 < len(item['usenums']):
+						<table style="position:relative; left:106;">
+							<tr>
+								<td class="pullmenu3">
+									<select name="${Defines.URLQUERY_NUMBER}" class="select_type" style="width: 80px; height: 31px;">
+										%for num in item['usenums']:
+											<option value="${num}">${num}${item['master']['unit'] | h}</option>
+										%endfor
+									</select>
+									<div id="pull3"></div>
+								</td>
+								<td style="width:98px;">
+									<input type="submit" value="使用する" class="buttonshop"/>
+								</td>
+							</tr>
+						</table>
+					%else:
+						<input type="hidden" name="${Defines.URLQUERY_NUMBER}" value="1" />
+						<input type="submit" value="使用する" class="button"/>
+					%endif
+				</form>
+			%endif
+		</div>
+		%if need_bar:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		%endif
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">持ち物</p>
+	</div>
+	%for i in xrange(len(item_list)):
+		${self.block_item(item_list[i], i)}
+	%endfor
+	% if len(item_list) == 0:
+		<div class="list_not_found">
+			何も持っていません
+		</div>
+	%endif
+</%def>

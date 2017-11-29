@@ -1,0 +1,47 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		${self.happeningtop()}
+		${self.happeningbodytop()}
+		${self.areastatus()}
+	</div>
+	
+	<div class="caution" style="margin:10px; auto 10px; auto">
+		体力が尽きました
+	</div>
+	%for item in item_list:
+		<div class="itembox">
+			% if index > 0:
+				<!-- ↓のラインは最下段には不要-->
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			% endif
+			<table>
+				<td>
+					<img src="${item['master']['thumbUrl']}" width="60" height="60"  class="itemimg"/>
+				</td>
+				<td class="itemtext">
+					<b>${item['master']['name'] | h}</b><br/>
+					<span style="color:#FF9900;">所持数:</span>
+						<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+				</td>
+			</table>
+			${self.drawItemLeadLinkButton(item)}
+		</div>
+	%endfor
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-bottom:10px;" />
+	<div>
+		<a class="btnlong" href="${get_html_param('url_happeningcancel_yesno', 'sp/happening/cancelyesno.html')}"><div>超太客を諦める</div></a>
+	</div>
+	<div class="wrapper" style="margin:-8px auto 10px auto;">
+		諦めてアイテムだけ持ち帰る
+	</div>
+	${self.happeningbodybottom()}
+	${self.prizelist()}
+
+	${self.playerstatus()}
+</%def>
+<%def name="cancelbutton()"></%def>
+<%def name="happeningexecbutton()"></%def>
+

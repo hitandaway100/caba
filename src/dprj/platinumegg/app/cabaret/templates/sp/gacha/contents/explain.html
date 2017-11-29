@@ -1,0 +1,578 @@
+<%def name="specific_explain_text(head, body)">
+  <div class="red">${head}</div>
+  ${self.fottertextline(body)}
+</%def>
+
+<%def name="fottertextline(innerHTML)">
+  <div class="fottertextline">
+    ${innerHTML}
+  </div>
+</%def>
+
+<%def name="raregacha_attention()">
+  <div>
+    ${self.over_rarerity_r_gacha_attention()}
+    ${self.dmmpoint_attention()}
+  </div>
+</%def>
+
+<%def name="over_rarerity_r_gacha_attention()">
+  ${self.fottertextline('・レア以上のキャストを獲得できるガチャです。')}
+</%def>
+
+<%def name="dmmpoint_attention()">
+  ${self.fottertextline('・<span class="orange">DMMポイント</span>を消費して、キャストを獲得できます。')}
+</%def>
+
+<%def name="box()">
+  <div>
+    <div class="red">
+      ◎BOXガチャとは
+    </div>
+    <div class="fottertextline">
+      ・レア度毎に決まった枚数が入っています。
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引くたびにBOX内のキャストが減っていきます。
+    </div>
+    <div class="fottertextline">
+      ・最終的にBOX内の全てのキャストを獲得することができます。
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・最大枚数はBOXに設定されているキャストの総数です。
+    </div>
+    <div class="fottertextline">
+      ・獲得枚数は獲得した総枚数と、レアリティ毎の獲得枚数を確認できます。
+    </div>
+    <div class="fottertextline">
+      ・引抜ガチャでキャストを獲得すると、獲得状況が更新されます。
+    </div>
+    <div class="fottertextline">
+      ・全てのキャストを獲得すると、獲得状況は全てクリアされます。
+    </div>
+    <div class="fottertextline">
+      ・出現するキャストは重複する場合があります。
+    </div>
+  </div>
+</%def>
+
+<%doc>ガチャ説明テキスト</%doc>
+<%def name="reset_box()">
+  <div>
+    <div class="red">
+      ◎BOXガチャとは
+    </div>
+    <div class="fottertextline">
+      ・設定されている枚数のキャストやアイテムを引き抜く事が出来ます。
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引くたびにBOX内のキャストが減っていきます。
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・このBOXガチャは、特効SRキャストを引き当てた場合か、BOX内のキャストを全て引き当てた場合にリセットを1回する事が出来ます。
+    </div>
+    <div class="fottertextline">
+      ・リセット回数には制限があり、3回まで行う事が可能です。
+    </div>
+    <div class="fottertextline">
+      ・出現するキャストは重複する場合があります。
+    </div>
+    <div class="fottertextline">
+      ・獲得可能キャスト一覧にて、獲得可能なキャストやアイテムを確認する事が出来ます。
+    </div>
+  </div>
+</%def>
+
+<%doc>ガチャ説明テキスト</%doc>
+<%def name="mini_box()">
+  <div>
+    <div class="red">
+      ◎BOXガチャとは
+    </div>
+    <div class="fottertextline">
+      ・設定されている枚数のキャストやアイテムを引き抜く事が出来ます。
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引くたびにBOX内のキャストが減っていきます。
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・このBOXガチャはリセットを行い、BOX内容を初期状態に戻す事は出来ません。
+    </div>
+    <div class="fottertextline">
+      ・出現するキャストは重複する場合があります。
+    </div>
+    <div class="fottertextline">
+      ・獲得可能キャスト一覧にて、獲得可能なキャストやアイテムを確認する事が出来ます。
+    </div>
+  </div>
+</%def>
+
+<%doc>特効追加説明テキスト</%doc>
+<%def name="special_cast(gacha_name)">
+  <div>
+    <div class="red">
+      ◎特効キャストについて
+    </div>
+    <div class="fottertextline">
+      ・今まで引いていたBOXガチャと${gacha_name | h}が期間中だけ置き換わります。
+    </div>
+    <div class="fottertextline">
+      ・期間が過ぎると、元の通常BOXガチャに戻ります。過去に引いていたBOX状況は引き継がれます。
+    </div>
+  </div>
+</%def>
+
+<%doc>ステップアップガチャテキスト</%doc>
+<%def name="step_up()">
+  <div>
+    <div class="red">
+      ◎STEP UPガチャとは
+    </div>
+    <div class="fottertextline">
+      ・STEUP UPガチャは、引くたびにガチャの内容が変化していくガチャです。
+    </div>
+    <div class="fottertextline">
+      ・1STEP→2STEP→3STEP→4STEP→5STEP→<br />
+      6STEP->7STEPと順番にガチャを引いていきます。
+    </div>
+    <div class="fottertextline">
+      ・7STEPまで引き終わるか、リセット時間になるとSTEP数がリセットされます。<%doc>リセット時間まで6STEP目を継続して引く事ができます。</%doc>
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・STEP UPガチャは毎日0:00にリセットされます。
+    </div>
+    <div class="fottertextline">
+      ・リセットされると、前回のSTEP数に関わらず必ず1STEP目にリセットされます。
+    </div>
+  </div>
+</%def>
+
+<%doc>シートガチャテキスト</%doc>
+<%def name="sheet()">
+  <div>
+    <div class="red">
+      ◎シートガチャとは
+    </div>
+    <div class="fottertextline">
+      ・引くたびにシートに記載されているアイテムのうちひとつが抽選で獲得できるガチャです。
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・一度取得したシートアイテムはリセットするまで再抽選はなされません。
+    </div>
+    <div class="fottertextline">
+      ・リセットを行うと、シートの内容が初期状態に戻ります。
+    </div>
+  </div>
+</%def>
+
+<%doc>ミニシートガチャテキスト</%doc>
+<%def name="mini_sheet(gacha)">
+  <div>
+    <div class="red">
+      ◎${gacha['name'] | h}とは
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引き抜くたびにシートに記載されているおまけのどれか1つが獲得できるガチャです。
+    </div>
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・一度取得したシートアイテムは再抽選されません。
+    </div>
+    <div class="fottertextline">
+      ・本ガチャは1シート限定のガチャとなる為、リセットを行いシート内容を初期状態に戻すことは出来ません。
+    </div>
+  </div>
+</%def>
+
+<%doc>123ガチャテキスト</%doc>
+<%def name="one_two_three()">
+  <div>
+    <div class="red">
+      ◎1,2,3ガチャとは
+    </div>
+    <div class="fottertextline">
+      ・1回目を100ポイント<br />
+      2回目を200ポイント<br />
+      3回目を300ポイント<br />
+      で、引くことのできるガチャです。<br />
+      4回目は再度1回目と同じポイントに戻ります。<br />
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・出現キャストは重複する場合があります。
+    </div>
+  </div>
+</%def>
+
+<%doc>新店舗応援ガチャテキスト</%doc>
+<%def name="new_store_support()">
+  <div>
+    <div class="red">
+      ◎新店舗応援プレミアムガチャとは
+    </div>
+    <div class="fottertextline">
+      ・毎日割引がリセットされる、レア以上のキャストを獲得出来るガチャです。<br />
+    </div>
+    <div class="fottertextline">
+      ・排出される復刻キャストは他のキャストに比べて高い割合で排出されます。<br />
+    </div>
+    &nbsp;<br />
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・本ガチャから排出されるキャストは重複することがあります。
+    </div>
+  </div>
+</%def>
+
+<%doc>チケットガチャテキスト</%doc>
+<%def name="ticket()">
+  <div>
+    <div class="red">
+      ◎チケットガチャについて
+    </div>
+    <div class="fottertextline">
+      ・チケットを1枚消費して引き抜くガチャです。
+    </div>
+    <div class="fottertextline">
+      ・「<span class="orange">レア以上確定チケット</span>」は、超太客の接客をする事で獲得できる
+      「<span class="orange">キャバ王の秘宝</span>」と交換する事で獲得出来ます。
+    </div>
+    <div class="fottertextline">
+      ・「<span class="orange">属性別チケットガチャ</span>」は毎月、月初めに　
+      ガチャ台の設置を予定しております。
+    </div>
+  </div>
+</%def>
+
+<%doc>裏社会チケットガチャテキスト</%doc>
+<%def name="event_ticket()">
+  <div>
+    <div class="red">
+      ◎裏社会チケットガチャについて
+    </div>
+    <div class="fottertextline">
+      ・裏社会ガチャの設置期間を過ぎると、<br />
+      『<span class="orange">裏社会ガチャチケット</span>』<br />
+      『<span class="orange">裏社会の秘宝</span>』<br />
+      は消滅します。ご了承ください。<br />
+    </div>
+    <div class="fottertextline">
+      ・裏社会ガチャから出現するキャストは重複する場合があります。
+    </div>
+  </div>
+</%def>
+
+<%doc>裏社会チケットガチャBoxテキスト</%doc>
+<%def name="event_ticket_box()">
+  <div>
+    <div class="red">
+      ◎裏社会BOXガチャについて
+    </div>
+    <div class="fottertextline">
+      ・設定されている枚数のキャストやアイテムを裏社会チケットを使用する事で引き抜く事が出来ます。
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引くたびにBOX内のキャストが減っていきます。
+    </div>
+    <div class="fottertextline">
+      ・このBOXガチャは、SRキャストを引き当てた場合か、<br />BOX内のキャスト、アイテムを全て引き当てた場合にリセットを1回する事が出来ます。
+    </div>
+    <div class="fottertextline">
+      ・リセット回数には制限があり、3回まで行う事が可能です。
+    </div>
+    <div class="fottertextline">
+      ・裏社会ガチャの設置期間を過ぎると、<br />
+      『<span class="orange">裏社会ガチャチケット</span>』<br />
+      『<span class="orange">裏社会の秘宝</span>』<br />
+      は消滅します。ご了承ください。<br />
+    </div>
+    <div class="fottertextline">
+      ・裏社会ガチャから出現するキャストは重複する場合があります。
+    </div>
+    <div class="fottertextline">
+      ・獲得可能キャスト一覧にて、獲得可能なキャストやアイテムを確認する事が出来ます。
+    </div>
+    <div class="fottertextline">
+      ・裏社会ガチャから出現するキャストは重複する場合があります。
+    </div>
+  </div>
+</%def>
+
+<%doc>スカウトイベントガチャテキスト</%doc>
+<%def name="scout_event(gacha_list)">
+  <%
+  gachaname = ','.join([gacha['name'] for gacha in gacha_list])
+  %>
+  <div>
+    <div class="red">
+      ◎${gachaname | h}について
+    </div>
+    <div class="fottertextline">
+      ・「<span class="orange">${scoutevent['gachaptname'] | h}</span>」を20個消費して引き抜くガチャです。
+    </div>
+    <div class="fottertextline">
+      ・ガチャ設置期間を過ぎると、「<span class="orange">${scoutevent['gachaptname'] | h}</span>」は消滅します。
+    </div>
+    <div class="fottertextline">
+      ・${gachaname | h}から出現するキャストは重複する場合があります。
+    </div>
+  </div>
+</%def>
+
+<%doc>確率UPガチャテキスト</%doc>
+<%def name="probability(tradeshop_id)">
+  %if 0 < tradeshop_id:
+    <div>
+      ${self.specific_explain_text(
+        '◎PtChangeガチャとは',
+        '・ガチャを引くことで、Ptが獲得できるガチャです。')}
+      <div class="fottertextline">
+        ・獲得したPtはPt交換所にて豪華ラインナップと交換することができます。
+      </div>
+      <div class="fottertextline">
+        ・Ptはガチャ1回につき1回獲得できます。
+      </div>
+      <br />
+      ${self.specific_explain_text(
+        '◎その他注意事項',
+        '・本ガチャから排出されるキャストは重複することがあります。')}
+    </div>
+  %else:
+    <div>
+      ${self.specific_explain_text(
+        '◎SR・SSR出現率UPガチャとは',
+        '・SR8倍SSR6倍の出現率からキャストが抽選されるガチャとなります。')}
+      <br />
+      ${self.specific_explain_text(
+        '◎その他注意事項',
+        '・本ガチャから排出されるキャストは重複することがあります。')}
+    </div>
+  %endif
+</%def>
+
+<%doc>SR以上確定ガチャテキスト</%doc>
+<%def name="fixed_sr()">
+  <div>
+    ${self.specific_explain_text(
+      '◎SR以上1キャスト確定ガチャとは',
+      '・SR以上のキャストを必ず1キャスト以上引抜けるガチャです。')}
+    <br />
+    ${self.specific_explain_text(
+      '◎その他注意事項',
+      '・本ガチャから排出されるキャストは重複することがあります。')}
+    <br />
+  </div>
+</%def>
+
+<%doc>20連ガチャテキスト</%doc>
+<%def name="continuity20()">
+  <div>
+    <div class="fottertextline">
+      ・レア以上のキャストを獲得できるガチャです。
+    </div>
+    <div class="fottertextline">
+      ・<span class="orange">DMMポイント</span>を消費して、キャストを獲得できます。
+    </div>
+  </div>
+</%def>
+
+<%doc>クリスマスガチャテキスト</%doc>
+<%def name="xmas()">
+  <div>
+    <div class="red">
+      ◎クリスマスガチャとは
+    </div>
+    <div class="fottertextline">
+      ・DMMポイントを消費して、キャストを獲得出来ます。
+    </div>
+    <div class="fottertextline">
+      ・10回連続で引く事が出来るガチャです。
+    </div>
+    <div class="fottertextline">
+      ・必ず新規追加のキャスト1枚を手に入れる事が出来ます。
+    </div>
+  </div>
+</%def>
+
+<%doc>クリスマス限定コスプレおまけガチャテキスト</%doc>
+<%def name="xmas_omake()">
+  <div>
+    <div class="red">
+      ◎クリスマス限定コスプレおまけガチャとは
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引くたびに、ランダムでおまけが付属するガチャです。
+    </div>
+    <div class="fottertextline">
+      ・おまけ内容はおまけ内容一覧リンクからご参照ください。
+    </div>
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・同じおまけが連続する可能性もございます。ご了承ください。
+    </div>
+  </div>
+</%def>
+
+<%doc>ランキングガチャテキスト</%doc>
+<%def name="ranking(is_support_totalranking, gachalist_by_group=None)">
+  <div>
+    %if is_support_totalranking:
+      <div class="fottertextline">
+        ・ガチャを引いた際に、入手したキャストをレアリティによって数値化し、その同伴Ptでランキングを争うガチャです。
+      </div>
+      <div class="fottertextline">
+        ・ランキングには｢累計｣と｢単発｣のふたつがあります。
+      </div>
+      <div class="fottertextline">
+        ・｢累計｣ランキングはこれまでに獲得した総同伴Ptでランキングを競います。
+      </div>
+      <div class="fottertextline">
+        ・｢単発｣ランキングは一回での最高同伴Ptでランキングを競います。
+      </div>
+      <div class="fottertextline">
+        ・｢単発｣ランキングでは、ユーザー毎に最高同伴Ptのものだけが記録されます。最高同伴Ptを更新すると、以前の同伴Ptはランキングから消えます。
+      </div>
+    %else:
+      <div class="fottertextline">
+        ・ガチャを引いた際に、入手したキャストをレアリティによって数値化し、その同伴Ptでランキングを競うガチャです。
+      </div>
+      <div class="fottertextline">
+        ・ランキングでは、ユーザー毎に最高同伴Ptのものだけが記録されます。最高同伴Ptを更新した場合、ランキングには最高同伴Ptでのランキング順位が反映されます。
+      </div>
+    %endif
+    %if gachalist_by_group:
+      %for gachalist in gachalist_by_group.values():
+        %if 1 < len(gachalist):
+          <%
+          gachanamelist = [gacha['name'] for gacha in gachalist]
+          str_gachanamelist = 'と'.join(gachanamelist)
+          %>
+          <div class="fottertextline">
+            ・${'、'.join(gachanamelist) | h}はそれぞれこれまで全てのユーザーが引き抜いた分の合計値、総同伴Ptがカウントされています。この総同伴Ptは${str_gachanamelist | h}のどちらが勝利するかを決定する数値となります。
+          </div>
+          <div class="fottertextline">
+            ・総同伴Pt達成報酬は${str_gachanamelist | h}でそれぞれ別途受け取ることができます。
+          </div>
+        %endif
+      %endfor
+      <div class="fottertextline">
+        ・総同伴Pt達成報酬は総同伴Ptが達成した時点で配布されます。
+      </div>
+      <div class="fottertextline">
+        ・初めてガチャを引き抜いたタイミングで既に配布済みとなっている総同伴Pt達成報酬はその後配布される事はありません。
+      </div>
+      <div class="fottertextline">
+        ・本ガチャは開催期間中、毎日AM4:00にリセットが行なわれ、ガチャを引抜くことができるようになります。
+      </div>
+    %endif
+    
+  </div>
+</%def>
+
+<%doc>ランダムおまけガチャテキスト</%doc>
+<%def name="omake()">
+  <div>
+    <div class="red">
+      ◎ランダムおまけガチャとは
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引くたびに、ランダムでおまけが付属するガチャです。
+    </div>
+    <div class="fottertextline">
+      ・おまけ内容はおまけ内容一覧リンクからご参照ください。
+    </div>
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・同じおまけが連続する可能性もございます。ご了承ください。
+    </div>
+  </div>
+</%def>
+
+<%doc>福袋ガチャテキスト</%doc>
+<%def name="fukubukuro()">
+  <div>
+    <div class="red">
+      ◎福袋ガチャとは
+    </div>
+    <div class="fottertextline">
+      ・5連ガチャ、10連ガチャで獲得できる福袋は別のものとなります。
+    </div>
+    <div class="fottertextline">
+      ・各ガチャ毎に、3種類の福袋のうちいずれかが獲得できます。
+    </div>
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・同じおまけが連続する可能性もございます。ご了承ください。
+    </div>
+  </div>
+</%def>
+
+<%doc>1日1回100ポイントガチャテキスト</%doc>
+<%def name="discount(gacha)">
+  <div>
+    <div class="fottertextline">
+      ・${gacha['name'] | h}は、${gacha['firsttype_text'] | h}のみ${gacha['price_first']}ポイントで引く事が出来るガチャです。
+    </div>
+    %if gacha['firsttimetype'] == Defines.GachaFirsttimeType.EVERYDAY:
+      <div class="fottertextline">
+        ・${gacha['first_stock_ori']}回${gacha['price_first']}ポイントで引き抜いた翌日の${'%s%d' % ('AM' if Defines.DATE_CHANGE_TIME < 12 else 'PM', Defines.DATE_CHANGE_TIME % 12)}時にガチャはリセットされ、再度${gacha['first_stock_ori']}回のみ${gacha['price_first']}ポイントで引き抜く事ができます。
+      </div>
+    %endif
+    <div class="fottertextline">
+      ・${gacha['first_stock_ori'] + 1}回目以降引き抜く場合は、 消費ポイントが${gacha['price_origin']}ポイントとなります。
+    </div>
+  </div>
+</%def>
+
+<%def name="limit_sheet(gacha)">
+  <div>
+    <div class="red">
+      ◎${gacha['name'] | h}とは
+    </div>
+    <div class="fottertextline">
+      ・ガチャを引き抜くたびにシートに記載されているおまけのどれか1つが獲得できるガチャです。
+    </div>
+    <div class="red">
+      ◎その他注意事項
+    </div>
+    <div class="fottertextline">
+      ・一度獲得したシートアイテムは再抽選されません。
+    </div>
+    <div class="fottertextline">
+      ・本ガチャはリセットを行いシート内容を初期状態に戻すことは出来ません。
+    </div>
+  </div>
+</%def>

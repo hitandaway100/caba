@@ -1,0 +1,192 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="topcap()">
+</%def>
+<%def name="resulttop()">
+</%def>
+<%def name="resultbody()">
+</%def>
+<%def name="scouttime()"></%def>
+
+<%def name="scouttop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${scout['thumbUrl']}" style="width:320px;height:180px;"/>
+		</div>
+		<div class="scoutpic2">
+			${self.drawChampagneCallHostImg()}
+		</div>
+		<div class="scoutflame" style="position:absolute;">
+			<span class="wrapper">${scout['areaname'] | h}${scout['name'] | h}</span>
+		</div>
+		${self.scouttime()}
+	</div>
+</%def>
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script>
+		var flag_clicked = false;
+		function onClickScoutExecButton(url){
+			if(flag_clicked){
+				return;
+			}
+			%if is_pc:
+			if(window.parent.reserveGetStatus){
+				window.parent.reserveGetStatus();
+			}
+			%endif
+			location.href = url;
+			flag_clicked = true;
+		}
+	</script>
+	${self.drawChampagneCallHostCss()}
+	${self.drawChampagneCallHostScript()}
+</%def>
+
+<%def name="playerstatus()">
+	%if not is_pc:
+	<div class="scoutstatus">
+		<table class="setbox">
+			<tr>
+				<td class="scset1">
+					体力
+				</td>
+				<td class="scset2">
+					${player['ap']}/${player['apmax']}
+				</td>
+				<td class="scset3">
+					経験値
+				</td>
+				<td class="scset4">
+					${player['exp'] - player['exp_prev']}/${player['exp_next'] - player['exp_prev']}
+				</td>
+			</tr>
+			<tr>
+				<td class="scset1" colspan="2">
+					<div class="st_frame" style="height:16px; margin-left:-4px;">
+						<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+				<td class="scset3" colspan="2">
+					<div class="st_frame" style="height:16px; margin-left:-4px;">
+						<%
+							exp_diff = player['exp_next'] - player['exp_prev']
+							exp_percent = 100
+							if 0 < exp_diff:
+								cur_exp = max(0, player['exp'] - player['exp_prev'])
+								exp_percent = min(100, 100 * cur_exp / exp_diff)
+						%>
+						<div class="st_gauge02" style="width:${int(exp_percent * 120 / 100)};"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table class="setbox">
+			<tr>
+				<td class="scset5">
+					${gold_name | h}
+				</td>
+				<td class="scset6">
+					${player['gold']}CG
+				</td>
+			</tr>
+		</table>
+	</div>
+	%endif
+</%def>
+
+<%def name="resultbodywrapp()">
+	
+	<div class="btn_ontext">
+		<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_next', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01/btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+	</div>
+	
+	${self.playerstatus()}
+	
+	${self.resultbody()}
+</%def>
+
+<%def name="drawScoutResultInfoStatus(with_title=True)">
+	%if scoutresultinfo and 0 < len(set(['gold_add', 'exp_add']) & set(scoutresultinfo.keys())):
+		<span class="yellow">スカウト結果</span><br />
+		%if scoutresultinfo.get('gold_add'):
+			<span class="orange">${scoutresultinfo['gold_add']}</span>${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}獲得<br />
+		%endif
+		%if scoutresultinfo.get('exp_add'):
+			<span class="orange">${scoutresultinfo['exp_add']}</span>経験値獲得<br />
+		%endif
+	%endif
+</%def>
+
+<%def name="drawScoutResultInfo(line=True)">
+	${self.drawChampagneCall()}
+	
+	%if scoutresultinfo and 0 < len(set(['gold_add', 'exp_add']) & set(scoutresultinfo.keys())):
+		<div style="text-align:center;padding: 4px 0px;">
+			${self.drawScoutResultInfoStatus()}
+		</div>
+		%if line:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		%endif
+	%endif
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		${self.scouttop()}
+		${self.topcap()}
+		${self.resulttop()}
+	</div>
+	${self.resultbodywrapp()}
+	
+	<div class="areastatus">
+		<span class="wrapper">${scout['name'] | h}</span>
+		<table class="areabox">
+			<tr>
+				<td class="areaset1" style="width:60px;">
+					達成度
+				</td>
+				<td class="areaset1" style="width:40px;">
+					${scout['percent']}%
+				</td>
+				<td class="areaset1" style="width:184px; margin-left:-10px;">
+					<div class="st_frame_big">
+						<div class="st_gauge04" style="width:${int(scout['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="areabox2">
+			<tr>
+				<td class="areaset1">
+					体力
+				</td>
+				<td class="areaset2"  style="color:#FF0000;">
+					-${scout['apcost']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1">
+					経験値
+				</td>
+				<td class="areaset2">
+					${scout['exp']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1">
+					CG
+				</td>
+				<td class="areaset2">
+					＋${scout['goldmin']}〜${scout['goldmax']}
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_raidevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+	</div>
+</%def>

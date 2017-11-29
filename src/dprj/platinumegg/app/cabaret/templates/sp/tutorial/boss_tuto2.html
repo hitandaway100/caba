@@ -1,0 +1,17 @@
+#coding:utf-8
+<%inherit file="../boss/bosspre.html" />
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			それではもう一度接客してみるか。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="drawBattleButton()">
+	<div class="btn_ontext">
+		<a href = "${get_html_param('url_bossbattle', 'sp/boss/boss_swf.html')}"><img src="${url_static_img}11/btn_tl_01.png" style="width:232px;height:49px;"/></a>
+	</div>
+</%def>

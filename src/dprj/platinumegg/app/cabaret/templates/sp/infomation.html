@@ -1,0 +1,61 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="contents()">
+<div class="titlebar">
+	<p class="caption">更新情報一覧</p>
+</div>
+
+<section class="basicinfo">
+	<div class="basictop">
+		<p class="caption">更新情報</p>
+		<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" >
+	</div>
+		
+	<div class="basicBack">
+		<ul>
+			% if infomations:
+				% for infomation in infomations:
+					<li>
+						<a href="${infomation['url_detail']}">${infomation['date']}<br/>${infomation['title']}<br/></a>
+					</li>
+					<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" >
+				% endfor
+			% else:
+				<div class="list_not_found">
+					まだありません
+				</div>
+			% endif
+		</ul>
+		<div style="font-size:0px;">
+			&nbsp;
+		</div>
+	</div>
+	<div class="basicbtm">.
+	</div>
+
+	
+</section>	
+
+<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+	<tr>
+		<td width="68px">
+			% if url_prev is not UNDEFINED:
+				<a href="${url_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+			%else:
+				<div style="font-size: 0px opacity:0;">　</div>
+			%endif
+		</td>
+		<td class="wrapper" style="font-size:12px;">
+			&#40;${cur_page}/${page_max}&#41;
+		</td>
+		<td width="68px">
+			% if url_next is not UNDEFINED:
+				<a href="${url_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+			%else:
+				<div style="font-size: 0px opacity:0;">　</div>
+			%endif
+		</td>
+	</tr>
+</table>
+
+</%def>

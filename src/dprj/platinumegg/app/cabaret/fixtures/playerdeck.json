@@ -1,0 +1,32 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.playerdeck",
+        "fields": {
+            "deckcapacitylv": 100,
+            "cardlimitlv": 100,
+            "deckcapacityscout": 1,
+            "cardlimititem": 0
+        }
+    },
+    {
+        "pk": 2,
+        "model": "cabaret.playerdeck",
+        "fields": {
+            "deckcapacitylv": 100,
+            "cardlimitlv": 100,
+            "deckcapacityscout": 1,
+            "cardlimititem": 0
+        }
+    },
+    {
+        "pk": 3,
+        "model": "cabaret.playerdeck",
+        "fields": {
+            "deckcapacitylv": 100,
+            "cardlimitlv": 100,
+            "deckcapacityscout": 1,
+            "cardlimititem": 0
+        }
+    }
+]

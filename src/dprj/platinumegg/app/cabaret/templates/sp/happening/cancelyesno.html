@@ -1,0 +1,29 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">超太客の接客を諦める</p>
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320" height="12" style="margin-top:8px;" />
+		
+		<div class="wrapper">
+			超太客の接客を諦めますか?
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		
+		<div>
+			<a class="btnlong" style="margin-top:10px;"href="${get_html_param('url_happening', 'sp/happening/happening.html')}"><div>接客を続ける</div></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_happeningcancel_do', 'sp/happening/failed.html')}"><div>接客を諦める</div></a>
+		</div>
+		
+		<div style="padding-bottom:20px;">
+		</div>
+		
+	</div>
+</%def>

@@ -1,0 +1,60 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+<%namespace name="repticket" file="../../reprintticket_tradeshop/top.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+	<script type="text/javascript">
+	 function onClickBanner(){
+		 to_top("${get_html_param('url_harepai', '')}");
+	 }
+	</script>
+</%def>
+
+<%def name="contents()">
+  <%doc>ページヘッダー</%doc>
+  <div class="back_black">
+    <img src="${url_static_img}banner/event/crosspromo/02/cross_promo_01.png" width="320px" height="130px" />
+    <div style="text-align:center;margin:10 0;">5/23〜6/6 15:00まで</div>
+
+    <img src="${url_static_img}banner/event/crosspromo/02/cross_promo_02.png" width="320px" height="320px" />
+    <div style="text-align:center;line-height:1.2;margin: 5 0;">
+      <span class="red" style="font-size:12px;">※注意：報酬はイベント終了後数日中に配布されます。</span>
+    </div>
+
+    <div class="wrapper" style="margin-bottom:8px;">
+      <a href="javascript:void(0);" onclick="onClickBanner()">
+        <img src="${url_static_img}banner/event/crosspromo/02/sp_600_150.gif" width="300px" height="75px" />
+      </a>
+      <div style="line-height:1.2;">
+        <span class="yellow" style="font-size:13px;">↑ハーレムオブパイレーツへはこちらから</span>
+      </div>
+    </div>
+
+    <%doc>報酬一覧</%doc>
+    <%
+    cast = {'thumbUrlMiddle': url_static_img+'card/haneda_ai_9/H1/Card_thumb_110_138.png', 'iconUrl': url_static_img+'common/zokusei_1.png', 'name': '羽田あい', 'basepower': '9300', 'cost': '16', 'skillname': '微笑み [小]', 'skilltext': '[味:全]小↑'}
+    %>
+    %for i in range(1, 5):
+      ${print_missions(i, cast)}
+    %endfor
+    <div class="wrapper" style="margin:10px;">
+      <a href="javascript:void(0);" onclick="onClickBanner()">
+        <img src="${url_static_img}banner/event/crosspromo/02/sp_600_150.gif" width="300px" height="75px" />
+      </a>
+      <div style="line-height:1.2;">
+        <span class="yellow" style="font-size:13px;">↑ハーレムオブパイレーツへはこちらから</span>
+      </div>
+    </div>
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320px" height="2px" />
+  </div>
+</%def>
+
+<%def name="print_missions(n, cast)">
+  <div class="titlesub">
+    <div class="wrapper">
+      ログイン${n}日目
+    </div>
+  </div>
+  ${repticket.castdata(cast)}
+</%def>

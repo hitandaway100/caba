@@ -1,0 +1,136 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<%
+		int_flag_skill = True
+	%>
+	<img src="${url_static_img}event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_reward_sp.png" width="320px" height="380px" />
+	<div>
+		${self.eventtopic()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:4px;"/>
+	</div>
+	<div class="wrapper">
+		特効キャストをデッキに入れると<br />
+		${scoutevent['point_name']}の獲得数が大幅アップするぞ!
+	</div>
+	
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			特効キャスト一覧
+		</div>
+	</div>
+	
+	%if specialcardlist:
+		<div id="special_cast">
+			%for specialcard in specialcardlist:
+				<%
+					skillname = None
+					skilltext = None
+					if specialcard['skill']:
+						skillname = specialcard['skill']['name']
+						skilltext = specialcard['skill']['text']
+				%>
+				${self.drawNominateCard(specialcard['thumbnail']['middle'],specialcard['iconUrl'],specialcard['name'],specialcard['maxpower'],specialcard['cost'],specialcard['hklevel'],specialcard['specialpowup'],skillname,skilltext)}
+			%endfor
+		</div>
+	%endif
+	
+	%if scoutevent['is_opened']:
+		<div class="wrapper">	
+			ステップアップガチャで<br />
+			特効キャストを獲得しよう!
+		</div>
+		${self.show_gacha_banner()}
+		
+		<div class="topcap">
+			※同名の特効キャストの効果は<br>
+			重複してかかりません
+		</div>
+	%endif
+
+	${self.eventfooter()}
+
+</%def>
+
+<%def name="drawNominateCard(thumbUrl, iconUrl, name, power, cost, hklevel, powerup, skillname, skilltext)">
+	%if skillname:
+	<div style="background: url(${url_static_img}common/card_frame_07.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:201; background-size:310px 201px;">
+	%else:
+	<div style="background: url(${url_static_img}common/card_frame_08.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:153; background-size:310px 153px;">
+	%endif
+		<table>
+			<td>
+				<div class="cardspace">
+					<img src="${thumbUrl}" width="110px" height="138px" />
+				</div>
+			</td>
+			<td>
+				<table class="nominate_name">
+					<tr>
+						<td class="name_st1l"><img src="${iconUrl}" width="28px" height="28px" /></td>
+						<td class="name_st2l">${name | h}</td>
+					</tr>
+				</table>
+				<table class="nominate_set2">
+					<tr>
+						<td class="nominate_st1">
+							最大接客力
+						</td>
+						<td class="nominate_st2">
+							${power}
+						</td>
+					</tr>
+					<tr>
+						<td class="nominate_st1">
+							人件費
+						</td>
+						<td class="nominate_st2">
+							${cost}
+						</td>
+					</tr>
+					<tr>
+						<td class="nominate_st1">
+							ハメ管理度
+						</td>
+						<td class="nominate_st2">
+							% for _ in xrange(hklevel - 1):
+								<img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+							% endfor
+						</td>
+					</tr>
+				</table>
+				<table>
+					<tr>
+						<td class="nominate_big">
+							<div style="font-size:12px;">
+								${scoutevent['point_name']}獲得数
+								<span style="font-size:24px; color:#ffff00;">${powerup}</span>
+								倍
+							</div>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</table>
+		%if skillname:
+			<table class="nominate_set3">
+				<tr>
+					<td class="nominate_st3">
+						サービス
+					</td>
+					<td class="nominate_st4">
+						<b>&nbsp; ${skillname | h}</b>
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class="nominate_st5">
+						%if skilltext:
+							${skilltext | h}
+						%endif
+					</td>
+				</tr>
+			</table>
+		%endif
+	</div>
+</%def>

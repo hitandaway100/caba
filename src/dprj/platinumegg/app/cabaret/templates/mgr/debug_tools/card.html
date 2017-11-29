@@ -1,0 +1,205 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>カード付与</strong>　カードを付与します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="add_card" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for card in cardlist:
+            <option value="${card.id}">${card.name | h}(ID:${card.id})</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          レベル:<br />
+          <input type="text" name="_level" value="1" />
+        </p>
+        <input class="btn" type="submit" value="付与" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>カードのパラメータ変更</strong>　カードのパラメータを変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_card_status" />
+        <p>
+          カードID:<input type="text" name="_card" value="" />の
+        </p>
+        <p>
+          <select name="_param_type">
+            %for valueid,valuename in card_change_params:
+            <option value="${valueid}">${valuename | h}</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          <input type="text" name="_value" />に
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>カード取得フラグ</strong>　カード取得フラグを操作します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="card_acquisition" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for card in cardlist:
+            <option value="${card.id}">${card.name | h}(ID:${card.id})</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          最大レベル:<br />
+          <input type="text" id="_level" name="_level" value="1" />で
+        </p>
+        <p>
+          <select name="_flag" onchange="onChangeCardAcquisition(this);">
+            <option value="1">取得済み</option>
+            <option value="0">未取得</option>
+          </select>に
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>カード・アルバム取得フラグ全取得</strong>　本番環境で公開されている全カード・アルバムを取得状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_all_card_acquisition" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <input class="btn" type="submit" value="全カード・アルバムを取得済みにする" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>カード取得フラグ全削除</strong>　全カードを未取得状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="flush_card_acquisition" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <input class="btn" type="submit" value="全カードを未取得にする" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>キャスト名鑑</strong>　キャスト名鑑取得フラグを操作します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="album_acquisition" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for card in albumlist:
+            <option value="${card.id}">${card.name | h}(ID:${card.id})</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          <select name="_flag">
+            <option value="1">取得済み</option>
+            <option value="0">未取得</option>
+          </select>に
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>キャスト名鑑取得フラグ全削除</strong>　全キャスト名鑑を未取得状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="flush_album_acquisition" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <input class="btn" type="submit" value="全キャスト名鑑を未取得にする" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>異動数変更</strong>　異動したキャスト数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="cardstock" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for card in albumlist:
+            <option value="${card.id}">${card.name | h}(ID:${card.id})</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          異動数:<br />
+          <input type="text" name="_value" value="" />
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+</ul>

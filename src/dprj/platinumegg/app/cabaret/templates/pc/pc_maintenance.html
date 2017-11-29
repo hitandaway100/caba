@@ -1,0 +1,94 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css_pc}base.css?v=0000" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css_pc}top.css?v=0003" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js_pc}jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}jquery-mousewheel.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}jquery-jscrollpane.min.js?v=0"></script>
+	<script type="text/javascript" src="${url_static_js_pc}common.js"></script>
+	<style type="text/css">
+		div.maintenance_area {
+			position: absolute;
+			left : 0;
+			top : 0;
+			width : 100%;
+			height : 100%;
+			display:table-cell;
+			text-align: center;
+			vertical-align: middle;
+		}
+		div.maintenance_area
+		.maintenance_bg{
+			background-color:#000000;
+			filter:alpha(opacity=40);
+			-moz-opacity: 0.4;
+			opacity: 0.4;
+			position: fixed;
+			z-index: 4;
+			left : 0;
+			top : 0;
+			width : 100%;
+			height : 100%;
+		}
+		div.maintenance_area
+		.maintenance_message{
+			position: relative;
+			z-index: 4;
+			display: inline-block;
+			background-color:#000000;
+			min-width: 50%;
+			padding : 8px 16px;
+		}
+	</style>
+	<script>
+		$(function(){
+			var maintenance_message = $(".maintenance_message");
+			maintenance_message.css("top", (640 - maintenance_message.height()) / 2);
+		});
+	</script>
+	${self.top_redirect()}
+</%def>
+
+<%def name="contents()">
+	<div style="width: 880px;height: 640px;margin: 0 auto;">
+		<div id="mainTitle">
+		</div>
+		%if is_maintenance:
+			<div class="maintenance_area">
+				<div class="maintenance_bg">
+					
+				</div>
+				<div class="maintenance_message">
+					いつも『${apptitle}』をご利用頂きまして、誠にありがとうございます。<br />
+					%if is_emergency:
+						只今緊急メンテナンスを行っております。<br />
+					%else:
+						下記のスケジュールにてメンテナンスを行っております。<br />
+						<div class="wrapper" style="padding-top: 16px;padding-bottom: 16px;">
+							${stime.strftime("%m/%d&nbsp;%H:%M")}〜${etime.strftime("%m/%d&nbsp;%H:%M")}
+							<div id="mainte_announce">
+								<div id="resttime">
+								</div>
+								<div>
+									<a class="btnpink" style="display: none;" href="${get_html_param('url_top', 'sp/top/top.html')}"><p class="caption">トップページへ</p></a>
+								</div>
+							</div>
+						</div>
+					%endif
+					ご理解の程、よろしくお願いいたします。
+				</div>
+			</div>
+		%endif
+	</div>
+</%def>
+
+<%doc>iframe対策</%doc>
+<%def name="top_redirect()">
+	<script type="text/javascript">
+		if(parent.document.getElementById('contents_frame')) {
+			top.location.href = "${url_dmm_top}";
+		}
+	</script>
+</%def>

@@ -1,0 +1,18 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.deck",
+        "fields": {
+            "member1": 1,
+            "member2": 2,
+            "member3": 3,
+            "member4": 4,
+            "member5": 5,
+            "member6": 6,
+            "member7": 7,
+            "member8": 8,
+            "member9": 9,
+            "leader": 1000
+        }
+    }
+]

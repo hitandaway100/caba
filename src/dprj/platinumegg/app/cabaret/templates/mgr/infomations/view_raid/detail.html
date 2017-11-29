@@ -1,0 +1,216 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="content()">
+	%if raid:
+		<div class="page-header">
+			<h1>
+				レイドID:${raid['id']}の情報
+			</h1>
+		</div>
+		
+		<div class="row">
+			<div class="span6">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>
+								要素
+							</th>
+							<th>
+								値
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td width="30%">ID</td>
+							<td>
+								${raid['id']}
+							</td>
+						</tr>
+						<tr>
+							<td>マスター</td>
+							<td>
+								${raid['name'] | h}(ID:${raid['mid']})
+							</td>
+						</tr>
+						<tr>
+							<td>発見者</td>
+							<td>
+								${raid['oname'] | h}(ID:${raid['oid']})
+							</td>
+						</tr>
+						<tr>
+							<td>レベル</td>
+							<td>
+								${raid['level']}
+							</td>
+						</tr>
+						<tr>
+							<td>満足度</td>
+							<td>
+								${raid['hpmax'] - raid['hp']} / ${raid['hpmax']}
+							</td>
+						</tr>
+						<tr>
+							<td>状態</td>
+							<td>
+								${raid['state'] | h}
+							</td>
+						</tr>
+						<tr>
+							<td>発生時間</td>
+							<td>
+								${raid['ctime'] | h}
+							</td>
+						</tr>
+						<tr>
+							<td>制限時間</td>
+							<td>
+								${raid['etime'] | h}
+							</td>
+						</tr>
+						<tr>
+							<td>発見者報酬</td>
+							<td>
+								%if owner_prizeinfo:
+									%for prizeitem in owner_prizeinfo['listitem_list']:
+										${prizeitem['name'] | h}x${prizeitem['num']}<br />
+									%endfor
+								%else:
+									獲得していません
+								%endif
+							</td>
+						</tr>
+						<tr>
+							<td>協力者報酬</td>
+							<td>
+								%if help_prizeinfo:
+									%for prizeitem in help_prizeinfo['listitem_list']:
+										${prizeitem['name'] | h}x${prizeitem['num']}<br />
+									%endfor
+								%else:
+									獲得していません
+								%endif
+							</td>
+						</tr>
+						%if raid['eventdata']:
+							<tr>
+								<td>イベント</td>
+								<td>
+									${raid['eventdata']['name'] | h}(ID:${raid['eventdata']['id']})
+								</td>
+							</tr>
+							<tr>
+								<td>発見者のポイント</td>
+								<td>
+									${raid['eventdata']['owner']}
+								</td>
+							</tr>
+							<tr>
+								<td>MVPのポイント</td>
+								<td>
+									${raid['eventdata']['mvp']}
+								</td>
+							</tr>
+							%if raid['eventdata']['combobonus']:
+								<%
+									combobonus = raid['eventdata']['combobonus']
+								%>
+								<tr>
+									<td>コンボ</td>
+									<td>
+										${combobonus['cnt']}(${combobonus['etime']}まで)
+									</td>
+								</tr>
+								<tr>
+									<td>最後に接客したユーザー</td>
+									<td>
+										%if combobonus['last_uid']:
+											ID:${combobonus['last_uid']}
+										%else:
+											----
+										%endif
+									</td>
+								</tr>
+							%endif
+						%endif
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<h2>
+			参加者
+		</h2>
+		%if playerlist:
+			<div class="row">
+				<div class="span6">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									ID
+								</th>
+								<th>
+									名前
+								</th>
+								<th>
+									満足度
+								</th>
+								%if raid['hp'] < 1:
+									<th>
+										発見者報酬
+									</th>
+									<th>
+										MVP報酬
+									</th>
+									<th>
+										協力者報酬
+									</th>
+								%endif
+								<th>
+									プレイヤー情報
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for player in playerlist:
+								<tr>
+									<td>
+										${player['id']}
+									</td>
+									<td>
+										${player['name'] | h}
+									</td>
+									<td>
+										${player['damage']}
+									</td>
+									%if raid['hp'] < 1:
+										<td>
+											${player['eventpoints']['owner']}
+										</td>
+										<td>
+											${player['eventpoints']['mvp']}
+										</td>
+										<td>
+											${player['eventpoints']['help']}
+										</td>
+									%endif
+									<td>
+										<a href="${player['url']}">⇛詳細</a>
+									</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			</div>
+		%else:
+			<div class="well">
+				いません
+			</div>
+		%endif
+	%endif
+</%def>

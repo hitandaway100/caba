@@ -1,0 +1,156 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head_additional()">
+	<script>
+		$(function(){
+			function updateSerchTypeForm(){
+				var form = $("#serchtype").parent();
+				var obj = $("#serchtype")[0];
+				var cur_name = obj.options[obj.selectedIndex].value;
+				form.find(".switch_obj").css("display", "none");
+				form.find("."+cur_name+"_only").css("display", "");
+			}
+			$("#serchtype").change(function(){
+				updateSerchTypeForm();
+			});
+			updateSerchTypeForm();
+		});
+	</script>
+</%def>
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			シリアルコード情報
+		</h1>
+	</div>
+	<div class="well">
+		<p>
+			<strong>シリアルコードの状態を確認</strong>シリアルコードの場合は[,]区切りで複数選択可能
+		</p>
+		<form id="form_view_record" action="${url_self}" method="post">
+			<input type="hidden" name="_proc" value="view_record" />
+			<select name="_serchtype" id="serchtype">
+				<%
+					serchtype_list = (
+						('dmmid', 'DMMIDで検索'),
+						('uid', 'アプリ内ユーザIDで検索'),
+						('serial', 'シリアルコードで検索'),
+						('mid', 'マスターIDで検索'),
+					)
+				%>
+				%for st,st_name in serchtype_list:
+					%if _serchtype == st:
+						<option value="${st}" selected="selected">${st_name}</option>
+					%else:
+						<option value="${st}">${st_name}</option>
+					%endif
+				%endfor
+			</select>
+			<p class="switch_obj dmmid_only uid_only serial_only">
+				<input type="text" name="_value" value="${_value or ''}" /><br />
+				%if shareserial:
+					<label for="checkbox_share"><input type="checkbox" name="_share" value="1" checked="checked" id="checkbox_share" />共通シリアルコードを検索</label>
+				%else:
+					<label for="checkbox_share"><input type="checkbox" name="_share" value="1" id="checkbox_share" />共通シリアルコードを検索</label>
+				%endif
+			</p>
+			<p class="switch_obj mid_only">
+				<select name="_mid">
+					%for serialcampaign in serialcampaign_list:
+						%if _mid == str(serialcampaign.id):
+							<option value="${serialcampaign.id}" selected="selected">${serialcampaign.name | h}(ID:${serialcampaign.id})</option>
+						%else:
+							<option value="${serialcampaign.id}">${serialcampaign.name | h}(ID:${serialcampaign.id})</option>
+						%endif
+					%endfor
+				</select>
+			</p>
+			<p class="switch_obj mid_only">
+				日付:<br />
+				<input type="date" name="_date" value="${_date or ''}" />
+			</p>
+			<p>
+				<input type="submit" class="btn btn-primary" value="表示" />
+			</p>
+		</form>
+	</div>
+	<div class="well">
+		<p>
+			<strong>シリアルコードの入力数を確認</strong>
+		</p>
+		<form action="${url_self}" method="post">
+			<input type="hidden" name="_proc" value="view_count" />
+			<select name="_mid">
+				%for serialcampaign in serialcampaign_list:
+					%if _mid == serialcampaign.id:
+						<option value="${serialcampaign.id}" selected="selected">${serialcampaign.name | h}(ID:${serialcampaign.id})</option>
+					%else:
+						<option value="${serialcampaign.id}">${serialcampaign.name | h}(ID:${serialcampaign.id})</option>
+					%endif
+				%endfor
+			</select>
+			<p>
+				<input type="submit" class="btn btn-primary" value="表示" />
+			</p>
+		</form>
+	</div>
+	
+	%if table_name:
+		<div>
+			<p>
+				<strong>${table_name | h}</strong>
+			</p>
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						%for _,title in table_titles:
+							<th>${title | h}</th>
+						%endfor
+					</tr>
+				</thead>
+				<tbody>
+					%for rowdata in table_data:
+						<tr>
+							%for key,_ in table_titles:
+								<%
+									celldata = rowdata.get(key) or {}
+									cell_url = celldata.get('url')
+									cell_value = celldata.get('value')
+								%>
+								<td>
+									%if cell_url:
+										<a href="${cell_url}">${cell_value}</a>
+									%else:
+										${cell_value}
+									%endif
+								</td>
+							%endfor
+						</tr>
+					%endfor
+				</tbody>
+			</table>
+			%if url_prev or url_next:
+			<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+				<tr>
+					<td width="160px" style="text-align: left;">
+						% if url_prev is not UNDEFINED:
+							<a href="${url_prev}">前へ</a>
+						%else:
+							<div style="font-size: 0px opacity:0;">　</div>
+						%endif
+					</td>
+					<td width="160px" style="text-align: right;">
+						% if url_next is not UNDEFINED:
+							<a href="${url_next}">次へ</a>
+						%else:
+							<div style="font-size: 0px opacity:0;">　</div>
+						%endif
+					</td>
+				</tr>
+			</table>
+		% endif
+		</div>
+	%endif
+</%def>

@@ -1,0 +1,171 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${get_html_param('url_static_js')}jumptop.js"></script>
+  <script type="text/javascript">
+   function onClickBanner(){
+     to_top("${get_html_param('url_avst')}");
+   }
+  </script>
+</%def>
+
+<%def name="contents()">
+  <img src="${get_html_param('url_static_img')}banner/event/crosspromo/03/cross_promo_header.png" width="320" height="132">
+  <div style="text-align: center; margin-top: 20px; margin-bottom: 10px;">${get_html_param('cross_promo_time_limit')}まで</div>
+  <div class="wrapper" style="margin-bottom: 8px;">
+    % if is_pc:
+      <a href="javascript:void(0);" onclick="onClickBanner()">
+    % else:
+      <a href="${get_html_param('url_avst')}">
+    % endif
+      <img src="${get_html_param('url_static_img')}banner/event/crosspromo/03/cross_promo_banner.png" width="240" height="100">
+    </a>
+    <div style="line-height:1.2;">
+      <span class="yellow" style="font-size: 13px;">↑AVストライカーズへはこちらから</span>
+    </div>
+  </div>
+
+  <img src="${get_html_param('url_static_img')}banner/event/crosspromo/03/cross_promo_cradinfo.png" width="320" height="240">
+
+  <div class="back_black">
+    <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="2">
+    <div style="padding: 8px 0px; text-align: center; line-height: 1;">
+      <div style="display: inline-block; width: 144px;">
+        <img src="${get_html_param('url_static_img')}banner/event/crosspromo/03/cross_promo_price02.png" width="140" height="140">
+      </div>
+      <div style="display: inline-block; width: 144px;">
+        <img src="${get_html_param('url_static_img')}banner/event/crosspromo/03/cross_promo_price01.png" width="140" height="140">
+      </div>
+    </div>
+  </div>
+  <div class="wrapper">
+    <div class="yellow" style="font-size: 13px; margin-top: 10px;">
+      各ゲームで貰える報酬をチェックしよう!
+    </div>
+  </div>
+
+  % if is_recipient:
+    ${putTab_recipient()}
+  % else:
+    ${putTab()}
+  % endif
+
+  <%
+  missions = [
+  {'name': 'ノーマルクエスト3-3をクリアする', 'btn_text': 'AVストライカーズへ', 'jump_to': 'url_avst', 'rewards': [{'thumb_dirname': 'akahabu_l', 'item_name': '赤ハブドリンク[大]x3'}, {'thumb_dirname': 'kiryoku_l', 'item_name': '気力回復剤[大]x3'}]},
+  {'name': '女優を10回強化する', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'cabagold_1000', 'item_name': 'キャバゴールドx100000'}]},
+  {'name': 'ソロでクエストを20回クリアする', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'dress_cocktail', 'item_name': 'カクテルドレス'}]},
+  {'name': '女優を1回進化させる', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'ticket_srover', 'item_name': 'SR以上確定ガチャチケットx1'}]},
+  {'name': 'フレンドを3人追加する', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'ticket_reprint', 'item_name': '復刻チケットx50'}]},
+  {'name': '「極級」☆5降臨イベントをクリアする', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'ring_diamond', 'item_name': 'ダイヤの指輪x1'}]},
+  {'name': '曜日クエストを10回クリアする', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'complimentary', 'item_name': '優待券x3'}, {'thumb_dirname': 'signboard', 'item_name': '満席看板x3'}]},
+  {'name': '女優を5回進化させる', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'ticket_call_cast', 'item_name': 'キャスト指定チケットx3'}]},
+  {'name': 'マルチクエストで10回クリアする', 'jump_to': 'url_avst', 'btn_text': 'AVストライカーズへ', 'rewards': [{'thumb_dirname': 'kanzashi_kohaku', 'item_name': '琥珀のかんざし'}]},
+  ]
+
+  missions_recipient = [
+  {'name': 'チュートリアル突破', 'jump_to': '', 'btn_text': '', 'rewards': [{'thumb_dirname': 'AV_diamond', 'item_name': 'ダイヤx3'}, {'thumb_dirname': 'AV_bear1', 'item_name': 'クマの楽園チケットx3'}]},
+  {'name': 'コラボイベント中に5日間ログイン', 'jump_to': '', 'btn_text': '', 'rewards': [{'thumb_dirname': 'AV_rabbit', 'item_name': 'ウサギの楽園チケットx2'}]},
+  {'name': 'コラボイベントで累計獲得秘宝数を10000個以上入手', 'jump_to': 'url_raidevent_top', 'btn_text': 'レイドイベントへ', 'rewards': [{'thumb_dirname': 'AV_5ticket', 'item_name': '☆5確定ガチャ券'}]},
+  {'name': 'コラボイベントで太客、大ボスに1回接客を成功させる', 'jump_to': 'url_raidevent_top', 'btn_text': 'レイドイベントへ', 'rewards': [{'thumb_dirname': 'AV_treasure', 'item_name': '進化の宝物庫チケットx2'}]},
+  {'name': 'コラボイベントで太客、大ボスに5回接客を成功させる', 'jump_to': 'url_raidevent_top', 'btn_text': 'レイドイベントへ', 'rewards': [{'thumb_dirname': 'AV_event', 'item_name': 'イベントのチケットx2'}]},
+  {'name': 'レベルを10にする', 'jump_to': 'url_scout', 'btn_text': 'スカウトへ', 'rewards': [{'thumb_dirname': 'AV_fire1', 'item_name': '火進化石x1'}, {'thumb_dirname': 'AV_water1', 'item_name': '水進化石x1'}, {'thumb_dirname': 'AV_wood1', 'item_name': '木進化石x1'}, {'thumb_dirname': 'AV_light1', 'item_name': '光進化石x1'}, {'thumb_dirname': 'AV_darkness1', 'item_name': '闇進化石x1'}]},
+  {'name': 'レベルを20にする', 'jump_to': 'url_scout', 'btn_text': 'スカウトへ', 'rewards': [{'thumb_dirname': 'AV_fire2', 'item_name': '火進化玉x1'}, {'thumb_dirname': 'AV_water2', 'item_name': '水進化玉x1'}, {'thumb_dirname': 'AV_wood2', 'item_name': '木進化玉x1'}, {'thumb_dirname': 'AV_light2', 'item_name': '光進化玉x1'}, {'thumb_dirname': 'AV_darkness2', 'item_name': '闇進化玉x1'}]},
+  {'name': '「キャバ道」をプレイする', 'jump_to': 'url_battle', 'btn_text': '「キャバ道」へ', 'rewards': [{'thumb_dirname': 'AV_bear2', 'item_name': 'マルチのクマチケットx3'}]},
+  {'name': '裏社会BOXガチャを1回引く', 'jump_to': 'url_gacha_ctype_ticket', 'btn_text': '「引き抜き」へ', 'rewards': [{'thumb_dirname': 'AV_godball', 'item_name': '神惑玉x1'}]},
+  ]
+  %>
+
+  % if is_recipient:
+    ${print_missions(missions_recipient)}
+  % else:
+    ${print_missions(missions)}
+  % endif
+
+  <section class="basicinfo" style="padding-bottom: 10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${get_html_param('url_static_img')}/common/kyoutsu_bar_07.png" width="282" height="3">
+    </div>
+    <div class="basicBack">
+      <ul>
+        <div style="margin: 0px 20px 0px;">
+          <li>${get_html_param('cross_promo_time_limit')}までの期間に達成された場合報酬が配布されます。</li>
+          <li>また、チュートリアル突破、レベル達成のミッションに関しては、既に達成している場合はイベント期間内にマイページに入った時に条件が達成されます。</li>
+          <li>上記に該当しないミッションに関してはイベント期間中にミッションを達成する必要があります。</li>
+          <li>報酬配布はイベント終了後となり、一週間以内を予定しております。</li>
+        </div>
+      </ul>
+      <div style="font-size: 0px;">
+        &nbsp;
+      </div>
+    </div>
+    <div class="basicbtm"></div>
+  </section>
+</%def>
+
+<%def name="print_missions(missions)">
+  % for mission in missions:
+    <div class="back_black">
+      <img src="${get_html_param('url_static_img')}00/id_00_01/bar_03.png" width="320" height="12">
+      <div>
+        % for i, reward in enumerate(mission['rewards'], 1):
+          <table width="310" style="margin: 0 auto;">
+            <td width="64">
+              <img src="${get_html_param('url_static_img')}item/${reward['thumb_dirname']}/Item_thumb_90_90.png" width="60" height="60" alt="報酬画像">
+            </td>
+            <td style="font-size: 12px; vertical-align: middle;">
+              ${reward['item_name']}
+            </td>
+          </table>
+          % if i is not len(mission['rewards']):
+            <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="2">
+          % endif
+        % endfor
+      </div>
+    </div>
+    <p style="font-size: 13px;">条件: ${mission['name']}</p>
+    % if mission['jump_to']:
+      % if is_pc and not is_recipient:
+          <a class="btnlong" style="margin-top: 10px;" href="javascript:void(0);" onclick="onClickBanner()">${mission['btn_text']}</a>
+      % else:
+          <a class="btnlong" style="margin-top: 10px;" href="${get_html_param(mission['jump_to'])}">${mission['btn_text']}</a>
+      % endif
+    % endif
+  % endfor
+</%def>
+
+<%def name="putTab()">
+  <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+    <tr>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s">
+          キャバ王
+        </div>
+      </td>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s" style="text-align :center; font-weight: normal; background: url(${get_html_param('url_static_img')}common/btn_97_off.png) no-repeat; background-size: cover;">
+          <a href="${get_html_param('url_recipient')}"><span style="color: #9c957d; font-size: 13px;">ストライカーズ</span></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</%def>
+
+<%def name="putTab_recipient()">
+  <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+    <tr>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s" style="text-align :center; font-weight: normal; background: url(${get_html_param('url_static_img')}common/btn_97_off.png) no-repeat; background-size: cover;">
+          <a href="${get_html_param('url_cabaret')}"><span style="color: #9c957d;">キャバ王</span></a>
+        </div>
+      </td>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s" style="font-size: 13px;">
+          ストライカーズ
+        </div>
+      </td>
+    </tr>
+  </table>
+</%def>

@@ -1,0 +1,32 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			動画閲覧数(PC)
+		</h1>
+	</div>
+	% if movieviewlist:
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>ＩＤ</th>
+					<th>名前</th>
+					<th>回数</th>
+					<th>テキスト</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for movieview in movieviewlist:
+					<tr>
+						<td>${movieview['id'] | h}</td>
+						<td>${movieview['name'] | h}</td>
+						<td>${movieview['cnt']}</td>
+						<td>${movieview['text']}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	%endif
+</%def>

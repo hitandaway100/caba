@@ -1,0 +1,265 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="topcap()">
+</%def>
+<%def name="resulttop()">
+</%def>
+<%def name="resultbody()">
+</%def>
+<%def name="scouttime()"></%def>
+
+<%def name="stagebustup()">
+  %if stage['bustup']:
+    <%
+      bustup = stage['bustup']
+    %>
+    %if len(bustup) == 1:
+      <%doc>女優ひとり表示</%doc>
+      <div class="scoutpic2">
+        <img src="${bustup[0]['img']}" width="320" height="180"/>
+      </div>
+    %elif len(bustup) == 2:
+      <%doc>女優二人表示</%doc>
+      <div class="scoutpic2" style="text-align:center; width:320px; height: 180px; overflow:hidden;">
+        <img src="${bustup[0]['img']}" width="320" height="180" style="position:absolute; margin-left:-90"/>
+        <img src="${bustup[1]['img']}" width="320" height="180" style="position:relative; margin-left:60"/>
+      </div>
+    %endif
+  %endif
+</%def>
+
+<%def name="scouttop()">
+  <div class="scouttop">
+    <div class="scoutpic" style="position:relative;">
+      <img src="${stage['thumbUrl']}" style="width:320px;height:180px;"/>
+    </div>
+    ${self.stagebustup()}
+    <div class="scoutflame" style="position:absolute;">
+      <span class="wrapper">${stage['areaname'] | h}${stage['name'] | h}</span>
+    </div>
+    ${self.scouttime()}
+  </div>
+</%def>
+
+<%def name="head()">
+  <link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+  <script>
+    var flag_clicked = false;
+    function onClickScoutExecButton(url){
+      if(flag_clicked){
+        return;
+      }
+      %if is_pc:
+      if(window.parent.reserveGetStatus){
+        window.parent.reserveGetStatus();
+      }
+      %endif
+      location.href = url;
+      flag_clicked = true;
+    }
+  </script>
+</%def>
+
+<%def name="playerstatus()">
+  %if not is_pc:
+  <div class="scoutstatus">
+    <table class="setbox">
+      <tr>
+        <td class="scset1">
+          体力
+        </td>
+        <td class="scset2">
+          ${player['ap']}/${player['apmax']}
+        </td>
+        <td class="scset3">
+          経験値
+        </td>
+        <td class="scset4">
+          ${player['exp'] - player['exp_prev']}/${player['exp_next'] - player['exp_prev']}
+        </td>
+      </tr>
+      <tr>
+        <td class="scset1" colspan="2">
+          <div class="st_frame" style="height:16px; margin-left:-4px;">
+            <div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}"><%doc>バーは仮</%doc></div>
+          </div>
+        </td>
+        <td class="scset3" colspan="2">
+          <div class="st_frame" style="height:16px; margin-left:-4px;">
+            <%
+              exp_diff = player['exp_next'] - player['exp_prev']
+              exp_percent = 100
+              if 0 < exp_diff:
+                cur_exp = max(0, player['exp'] - player['exp_prev'])
+                exp_percent = min(100, 100 * cur_exp / exp_diff)
+            %>
+            <div class="st_gauge02" style="width:${int(exp_percent * 120 / 100)};"><%doc>バーは仮</%doc></div>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <table class="setbox">
+      <tr>
+        <td class="scset5">
+          ${gold_name | h}
+        </td>
+        <td class="scset6">
+          ${player['gold']}CG
+        </td>
+      </tr>
+    </table>
+  </div>
+  %endif
+</%def>
+
+<%def name="resultbodywrapp()">
+
+  <div class="btn_ontext">
+    %if url_next:
+      <a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_next', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01/btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+    %else:
+      <a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_scoutdo', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01/btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+    %endif
+  </div>
+
+  ${self.playerstatus()}
+
+  ${self.resultbody()}
+</%def>
+
+<%def name="feverinfo()">
+  <%doc>フィーバー中に表示</%doc>
+  ${self.scoutevent_feverinfo(view_start=True)}
+  ${self.scoutevent_lovetimeinfo()}
+</%def>
+
+<%def name="drawScoutResultInfoStatus(with_title=True)">
+  %if scoutresultinfo and 0 < len(set(['gold_add', 'exp_add']) & set(scoutresultinfo.keys())):
+    <span class="yellow">スカウト結果</span><br />
+    %if scoutresultinfo.get('gold_add'):
+      <span class="orange">${scoutresultinfo['gold_add']}</span>${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}獲得<br />
+    %endif
+    %if scoutresultinfo.get('exp_add'):
+      <span class="orange">${scoutresultinfo['exp_add']}</span>経験値獲得<br />
+    %endif
+  %endif
+</%def>
+<%def name="drawScoutResultInfo(line=True)">
+  %if scoutresultinfo and 0 < len(set(['gold_add', 'exp_add']) & set(scoutresultinfo.keys())):
+    <div style="text-align:center;padding: 4px 0px;">
+      ${self.drawScoutResultInfoStatus()}
+    </div>
+    %if line:
+      <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+    %endif
+  %endif
+</%def>
+
+<%def name="scoregetinfo(line=True)">
+  %if eventscore and 0 < eventscore['point_add']:
+    <table style="width:320px; height:90px;">
+      <tr>
+        <td width="70">
+          <img src="${url_static_img}${scoutevent['chocolate_thumb']}" width="60" height="60" class="itemimg" />
+        </td>
+        <td>
+          <div class="itemtext">
+            ${scoutevent['point_name']}を<span class="yellow">${eventscore['point_add']}</span>個獲得した<br />
+            %if 0 < eventscore['point_effect']:
+              <div style="font-size:13px;">（内特効キャストボーナス<span class="yellow">${eventscore['point_effect']}</span>個）</div>
+            %endif
+            %if 0 < eventscore.get('success_point', 0):
+              <div style="font-size:13px;">（内スカウト成功ボーナス<span class="yellow">${eventscore['success_point']}</span>個）</div>
+            %endif
+            所持数：${eventscore['point_pre']}⇒<span class="yellow">${eventscore['point']}</span>個
+          </div>
+        </td>
+      </tr>
+    </table>
+    %if line:
+      <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+    %endif
+  %endif
+</%def>
+
+<%def name="contents()">
+  <div class="back_black">
+    ${self.scouttop()}
+    ${self.topcap()}
+    ${self.resulttop()}
+  </div>
+  ${self.resultbodywrapp()}
+
+  % if player['level'] < Defines.BIGINNER_PLAYERLEVEL:
+    <div class="topcap">
+      Lv10まで体力消費せず進めます
+    </div>
+  % endif
+
+  <div class="areastatus">
+    <span class="wrapper">${scout['name'] | h}</span>
+    <table class="areabox">
+      <tr>
+        <td class="areaset1" style="width:60px;">
+          達成度
+        </td>
+        <td class="areaset1" style="width:40px;">
+          ${scout['percent']}%
+        </td>
+        <td class="areaset1" style="width:184px; margin-left:-10px;">
+          <div class="st_frame_big">
+            <div class="st_gauge04" style="width:${int(scout['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <table class="areabox2">
+      <tr>
+        <td class="areaset1">
+          体力
+        </td>
+        <td class="areaset2"  style="color:#FF0000;">
+          -${scout['apcost']}
+        </td>
+      </tr>
+      <tr>
+        <td class="areaset1">
+          経験値
+        </td>
+        <td class="areaset2">
+          ${scout['exp']}
+        </td>
+      </tr>
+      <tr>
+        <td class="areaset1">
+          CG
+        </td>
+        <td class="areaset2">
+          ＋${scout['goldmin']}〜${scout['goldmax']}
+        </td>
+      </tr>
+    </table>
+
+    <table>
+      % for index, dropitem in enumerate(scout['dropitems']):
+        <tr class="area_deck" style="top:120px;left:${index * 54 + 10}px;">
+          <td>
+            <img src="${url_static_img}01/scout_frame_photo.png"width="52px" height="52px"/><!--キャバ嬢写真の枠のみ-->
+          </td>
+          <td class="deck_photo">
+            % if dropitem['drop']:
+              <img src="${dropitem['thumbUrl']}"width="50px" height="50px"/><!--キャバ嬢の写真-->
+            % else:
+              <img src="${url_static_img}00/id_00_02/side_no_data.png"width="50px" height="50px"/>
+            % endif
+          </td>
+        </tr>
+      % endfor
+    </table>
+  </div>
+  <div class="link_arrow_re">
+    <a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+  </div>
+</%def>

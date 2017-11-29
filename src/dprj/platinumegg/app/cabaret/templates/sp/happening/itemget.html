@@ -1,0 +1,33 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		${self.happeningtop()}
+		${self.happeningbodytop()}
+		${self.areastatus()}
+	</div>
+	
+		<div class="caution" style="margin:10px auto 10px auto;">
+			アイテムを手に入れた
+		</div>
+		
+		<div class="btnlong">
+			<a class="btnlong" href="${get_html_param('url_exec', 'sp/happening/happeningdo_swf.html')}"><div>店に戻る</div></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_happeningcancel_yesno', 'sp/happening/cancelyesno.html')}"><div>超太客を諦める</div></a>
+		</div>
+		<div class="wrapper" style="margin:-8px auto 10px auto;">
+			諦めてアイテムだけ持ち帰る
+		</div>
+	
+	${self.happeningbodybottom()}
+	${self.prizelist()}
+
+	${self.playerstatus()}
+</%def>
+<%def name="cancelbutton()"></%def>
+<%def name="happeningexecbutton()"></%def>
+

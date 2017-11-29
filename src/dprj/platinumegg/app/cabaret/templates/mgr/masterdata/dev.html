@@ -1,0 +1,81 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>マスターデータの管理　<small>マスターデータ全体の保存・削除・転送を行えます</small></h1>
+	</div>
+	
+	<div class="well">
+		<p><strong>マスターデータ出力</strong>　json形式でマスターデータを出力します</p>
+		<p><a href="${url_download}" class="btn btn-primary" target="_blank">マスターデータ出力</a></p>
+	</div>
+	
+	<div class="well">
+		<p><strong>マスターデータ読み込み</strong>　json形式のファイルを選択して読み込みボタンを押してください</p>
+		<form enctype="multipart/form-data" action="${url_upload}" method="post" id="uploadform">
+			<fieldset>
+				%for field in form:
+					<p>${field}</p>
+					%for error in field.errors:
+						<span class="help-inline">${error}</span>
+					%endfor
+				%endfor
+				<div class="actions" style="padding-left:0;padding-bottom:0;">
+					<input type="submit" class="btn btn-primary" value="読み込み" />
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	
+	<div class="well">
+		<p>
+			<form action="${url_save}" method="post" onsubmit="return confirm('本当に作成しますか？');">
+				<div class="actions" style="padding-left:0;padding-bottom:0;">
+					<input type="submit" class="btn btn-primary" value="現在のマスターデータのzipを作成する" />
+				</div>
+			</form>
+		</p>
+		<table id="infos" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>
+						ファイル名
+					</th>
+					<th>
+						作成時間
+					</th>
+					<th>
+						ダウンロード
+					</th>
+					<th>
+						削除
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				%for data in zipfilelist:
+					<%
+						class_name = ''
+						if data['ctime'] is None:
+							class_name = 'class="danger"'
+					%>
+					<tr ${class_name}>
+						<td>
+							${data['name']}
+						</td>
+						<td>
+							${data['ctime']}
+						</td>
+						<td>
+							<button class="btn btn-primary" onclick="location.href='${data['url_download']};'"><i class="icon-th-large icon-download-alt"></i></button>
+						</td>
+						<td>
+							<button class="btn btn-primary" onclick="if(confirm('本当に削除しますか？')){location.href='${data['url_delete']}';}">×</button>
+						</td>
+					</tr>
+				%endfor
+			</tbody>
+		</table>
+	</div>
+</%def>

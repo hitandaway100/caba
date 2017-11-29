@@ -1,0 +1,1143 @@
+#coding:utf-8
+<%namespace name="eventbanners" file="includes/eventbanners.html"/>
+<%
+	self.css_version = 91
+	self.js_version = 24
+%>
+<html>
+	<head>
+		<title>${apptitle}</title>
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<meta name="format-detection" content="telephone=no" />
+		${self.viewport()}
+		
+		<link href="${url_static_css}style.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+		<link href="${url_static_css}menu.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+		%if is_pc:
+		<style type="text/css">
+			body {
+/*				overflow-x: hidden;*/
+			}
+		</style>
+		%endif
+		<script type="text/javascript">
+			var addWindowOnLoad = (function(){
+				var _onload = [];
+				var _loaded = false;
+				function addWindowOnLoad(func){
+					if(_loaded){
+						func();
+					}
+					else{
+						_onload.push(func);
+					}
+				}
+				window.onload = function(){
+					for(var i=0; i<_onload.length; i++){
+						_onload[i]();
+					}
+					window.onload = null;
+					_loaded = true;
+				}
+				return addWindowOnLoad;
+			})();
+		</script>
+		%if is_pc:
+			<script type="text/javascript" src="${url_static_js_pc}jquery-1.11.1.min.js"></script>
+		%else:
+			%if not is_local:
+				%if is_dev:
+					<script type="text/javascript" src="http://sbx-osapi.dmm.com/gadgets/js/sbx-sppf-cojp.js"></script>
+				%else:
+					<script type="text/javascript" src="http://osapi.dmm.com/gadgets/js/sppf-cojp.js?v=0"></script>
+				%endif
+			%endif
+			<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+		%endif
+		<script type="text/javascript" src="${url_static_js}hover.js?v=${self.js_version}"></script>
+		<script>
+			setupHover(${"true" if is_pc else "false"});
+		</script>
+		<style type="text/css">
+			a {
+				-webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+			}
+			a.hover img,a.hover>div.carddetail_frame,div.hover,.gachatab ul.tabs li.hover,.btnpink.hover,.btnpinkbig.hover,.menu_content_button.hover,.selltab ul.tabs li.hover,.boxtab ul.tabs li.hover,.pretab ul.tabs li.hover,.evotab ul.tabs li.hover {
+				-ms-transform: scale(0.95,0.95);
+				-moz-transform: scale(0.95,0.95);
+				-o-transform: scale(0.95,0.95);
+				-webkit-transform:scale(0.95,0.95);
+			}
+			a.hover,a.hover p {
+				color:#808080;
+			}
+			input[type="submit"],input[type="button"] {
+				-webkit-tap-highlight-color:rgba(0, 0, 0, 0);
+			}
+			input[type="submit"].hover,input[type="button"].hover {
+				-ms-transform: scale(0.95,0.95);
+				-moz-transform: scale(0.95,0.95);
+				-o-transform: scale(0.95,0.95);
+				-webkit-transform:scale(0.95,0.95);
+				color:#808080;
+			}
+		</style>
+		<script type="text/javascript" src="${url_static_js}select.js?v=${self.js_version}"></script>
+		
+		%if is_pc:
+		<!-- スクロールバー対応 -->
+		<style>
+		body{
+
+		}
+		#contentScroll{
+			height: 100%;
+		}
+		/*
+		 * CSS Styles that are needed by jScrollPane for it to operate correctly.
+		 *
+		 * Include this stylesheet in your site or copy and paste the styles below into your stylesheet - jScrollPane
+		 * may not operate correctly without them.
+		 */
+		%if is_safari:
+		.jspContainer { position: relative; }
+		%else:
+		.jspContainer { overflow: hidden; position: relative; }
+		%endif
+		.jspPane { position: absolute; }
+		.jspVerticalBar { position: absolute; top: 0; right: 0; width: 10px; height: 100%; background: #722892; padding:1px; z-index: 100; opacity: 0.7 }
+		.jspHorizontalBar { display:none; position: absolute; bottom: 0; left: 0; width: 100%; height: 16px; background: red; }
+		.jspVerticalBar *, .jspHorizontalBar * { margin: 0; padding: 0; }
+		.jspCap { display: none; }
+		.jspHorizontalBar .jspCap { float: left; }
+		.jspTrack { background: #2b1038; position: relative; padding: 1px }
+		.jspDrag { background: #c349ff; position: relative; top: 0; left: 0; cursor: pointer; }
+		.jspHorizontalBar .jspTrack, .jspHorizontalBar .jspDrag { float: left; height: 100%; }
+		.jspArrow { background: #50506d; text-indent: -20000px; display: block; cursor: pointer; }
+		.jspArrow.jspDisabled { cursor: default; background: #80808d; }
+		.jspVerticalBar .jspArrow { height: 16px; }
+		.jspHorizontalBar .jspArrow { width: 16px; float: left; height: 100%; }
+		.jspVerticalBar .jspArrow:focus { outline: none; }
+		.jspCorner { background: #eeeef4; float: left; height: 100%; }
+
+		/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+		* html .jspCorner { margin: 0 -3px 0 0; }
+		</style>
+		<script type="text/javascript" src="${url_static_js_pc}jquery-mousewheel.js"></script>
+		<script type="text/javascript" src="${url_static_js_pc}jquery.jscrollpane.min.js?v=0"></script>
+		<script type="text/javascript" src="${url_static_js}ajust.js"></script>
+		<script>
+			$(function(){
+				$('#body_main').wrapInner('<div id="contentScroll"></div>');
+				$('#contentScroll').jScrollPane({
+					autoReinitialise : true,
+					contentWidth : 320,
+					%if is_windows:
+					mouseWheelSpeed : 60,
+					%endif
+				});
+				$('#contentScroll').bind("jsp-scroll-x", function(event){
+					$(".jspPane").css("left", 0);
+				});
+				$('html').bind("mousemove", function(event){
+					if(event.buttons === undefined || (event.buttons & 1) == 1){
+						return true;
+					}
+					var jsp = $('#contentScroll').data('jsp');
+					if(jsp.cancelDrag){
+						jsp.cancelDrag();
+					}
+					return true;
+				});
+				%if is_safari:
+				$('#contentScroll').bind("jsp-initialised", function(event){
+					$('#contentScroll').css("overflow", "auto");
+				});
+				%endif
+				%if is_firefox:
+				$("select").on("mousedown", function(e){
+					if(this.__focus){
+						e.preventDefault();
+						return;
+					}
+					
+					var self = this;
+					if(typeof self.__moz_menu_pos === "undefined" || self.__moz_menu_pos == null){
+						var offset = $(self).offset();
+						self.__moz_menu_pos = {
+							x : offset.left * 1.269 - 46,
+							y : offset.top * 0.269 - 66,
+							preX : $(self).css("left"),
+							preY : $(self).css("top"),
+						};
+					}
+					$(self).css("left", self.__moz_menu_pos.x);
+					$(self).css("top", self.__moz_menu_pos.y);
+					
+					self.__focus = true;
+					
+					var loop = function(){
+						if(self.__focus){
+							setTimeout(loop, 100);
+						}
+						else{
+							$(self).css("left", self.__moz_menu_pos.preX);
+							$(self).css("top", self.__moz_menu_pos.preY);
+							self.__moz_menu_pos = null;
+						}
+					};
+					setTimeout(loop, 100);
+				}).on("blur", function(){
+					this.__focus = false;
+				}).on("change", function(){
+					this.__focus = false;
+				});
+				%endif
+				${self.execReservedGetStatus()}
+			});
+		</script>
+		%endif
+		<script type="text/javascript">
+			$(function(){
+				setInterval(function(){
+					$('.s_blink').fadeTo('500',0.5, function(){$(this).fadeTo('500',1)});
+				}, 1000);
+			});
+			$(function(){
+				var flag_clicked = false;
+				var arr = $("a");
+				
+				function setFlagClick(){
+					flag_clicked = true;
+					setTimeout(function(){
+						flag_clicked=false;
+					}, 1000);
+				}
+				
+				function setClick(obj){
+					var href = $(obj).attr("href");
+					var onclick = $(obj).attr("onclick");
+					if(typeof href == 'undefined' || href.length < 1 || 0 <= href.indexOf("javascript") || typeof onclick != 'undefined'){
+						return;
+					}
+					else if(href.indexOf("#") == 0){
+						return;
+					}
+					$(obj).attr("href", "javascript:void(0);");
+					obj.addEventListener("click", function(){
+						if(flag_clicked){
+							return;
+						}
+						setFlagClick();
+						trace("pre:"+location.href);
+						trace("post:"+href);
+						location.href = href;
+					});
+				}
+				for(var i=0; i<arr.length;i++){
+					var obj = arr[i];
+					setClick(obj);
+				}
+				
+				function setSubmit(obj){
+					var onsubmit = $(obj).attr("onsubmit");
+					if(typeof onsubmit != 'undefined'){
+						return;
+					}
+					
+					$(obj).submit(function(){
+						if(flag_clicked){
+							return false;
+						}
+						setFlagClick();
+						return true;
+					});
+				}
+				arr = $("form");
+				for(var j=0; j<arr.length;j++){
+					var obj = arr[j];
+					setSubmit(obj);
+				}
+			});
+			%if not is_pc:
+				var setScrollByElementId = null;
+				if(typeof dmm != "undefined" && dmm.api && dmm.api.setScroll){
+					setScrollByElementId = function(elemId){
+						addWindowOnLoad(function(){
+							var jumptarget = document.getElementById(elemId);
+							if(jumptarget == null){
+								return;
+							}
+							var html = document.documentElement;
+							var body = document.body;
+							var scrollTop  = (body.scrollTop || html.scrollTop);
+							var screenTop = jumptarget.getBoundingClientRect().top;
+							var elemTop = scrollTop + screenTop;
+							dmm.api.setScroll({
+								y : elemTop
+							});
+						});
+					}
+				}
+				else{
+					setScrollByElementId = function(elemId){
+						addWindowOnLoad(function(){
+							location.hash = "#"+elemId;
+						});
+					}
+				}
+				if(location.hash && 0 < location.hash.length && location.hash != "#"){
+					%if is_ios:
+						(function(){
+							var hash = location.hash;
+							location.hash = "";
+							setScrollByElementId(hash.replace("#", ""));
+						})();
+					%else:
+						var hash = location.hash;
+						location.hash = "";
+						addWindowOnLoad(function(){
+							setTimeout(function(){
+								setScrollByElementId(hash.replace("#", ""));
+							}, 100);
+						});
+					%endif
+				}
+			%endif
+			function jumpTuOutSidePage(url, comment){
+				if(window.confirm(comment+"\n遷移先="+url)){
+					window.open(url);
+				}
+			}
+		</script>
+		
+		${self.session_script()}
+		<script>
+			% if is_dev:
+			function trace(msg){
+				var dbg_console_area = $("#dbg_console_area")[0];
+				if(dbg_console_area){
+					dbg_console_area.value = msg + "\n" + dbg_console_area.value;
+				}
+				console.log(msg);
+			}
+			%else:
+			function trace(msg){}
+			%endif
+		</script>
+		% if is_need_flash:
+			${self.checkFlashPlayer()}
+		%endif
+		<script type="text/javascript" src="${url_static_js}menu.js?v=3"></script>
+		${self.head()}
+	</head>
+	
+	<a id="TOP"></a>
+	<a name="TOP"></a>
+	%if is_tutorial:
+		<header style="color : #ffffff; text-align: center;">
+			%if is_dev and not is_staging and not is_local:
+				<div style="background-color:#ffdd00; color: #202020;">
+					△▼△開発環境△▼△
+				</div>
+			%endif
+			<div class="tutorial_title">
+				${tutorial_title}&nbsp;[${tutorial_page}/${tutorial_page_max}]
+			</div>
+			${self.tutorialtext()}
+		</header>
+	%else:
+		${self.header_wrapp()}
+	%endif
+	%if is_pc:
+	<body id="body_main" style="width:100%;-webkit-text-size-adjust: 100%;margin:0 auto;left:0;background-repeat:repeat;">
+	%elif is_android:
+	<body id="body_main" style="-webkit-text-size-adjust: none;">
+	%else:
+	<body id="body_main" style="-webkit-text-size-adjust: 100%;">
+	%endif
+		${self.block_menu("top_menu", cross_promotion_banner=True)}
+		${self.contents()}
+		<div>
+			%if not is_tutorial:
+				${self.footer()}
+			%endif
+			% if is_dev:
+				<style type="text/css">
+					.debugbutton {
+						display: block;
+						border-style: solid;
+						border-width: 1px;
+						border-color: #e040d0#501040#501040#e040d0;
+						padding: 0.3em 0px;
+						background: -webkit-gradient(linear, left top, left bottom, from(#e040d0), to(#501040));
+						text-decoration: none;
+						width: 318px;
+						text-align: left;
+						color: #f0f0f0;
+					}
+				</style>
+				%if url_tutorial_skip:
+					<div>
+						<a class="debugbutton" href="${url_tutorial_skip}">&gt;チュートリアルをスキップ</a>
+					</div>
+				%endif
+				%if not is_tutorial and not is_pc:
+					<div>
+						<a class="debugbutton" href="${url_promotion_debug}">&gt;クロスプロモーション</a>
+					</div>
+				%endif
+				% if dbg_print_log is not UNDEFINED:
+					<a class="debugbutton" href="${url_template_test}">&gt;テンプレートテストTop</a>
+					<a class="debugbutton"  href="${url_html5_test}">&gt;html5test</a>
+					<a class="debugbutton"  href="${url_apitest}">&gt;apitest</a>
+					<a class="debugbutton"  href="${url_cookie_test}">&gt;cookietest</a>
+					<a class="debugbutton"  href="${url_support_paymentlist}">&gt;課金履歴</a>
+					<a class="debugbutton" href="http://127.0.0.1:8080/pc/mypage/?opensocial_app_id=127799&opensocial_owner_id=10000000">&gt;色々調査用</a>
+					<div>
+						Javascript Log:<br />
+						<textarea id="dbg_console_area" style="width: 100%;" rows="6"></textarea>
+					</div>
+					<div style="width:320px; overflow: hidden;"><!-- スクロールのじゃまをするのでサイズ固定 -->
+						ServerLog:<br />
+						%if is_local:
+							<div>
+								${dbg_print_log}
+							</div>
+						%else:
+							<textarea style="width: 100%;" rows="6">${dbg_print_log}</textarea>
+						%endif
+					</div>
+				%endif
+			%endif
+			%if is_pc and is_chrome:
+				<textarea style="width: 100%;height:0;opacity: 0;" disabled="disabled"></textarea>
+			%endif
+		</div>
+		<iframe style="height:0px;width:0px;visibility:hidden" src="about:blank">
+			this frame prevents back forward cache
+		</iframe>
+	</body>
+</html>
+<%def name="head()"></%def>
+<%def name="header_wrapp()">
+	<header>
+		%if is_dev and not is_staging and not is_local:
+			<div style="background-color:#ffdd00; text-align: center; color: #202020;">
+				△▼△開発環境△▼△
+			</div>
+		%endif
+		${self.header()}
+	</header>
+</%def>
+<%def name="header_extention()"></%def>
+<%def name="header()">
+	<div class="back_black">
+	%if not is_pc:
+		<ul class="menu" >
+			<li><a href="${get_html_param('url_mypage', 'sp/mypage.html')}"><img src="${url_static_img}common/globalmenu_01.png" width="64px" height="55px" /></a></li>
+			<li><a href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><img src="${url_static_img}common/globalmenu_02.png" width="64px" height="55px" /></a></li>
+			<li><a href="${get_html_param('url_battle', 'sp/battle/battle.html')}"><img src="${url_static_img}common/globalmenu_03.png" width="64px" height="55px" /></a></li>
+			<li><a href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}"><img src="${url_static_img}common/globalmenu_04.png" width="64px" height="55px" /></a></li>
+			<li><div class="menu_button" name="top_menu"><img src="${url_static_img}common/globalmenu_05.png" width="64px" height="55px" /></div></li>
+		</ul>
+		<div class="bar">
+			<img src="${url_static_img}common/bar_01.png" width="320px" height="12px" />
+		</div>
+	%endif
+		${self.header_extention()}
+	</div>
+</%def>
+<%def name="contents()"></%def>
+<%def name="footer()">
+	${self.block_menu("bottom_menu", cross_promotion_banner=False)}
+	%if not is_pc:
+	<div>
+		<ul class="menu">
+			<li><a href="${get_html_param('url_mypage', 'sp/mypage.html')}"><img src="${url_static_img}common/globalmenu_01.png" width="64px" height="55px" /></a></li>
+			<li><a href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><img src="${url_static_img}common/globalmenu_02.png" width="64px" height="55px" /></a></li>
+			<li><a href="${get_html_param('url_battle', 'sp/battle/battle.html')}"><img src="${url_static_img}common/globalmenu_03.png" width="64px" height="55px" /></a></li>
+			<li><a href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}"><img src="${url_static_img}common/globalmenu_04.png" width="64px" height="55px" /></a></li>
+			<li><div class="menu_button" name="bottom_menu"><img src="${url_static_img}common/globalmenu_05.png" width="64px" height="55px" /></div></li>
+		</ul>
+	</div>
+	<div style="font-size:11px; text-align:center; background-color:#000000; padding-bottom:0px">
+		(C) DMM GAMES&nbsp; /&nbsp; (C)AV GAMES
+	</div>
+	%endif
+</%def>
+<%def name="block_menu(menuid, cross_promotion_banner=True)">
+	<div class="menu_box" id="${menuid}" style="display:none;">
+		<section class="menu_window">
+			<div class="menu_window_top">
+				<div style="display:inline-block; width:264px;">
+					<img src="${url_static_img}common/menu_top_bar.png" width="264px" height="30px">
+				</div>
+				<div style="display:inline-block; width:32px; margin-top:3px;margin-bottom:2px;">
+					<a class="menu_button" name="${menuid}" href="javascript:void(0);" style="margin-left:auto;margin-right:auto;"><img src="${url_static_img}common/close.png" width="30px" height="30px"></a>
+				</div>
+			</div>
+			
+			<div class="menu_window_back">
+				%if menu_banner:
+					<div class="bunnerwrap" style="margin-top:0px;font-size:12px;">
+						${self.drawEventBanner(menu_banner, comment=True)}
+					</div>
+				%endif
+				<div class="menu_title">キャスト</div>
+				<table class="menu_subbox">
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_composition', 'sp/composition/baseselect.html')}"><div>教育</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_evolution', 'sp/evolution/baseselect.html')}"><div>ハメ管理</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_deck', 'sp/deck/deck.html')}"><div>キャスト編成</div></a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_cardbox', 'sp/card/cardbox.html')}"><div>キャスト一覧</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_sell', 'sp/card/sell.html')}"><div>退店</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_transfer', 'sp/card/transfer.html')}"><div>異動</div></a>
+						</td>
+					</tr>
+				</table>
+				<div class="menu_title">超太客</div>
+				<table class="menu_subbox">
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_happening', 'sp/happening/happening.html')}"><div>超太客</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><div>秘宝交換</div></a>
+						</td>
+						<td>
+							　
+						</td>
+					</tr>
+				</table>
+				<div class="menu_title">アイテム&買い物</div>
+				<table class="menu_subbox">
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_present', 'sp/present.html')}"><div>プレゼント</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_itemlist', 'sp/item/itemlist.html')}"><div>持ち物</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_treasurelist', 'sp/treasure/list.html')}"><div>宝箱</div></a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_shop', 'sp/shop/shop.html')}"><div>ショップ</div></a>
+						</td>
+					</tr>
+				</table>
+				<div class="menu_title">その他</div>
+				<table class="menu_subbox">
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><div>経営</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><div>フレンド</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_album', 'sp/album/album.html')}"><div>キャスト名鑑</div></a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_help', 'sp/help.html')}"><div>ヘルプ</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_config', 'sp/config.html')}"><div>コンフィグ</div></a>
+						</td>
+						<td>
+							<a class="menu_content_button" href="${get_html_param('url_top', 'sp/top/top.html')}"><div>TOP</div></a>
+						</td>
+					</tr>
+				</table>
+				%if cross_promotion_banner:
+				  <%doc>${self.dmmCrossPromotionBannerForMenu()}</%doc>
+				%endif
+				<div>
+					<a class="menu_button menu_content_button" name="${menuid}" href="javascript:void(0);" style="margin-left:auto;margin-right:auto;"><div>×閉じる</div></a>
+				</div>
+			</div>
+			<div class="menu_window_btm">
+			</div>
+		</section>
+	</div>
+</%def>
+
+<%doc>セッションチェック用のjavascript</%doc>
+<%def name="session_script()">
+	<script type="text/javascript" src="${url_static_js}session.js?v=4"></script>
+	<script type="text/javascript">
+		var flag = true;
+		
+		%if is_local or (is_admin_access and is_dbg_user):
+			
+		%elif not is_pc:
+			if(!checkSession("${cur_session}")){
+				$(function(){
+					postSessionRequest("${url_dmm_top}", "${url_session_set}", "${url_session_callback}", "${url_session_error}", ${"true" if is_pc else "false"});
+				});
+				flag = false;
+			}
+		%endif
+		if(flag){
+			if($("#body_main").css("display") == "none"){
+				$("#body_main").css("display", "");
+			}
+			%if not (is_local or is_dbg_user):
+				$(function(){
+					if ( window.parent && window.self ){
+						if ( window.parent.location == window.self.location ){
+							window.parent.location.href = "${url_dmm_top}";
+						}
+					}
+				});
+			%endif
+		}
+	</script>
+</%def>
+
+<%doc>前次ページへのリンク</%doc>
+<%def name="pagenation()">
+	%if cur_page is not UNDEFINED and page_max is not UNDEFINED:
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="68px">
+				% if url_page_prev is not UNDEFINED:
+					<%doc><a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a></%doc>
+					<button type="button" style="background:none;border:0;padding:0;margin:0;" onclick="location.href='${url_page_prev}';return false;"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></button>
+				%else:
+					<div style="font-size: 0px">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="wrapper" style="font-size:12px; white-space: nowrap; font-weight: bold;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="68px">
+				% if url_page_next is not UNDEFINED:
+					<%doc><a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a></%doc>
+					<button type="button" style="background:none;border:0;padding:0;margin:0;" onclick="location.href='${url_page_next}';return false;"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></button>
+				%else:
+					<div style="font-size: 0px">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+	%endif
+</%def>
+
+<%doc>チュートリアルのメッセージ</%doc>
+<%def name="tutorialtext()"></%def>
+
+<%def name="viewport()">
+	%if is_pc:
+		<meta name="viewport" content="width=334, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+	%elif is_android:
+		<script>
+			(function(){
+				var WIDTH = 320;
+				var DEFAULT_DPI = 160;
+				var dpi = parseInt(DEFAULT_DPI * WIDTH / screen.width);
+				var meta = document.createElement('meta');
+				meta.setAttribute('name', 'viewport');
+				meta.setAttribute('content', 'width=device-width, target-densitydpi=' + dpi + ', initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0');
+			})();
+		</script>
+	%else:
+		<meta name="viewport" content="width=320, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+	%endif
+</%def>
+
+<%def name="drawItemLeadLinkButton(item)">
+	%if item['num']:
+		<form action="${get_html_param('master.url_useyesno', 'sp/item/useyesno.html', item)}" method="post">
+			%if item.get('usenums') and 1 < len(item['usenums']):
+			<table style="position:relative; left:106;">
+				<td class="pullmenu3">
+					<select name="${Defines.URLQUERY_NUMBER}" class="select_type" style="width: 80px; height: 31px;">
+						%for num in item['usenums']:
+							<option value="${num}">${num}${item['master']['unit'] | h}</option>
+						%endfor
+					</select>
+					<div id="pull3"></div>
+				</td>
+				<td style="width:98px;">
+					<input type="submit" value="使用する" class="buttonshop"/>
+				</td>
+			</table>
+				%else:
+					<input type="hidden" name="${Defines.URLQUERY_NUMBER}" value="1" />
+					<input type="submit" value="使用する" class="button"/>
+				%endif
+		</form>
+	%else:
+		<div>
+			<a class="button" href="${get_html_param('master.url_buy', 'sp/shop/shop.html', item)}"><div>購入する</div></a>
+		</div>
+	%endif
+</%def>
+
+<%def name="drawBackPageLink(tmp_linkurl, btn_class='btnlong', btn_style='')">
+	%if backpage_param:
+		<a class="${btn_class}" style="${btn_style}" href="${get_html_param('url', tmp_linkurl, backpage_param)}">${backpage_param['text'] | h}</a>
+	%endif
+</%def>
+<%def name="drawFootBackPageLink(tmp_linkurl, btn_class='btnfoot', btn_style='')">
+	%if backpage_param:
+		<div class="link_arrow_re">
+			<a class="${btn_class}" style="${btn_style}" href="${get_html_param('url', tmp_linkurl, backpage_param)}"><div style="margin-left:14px;">${backpage_param['text'] | h}</div></a>
+		</div>
+	%endif
+</%def>
+
+<%def name="drawTimeLimitText(obj_timelimit)"><!--
+	<%
+		_hours = obj_timelimit['hours']
+		_minutes = obj_timelimit['minutes']
+		_seconds = obj_timelimit['seconds']
+	%>
+	%if _hours:
+		-->${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒<!--
+	%else:
+		-->${_minutes}分${'%02d' % _seconds}秒<!--
+	%endif
+--></%def>
+
+<%def name="checkFlashPlayer()">
+	<script>
+		var hasFlash = false;
+		try {
+			var obj = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
+			if(obj){
+				hasFlash = true;
+			}
+		}
+		catch(e){
+			if(navigator.mimeTypes["application/x-shockwave-flash"] != undefined){
+				hasFlash = true;
+			}
+		}
+		if(!hasFlash){
+			$(function(){
+				if(document.getElementById('contents_frame') || document.getElementById('mainTitle')) {
+					var div_obj = document.createElement("div");
+					div_obj.setAttribute("style", "text-align:center;width: 804px;margin: 0 auto;");
+					div_obj.innerHTML = '${apptitle}をプレイするにはFlash Playerが必要です<br />インストールまたはプラグインを有効にしてください<br />';
+					
+					var anchor_obj = document.createElement("a");
+					anchor_obj.setAttribute("href", "http://www.adobe.com/go/getflash");
+					anchor_obj.innerHTML = '<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Adobe Flash Player を取得" />';
+					div_obj.appendChild(anchor_obj);
+					
+					var elem = document.getElementById("body_main");
+					elem.innerHTML = "";
+					elem.appendChild(div_obj);
+				}
+				else{
+					parent.location.href = "${get_html_param('url_top', 'sp/top/top.html')}";
+				}
+			});
+		}
+	</script>
+</%def>
+
+<%def name="execReservedGetStatus()">
+if(parent.execReservedGetStatus){
+	parent.execReservedGetStatus();
+}
+</%def>
+
+<%def name="drawEventBanner(eventbanner, comment=True)">
+	%if eventbanner['is_external_link']:
+		<a href="javascript:void(0);" onclick="jumpTuOutSidePage('${eventbanner['jumpto'] | h}', '${eventbanner['external_comment'] | h}'); return false;"><img src="${eventbanner['imageurl']}" width="240px" height="auto" /></a><!--
+		% if comment and eventbanner.get('comment'):
+		--><br />└<a  href="javascript:void(0);" onclick="jumpTuOutSidePage('${eventbanner['jumpto'] | h}', '${eventbanner['external_comment'] | h}'); return false;">${eventbanner['comment'] | h}</a>┘<!--
+		% endif
+	%else:
+		<a href="${eventbanner['jumpto']}"><img src="${eventbanner['imageurl']}" width="240px" height="auto" /></a><!--
+		% if comment and eventbanner.get('comment'):
+		--><br />└<a href="${eventbanner['jumpto']}">${eventbanner['comment'] | h}</a>┘<!--
+		% endif
+	%endif
+	-->
+</%def>
+
+<%def name="drawChampagneCall()">
+	%if raidevent_champagne and raidevent_champagne['is_fever'] and raidevent and raidevent['is_opened']:
+		<%doc>エイプリル仕様</%doc>
+		<div style="background-color:#ffff00 ; opacity: 0.70; width:320; height:28; color:#000000; text-align:center; line-height:2;">
+			SHOWTIME中!!：残り${self.drawTimeLimitText(raidevent_champagne['timelimit'])}
+		</div>
+	%endif
+</%def>
+
+<%def name="drawChampagneList()">
+	%if raidevent_champagne and raidevent and raidevent['is_opened']:
+		<%doc>エイプリル仕様</%doc>
+		<%include file="includes/inc_champagne_list.html" args="champagne_num=raidevent_champagne['num'], champagne_num_max=raidevent['champagne_num_max'], is_fever=raidevent_champagne['is_fever'], codename=raidevent['codename'], url_static_img=url_static_img" />
+	%endif
+</%def>
+
+<%def name="drawChampagneCallHostScript()">
+	%if (raidevent_champagne and raidevent_champagne['is_fever'] and raidevent and raidevent['is_opened']) or flag_template_test:
+		<script>
+			$(function(){
+				function setHostAnim(classname, y_arr){
+					var target = $("." + classname);
+					if(target.length < 1){
+						return;
+					}
+					var idx = 0;
+					setInterval(function(){
+						target.css("margin-top", "-"+y_arr[idx]+"px");
+						idx = (idx + 1) % y_arr.length;
+					}, 33);
+				}
+				setHostAnim("hostimg_front", [0, 2, 5, 6, 7, 7, 6, 5, 2]);
+				setHostAnim("hostimg_back", [6, 7, 7, 6, 5, 2, 0, 2, 5]);
+			});
+		</script>
+	%endif
+</%def>
+
+<%def name="drawChampagneCallHostCss()">
+	%if (raidevent_champagne and raidevent_champagne['is_fever'] and raidevent and raidevent['is_opened']) or flag_template_test:
+		<style>
+			.hostframe {
+				position : relative;
+				width : 320px;
+				height : 180px;
+				overflow: hidden;
+			}
+			.hostframe .hostimg {
+				position : absolute;
+			}
+			.hostframe .hostimg_front {
+				top : 88px;
+			}
+			.hostframe .hostimg_back {
+				top : 68px;
+			}
+		</style>
+	%endif
+</%def>
+
+<%def name="drawChampagneCallHostImg()">
+	%if (not boss and raidevent_champagne and raidevent_champagne['is_fever'] and raidevent and raidevent['is_opened']) or flag_template_test:
+		<div class="scoutpic2" style="z-index: 1">
+			<div class="hostframe">
+				<img src="${url_static_img}event/raidevent/showtime/host2.png" width="80" height="120" class="hostimg hostimg_back" style="left: 36px;"/>
+				<img src="${url_static_img}event/raidevent/showtime/host1.png" width="80" height="120" class="hostimg hostimg_back" style="left: 204px;"/>
+				<img src="${url_static_img}event/raidevent/showtime/host0.png" width="80" height="120" class="hostimg hostimg_front" style="left: 0px;"/>
+				<img src="${url_static_img}event/raidevent/showtime/host1.png" width="80" height="120" class="hostimg hostimg_front" style="left: 72px;"/>
+				<img src="${url_static_img}event/raidevent/showtime/host2.png" width="80" height="120" class="hostimg hostimg_front" style="left: 240px;"/>
+				<img src="${url_static_img}event/raidevent/showtime/host3.png" width="80" height="120" class="hostimg hostimg_front" style="left: 168px;"/>
+			</div>
+		</div>
+	%endif
+</%def>
+
+<%doc>ポップアップ</%doc>
+<%def name="drawPopupScript()">
+	%if popupbanner_list:
+		%if not is_pc:
+			<link href="${url_static_css}popup.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+			<script type="text/javascript" src="${url_static}effect/sp/v2/common/js/httprequest.js?v=${self.js_version}"></script>
+			<script type="text/javascript" src="${url_static_js}popup.js?v=${self.js_version}"></script>
+		%endif
+	%endif
+</%def>
+
+<%def name="drawPopup()">
+	%if popupbanner_list:
+		<%doc>ポップアップ本体</%doc>
+		<%include file="includes/popup.html" />
+		
+		<script>
+			(function(){
+				var popupurl_list = [];
+				%for popupbanner in popupbanner_list:
+				popupurl_list.push("${popupbanner}");
+				%endfor
+				%if is_pc:
+					parent.showPopup(popupurl_list);
+				%else:
+					setupPopupBanner(popupurl_list);
+				%endif
+			})();
+		</script>
+	%endif
+</%def>
+
+<%doc>ポイント達成報酬</%doc>
+<%def name="drawPointPrizeInfoList(pointprizeinfo_list, titleformat=None, titleformat_repeat=None, received_text=None)">
+	<div>
+		<%
+			if titleformat is None:
+				titleformat = '{point}PTあつめると…'
+			if titleformat_repeat is None:
+				titleformat_repeat = '{point}PT以降{interval}PT毎に…'
+			if received_text is None:
+				received_text = '受取済み'
+		%>
+		%for pointprize in pointprizeinfo_list:
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					%if pointprize.get('repeat'):
+						${titleformat_repeat.format(point=pointprize['point'], interval=pointprize['interval'])}
+					%else:
+						${titleformat.format(point=pointprize['point'])}
+					%endif
+				</div>
+			</div>
+			%if pointprize['prizeinfo']['listitem_list']:
+				%for idx,prizeitem in enumerate(pointprize['prizeinfo']['listitem_list']):
+					%if 0 < idx:
+						<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+					%endif
+					<table style="margin-left:8px; width:300px; height:90px;">
+						<td  width="70">
+							<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+						</td>
+						<td>
+							<div class="itemtext" style="margin-top:-24px;">
+								%if pointprize.get('repeat'):
+									
+								%elif pointprize['received']:
+									<span class="yellow">[${received_text | h}]</span><br />
+								%else:
+									[未達成]<br />
+								%endif
+								%if prizeitem['icon']:
+									<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+								%else:
+									<span><!--
+								%endif
+								-->${prizeitem['name'] | h}<!--
+								%if prizeitem['rare'] is not None:
+									-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+								%endif
+								-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+							</div>
+						</td>
+					</table>
+				%endfor
+			%endif
+		%endfor
+	</div>
+</%def>
+
+<%doc>ランキング報酬</%doc>
+<%def name="drawRankingPrizeInfoList(rankingprizeinfo_list)">
+	%for rankingprize in rankingprizeinfo_list:
+		<div>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					%if rankingprize['rank_min'] == rankingprize['rank_max']:
+						${rankingprize['rank_min']}位
+					%else:
+						${rankingprize['rank_min']}位〜${rankingprize['rank_max']}位
+					%endif
+				</div>
+			</div>
+			<%include file="includes/prize_info.html" args="prize=rankingprize['prizeinfo'],bar=False" />
+		</div>
+	%endfor
+</%def>
+
+<%doc>スカウトボタンに設定するスクリプト</%doc>
+<%def name="putScoutButtonScript()">
+	<script type="text/javascript">
+		var flag_clicked = false;
+		function onClickScout(url){
+			if(flag_clicked){
+				return;
+			}
+			var chkbox = $("#scoutskip");
+			if(0 < chkbox.length){
+				chkbox = chkbox[0];
+				var v;
+				if(chkbox.checked){
+					v = 1;
+				}
+				else{
+					v = 0;
+				}
+				if(url.indexOf("?") == -1){
+					url = url + "?${Defines.URLQUERY_SKIP}=" + v;
+				}
+				else{
+					url = url + "&${Defines.URLQUERY_SKIP}=" + v;
+				}
+			}
+			var searchbox = $("#scoutsearch");
+			if(0 < searchbox.length){
+				searchbox = searchbox[0];
+				var v;
+				if(searchbox.checked){
+					v = 1;
+				}
+				else{
+					v = 0;
+				}
+				if(url.indexOf("?") == -1){
+					url = url + "?${Defines.URLQUERY_SEARCH}=" + v;
+				}
+				else{
+					url = url + "&${Defines.URLQUERY_SEARCH}=" + v;
+				}
+			}
+			%if is_pc:
+			if(window.parent.reserveGetStatus){
+				window.parent.reserveGetStatus();
+			}
+			%endif
+			location.href=url;
+			flag_clicked = true;
+		}
+	</script>
+</%def>
+
+<%doc>イベントスカウトの早期クリアボーナス</%doc>
+<%def name="drawEventScoutEarlyBonus()">
+	%if earlybonus_stage:
+		<div class="wrapper">
+			<span class="orange">エリア開放前</span>に<span class="orange">${earlybonus_stage['areaname'] | h}</span>までクリアすると<br />
+			<span  class="topcap">「イベントエリア解禁前クリア報酬」</span>として
+		</div>
+		
+		<table style="margin-left:8px; width:300px; height:90px;">
+			%for prizeitem in earlybonus_stage['earlybonus']['listitem_list']:
+				<tr>
+					<td width="70">
+						<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext">
+							%if prizeitem['icon']:
+								<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+							%else:
+								<span><!--
+							%endif
+							-->${prizeitem['name'] | h}<!--
+							%if prizeitem['rare'] is not None:
+								-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+							%endif
+							-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+						</div>
+					</td>
+				<tr>
+			%endfor
+		</table>	
+		<div  class="wrapper">
+			をプレゼント!<br />
+			<div class="red" style="font-size:12px;">
+				※エリア開放後に${earlybonus_stage['areaname'] | h}をクリアした場合は<br />
+				特典を獲得出来ませんのでご了承ください。
+			</div>
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	%endif
+</%def>
+
+<%def name="scoutevent_feverinfo(view_start=False)">
+	<%doc>フィーバー中に表示</%doc>
+	%if scouteventfever and scouteventfever['timelimit']:
+		%if view_start and scouteventfever.get('start'):
+			%if scoutevent["gachaptname"] != "カカオ":
+				<div>
+					<img src="${url_static_img}event/scevent/withlove/event_fiver_bnr_640_120.png" width="320" height="60" />
+				</div>
+			%endif
+		%else:
+			<%
+				_hours = scouteventfever['timelimit']['hours']
+				_minutes = scouteventfever['timelimit']['minutes']
+				_seconds = scouteventfever['timelimit']['seconds']
+			%>
+			<div style="background-color:#ffff00 ; opacity: 0.70; width:320; height:28; color:#000000; text-align:center; line-height:2;"  >
+				%if _hours:
+					フィーバー中!!：残り${_hours}時間${'%02d' % _minutes}分
+				%else:
+					フィーバー中!!：残り${_minutes}分${'%02d' % _seconds}秒
+				%endif
+			</div>
+		%endif
+	%endif
+</%def>
+
+<%def name="scoutevent_lovetimeinfo()">
+	<%doc>逢引ラブタイム中に表示</%doc>
+	%if scouteventfever and scouteventfever['lovetime_timelimit']:
+		<%
+			_hours = scouteventfever['lovetime_timelimit']['hours']
+			_minutes = scouteventfever['lovetime_timelimit']['minutes']
+			_seconds = scouteventfever['lovetime_timelimit']['seconds']
+		%>
+		<div style="background-color:#ffff00 ; opacity: 0.70; width:320; height:28; color:#000000; text-align:center; line-height:2;"  >
+			%if _hours:
+				逢引ラブタイム中!!：残り${_hours}時間${'%02d' % _minutes}分
+			%else:
+				逢引ラブタイム中!!：残り${_minutes}分${'%02d' % _seconds}秒
+			%endif
+		</div>
+	%endif
+</%def>
+
+<%def name="drawStarList()">
+	%if scoutevent and scouteventfever and scoutevent['lovetime_star']:
+		<%doc>七夕仕様</%doc>
+		<%
+			star = scoutevent['lovetime_star'] if scouteventfever['lovetime_timelimit'] else scouteventfever['lovetime_star']
+		%>
+		<%include file="includes/inc_star_list.html" args="star_num=star, star_num_max=scoutevent['lovetime_star'], is_fever=scouteventfever['lovetime_timelimit'], codename=scoutevent['codename'], url_static_img=url_static_img, starimg_on=scoutevent['lovetime_starimgon'], starimg_off=scoutevent['lovetime_starimgoff']" />
+	%endif
+</%def>
+
+<%def name="drawTanzakuList()">
+	%if scoutevent and scoutevent_tanzaku_list:
+		<%doc>七夕仕様</%doc>
+		%for tanzaku in scoutevent_tanzaku_list:
+			<table class="itemtext" width="280px" style="text-align: right;">
+				<td width="70">
+					<img src="${tanzaku['tanzakuthumb']}" width="20px" height="20px" />
+				</td>
+				<td>
+					<span style="height:52px; vertical-align:10%;">　${tanzaku['userdata']['tanzaku']}</span>
+				</td>
+			</table>
+		%endfor
+	%endif
+</%def>
+
+<%def name="drawTip()">
+	%if scoutevent and scouteventscore:
+		<dl class="tip_flame" style="background-color: #9370DB;">
+			<dt class="tip_text">所持${scoutevent['lovetime_pointname'] | h}</dt>
+			<dd class="tip_text_3">${scouteventscore['tip']}枚</dd>
+		</dl>
+	%endif
+</%def>
+
+<%doc>メニュー用クロスプロモバナー</%doc>
+<%def name="dmmCrossPromotionBannerForMenu()">
+	${eventbanners.dmmCrossPromotionBanner(is_pc, is_dev, app_id)}
+</%def>

@@ -1,0 +1,608 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%namespace name="eventbanners" file="includes/eventbanners.html"/>
+<%namespace name="storecommon" file="cabaclub/storecommon.html"/>
+
+<%def name="head()">
+	<link href="${url_static_css}mypage.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}eventbanners.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+	<link href="${url_static_css}flexslider.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}eventbanners.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}tab.js"></script>
+	${self.drawPopupScript()}
+</%def>
+
+<%def name="header_wrapp()">
+	%if is_dev and not is_staging and not is_local:
+		<div style="background-color:#FFDD00; text-align: center; color: #202020;">
+			△▼△開発環境△▼△
+		</div>
+	%endif
+</%def>
+
+<%def name="dmmCrossPromotionBannerForMenu()"></%def>
+
+<%def name="contents()">
+	${self.drawPopup()}
+	<div class="back_black" style="width:320px;">
+		<div class="mytop" style=" padding-bottom:20px;">
+			<!--カードのサムネ(大)-->
+			<div class="mytop1">
+				<img src="${card['master']['thumbnail']['bustup']}" width="320px" height="314px" />
+			</div>
+			<!--属性アイコン-->
+			<div class="mybt9">
+				<img src="${card['master']['iconUrl']}" width="28px" height="28px" />
+			</div>	
+			<!--カード名とハート-->
+			<div class="mytop2">
+				<!--カード名-->
+				<div class="tex">
+					<span style="font-size:16px;">${card['master']['name'] | h}</span>
+				</div>
+			</div>
+			<!--ハート-->
+			<div class="mybt8">
+				%for _ in xrange(card['master']['hklevel'] - 1):
+					<img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+				%endfor
+			</div>
+			%if produce_happeninginfo and produce_happeninginfo["is_open"]:
+				<div>
+					<div class="mytop3_s" style="top:219;">
+						<span style="color:yellow; margin-left:-60px;">イベント太客来店中!</span>
+					</div>
+					<div class="mytop3_clear" style="top:219;">
+						<a href="${produce_happeninginfo['url']}" >
+							<img src="${url_static_img}00/id_00_02/boss_ber_clear.png" width="246px" height="25px" />
+						</a>
+					</div>
+				</div>
+			%endif
+
+			%if happeninginfo and happeninginfo['info'] != 'cleared':
+				<!--太客来店時に表示-->
+				<div>
+					<div class="mytop3_s" style="top:219;">
+						%if happeninginfo.get('is_event'):
+							<span style="color:yellow; margin-left:-60px;">イベント太客来店中!</span>
+						%else:
+							<span style="color:yellow; margin-left:-50px;">超太客来店中!</span>
+						%endif
+						%if happeninginfo['timelimit']:
+							<%
+								_hours = happeninginfo['timelimit']['hours']
+								_minutes = happeninginfo['timelimit']['minutes']
+								_seconds = happeninginfo['timelimit']['seconds']
+							%>
+							%if _hours:
+								<span style="font-size:12px;"> &nbsp; 残り時間:${_hours}時間${'%02d' % _minutes}分</span>
+							%else:
+								<span style="font-size:12px;"> &nbsp; 残り時間:${_minutes}分${'%02d' % _seconds}秒</span>
+							%endif
+						%endif
+					</div>
+					<div class="mytop3_clear" style="top:219;">
+						<a href="${get_html_param('url', 'sp/happening/happening.html', happeninginfo)}" >
+							<img src="${url_static_img}00/id_00_02/boss_ber_clear.png" width="246px" height="25px" />
+						</a>
+					</div>
+				</div>
+			%endif
+			
+			%if raidhelpnuminfo and 0 < raidhelpnuminfo['num']:
+				<!--太客来店時に表示-->
+				<div>
+					<div class="mytop3_s" style="top:196;">
+						<span style="color:yellow; margin-left:-50px;">ヘルプ依頼が来ています</span>
+					</div>
+					<div class="mytop3_clear" style="top:196;">
+						<a href="${get_html_param('url', 'sp/happening/happening.html', raidhelpnuminfo)}#help" >
+							<img src="${url_static_img}00/id_00_02/boss_ber_clear.png" width="246px" height="25px" />
+						</a>
+					</div>
+				</div>
+			%endif
+			
+			%if player['ap'] == player['apmax']:
+				${self.drawLeadInfoLabel(get_html_param('url_scout', 'sp/scout/scout.html'), "キャストをスカウトしにいこう！")}
+			%elif player['bp'] == player['bpmax']:
+				${self.drawLeadInfoLabel(get_html_param('url_battle', 'sp/battle/battle.html'), "バトルで各エリアに出店しながら、<br />カギを集めて宝箱を開こう！")}
+			%endif
+			
+			<%doc>
+			<table class="mytop5"><!--キャバ嬢表示　スライドウインドウ-->
+				<%
+					MEMBER_TOP_MARGEN_LIST = (15, 68, 122)
+				%>
+				%for i in xrange(len(MEMBER_TOP_MARGEN_LIST)):
+					<%
+						card = members[i]
+						top_margen = MEMBER_TOP_MARGEN_LIST[i]
+					%>
+					<tr class="deckmembers" style="top:${top_margen};">
+						%if card:
+							<td>
+								<img src="${url_static_img}00/id_00_02/side_frame.png" width="52px" height="52px" /><!--キャバ嬢写真の枠のみ-->
+							</td>
+							<td class="photo" style="top:3;">
+								<img src="${card['master']['thumbUrl']}"width="50px" height="50px" /><!--キャバ嬢の写真-->
+							</td>
+						%else:
+							<td>
+								<img src="${url_static_img}00/id_00_02/side_no_data.png" width="52px" height="52px" /><!--表示キャラ無し-->
+							</td>
+						%endif
+					</tr>
+				%endfor
+			</table>
+			</%doc>
+			
+			<div class="mytop4">
+				<img src="${url_static_img}00/id_00_02/main_frame.png"width="320px" height="372px" />
+			</div>
+			
+			<!-- 各ボタン-->
+			<div class="mybt1">
+				<a href="${get_html_param('url_composition', 'sp/composition/baseselect.html')}"><!--教育--><img src="${url_static_img}00/id_00_02/btn_kyouiku.png" width="66px" height="66px"></a>
+			</div>
+			<div class="mybt2">
+				<a href="${get_html_param('url_evolution', 'sp/evolution/baseselect.html')}"><!--ハメ管理--><img src="${url_static_img}00/id_00_02/btn_hamekanri.png" width="66px" height="66px"></a>
+			</div>
+			<div class="mybt3">
+				<a href="${get_html_param('url_battle', 'sp/battle/battle.html')}"><!--バトル--><img src="${url_static_img}00/id_00_02/btn_battle.png" width="66px" height="66px"></a>
+			</div>
+			<div class="mybt3_g">
+				<div class="btn_st_frame_s">
+					<div class="btn_st_gauge_s" style="width:${player['bp'] * 43 / player['bpmax']}px;"><%doc>バーは仮</%doc></div>
+				</div>
+			</div>
+			<div class="mybt4">
+				<a href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><!--スカウト--><img src="${url_static_img}common/btn_sukauto.png" width="104px" height="104px"></a>
+			</div>
+			<div class="mybt4_g">
+				<div class="btn_st_frame">
+					<div class="btn_st_gauge" style="width:${player['ap'] * 71 / player['apmax']}px;"><%doc>バーは仮</%doc></div>
+				</div>
+			</div>
+			<div class="mybt5">
+				%if cabaclub_notfound:
+					<a href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}"><!--ガチャ--><img src="${url_static_img}00/id_00_02/btn_gacha.png" width="66px" height="66px"></a>
+				%else:
+					<a href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><!--経営--><img src="${url_static_img}cb_system/cb_system_button.png" width="66px" height="66px"></a>
+				%endif
+			</div>
+			<div class="mybt6">
+				<a class="menu_button" name="top_menu" href="javascript:void(0);"><!--メニュー--><img src="${url_static_img}00/id_00_02/btn_menu.png" width="48px" height="48px"></a>
+			</div>
+			%if 0 < news_num:
+				<div class="mybt7">
+					%if is_pc:
+						<a href="#infospace"><!--新着--><img src="${url_static_img}00/id_00_02/message.png" width="37px" height="50px" />
+					%else:
+						<a href="javascript:void(0);" onclick="setScrollByElementId('infospace');"><!--新着--><img src="${url_static_img}00/id_00_02/message.png" width="37px" height="50px">
+					%endif
+					<div class="newcount">新着<br/>${news_num}</div></a>
+				</div>
+			%endif
+			%if cabaclubstoreevent:
+				<div class="mybt10">
+					<a href="${get_html_param('url_store', 'sp/cabaclub/eventanim.html', cabaclubstoreevent)}"><img src="${cabaclubstoreevent['master']['thumb']}" alt="イベント発生有無アイコン" width="37px" height="37px" /></a>
+				</div>
+			%endif
+		</div>
+		
+		<%doc>称号</%doc>
+		%if title:
+			<div class="back_black">
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+				<table style="margin:0 auto;"><tr>
+					<td width="60px">
+						<img src="${title['master']['mypage_thumb']}" width="60" height="60" />
+					</td>
+					<td width="192px">
+						<div style="font-size:14px;">
+							${title['master']['text'] | h}<br />
+							<span class="red">称号効果終了まであと${storecommon.drawStoreLimitTime(title['timelimit'])}</span>
+						</div>
+					</td>
+				</tr></table>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			</div>
+		%endif
+		
+		${eventbanners.groupEventBanners(groups, cross_promotion_args=dict(is_pc=is_pc, is_dev=is_dev, app_id=app_id), url_offerwall=url_offerwall, url_offerwallR18=url_offerwallR18)}
+		
+		% if slidebanners:
+			<div class="flexslider">
+				<ul class="slides">
+					% for slidebanner in slidebanners:
+						<li>
+							%if slidebanner['jumpto']:
+								<a href="${slidebanner['jumpto']}"><img src="${slidebanner['imageurl']}" alt="${slidebanner['name'] | h}" style="width:240px; height:60px;  margin:-1px auto;" /></a>
+							%else:
+								<img src="${slidebanner['imageurl']}" alt="${slidebanner['name'] | h}" style="width:240px; height:60px;  margin:-1px auto;" />
+							%endif
+						</li>
+					% endfor
+				</ul>
+			</div>
+		% endif
+		
+		<div class="mystatus" style="background: url(${url_static_img}00/id_00_02/st_back_frame.png)no-repeat; background-size:320px 223px;">
+			<div class="wrapper" style="padding:12 0 0 0 ;">
+				${player['person']['nickname']}
+			</div>
+			<table>
+				<td>
+					<table class="mystbox1">
+						<tr>
+							<td class="myst1">
+								体力
+							</td>
+							<td class="myst2">
+								${player['ap']}/${player['apmax']}
+							</td>
+						</tr>
+						<tr>
+							<td class="myst1">
+								気力
+							</td>
+							<td class="myst2">
+								${player['bp']}/${player['bpmax']}
+							</td>
+						</tr>
+						<tr>
+							<td class="myst_s">
+								キャバ王Lv
+							</td >
+							<td class="myst2" colspan="2">
+								${player['level']}
+							</td>
+						</tr>
+						<tr>
+							<td class="myst1">
+								総人件費
+							</td >
+							<td class="myst2" colspan="2">
+								${player['deckcapacity']}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table class="mystbox2">	
+						<tr>
+							<td class="myst1" colspan=2>
+								<div class="st_frame">
+									<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}px;"><%doc>バーは仮</%doc></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="myst1" colspan=2>
+								<div class="st_frame">
+									<div class="st_gauge02" style="width:${player['bp'] * 120 / player['bpmax']}px;"><%doc>バーは仮</%doc></div>
+								</div>	
+							</td>
+						</tr>
+						<tr>
+							<td class="myst1"colspan=2>
+								<div class="st_frame" >
+									<%
+										exp_diff = player['exp_next'] - player['exp_prev']
+										exp_percent = 100
+										if 0 < exp_diff:
+											cur_exp = max(0, player['exp'] - player['exp_prev'])
+											exp_percent = min(100, 100 * cur_exp / exp_diff)
+									%>
+									<div class="st_gauge03" style="width:${int(exp_percent * 120 / 100)}"><%doc>バーは仮</%doc></div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td class="myst1">接客力
+							</td>
+							<td class="myst2">${power_total}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</table>
+			
+			<table>
+				<td>
+					<table class="mystbox1_" >
+						<tr>
+							<td class="myst1"> フレンド
+							</td>
+							<td class="myst2">${friend_num}/${player['friendlimit']}
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td>
+					<table class="mystbox2_" style="margin-top:5px;">
+						<tr>
+							<td class="myst_s">
+								所属キャスト
+							</td>
+							<td class="myst2">${card_num}
+							</td>
+						</tr>
+					</table>
+				</td>
+			</table>
+			
+			<table class="mystbox4">
+				<tr>
+					<td class="myst5">
+						キャバゴールド
+					</td>
+					<td class="myst6">
+						${player['gold']}
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="myst5">
+						引抜ガチャPt
+					</td>
+					<td class="myst6">
+						${player['gachapt']}
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<a id="infospace"></a>
+	<a name="infospace"></a>
+	<section class="information">
+		<div class="infotop">
+			<p class="caption">お知らせ</p>
+		</div>
+		<div class="infoBack">
+			<ul>
+				%if news_num == 0:
+					<li>
+						<div>新着情報はありません</div>
+					</li>
+				%else:
+					%if url_recov_payment:
+						<li>
+							<a href="${get_html_param('url_recov_payment', '')}"><div>未完了の購入情報があります</div></a>
+						</li>
+					%endif
+					%if 0 < friendaccept_num:
+						<li>
+							<a href="${get_html_param('url_friendlist', 'sp/friend.html')}"><div>フレンド申請が承認されました</div></a>
+						</li>
+					%endif
+					%if 0 < friendrequest_num:
+						<li>
+							<a href="${get_html_param('url_friendrequest_receive', 'sp/friend.html')}"><div>フレンド申請がきています</div></a>
+						</li>
+					%endif
+					%if happeninginfo and happeninginfo['info'] == 'cleared':
+						<li>
+							<a href="${get_html_param('url', 'sp/happening/happening.html', happeninginfo)}"><div>発見した超太客の接客成功しました</div></a>
+						</li>
+					%endif
+					%if raidhelp_notification:
+						<li>
+							<a href="${get_html_param('url_raidloglist', 'sp/raid/loglist.html')}"><div>ヘルプした超太客の接客成功しました</div></a>
+						</li>
+					%endif
+					%if free_gacha:
+						<li>
+							<a href="${get_html_param('url_gacha', 'sp/gacha/gacha_free.html')}"><div>1日1回無料で引き抜きガチャができます</div></a>
+						</li>
+					%endif
+					%if 0 < present_num:
+						<li>
+							<a href="${get_html_param('url_present', 'sp/present.html')}"><div>新着プレゼントが${present_num}件あります</div></a>
+						</li>
+					%endif
+				%endif
+			</ul>
+			<div style="font-size:0px; opacity: 0;">&nbsp; </div>
+		</div>
+		<div class="infobtm">
+		</div>
+	</section>
+	
+	% if infomations:
+		<section class="glayinfo">
+			<div class="infotop">
+				<p class="caption">更新情報</p>
+			</div>
+			<div class="infoBack">
+				<ul>
+					%for infomation in infomations:
+						<li>
+							<a href="${get_html_param('url_detail', 'sp/infomation.html', infomation)}">
+								<div>
+									%if infomation['is_new']:
+										<img src="${url_static_img}06/new.png" width="62px" height="22px" style="margin-bottom:-6;"/>
+									%endif
+									${infomation['date']}<br/>${infomation['title']}<br/>
+								</div>
+							</a>
+						</li>
+					%endfor
+				</ul>
+				<div>
+					<a class="button" style="margin-left:194px;" href="${get_html_param('url_infomation', 'sp/infomation.html')}"><div>もっと見る</div></a>
+				</div>
+				<div style="font-size:0px; opacity: 0;">
+				.
+				</div>
+			</div>
+			<div class="infobtm">
+			</div>
+		</section >
+	% endif
+	
+	<div class="mypagetab"><!--タブ -->
+		<ul class="tabs clearFix" id="tabs">
+			<li id="tab1">
+				<a onclick="topics(1); return false;"><div>フレンド近況</div></a>
+			</li>
+			<li id="tab2">
+				<a onclick="topics(2); return false;"><div>超太客履歴</div></a>
+			</li>
+			<li id="tab3">
+				<a onclick="topics(3); return false;"><div>あいさつ履歴</div></a>
+			</li>
+		</ul>
+		
+		<div class="topicArea">
+			<div class="topic" id="topic1">
+				% if len(friendlog_list) == 0:
+					<div class="list_not_found">
+						フレンド近況はありません
+					</div>
+					<div style="font-size:0px; opacity: 0;">　</div>
+				%else:
+					<ul class="link_arrow">
+						% for friendlog in friendlog_list:
+							<li>
+								<a href="${get_html_param('params.url', 'sp/profile.html', friendlog)}"><div><%include file="includes/inc_friendlog.html" args="friendlog=friendlog, Defines=Defines" /></div></a>
+							</li>
+						% endfor
+					</ul>
+					<div >
+						<a class="button" style="margin-left:180px;" href="${get_html_param('url_friendlog', 'sp/friend.html')}"><div>もっと見る</div></a>
+					</div>
+				%endif
+			</div>
+			
+			<div class="topic" id="topic2">
+				% if not raidloglist:
+					<div class="list_not_found">
+						超太客履歴はありません
+					</div>
+					<div style="font-size:0px; opacity: 0;">　</div>
+				%else:
+					<ul class="link_arrow">
+						%for raidlog in raidloglist:
+							<li style="height:80px; ">
+								<a href="${get_html_param('url_detail', 'sp/raid/log.html', raidlog)}">
+								<div>
+									<img src="${raidlog['owner']['leader']['master']['thumbUrl']}" width="60" height="60" style="margin-top:10px; float:left; margin-right: 4px;"/>
+									<div>
+										%if is_event_opened:
+											${raidlog['log_ctime'].strftime("%m/%d&nbsp;%H:%M")}<br />
+											%if raidlog['is_me']:
+												発見者:あなた<br />
+											%else:
+												発見者:${raidlog['owner']['person']['nickname'] | h}<br />
+											%endif
+											%if raidlog['is_win']:
+												<span class="yellow">[接客成功]</span>
+											%else:
+												<span class="red">[接客失敗]</span>
+											%endif
+											${raidlog['raid']['name'] | h}(Lv${raidlog['raid']['level']})
+										%else:
+											${raidlog['raid']['ctime'] | h}<br />
+											%if raidlog['is_win']:
+												%if raidlog['owner']['id'] != raidlog['destroyer']['id']:
+													${raidlog['owner']['person']['nickname'] | h}さんが接客した<br />
+													${raidlog['raid']['name'] | h}Lv.${raidlog['raid']['level']}を<br />
+													${raidlog['destroyer']['person']['nickname'] | h}さんが接客に成功！
+												%else:
+													${raidlog['owner']['person']['nickname'] | h}さんが<br />
+													${raidlog['raid']['name'] | h}Lv.${raidlog['raid']['level']}の接客に成功！
+												%endif
+											%else:
+												${raidlog['owner']['person']['nickname'] | h}さんが接客した<br />
+												${raidlog['raid']['name'] | h}Lv.${raidlog['raid']['level']}が帰ってしまった！
+											%endif
+										%endif
+									</div>
+								</div>
+								</a>
+								<div style="clear:both;"><%doc>ここのfloatは必要(横の矢印がうまくでないので)</%doc>
+								</div>
+							</li>
+						% endfor
+					</ul>
+					<div>
+						<a class="button" style="margin-left:180px;"href="${get_html_param('url_raidloglist', 'sp/raid/loglist.html')}"><div>もっと見る</div></a>
+					</div>
+				%endif
+			</div>
+			
+			<div class="topic" id="topic3">
+				% if len(greetlog_list) == 0:
+					<div class="list_not_found">
+						あいさつ履歴はありません
+					</div>
+					<div style="font-size:0px; opacity: 0;">　</div>
+				%else:
+					<ul class="link_arrow">
+						% for greetlog in greetlog_list:
+							<li style="height:auto;">
+								<a href="${get_html_param('params.url', 'sp/profile.html', greetlog)}"><img src="${greetlog['params']['thumbUrl']}" width="60" height="60" align="left" />
+									<div>	
+										${greetlog['ctime']}<br />
+										<span class="yellow">${greetlog['params']['username']}</span>から<br />あいさつがありました。<br />
+										% if greetlog['params'].get('comment'):
+											<div style="text-align:left; width:220px; margin:auto; word-wrap:break-word; overflow:auto;">
+												コメント ${greetlog['params']['comment'] | h}<br />
+											</div>
+										% endif
+									</div>	
+								</a>
+							</li>
+						% endfor
+					</ul>
+					<div>
+						<a class="button" style="margin-left:180px;" href="${get_html_param('url_greetlog', 'sp/greeting.html')}"><div>もっと見る</div></a>
+					</div>
+				%endif
+			</div>
+		</div>
+		
+		<div style="text-align:center;">
+			<div class="topcap">
+				公式コミュニティで仲間を募集しよう!!
+			</div>
+			<textarea rows="3" cols="25">${profile_tag}</textarea>
+		</div>
+		
+		<script type="text/javascript">
+			topics(1); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+	<div style="background:url(${url_static_img}00/id_00_02/footer_btn_bg.png) no-repeat;background-size:320px 100px; width: 320;">
+		<div style="padding-top:39px;">
+			${self.block_menu("bottom_menu", cross_promotion_banner=False)}
+			<ul class="menu">
+				<li><a href="${get_html_param('url_mypage', 'sp/mypage.html')}"><img src="${url_static_img}common/globalmenu_01.png" width="64px" height="55px" ></a></li>
+				<li><a href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><img src="${url_static_img}common/globalmenu_02.png" width="64px" height="55px" ></a></li>
+				<li><a href="${get_html_param('url_battle', 'sp/battle/battle.html')}"><img src="${url_static_img}common/globalmenu_03.png" width="64px" height="55px"></a></li>
+				<li><a href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}"><img src="${url_static_img}common/globalmenu_04.png" width="64px" height="55px"></a></li>
+				<li><div class="menu_button" name="bottom_menu" onclick=""><img src="${url_static_img}common/globalmenu_05.png" width="64px" height="55px"></div></li>
+			</ul>
+		</div>
+		<div style="position:relative;font-size:11px; text-align:center; background-color:#000000; padding-bottom:0px;">
+			(C) DMM GAMES&nbsp; /&nbsp; (C)AV GAMES
+		</div>
+	</div>
+</%def>
+
+<%def name="footer()"></%def>
+
+<%def name="drawLeadInfoLabel(url, text)">
+	<div class="mytop3">
+		<div class="tex">
+			<%doc><img src="${url_static_img}00/id_00_02/color_btn.png"width="12px" height="12px" /><!--ウィンドウを閉じるボタン--></%doc>
+			${text}
+		</div>
+	</div>
+</%def>

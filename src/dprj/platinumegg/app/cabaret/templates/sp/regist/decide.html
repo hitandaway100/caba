@@ -1,0 +1,50 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="complete_body(banner)">
+	<div>
+		<div style="text-align: center;">
+			<img src="${banner}" width="240px" hight="60" />
+			<%include file="../includes/listcard.html" args="card=leader, url_static_img=url_static_img, is_tutorial=True, Defines=Defines" />
+		</div>
+	</div>
+</%def>
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms">
+			一人でも残ってくれて良かった・・・<br />
+			これで彼女に付いていたお客だけは<br />
+			取り戻せそうだ。<br />
+			次に彼女をハメ管理して<br />
+			ハメ管理度を上げておこう。
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="titlesub" style="margin-top:12px;">
+		<div class="topcap">
+		${Defines.CharacterType.NAMES[leader['master']['type']]}&nbsp;${leader['master']['name'] | h}を獲得しました
+		</div>
+	</div>
+	
+		
+	<div class="back_black">
+	<%include file="../includes/listcard.html" args="card=leader, url_static_img=url_static_img, is_tutorial=True, Defines=Defines" />
+	
+		<div class="wrapper">
+			同じキャストを3人サービスするので<br />
+			早速このキャストでハメ管理してみよう!
+		</div>
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+
+	<div>
+		<a class="btnlong_p" style="margin-top:20px;" href="${get_html_param('url_enter', 'sp/evolution/baseselect.html')}"><div>ハメ管理する</div></a>
+	</div>
+</%def>
+
+<%def name="footer()"></%def>

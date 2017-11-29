@@ -1,0 +1,79 @@
+#coding:utf-8
+<%inherit file="listbase.html" />
+
+<%def name="head()">
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">ユーザーを探す</p>
+		</div>
+		
+		<div class="topcap">
+			現在のフレンド数:${friendnum}/${friendnummax}<br/>
+			% if 0 < restnum:
+				※あと${restnum}人に申請することができます
+			% else:
+				※これ以上フレンド申請を送ることができません
+			% endif
+		</div>
+		
+		<form action=${get_html_param('url_reload', 'sp/friend/search.html')} method="post">
+			<table class="pullmenuset">
+				<div>
+					<tr>
+						<td class="pullmenu2">
+							<select class="select_type" name="${Defines.URLQUERY_LEVELGROUP}" style="width: 173px; height: 31px;">
+								% for lv,text in LevelGroup: 
+									% if _lvgrp == lv:
+										<option selected="selected" value=${lv}>${text | h}</option>
+									% else:
+										<option value=${lv}>${text | h}</option>
+									% endif
+								% endfor
+							</select>
+							<div id="pull2"></div>
+						</td>
+						<td>
+							<input type="submit" class="buttonshort" value="検索" />
+						</td>
+					</tr>
+				</div>
+			</table>
+		</form>
+		<div style="padding-bottom:10px;">
+		</div>
+	</div>
+
+		
+		% for player in playerlist:
+			<section class="basicinfo">
+				<div class="basictop_s">
+				</div>
+				<div class="basicBack">
+					${self.playerinfo(player=player)}
+					<div>
+						<a class="button" href="${get_html_param('url_friendrequest_send', 'sp/friend/sendyesno.html',player)}"><div>申請する</div></a>
+					</div>
+					<div style="font-size:0px;">
+						.
+					</div>
+				</div>
+				<div class="basicbtm">
+				</div>
+			</section>
+		% endfor
+	</div>
+	
+	<div>
+		<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_reload', 'sp/friend/search.html')}"><div>更新する</div></a>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><span style="margin-left:14px;">フレンドTOPへ戻る</span></a>
+	</div>
+</%def>

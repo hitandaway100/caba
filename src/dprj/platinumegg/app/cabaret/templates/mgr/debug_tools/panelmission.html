@@ -1,0 +1,61 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>現在進行中のパネルを変更</strong>変更後のパネルを最初からやり直します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_current_panel" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          パネル:<br />
+          <select name="_mid">
+            %for panel in panellist:
+            <option value="${panel.id}">${panel.name | h}(ID:${panel.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+    <div class="well">
+      <p><strong>現在のパネルの状態を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_panelmission" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ミッションの状態:<br />
+          <%
+          SHEET_PANEL_NUM = 9
+          COLNUM = 3
+          %>
+          %for i in xrange(Defines.PANELMISSION_MISSIN_NUM_PER_PANEL):
+          <label for="sheet${i+1}" style="display:inline;">${i+1}</label><select name="sheet${i+1}"><option value="0">未達成</option><option value="1">達成済</option><option value="2">受取済</option></select>
+          %if i % COLNUM == (COLNUM-1):
+          <br />
+          %endif
+          %endfor
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

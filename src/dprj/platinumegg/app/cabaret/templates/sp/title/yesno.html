@@ -1,0 +1,37 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<%
+		titlemaster = title['master']
+	%>
+	<div class="titlebar">
+		<p class="caption">称号交換</p>
+	</div>
+	
+	<div class="wrapper">
+		${titlemaster['name'] | h}と交換しますか?
+	</div>
+	
+	<div class="icon_l">
+		<img src="${titlemaster['thumb']}" width="90" height="90" />
+	</div>
+	
+	<div class="wrapper">
+		${Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT] | h}消費量：${titlemaster['cost']}<br />
+	</div>
+	
+	%if cabaclub_management_info['point'] < titlemaster['cost']:
+		<div class="caution">
+			${Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT] | h}が足りません
+		</div>
+	%else:
+		<div>
+			<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_write', 'sp/title/end.html')}"><div>交換する</div></a>
+		</div>
+	% endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_title', 'sp/title/top.html')}"><span style="margin-left:14px;">称号交換所へ</span></a>
+	</div>
+</%def>

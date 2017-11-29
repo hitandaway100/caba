@@ -1,0 +1,27 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">イベント太客接客失敗</p>
+	</div>
+	
+	<div class="wrapper">
+		%if cancel:
+			イベント太客の接客を諦めました。
+		%else:
+			残り時間以内にイベント太客を<br />
+			もてなすことができなかったので<br />
+			報酬を獲得できませんでした。
+		%endif
+	</div>
+	
+	<div style="padding-top:14px;">
+		%if url_raidevent_scouttop:
+			<a class="btnlong" href="${get_html_param('url_raidevent_scouttop', 'sp/raidevent/scout/scout.html')}"><div>イベントスカウトへ</div></a>
+		%else:
+			<a class="btnlong" href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><div>スカウトへ</div></a>
+		%endif
+	</div>
+
+	${self.eventfooter()}
+</%def>

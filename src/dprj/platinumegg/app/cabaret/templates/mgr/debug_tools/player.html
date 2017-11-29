@@ -1,0 +1,221 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>体力･気力完全回復</strong>　プレイヤーの体力と気力を完全回復します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="recovery_ap" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+            <option value="all">全員</option>
+          </select>
+        </p>
+        <input class="btn" type="submit" value="完全回復" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>パラメータの数値変更</strong>　プレイヤーの各パラメータの数値を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_player_parameter" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <select name="_param_type">
+            %for valueid,valuename in change_params:
+            <option value="${valueid}">${valuename | h}</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          <input type="text" name="_value" />に
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ログインボーナス受け取り時間変更</strong>　最後にログインボーナス受け取った時間変更を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_logintime" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <input type="text" name="_value" value="${now}" />
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ログインボーナスをもう一度</strong>　ログインボーナスを未受け取りの状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_loginbonus" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <select name="_continuity">
+            <option value="1">連続ログインを有効</option>
+            <option value="0">連続ログインを無効</option>
+          </select>にして
+        </p>
+        <input class="btn" type="submit" value="受け取れるようにする" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ロングログインボーナスをもう一度</strong>　ロングログインボーナスを未受け取りの状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_longloginbonus" />
+        <p>
+          ユーザID:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ロングログインボーナス:<br />
+          <select name="_mid">
+            %for loginbonus in loginbonuslist:
+            <option value="${loginbonus.id}">${loginbonus.name | h}(ID:${loginbonus.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          日数:<br />
+          <input type="text" name="_days" />
+        </p>
+        <input class="btn" type="submit" value="受け取れるようにする" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>双六ログインボーナスをもう一度</strong>　双六ログインボーナスを未受け取りの状態にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_loginbonus_sugoroku" />
+        <p>
+          ユーザID:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          双六ログインボーナス:<br />
+          <select name="_mid">
+            %for loginbonus in loginbonussugorokulist:
+              <option value="${loginbonus.id}">${loginbonus.name | h}(ID:${loginbonus.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          周回数:(未入力の場合は変更しません)<br />
+          <input type="text" name="_lap" value="" />
+        </p>
+        <p>
+          現在のマス:(未入力の場合は変更しません)<br />
+          <input type="text" name="_loc" value="" />
+        </p>
+        <p>
+          残り休み回数:(未入力の場合は変更しません)<br />
+          <input type="text" name="_lose_turns" value="" />
+        </p>
+        <input class="btn" type="submit" value="受け取れるようにする" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>レベルアップ達成ボーナス受け取りリセット</strong>　達成ボーナスを未取得の状態に戻します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_levelupbonus_playerdata" />
+        <p>
+          ユーザID:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <input class="btn" type="submit" value="未取得にする" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>本日あいさつ回数変更</strong>　今日送ったあいさつの回数を変更する</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="greet_count" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input type="text" name="_value" value="0" />
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>挨拶をする</strong>　他のユーザーに対して挨拶を行います</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="greet_do" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>から
+        </p>
+        <p>
+          <select name="_oid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に対して
+        </p>
+        <input class="btn" type="submit" value="挨拶をする" />
+      </form>
+    </div>
+  </li>
+</ul>

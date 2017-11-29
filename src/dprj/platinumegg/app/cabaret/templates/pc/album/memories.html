@@ -1,0 +1,190 @@
+#coding:utf-8
+<%inherit file="../../sp/album/memories.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">思い出アルバム</p>
+	</div>
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${cardmaster['iconUrl']}" width="28px" height="28px">
+		</div>
+		<span class="wrapper">
+			${album['name'] | h}
+		</span>
+		<%doc>
+			<div class="memory">
+				思い出${cardmaster['hklevel']}
+			</div>
+		</%doc>
+	</div>
+	
+	% if album['contenttype'] == Defines.MemoryContentType.IMAGE:
+		<img src="${album['dataUrl'][0]}" width="320" height="400"/>
+	% elif album['contenttype'] == Defines.MemoryContentType.MOVIE_PC:
+		<div class="video_frame" onclick="playVideo();">
+			<img src="${album['thumbUrl']}" width="320" height="196" />
+			<div class="circle">
+				<div class="triangle">
+				</div>
+			</div>
+		</div>
+	% elif album['contenttype'] == Defines.MemoryContentType.VOICE:
+		<div class="voice_frame" id="voice_frame">
+			<img src="${album['thumbUrl']}" width="140" height="176"/>
+			<audio id="voice_src" preload="auto">
+				<source src="${album['dataUrl'][0]}" type="audio/aac">
+				<source src="${album['dataUrl'][1]}" type="audio/ogg">
+			</audio>
+			<div id="voice_comment" class="wrapper yellow">音声情報を取得しています</div>
+				<div class="circle" id="btn_play" style="display: none;">
+					<div class="triangle">
+					</div>
+				</div>
+			</div>
+		</div>
+	% endif
+	
+	<!--カード詳細-->
+	<div class="albumstatus">
+		<div class="albumstatus_set">${album['text'] | h}</div>
+	</div>
+	
+	<div class="back_black">
+		<div class="cardalbum">
+			思い出アルバム
+		</div>
+		
+		%if pcmovie_list:
+			<div class="topcap" style="font-size:12px;">
+				動画再生の際は音声が流れます<br />
+				ご注意ください
+			</div>
+		%endif
+		
+		%if memories_list:
+			<table class="albumlook" align="center">
+				<tr>
+					% for idx, memories in enumerate(memories_list):
+						%if idx != 0 and idx % Defines.MEMORIES_COLUMN_CONTENT_NUM == 0:
+							</tr></table>
+							<table class="albumlook" align="center"><tr>
+						% endif
+						<td>
+							% if memories['acquisition'] or (is_tutorial and memories['id'] == album['id']):
+								% if memories['id'] == album['id'] or is_tutorial:
+								<div class="albumitem">
+								%else:
+								<div class="albumitem" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', memories)}';">
+								%endif
+									% if memories['is_new'] and memories['id'] != album['id']:
+										<!--NEW表示-->
+										<div class="album_new"><img src="${url_static_img}06/new.png" width="62" height="22" /></div>
+									% endif
+									
+									<div class="photo_flame"><img src="${url_static_img}06/card_albam_photo_frame.png" width="70px" height="88px" /></div>
+									<div class="album_thumb"><img src="${memories['thumbUrl']}" width="70px" height="88px" /></div>
+								</div>
+							% else:
+								<div class="albumitem">
+									<div class="album_thumb"><img src="${url_static_img}06/card_albam_frame_look.png" width="70px" height="88px" /></div>
+								</div>
+							% endif
+						</td>
+					% endfor
+				</tr>
+			</table>
+		%endif
+		
+		%if pcmovie_list:
+			<div align="center">
+				%for movie in pcmovie_list:
+					% if movie['acquisition'] or (is_tutorial and movie['id'] == album['id']):
+						%if movie['id'] != album['id']:
+							%if is_tutorial:
+							<div class="mvlook">
+							%else:
+							<div class="mvlook" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', movie)}';">
+							%endif
+								<div class="mvthumb">
+									<img src="${movie['thumbUrl']}" width="151px" height="88px" />
+								</div>
+								<div class="mvframe">
+									<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+								</div>
+								% if movie['is_new'] and movie['id'] != album['id']:
+									<div class="mvnew">
+										<img src="${url_static_img}06/new.png" width="62" height="22" />
+									</div>
+								%endif
+							</div>
+						%endif
+					%else:
+						<div class="mvframe_close" style="display:inline;">
+							<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+						</div>
+					%endif
+					<br />
+				%endfor
+			</div>
+		%endif
+		
+		%if voice_list:
+			<div align="center">
+				%for voice in voice_list:
+					% if voice['acquisition']:
+						<div class="mvlook" onclick="location.href='${get_html_param('url_memories', 'sp/album/memories.html', voice)}';">
+							<div class="mvthumb">
+								<img src="${voice['thumbUrl']}" width="151px" height="88px" />
+							</div>
+							<div class="mvframe">
+								<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+							</div>
+							% if voice['is_new']:
+								<div class="mvnew">
+									<img src="${url_static_img}06/new.png" width="62" height="22" />
+								</div>
+							%endif
+						</div>
+					%else:
+						<div class="mvframe_close" style="display:inline;">
+							<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+						</div>
+					%endif
+					<br />
+				%endfor
+			</div>
+		%endif
+		
+		%if not is_tutorial:
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="${get_html_param('url_detail', 'sp/album/album.html')}"><span style="margin-left:14px;">キャスト詳細へ戻る</span></a>
+			</div>
+		% endif
+	</div>
+	
+	%if is_tutorial:
+		<div>
+				<a  class="btnlong" href="${get_html_param('url_next', '')}"><div>次へ</div></a>
+		</div>
+	% endif
+</%def>
+
+<%def name="videoscript()">
+	%if album['contenttype'] == Defines.MemoryContentType.MOVIE_PC:
+	<script type="text/javascript">
+		function playVideo() {
+			var xhr = parent.makeHTTPRequest();
+			xhr.open("GET", "${album['flvUrl']}");
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState === 4 && xhr.status === 200) {
+					parent.playVideo(xhr.responseText);
+				}
+			};
+			xhr.send(null);
+		}
+		addWindowOnLoad(playVideo);
+	</script>
+	%endif
+</%def>

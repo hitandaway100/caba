@@ -1,0 +1,127 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			バトルイベントバトル履歴
+		</h1>
+	</div>
+	<div class="well">
+		<form action="${url_view_battleevent_battlelog}" method="post">
+			<p><strong>ユーザIDを指定</strong></p>
+			<select name="_serchtype">
+				%if _serchtype == 'uid':
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid" selected="selected">アプリ内ユーザIDから</option>
+				%else:
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid">アプリ内ユーザIDから</option>
+				%endif
+			</select>
+			<p>
+				<input type="text" name="_value" value="${_value or ''}" />
+			</p>
+			<p><strong>対戦相手を指定</strong>(オプション)</p>
+			<select name="_serchtype_o">
+				%if _serchtype_o == 'uid':
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid" selected="selected">アプリ内ユーザIDから</option>
+				%else:
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid">アプリ内ユーザIDから</option>
+				%endif
+			</select>
+			<p>
+				<input type="text" name="_value_o" value="${_value_o or ''}" />
+			</p>
+			<input type="submit" class="btn btn-primary" value="表示" />
+		</form>
+	</div>
+	%if battleloglist:
+		<%include file='../../inc_pagination.html' />
+		
+		<div class="well">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							攻/防
+						</th>
+						<th>
+							結果
+						</th>
+						<th>
+							対戦相手
+						</th>
+						<th>
+							自分接客力
+						</th>
+						<th>
+							相手接客力
+						</th>
+						<th>
+							獲得バトルPT
+						</th>
+						<th>
+							時間
+						</th>
+						<th>
+							フィーバー
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					%for battlelog in battleloglist:
+						<tr>
+							<td>
+								%if battlelog['attack']:
+									<span class="label label-green">攻</span>
+								%else:
+									<span class="label label-yellow">防</span>
+								%endif
+							</td>
+							<td>
+								%if battlelog['is_win']:
+									<span class="label label-blue">勝</span>
+								%else:
+									<span class="label label-red">負</span>
+								%endif
+							</td>
+							<td>
+								%if battlelog.get('o_player'):
+									<a href="${battlelog['o_player']['url']}">${battlelog['o_player']['person']['nickname'] | h}(ID:${battlelog['o_player']['id']})</a>
+								%else:
+									不明(ID:${battlelog['oid']})
+								%endif
+							</td>
+							<td>
+								${battlelog['v_power']}
+							</td>
+							<td>
+								${battlelog['o_power']}
+							</td>
+							<td>
+								${battlelog['point']}
+							</td>
+							<td>
+								${battlelog['ctime'] | h}
+							</td>
+							<td>
+								%if battlelog.get('is_fever') is None:
+									----
+								%elif battlelog['is_fever']:
+									<span class="label label-blue">o</span>
+								%else:
+									<span class="label label-red">x</span>
+								%endif
+							</td>
+						</tr>
+					%endfor
+				</tbody>
+			</table>
+		</div>
+		
+		<%include file='../../inc_pagination.html' />
+	%endif
+</%def>

@@ -1,0 +1,69 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	${self.eventslide()}
+	
+	${self.eventtopic()}
+	${self.eventtopic3()}
+	
+	%for destroyprize in destroyprizelist:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				%if destroyprize.get('repeat'):
+					以降${destroyprize.get('interval', 1)}回成功ごとに…
+				%else:
+					${destroyprize['destroy']}回接客成功で…
+				%endif
+			</div>
+		</div>
+		%if destroyprize['prizeinfo']['listitem_list']:
+			%for idx,prizeitem in enumerate(destroyprize['prizeinfo']['listitem_list']):
+				%if 0 < idx:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+				%endif
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td  width="70">
+						<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext" style="margin-top:-24px;">
+							%if destroyprize.get('repeat'):
+								
+							%elif destroyprize['received']:
+								<span class="yellow">[受取済み]</span><br />
+							%else:
+								[未達成]<br />
+							%endif
+							%if prizeitem['icon']:
+								<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+							%else:
+								<span><!--
+							%endif
+							-->${prizeitem['name'] | h}<!--
+							%if prizeitem['rare'] is not None:
+								-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+							%endif
+							-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+
+							<%doc>前の仕様を一応残しておく
+							%if destroyprize.get('repeat'):
+								
+							%elif destroyprize['received']:
+								<span class="yellow">[受取済み]</span><br />
+							%elif destroyprize['destroy'] <= raideventscore.get(current_prize, 0):
+								<span class="red">[達成済み]</span><br />
+							%else:
+								[未達成]
+							%endif
+							${prizeitem['name'] | h}${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+							</%doc>
+						</div>
+					</td>
+				</table>
+			%endfor
+		%endif
+	%endfor
+	
+	${self.eventfooter()}
+
+</%def>

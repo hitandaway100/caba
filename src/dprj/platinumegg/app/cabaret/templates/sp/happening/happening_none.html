@@ -1,0 +1,38 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+
+<%def name="happeningtop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${url_static_img}01/boss_none2.png" width="320" height="180px" />
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">超太客は来店していません</span>
+		</div>
+	</div>
+</%def>
+
+<%def name="happeningFooter()">
+	
+	%if eventbanners:
+		% for eventbanner in eventbanners:
+			<div class="bunnerwrap">
+				%if not eventbanner['is_external_link']:
+					${self.drawEventBanner(eventbanner, comment=True)}
+				%endif
+			</div>
+		% endfor
+	% endif
+	
+	${self.drawTreasureInfo()}
+	
+	%if not is_event_open:
+		${self.drawFriendHelpList()}
+		<div>
+			<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_raidloglist', 'sp/raid/loglist.html')}"><div>超太客履歴</div></a>
+		</div>
+	%endif
+</%def>
+
+<%def name="areastatus()"></%def>
+<%def name="prizelist()"></%def>

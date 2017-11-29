@@ -1,0 +1,43 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<div style="padding-top:10px; padding-bottom:10px;">
+		%if raidloglist:
+			%for raidlog in raidloglist:
+				<section class="basicinfo">
+					<div class="basictop_s">
+					</div>
+					<div class="basicBack" style="height:80px;">
+						<ul class="link_arrow">
+							<li style="height:60px;">
+								<a href="${get_html_param('url_detail', 'sp/raid/log.html', raidlog)}"><img src="${raidlog['owner']['leader']['master']['thumbUrl']}"width="60" height="60" align="left" class="itemimg"/>
+									${raidlog['log_ctime'].strftime("%m/%d&nbsp;%H:%M")}<br />
+									%if raidlog['is_me']:
+										発見者:あなた<br />
+									%else:
+										発見者:${raidlog['owner']['person']['nickname'] | h}<br />
+									%endif
+									%if raidlog['is_win']:
+										<span class="yellow">[接客成功]</span>
+									%else:
+										<span class="red">[接客失敗]</span>
+									%endif
+									${raidlog['raid']['name'] | h}(Lv${raidlog['raid']['level']})
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="basicbtm">
+					</div>
+				</section>
+			%endfor
+		%else:
+			<div class="list_not_found red">
+				イベント太客履歴はありません
+			</div>
+		%endif
+	</div>
+	
+	${self.pagenation()}
+	${self.eventfooter()}
+</%def>

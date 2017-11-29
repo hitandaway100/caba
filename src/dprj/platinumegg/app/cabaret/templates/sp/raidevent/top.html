@@ -1,0 +1,312 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	${self.topheader()}
+	
+	<%doc>タブ</%doc>
+	<div>
+		${self.eventtopic()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+	</div>
+	
+	${self.hihoubonus()}
+	
+	%if raidevent['is_opened']:
+		<div>
+			%if happening:
+				<div class="topcap" style="line-height:1;">
+					${happening['raid']['name'] | h}Lv${happening['raid']['level']}来店中
+				</div>
+				<div class="wrapper" style="line-height:0.8;">
+					<%
+						_hours = happening['timelimit']['hours']
+						_minutes = happening['timelimit']['minutes']
+						_seconds = happening['timelimit']['seconds']
+					%>
+					%if _hours:
+						残り時間&nbsp;:&nbsp;${_hours}時間${'%02d' % _minutes}分
+					%else:
+						残り時間&nbsp;:&nbsp;${_minutes}分${'%02d' % _seconds}秒
+					%endif
+				</div>
+				<div class="btn_ontext">
+					<a href="${get_html_param('url_battlepre', 'sp/raidevent/bossappear.html', happening)}"><img src="${url_static_img}01/btn_service.png" style="width:232px;height:49px;"/></a>
+				</div>
+				
+				%if happening['event'] == raidevent['id']:
+					<div class="wrapper red">
+						イベント太客来店中！
+					</div>
+				%endif
+				
+				${self.drawScoutTopButton()}
+				
+				<div class="topcap">
+					<%doc>レイドデッキ編成へのリンク(dummy)</%doc>
+					▼超太客キャスト編成が登場▼<br />
+					<div style="padding-top:8px;">
+						<a class="btnlong" href="${get_html_param('url_deck_raid', 'sp/deck/deck.html')}"><div>超太客キャストを編成する</div></a>
+					</div>
+				</div>
+			%else:
+				<div class="topcap" style="line-height:1;">
+					イベント太客は来店していません
+				</div>
+				${self.drawScoutTopButton()}
+			%endif
+		</div>
+	%endif
+	
+	%if url_raidevent_prizereceive:
+		<div align="center" style="padding-bottom:8px;">
+			<a href="${get_html_param('url_raidevent_prizereceive', 'sp/raidevent/prizeget.html')}" class="orange" style="font-size:14px;">接客成功回数報酬を受け取れます</a>
+		</div>
+	%endif
+	
+	${self.drawChampagneList()}
+	
+	<div style="text-align: center; padding:10px 0;">
+		<a href="${get_html_param('url_gacha_event', 'sp/gacha/gacha_ticket.html')}">
+			<img src="${url_static_img}banner/event/raidevent/${raidevent['codename']}/${raidevent['codename']}_gachapage_banner.png" width="240" height="auto"/>
+		</a>
+	</div>
+	
+	${self.eventdata()}
+	
+	<%doc>エイプリル仕様</%doc>
+	%if raidevent_materials:
+		<div class="titlesub">
+			<div class="wrapper">
+				贈り物
+			</div>
+		</div>
+		<div style="width:300px; margin:10px;">
+			%for _number in xrange(Defines.RAIDEVENT_MATERIAL_KIND_MAX):
+				<%
+					material = raidevent_materials.get(_number)
+				%>
+				%if material:
+					<div>
+						<div style="display: table-cell;width: 5em;">
+							${material['name'] | h}
+						</div>
+						<div style="display: table-cell;">
+							：<span class="yellow">${material['num']}</span>${material['unit'] | h}<br />
+						</div>
+					</div>
+				%endif
+			%endfor
+		</div>
+	%endif
+	
+	%if url_raidevent_recipelist:
+		<%doc>エイプリル仕様</%doc>
+		<div style="text-align: center; padding:10px 0;">
+			<a href="${get_html_param('url_raidevent_recipelist', 'sp/raidevent/presenttrade.html')}">
+				<img src="${url_static_img}banner/event/raidevent/${raidevent['codename']}/${raidevent['codename']}_exchange_shop.png" width="240" height="auto"/>
+			</a>
+		</div>
+	%endif
+	
+	%if raidevent['is_opened']:
+		<div>
+			<div class="titlesub" >
+				<div class="wrapper">
+					ヘルプ依頼一覧
+				</div>
+			</div>
+			%if raidhelplist:
+				<%
+					raidhelp = raidhelplist[0]
+				%>
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td>
+						<img src="${raidhelp['iconUrl']}" width="60" height="60" class="itemimg" style="margin-top:-18px;"/>
+					</td>
+					<td>
+						<div class="itemtext">
+							${raidhelp['o_nickname'] | h}<br />
+							${raidhelp['name'] | h}(Lv${raidhelp['level']})&nbsp;<span  class="orange">${raidhelp['hp']}</span>/${raidhelp['hpmax']}<br />
+							残り：<span  class="orange">${self.drawTimeLimitText(raidhelp['timelimit'])}</span><br />
+							<span  class="orange">${raidhelp['member_num']}</span>人参加中
+						</div>
+						<div>
+							<a class="btnlong" style="margin-top:4px;" href="${get_html_param('url_helpdetail', 'sp/raidevent/bossappear.html', raidhelp)}">
+								<div>ヘルプする</div>
+							</a>
+						</div>
+					</td>
+				</table>
+				<div>
+					<a class="button" style="margin-left:194px;" href="${get_html_param('url_raidhelp_list', 'sp/raidevent/helplist.html')}"><div>もっと見る</div></a>
+				</div>
+			%else:
+				<div class="list_not_found red">
+					今は来店していないようだ
+				</div>
+			%endif
+		</div>
+		
+		<div>
+			<div class="titlesub" >
+				<div class="wrapper">
+					超太客履歴
+				</div>
+			</div>
+			%if raidloglist:
+				<%
+					raidlog = raidloglist[0]
+				%>
+				<section class="basicinfo">
+					<div class="basictop_s">
+					</div>
+					<div class="basicBack" style="height:80px;">
+							<ul class="link_arrow">
+								<li style="height:60px;">
+								<a href="${get_html_param('url_detail', 'sp/raidevent/log.html', raidlog)}"><img src="${raidlog['owner']['leader']['master']['thumbUrl']}"width="60" height="60" align="left" class="itemimg"/>
+									${raidlog['log_ctime'].strftime("%m/%d&nbsp;%H:%M")}<br />
+									%if raidlog['is_me']:
+										発見者:あなた<br />
+									%else:
+										発見者:${raidlog['owner']['person']['nickname'] | h}<br />
+									%endif
+									%if raidlog['is_win']:
+										<span class="yellow">[接客成功]</span>
+									%else:
+										<span class="red">[接客失敗]</span>
+									%endif
+									${raidlog['raid']['name'] | h}(Lv${raidlog['raid']['level']})
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="basicbtm">
+					</div>
+				</section>
+				<div>
+					<a class="button" style="margin-left:194px;" href="${get_html_param('url_raidloglist', 'sp/raidevent/loglist.html')}"><div>もっと見る</div></a>
+				</div>
+			%else:
+				<div class="list_not_found red">
+					イベント太客履歴はありません
+				</div>
+			%endif
+		</div>
+	%endif
+	
+	<div class="titlesub">
+		<div class="wrapper">
+			秘宝交換所
+		</div>
+	</div>
+	<div>
+		<div class="itembox">
+			<table style="310px;">
+				<td>
+					<img src="${raidevent['pointThumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext">
+					${raidevent['pointname'] | h}<br />
+					所持数&nbsp;:&nbsp;${raideventscore['point'] | h}個
+				</td>
+			</table>
+		</div>
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><div>アイテムと交換する</div></a>
+		</div>
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+	
+	${self.eventslide()}
+	
+	<div class="red" style="padding: 4px 12px; font-size: 12px;">
+		※新店舗ランキングはイベント開催から30日前以内に登録したユーザーが対象となります。
+	</div>
+	
+	<a id="ranking" name="ranking"></a>
+	<div style="padding-top: 8px;text-align:center;">
+		<div class="${'btn_kira' if not is_view_beginer else 'btn_kira_off'}" style="margin-bottom:-2px;">
+			<a href="${get_html_param('url_raidevent_myrank' if is_view_myrank else 'url_raidevent_ranking', 'sp/raidevent/top.html') if is_view_beginer else 'javascript:void(0);'}"><div>全&nbsp;体</div></a>
+		</div>　
+		<div class="${'btn_kira' if is_view_beginer else 'btn_kira_off'}" style="margin-bottom:-2px;">
+			<a href="${get_html_param('url_raidevent_myrank_beginer' if is_view_myrank else 'url_raidevent_ranking_beginer', 'sp/raidevent/top.html') if not is_view_beginer else 'javascript:void(0);'}"><div>新店舗</div></a>
+		</div>
+	</div>
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			%if is_view_beginer:
+				新店舗ランキング
+			%else:
+				獲得秘宝ランキング
+			%endif
+		</div>
+	</div>
+	
+	%if not is_view_beginer or is_beginer:
+		<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-left:5px;"><!--
+			%if is_view_myrank:
+				--><a href="${get_html_param('url_raidevent_ranking_beginer' if is_view_beginer else 'url_raidevent_ranking', 'sp/raidevent/ranking.html')}" class="yellow">上位ランキング</a>
+				|
+				あなたの順位
+			%else:
+				-->上位ランキング
+				|
+				<a href="${get_html_param('url_raidevent_myrank_beginer' if is_view_beginer else 'url_raidevent_myrank', 'sp/raidevent/ranking.html')}" class="yellow">あなたの順位</a>
+			%endif
+		</div>
+	%endif
+	
+	%if ranking_playerlist:
+		${self.pagenation()}
+		%for idx,player in enumerate(ranking_playerlist):
+			%if 0 < idx:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+			%endif
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td>
+					<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td>
+					<div class="itemtext">
+						${player['event_rank']}位<br />
+						<span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span><br />
+						獲得数&nbsp; :&nbsp; <span class="yellow">${player['event_score']}</span>個
+					</div>
+				</td>
+			</table>
+		%endfor
+		${self.pagenation()}
+	%else:
+		%if is_view_myrank:
+			<div class="list_not_found caution">
+				ランキングデータがありません
+			</div>
+		%else:
+			<div class="list_not_found caution">
+				まだありません
+			</div>
+		%endif
+	%endif
+</%def>
+
+<%def name="drawScoutTopButton()">
+	%if not raidevent.get('flag_dedicated_stage'):
+		<div>
+			<a class="btnlong" href="${get_html_param('url_scout', 'sp/scout/scout.html')}">スカウトへ</a>
+		</div>
+		%if raidevent['topbuttontext']:
+			<div class="topcap" style="font-size:12px; line-height:20%; margin-bottom: 4px;">
+				└${raidevent['topbuttontext'] | h}┘
+			</div>
+		%endif
+	%elif raideventstage:
+		<div>
+			<a class="btnlong" href="${get_html_param('url_raidevent_scouttop', 'sp/raidevent/scout/scout.html')}">イベントスカウトへ</a>
+		</div>
+	%endif
+</%def>
+
+

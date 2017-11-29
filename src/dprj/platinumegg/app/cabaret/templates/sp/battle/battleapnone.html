@@ -1,0 +1,33 @@
+#coding:utf-8
+<%inherit file="battleselect.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="drawBattleSelectBody()">
+	<div class="caution">
+		気力が不足しています
+	</div>
+	
+	%for item in item_list:
+		<div class="itembox">
+			<table>
+				<td>
+					<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td class="itemtext">
+					<b>${item['master']['name'] | h}</b><br/>
+					<span style="color:#FF9900;">所持数:</span>
+						<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+				</td>
+			</table>
+			${self.drawItemLeadLinkButton(item)}
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+	%endfor
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battle', 'sp/battle/battle.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>

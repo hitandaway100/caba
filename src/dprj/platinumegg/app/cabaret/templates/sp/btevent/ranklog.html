@@ -1,0 +1,39 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">${battleevent_rank['cdate'] | h}の結果</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div style="padding-top:10px; padding-bottom:10px;">
+		%for player in playerlist:
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td style="width:60px;">
+					<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td style="width:240px;">
+					<div class="itemtext">
+						${player['event_rank']}位<br />
+						%if player.get('is_me'):
+							<span class="yellow">あなた(Lv${player['level']})</span><br />
+						%else:
+							<a href="${get_html_param('url', 'sp/profile.html', player)}"><span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span></a><br />
+						%endif
+						獲得バトルPT&nbsp; :&nbsp; <span class="yellow">${player['event_score']}</span>
+					</div>
+				</td>
+			</table>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		%endfor
+	</div>
+	
+	${self.pagenation()}
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battleevent_ranklog', 'sp/btevent/rankloglist.html')}"><div style="margin-left:14px;">ランク履歴へ</div></a>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" style="margin-top:0;" href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}" ><div style="margin-left:14px;">イベントトップへ</div></a>
+	</div>
+</%def>

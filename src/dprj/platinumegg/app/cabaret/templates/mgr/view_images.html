@@ -1,0 +1,70 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="drawRowData(data)">
+	%if isinstance(data, list):
+		%for v in data:
+			${self.drawRowData(v)}
+		%endfor
+	%elif isinstance(data, tuple):
+		<a href="${data[0]}" target="_blank"><img src="${data[0]}" width="${data[1]}" height="${data[2]}" /></a>
+	%else:
+		${data | h}
+	%endif
+</%def>
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>画像の確認</h1>
+	</div>
+	
+	<div class="well">
+		<form action="${url_view_images}" method="post">
+			<p>
+				<select name="_target">
+					<option value="Card" ${'selected="selected"' if _target=='Card' else ''}>カード</option>
+					<option value="Memories" ${'selected="selected"' if _target=='Memories' else ''}>思い出アルバム</option>
+					<option value="Movies" ${'selected="selected"' if _target=='Movies' else ''}>思い出アルバム(動画)</option>
+				</select>
+			</p>
+			<p>
+				絞り込み:<br />
+				<input type="text" name="_filter" value="${_filter or ''}" />
+			</p>
+			<input type="submit" class="btn btn-primary" value="表示" />
+		</form>
+	</div>
+	%if datalist:
+		
+		<%include file='./inc_pagination.html' />
+		
+		<table id="infos" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					%for title in titles:
+						<th>
+							${title | h}
+						</th>
+					%endfor
+				</tr>
+			</thead>
+			<tbody>
+				%for row in datalist:
+					<tr>
+						%for data in row:
+							<td>
+								${self.drawRowData(data)}
+							</td>
+						%endfor
+					</tr>
+				%endfor
+			</tbody>
+		</table>
+		
+		<%include file='./inc_pagination.html' />
+	%endif
+</%def>
+
+
+
+

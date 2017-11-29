@@ -1,0 +1,109 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%namespace file="storecommon.html", name="storecommon" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p class="caption">店舗</p>
+	</div>
+	
+	<%doc>現在の店舗の状態</%doc>
+	<div class="wrapper">
+		<span class="red">・現在の店舗の状態(レンタルされていません)</span>
+	</div>
+	
+	<%doc>店舗の画像</%doc>
+	<div>
+		<table style="margin:0px auto;">
+			<tr>
+				%if url_prev or flag_template_test:
+					<td><a href="${get_html_param('url_prev', 'sp/cabaclub/store_closed.html')}"><img src="${url_static_img}common/bnr_arrow_left.png" width="20px" height="16px" alt="◁" /></a></td>
+				%endif
+				<td>
+					${storecommon.drawStoreThumbnail(cabaclubstoremaster)}
+				</td>
+				%if url_next or flag_template_test:
+					<td><a href="${get_html_param('url_next', 'sp/cabaclub/store_opened.html')}"><img src="${url_static_img}common/bnr_arrow_right.png" width="20px" height="16px" alt="▷" /></a></td>
+				%endif
+			<tr>
+		</table>
+	</div>
+	
+	<%doc>現在表示されている店舗の情報</%doc>
+	<%
+		status_items = (
+			('スカウトマン人数', cabaclubstoremaster['scoutman_num_max']),
+			('最大収容人数', cabaclubstoremaster['customer_max']),
+			('設定可能キャスト人数', cabaclubstoremaster['cast_num_max']),
+		)
+	%>
+	<div style="margin:8px 0px;">
+		${storecommon.drawCabaClubStatus3Items(cabaclubstoremaster['name'], status_items)}
+	</div>
+	
+	<%doc>レンタルフォーム</%doc>
+	<form action="${get_html_param('url_rental', 'sp/cabaclub/rentyesno.html', cabaclubstoremaster)}" method="POST">
+		<div style="display:block;width:280px;margin:0px auto;">
+			<span class="yellow">・所持経営マネー</span>
+			<div style="text-align:right;">${cabaclub_management_info['money']}</div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="280" height="2" />
+			
+			<span class="yellow">・レンタルする日数</span>
+			<table class="pullmenuset" style="margin-left:198px;">
+				<tr>
+					<td class="pullmenu3">
+						<select class="select_type" id="select_days" name="${Defines.URLQUERY_DAYS}" style="width: 80px; height: 31px;">
+							%for day, _ in cabaclubstoremaster['days_cost_items']:
+								<option value="${day}">${day}日</option>
+							%endfor
+						</select>
+						<div id="pull3"></div>
+					</td>
+				</tr>
+			</table>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="280" height="2" />
+			
+			<span class="yellow">・消費経営マネー</span>
+			<div id="costview" style="text-align:right;"></div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="280" height="2" />
+		</div>
+		<input type="submit" class="btnpink_submit" id="btnrental" value="レンタルする" />
+		<div class="red" style="text-align:center;padding-top:0px;padding-bottom:0px;margin:10px 0px;" id="rental_ng_info">
+			経営マネーが足りません
+			<div>
+				<a class="btnlong" href="${get_html_param('url_shop', 'sp/shop/shop.html')}">ショップで購入する</a>
+			</div>
+		</div>
+	</form>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+	
+	<script>
+		(function(){
+			var money = ${cabaclub_management_info['money'] if not flag_template_test else 200};
+			var cost_table = {};
+			%for day, cost in cabaclubstoremaster['days_cost_items']:
+			cost_table[${day}] = ${cost};
+			%endfor
+			var select_days = document.getElementById("select_days");
+			function updateRentalForm(){
+				var day = parseInt(select_days.options[select_days.options.selectedIndex].value, 10);
+				var cost = cost_table[day];
+				document.getElementById("costview").innerHTML = ""+cost;
+				if(cost <= money){
+					document.getElementById("btnrental").style.display = "";
+					document.getElementById("rental_ng_info").style.display = "none";
+				}
+				else{
+					document.getElementById("btnrental").style.display = "none";
+					document.getElementById("rental_ng_info").style.display = "";
+				}
+			}
+			select_days.addEventListener("change", updateRentalForm);
+			updateRentalForm();
+		})();
+	</script>
+</%def>

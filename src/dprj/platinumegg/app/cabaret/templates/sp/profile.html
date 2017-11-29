@@ -1,0 +1,234 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}/tab.js"></script>
+	<link href="${url_static_css}profile.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="wrapper">
+			${player['person']['nickname'] | h}さんのプロフィール
+		</div>
+		
+		<div class="proftop" style="width:320px;">
+			<div class="proftop1">
+				<img src="${leader['master']['thumbnail']['bustup']}" width="320px" height="314px"/>
+			</div>
+			
+			<div class="mybt9"><!--属性アイコン-->
+				<img src="${leader['master']['iconUrl']}" width="28px" height="28px"/>
+			</div>	
+			<div class="mytop2"><!--名前とハート表示-->
+				<div class="tex">
+					<span style="font-size:16px;">
+						${leader['master']['name'] | h}
+					</span>
+				</div>
+			</div>
+			<!--ハート-->
+			<div class="mybt8">
+				%for _ in xrange(leader['master']['hklevel'] - 1):
+					<img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+				%endfor
+			</div><!--ハート仮位置指定中-->
+			
+			<table class="mytop5"><!--キャバ嬢表示　スライドウインドウ-->
+				<%
+					MEMBER_TOP_MARGEN_LIST = (15, 68, 122)
+				%>
+				%for i in xrange(len(MEMBER_TOP_MARGEN_LIST)):
+					<%
+						top_margen = MEMBER_TOP_MARGEN_LIST[i]
+					%>
+					<tr class="deckmembers" style="top:${top_margen};">
+						%if i < len(newbie_cardlist):
+							<%
+								card = newbie_cardlist[i]
+							%>
+							<td>
+								<img src="${url_static_img}00/id_00_02/side_frame.png" width="52px" height="52px" /><!--キャバ嬢写真の枠のみ-->
+							</td>
+							<td class="photo" style="top:3;">
+								<img src="${card['master']['thumbUrl']}"width="50px" height="50px" /><!--キャバ嬢の写真-->
+							</td>
+						%else:
+							<td>
+								<img src="${url_static_img}00/id_00_02/side_no_data.png" width="52px" height="52px" /><!--表示キャラ無し-->
+							</td>
+						%endif
+					</tr>
+				%endfor
+			</table>
+			
+			<div class="mytop4">
+				<img src="${url_static_img}00/id_00_10/frame_id_00-10.png"width="320px" height="372px"/>
+			</div>				
+			
+			%if is_blacklist:
+				<%doc>ブラックリスト</%doc>
+				% if is_friend:
+					<div class="profbt2">
+						<a href="javascript:void(0);"><!--フレンドから外す--><img src="${url_static_img}00/id_00_10//btn_battle_02_3_dark.png" width="142px" height="60px"/></a>
+					</div>
+				% elif did_send_friendrequest:
+					<div class="profbt2">
+						<a href="javascript:void(0);"><!--申請を取り消す--><img src="${url_static_img}00/id_00_10//btn_battle_02_1_dark.png" width="142px" height="60px"/></a>
+					</div>
+				% elif receive_friendrequest:
+					<div class="profbt2">
+						<a href="javascript:void(0);"><!--承認する--><img src="${url_static_img}00/id_00_10//btn_battle_02_2_dark.png" width="142px" height="60px"/></a>
+					</div>
+				% else:
+					<div class="profbt2">
+						<a href="javascript:void(0);"><!--フレンドに誘う--><img src="${url_static_img}00/id_00_10/btn_battle_02_dark.png" width="142px" height="60px"/></a>
+					</div>
+				% endif
+				<div class="profbt3">
+					<a href="javascript:void(0);"><!--あいさつ--><img src="${url_static_img}00/id_00_10//btn_battle_03_dark.png" width="142px" height="60px"/></a>
+				</div>
+			%else:
+				<%doc>ブラックリストじゃない</%doc>
+				% if is_friend:
+					<div class="profbt2">
+						<a href="${player['url_friendremove']}"><!--フレンドから外す--><img src="${url_static_img}00/id_00_10//btn_battle_02_3.png" width="142px" height="60px"/></a>
+					</div>
+				% elif did_send_friendrequest:
+					<div class="profbt2">
+						<a href="${player['url_friendrequest_cancel']}"><!--申請を取り消す--><img src="${url_static_img}00/id_00_10//btn_battle_02_1.png" width="142px" height="60px"/></a>
+					</div>
+				% elif receive_friendrequest:
+					<div class="profbt2">
+						<a href="${player['url_friendrequest_accept']}"><!--承認する--><img src="${url_static_img}00/id_00_10//btn_battle_02_2.png" width="142px" height="60px"/></a>
+					</div>
+				% else:
+					<div class="profbt2">
+						<a href="${player['url_friendrequest_send']}"><!--フレンドに誘う--><img src="${url_static_img}00/id_00_10/btn_battle_02.png" width="142px" height="60px"/></a>
+					</div>
+				% endif
+				<div class="profbt3">
+					<a href="${player['url_greet']}"><!--あいさつ--><img src="${url_static_img}00/id_00_10//btn_battle_03.png" width="142px" height="60px"/></a>
+				</div>
+			%endif
+		</div>
+		%if is_blacklist:
+			<div class="caution" style=" margin-top:360px; margin-bottom:20px;">
+				${player['person']['nickname'] | h}さんは<br />不在なので見る事ができません。
+			</div>
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="javascript:history.back()"><span style="margin-left:14px;">戻る</span></a>
+			</div>
+			
+		%else:
+			<!--プロフィール枠ここまで-->
+			<div class="friendstatus" style="background: url(${url_static_img}00/id_00_10/st_frame_friend.png)no-repeat; background-size:320px 166px; margin-top:370px; ">
+				<div class="wrapper" style="padding:12 0 0 0 ;">
+					${player['person']['nickname'] | h}さんのステータス
+				</div>
+				
+				<div class="friendset">
+					${profilecomment | h}
+				</div>
+				<table>
+					<td>
+						<table class="frset1">
+							<tr>
+								<td class="frst1">LV</td>
+								<td class="frst2">${player['level']}</td>
+							<tr>
+						</table>
+					</td>
+					<td>
+						<table class="frset1">
+							<tr>
+								<td class="frst1">フレンド</td>
+								<td class="frst2">${friend_num}/${player['friendlimit']}</td>
+							</tr>
+						</table>
+					</td>
+				</table>
+				
+				<table class="frstatus3">
+					<tr>
+						<td class="frst3">戦歴</td>
+						<td class="frst4">${battlekos.get('win_total', 0)}勝${battlekos.get('lose_total', 0)}敗</td>
+					<tr>
+				</table>
+			</div>
+		%endif
+	</div>
+	%if not is_blacklist:
+		<section class="information">
+			<div class="infotop">
+				<p class="caption">あいさつ</p>
+			</div>
+			<div class="infoBack">
+				% if len(greetlog_list) == 0:
+					<div class="list_not_found">
+						あいさつ履歴はありません
+					</div>
+					<div style="font-size:0px; opacity: 0;">　</div>
+				%else:
+					<ul class="link_arrow">
+						% for greetlog in greetlog_list:
+							<li style="height:auto;">
+								<a href="${get_html_param('params.url', 'sp/profile.html', greetlog)}"><img src="${greetlog['params']['thumbUrl']}" width="60" height="60" align="left" />
+									<div>	
+										${greetlog['ctime']}<br />
+										<span class="yellow">${greetlog['params']['username']}</span>から<br />あいさつがありました。<br />
+										% if greetlog['params'].get('comment'):
+											<div style="text-align:left; width:220px; margin:auto; word-wrap:break-word; overflow:auto;">
+												コメント ${greetlog['params']['comment'] | h}<br />
+											</div>
+										% endif
+									</div>	
+								</a>
+							</li>
+						% endfor
+					</ul>
+					<div>
+						<a class="button" style="margin-left:180px;" href="${get_html_param('url_greetlog', 'sp/greeting.html')}"><div>もっと見る</div></a>
+					</div>
+				%endif
+				<div style="font-size:0px; opacity: 0;">
+				.
+				</div>
+			</div>
+			
+			<div class="infobtm"><!-- 改行部分-->
+			</div>
+		</section>
+		
+		<section class="information">
+			<div class="infotop">
+				<p class="caption">レアキャスト入店情報</p>
+			</div>
+			<div class="infoBack">
+				%if rarelog:
+					<ul>
+						% for rare in rarelog:
+							<li>
+								${rare['gtime']}<br />${rare['card']['name'] | h}が所属!!<br />
+							</li>
+						% endfor
+					</ul>
+				%else:
+					<div class="list_not_found">
+						レアキャスト入店情報はありません
+					</div>
+				%endif
+				<div style="font-size:0px; opacity: 0;">
+				.
+				</div>
+			</div>
+			
+			<div class="infobtm"><!-- 改行部分-->
+			</div>
+		</section>
+	%endif
+	%if frompage_url:
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('frompage_url', 'sp/page.html')}"><span style="margin-left:14px;">イベントランキングへ</span></a>
+		</div>
+	%endif
+</%def>

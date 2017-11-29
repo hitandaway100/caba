@@ -1,0 +1,59 @@
+#coding:utf-8
+
+<%inherit file="../../base.html" />
+
+<%def name="contents()">
+  <img src="${get_html_param('url_static_img')}event/${get_html_param('anniv_name')}/${get_html_param('anniv_name')}_header.png" width="320">
+
+
+  <% banner = get_html_param('url_static_img') + 'banner/gacha/' + get_html_param('anniv_name') + '_sheet/' + get_html_param('anniv_name') + '_sheet_banner.png' %>
+  ${self.output(1, banner, '/gacha?_gtype=limit_sheet&_gtab=2seat', '2シート限定シートガチャはこちらから')}
+  ${self.output(2)}
+  ${self.output(3)}
+  % if strToDateTime('2016-12-19 15:00:00') <= now:
+    <% banner = get_html_param('url_static_img') + 'banner/event/produce/01/produce_01_banner.png' %>
+    % if now <= strToDateTime('2016-12-20 15:00:00'):
+      ${self.output(4, banner, '/teaser/624/', '12月20日16時～開催予定！')}
+    % else:
+      ${self.output(4, banner, '/produceeventtop/01/', 'プロデュースイベントはこちらから')}
+    % endif
+    ${self.output(5)}
+    <% banner = get_html_param('url_static_img') + 'banner/lvup_bonus/lvup_bonus02/lvup_bonus02_banner.png' %>
+    ${self.output(6, banner, '/levelupbonus/', 'レベルアップ達成報酬はこちらから')}
+    ${self.output(7)}
+  % endif
+  % if strToDateTime('2016-12-26 15:00:00') <= now:
+    ${self.output(8)}
+  % endif
+
+  % if now <= strToDateTime('2016-12-19 15:00:00'):
+    <img src="${get_html_param('url_static_img')}event/${get_html_param('anniv_name')}/${get_html_param('anniv_name')}_cs_1219.png" width="320">
+    <div style="margin: 10px 0px;">
+      <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="5">
+    </div>
+    <img src="${get_html_param('url_static_img')}event/${get_html_param('anniv_name')}/${get_html_param('anniv_name')}_cs_1226.png" width="320">
+  % elif now <= strToDateTime('2016-12-26 15:00:00'):
+    <img src="${get_html_param('url_static_img')}event/${get_html_param('anniv_name')}/${get_html_param('anniv_name')}_cs_1226.png" width="320">
+  % endif
+</%def>
+
+<%def name="output(index, banner=None, jumpto=None, text=None)">
+  <img src="${get_html_param('url_static_img')}event/${get_html_param('anniv_name')}/${get_html_param('anniv_name')}_0${index}.png" width="320">
+
+  % if banner is not None and jumpto is not None and text is not None:
+    <div class="wrapper">
+      <div class="yellow" style="font-size: 13px; margin-top: 10px;">
+        ${text}
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <a href="${get_html_param('makeAppLinkUrl')(jumpto)}">
+        <img src="${banner}" width="240">
+      </a>
+    </div>
+  % endif
+
+  <div style="margin: 10px 0px;">
+    <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="5">
+  </div>
+</%def>

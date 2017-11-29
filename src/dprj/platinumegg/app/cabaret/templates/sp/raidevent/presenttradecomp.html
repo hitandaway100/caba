@@ -1,0 +1,21 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">贈り物交換完了</p>
+	</div>
+	<div style="padding: 20px 0px;text-align:center;">
+		<img src="${recipe['thumbUrl']}"width="90px" height="90px" />
+	</div>
+	<div class="caution">
+		「${recipe['name']}」を<br />
+		${trade_num}${recipe['unit'] | h}交換しました。
+	</div>
+	<div style="text-align: center; padding:20px 0;">
+		<a href="${get_html_param('url_raidevent_recipelist', 'sp/raidevent/presenttrade.html')}">
+			<img src="${url_static_img}banner/event/raidevent/${raidevent['codename']}/${raidevent['codename']}_exchange_shop.png" alt="バナー" width="240" height="auto"/>
+		</a>
+	</div>
+	${self.eventfooter()}
+</%def>

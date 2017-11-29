@@ -1,0 +1,302 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>ポケットマネー</strong>　ポケットマネーをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.GOLD}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          金額:<br />
+          <input type="text" name="_value" value="1" />を
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>引抜ポイント</strong>　引抜ポイントをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.GACHA_PT}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          ポイント:<br />
+          <input type="text" name="_value" value="1" />を
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>チケット</strong>　チケットをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <p>
+          <select name="_itype">
+            <option value="">------</option>
+            % for key, value in ItemType.TICKET_ITEM_TYPES.items():
+            <option value="${key}">${value}</option>
+            % endfor
+          </select>を
+        </p>
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          チケット:<br />
+          <input type="text" name="_value" value="1" />枚を
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>カード</strong>　カードをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.CARD}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          <select name="_value">
+            <option value="">------</option>
+            %for card in cardlist:
+            <option value="${card.id}">${card.name | h}(ID:${card.id})</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          <input type="text" name="_num" value="1" />枚
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>アイテム</strong>　アイテムをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.ITEM}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          <select name="_value">
+            <option value="">------</option>
+            %for item in itemlist:
+            <option value="${item.id}">${item.name | h}(ID:${item.id})</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          <input type="text" name="_num" value="1" />個
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>イベントガチャチケット</strong>　イベントガチャチケットをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.EVENT_GACHATICKET}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          <select name="_value">
+            <option value="">------</option>
+            %for event in raidevent:
+            <option value="${event.id}">${event.name | h}(ID:${event.id})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          チケット:<br />
+          <input type="text" name="_num" value="1" />枚を
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>追加ガチャチケット</strong>　新規追加ガチャチケットをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.ADDITIONAL_GACHATICKET}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          チケット:<br />
+          <select name="_value">
+            <option value="">------</option>
+            %for k,v in Defines.GachaConsumeType.GachaTicketType.NAMES.items():
+            <option value="${k}">${v | h}</option>
+            %endfor
+          </select>を
+        </p>
+        <p>
+          枚数:<br />
+          <input type="text" name="_num" value="1" />枚
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>プラチナのかけら</strong>　プラチナのかけらをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.PLATINUM_PIECE}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          個数:<br />
+          <input type="text" name="_value" value="1" />個
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>クリスタルのかけら</strong>　クリスタルのかけらをプレゼントBOXに送ります</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="send_present" />
+        <input type="hidden" name="_itype" value="${ItemType.CRYSTAL_PIECE}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          個数:<br />
+          <input type="text" name="_value" value="1" />個
+        </p>
+        <p>
+          <input type="text" name="_present_num" value="1" />回
+        </p>
+        <p>
+          <input class="btn" type="submit" value="送信" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>プレゼント削除</strong>　プレゼントBOXを空にします</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="flush_present" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>に
+        </p>
+        <p>
+          <input class="btn" type="submit" value="削除" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

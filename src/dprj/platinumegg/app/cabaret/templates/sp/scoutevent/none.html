@@ -1,0 +1,24 @@
+#coding:utf-8
+<%inherit file="scoutresultbase.html" />
+
+<%def name="topcap()">
+	${self.feverinfo()}
+	${self.scoregetinfo()}
+</%def>
+
+<%def name="resultbodywrapp()">
+	
+	${self.drawScoutResultInfo(line=False)}
+	
+	<div class="btn_ontext">
+		%if url_next:
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_next', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01/btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+		%else:
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_scoutdo', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01//btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+		%endif
+	</div>
+	
+	${self.playerstatus()}
+	
+	${self.resultbody()}
+</%def>

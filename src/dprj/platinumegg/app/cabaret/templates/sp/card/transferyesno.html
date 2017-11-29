@@ -1,0 +1,59 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">キャストリスト</p>
+		</div>
+		
+		%if flag_include_hkincr_already or flag_include_growth:
+			<div class="caution" style="font-size:11px;">
+				%if flag_include_growth:
+					※成長したキャストが含まれています
+				%endif
+				%if flag_include_hkincr_already:
+					※ハメ管理度が1以上のキャストを異動させようとしています<br />
+				%endif
+				<table class="precheck">
+					<tr>
+						<td style="width:290px; ">
+							<span style="font-size:14px;">別店舗に移動させたキャストは、呼び戻した際にLv、サービスLv、ハメ管理度が初期状態に戻ります。<br />本当に異動させる場合はチェックボックスにチェックを入れてください。</span>
+						</td>
+						<td style="width:30px;" >
+							<input type="checkbox" id="_accept" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+						</td>
+					</tr>
+				</table>
+			</div>
+		%endif
+		
+		<div class="confirm" style="font-size:11px; margin-top:8px;">
+			下記キャストを別店舗へ異動させます。よろしいですか?
+		</div>
+		
+		<div>
+			<script>
+				function onClickSellButton(){
+					if(0 < $("#_accept").length && $("#_accept")[0].checked != true){
+						return;
+					}
+					location.href = "${get_html_param('url_transferdo', 'sp/card/sellcomplete.html')}";
+				}
+			</script>
+			<a class="btnlong" style="margin-top:8px;" href="javascript:void(0);" onclick="onClickSellButton();"><div>異動する</div></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_transfer', 'sp/card/sell.html')}"><div>やめる</div></a>
+		</div>
+		
+		%for card in cardlist:
+			<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='deselect_transfer', get_html_param=get_html_param, test_skill=True, Defines=Defines"/>
+		%endfor
+		<div style="padding-bottom:20px;">
+		</div>
+
+	</div>
+	
+</%def>

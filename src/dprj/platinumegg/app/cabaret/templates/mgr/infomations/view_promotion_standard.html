@@ -1,0 +1,84 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	
+	<script type="text/javascript">
+		function onChangeApps(app_select_tag){
+			var option = app_select_tag.options[app_select_tag.options.selectedIndex];
+			location.href = location.pathname + '?appname=' + option.value;
+		}
+	</script>
+	
+	<div class="page-header">
+		<h1>
+			${nickname | h}のクロスプロモーション情報
+		</h1>
+	</div>
+	
+	<div>
+		<select onchange="onChangeApps(this);">
+			%for appname in promotion_apps:
+				%if promotion_appname == appname:
+					<option value="${appname}" selected="selected">${appname | h}</option>
+				%else:
+					<option value="${appname}">${appname | h}</option>
+				%endif
+			%endfor
+		</select>
+	</div>
+	
+	<div class="row">
+		<div class="span6">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							DMMID
+						</th>
+						<th>
+						  ログイン日数
+						</th>
+						<th>
+              バトル
+						</th>
+						<th>
+							バトル連勝
+						</th>
+						<th>
+							バトルランク5
+						</th>
+						<th>
+              レベル10
+						</th>
+						<th>
+							レベル20
+						</th>
+						<th>
+              経営
+						</th>
+						<th>
+              秘宝交換
+						</th>
+						<th>
+              SSR取得
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					  %for i, column in enumerate(displaylist):
+							<td>
+                %if i <= 1:
+                  <span class="label">${column}</span>
+                %elif 5 <= column or column is True:
+                  <span class="label label-blue">○</span>
+                %endif
+              </td>
+					  %endfor
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</%def>

@@ -1,0 +1,19 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="contents()">
+<div style="background-color:rgba(0,0,0,0.4); width:320;">
+	<div class="titlebar">
+		<p class="caption">ボス戦 - 実行アニメーション</p>
+	</div>
+	
+	%if flag_template_test:
+		<div class="btncom">
+			<a href="${get_html_param('', 'sp/happening/bosswin.html')}">勝利</a><br />
+			<a href="${get_html_param('', 'sp/happening/bosslose.html')}">敗北</a><br />
+		</div>
+	%else:
+		1秒後に次のページへ移動します。
+		<meta http-equiv="refresh" content="1;url=${url_bossresult}">
+	%endif
+</div>
+</%def>

@@ -1,0 +1,31 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<%
+		titlemaster = title['master']
+	%>
+	<div class="titlebar">
+		<p class="caption">称号交換</p>
+	</div>
+	
+	<div class="wrapper">
+		${titlemaster['name'] | h}と交換しました
+	</div>
+	
+	<div class="icon_l">
+		<img src="${titlemaster['thumb']}" width="90" height="90" />
+	</div>
+	
+	<div class="wrapper">
+		所持${Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT] | h}：${cabaclub_management_info['point'] + titlemaster['cost']}&nbsp;→&nbsp;${cabaclub_management_info['point']}<br />
+	</div>
+	
+	<div>
+		<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_title', 'sp/title/top.html')}"><div>称号交換所へ</div></a>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

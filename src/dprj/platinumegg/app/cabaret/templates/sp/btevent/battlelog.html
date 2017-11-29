@@ -1,0 +1,46 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	%if battleloglist:
+		%for battlelog in battleloglist:
+			<section class="basicinfo">
+				<div class="basictop_s">
+				</div>
+				<div class="basicBack" style="height:80px;">
+						<ul>
+							<li style="height:60px;">
+							<img src="${battlelog['player']['leader']['master']['thumbUrl']}"width="60" height="60" align="left" class="itemimg"/>
+							%if battlelog['is_win']:
+								%if battlelog['is_attack']:
+									<span class="red">[攻めて勝利]</span> ${battlelog['ctime'] | h}<br />
+								%else:
+									<span class="red">[受けて勝利]</span> ${battlelog['ctime'] | h}<br />
+								%endif
+							%else:
+								%if battlelog['is_attack']:
+									<span class="blue">[攻めて敗北]</span> ${battlelog['ctime'] | h}<br />
+								%else:
+									<span class="blue">[受けて敗北]</span> ${battlelog['ctime'] | h}<br />
+								%endif
+							%endif
+							対戦相手：${battlelog['player']['person']['nickname'] | h}<br />
+							%if battlelog['point']:
+								獲得バトルポイント：${battlelog['point']}
+							%endif
+						</li>
+					</ul>
+				</div>
+				<div class="basicbtm">
+				</div>
+			</section>
+		%endfor
+	%else:
+		<div class="caution" style="margin-top:20px;">
+			履歴がありません
+		</div>
+	%endif
+	
+	${self.pagenation()}
+	${self.eventfooter()}
+</%def>
+

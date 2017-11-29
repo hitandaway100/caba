@@ -1,0 +1,117 @@
+#coding:utf-8
+<%inherit file="scoutresultbase.html" />
+
+	<%def name="tutorialtext()">
+		<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			ラッキー!銀の宝箱を見付けたぜ!<br />
+			だけど金・銀の宝箱は<br />
+			カギが無いと開ける事が出来ないからな・・・<br />
+			後でライバル店と戦うバトルでカギを入手して<br />
+			アイテムをGETするか!
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		${self.scouttop()}
+		${self.topcap()}
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-bottom:4px;"/>
+		<div class="itembox">
+			<table style="310px;">
+				<td>
+					<img src="${treasure_view['thumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext">
+				${treasure_view['name'] | h}×1個獲得
+				</td>
+			</table>
+		</div>
+		
+		%if not is_tutorial:
+			<div>
+				<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_list', 'sp/treasure/list.html', treasure_view)}"><div>宝箱を確認</div></a>
+			</div>
+		%endif
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-bottom:4px;"/>
+		
+		${self.resulttop()}
+	</div>
+	
+	${self.drawScoutResultInfo(line=False)}
+	
+	${self.resultbodywrapp()}
+	
+	% if player['level'] < Defines.BIGINNER_PLAYERLEVEL:
+		<div class="topcap">
+			Lv10まで体力消費せず進めます
+		</div>
+	% endif
+
+	<div class="areastatus">
+		<span class="wrapper">${scout['name'] | h}</span>
+		<table class="areabox">
+			<tr>
+				<td class="areaset1" style="width:60px;">
+					達成度
+				</td>
+				<td class="areaset1" style="width:40px;">
+					${scout['percent']}%
+				</td>
+				<td class="areaset1" style="width:184px; margin-left:-10px;">
+					<div class="st_frame_big">
+						<div class="st_gauge04" style="width:${int(scout['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="areabox2">
+			<tr>
+				<td class="areaset1">
+					体力
+				</td>
+				<td class="areaset2"  style="color:#FF0000;">
+					-${scout['apcost']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1">
+					経験値
+				</td>
+				<td class="areaset2">
+					${scout['exp']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1">
+					CG
+				</td>
+				<td class="areaset2">
+					＋${scout['goldmin']}〜${scout['goldmax']}
+				</td>
+			</tr>
+		</table>
+		
+		<table>
+			% for index, dropitem in enumerate(scout['dropitems']):
+				<tr class="area_deck" style="top:120px;left:${index * 54 + 10}px;">
+					<td> 
+						<img src="${url_static_img}01/scout_frame_photo.png"width="52px" height="52px"/><!--キャバ嬢写真の枠のみ-->
+					</td>
+					<td class="deck_photo">
+						% if dropitem['drop']:
+							<img src="${dropitem['thumbUrl']}"width="50px" height="50px"/><!--キャバ嬢の写真-->
+						% else:
+							<img src="${url_static_img}00/id_00_02/side_no_data.png"width="50px" height="50px"/>
+						% endif
+					</td>
+				</tr>
+			% endfor
+		</table>
+	</div>
+</%def>

@@ -1,0 +1,75 @@
+#coding:utf-8
+<%inherit file="../sp/base.html" />
+
+<%def name="renderTitle()">
+	<section class="basicinfo">
+		<div class="basictop">
+			<p class="caption">更新情報</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" >
+		</div>
+			
+		<div class="basicBack">
+			<ul>
+				% for obj in infomations:
+					<li>
+						<a href="javascript:void(0);">${obj['date']}<br />${obj['title']}<br /></a>
+					</li>
+					<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" >
+				% endfor
+			</ul>
+			<div style="font-size:0px;">
+				&nbsp;
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+<%def name="renderBody()">
+	<div class="titlebar">
+		<p class="caption">更新情報</p>
+	</div>
+	<section class="basicinfo">
+		<div class="basictop" style="font-size:0px;">
+			 &nbsp;
+		</div>
+		<div class="basicBack">
+			<ul>
+				<li>
+					% if infomation is not UNDEFINED:
+						${infomation['body']}
+					% endif
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				 &nbsp; 
+			</div>
+		</div>
+		<div class="basicbtm">
+		</div>
+	</section>
+</%def>
+
+<%def name="block_menu(menuid, cross_promotion_banner=True)">
+</%def>
+<%def name="header_wrapp()">
+</%def>
+<%def name="footer()">
+</%def>
+<%def name="session_script()">
+</%def>
+
+<%def name="contents()">
+	<div>
+		<div>
+			一覧ページ
+		</div>
+		${self.renderTitle()}
+	</div>
+	<div>
+		<div>
+			詳細ページ
+		</div>
+		${self.renderBody()}
+	</div>
+</%def>

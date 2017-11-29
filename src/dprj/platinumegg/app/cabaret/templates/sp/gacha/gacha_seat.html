@@ -1,0 +1,122 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.SEAT)}
+</%def>
+
+<%def name="drawGachaList()">
+	%for gacha in gachadata.values():
+		%if gacha['consumetype'] == Defines.GachaConsumeType.SEAT and gacha['tabengname'] == current_tab:
+			${self.drawGachaListSub(gacha)}
+		%endif
+	%endfor
+</%def>
+
+<%def name="drawRaidEventSheetGachaBanner()">
+</%def>
+
+<%def name="drawGachaListSub(gacha)">
+	<%
+		unique_name = gacha['unique_name']
+		seatinfo = gacha['seatinfo']
+	%>
+	${self.drawBoxBanner(unique_name)}
+	${self.drawSchedule(unique_name)}
+	${self.drawHeader(unique_name)}
+	${self.drawSlide(unique_name)}
+	${self.reaSetsumei()}
+	
+	${self.drawGachaSeat(unique_name)}
+	
+	${self.drawSeatThumbnail(unique_name)}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">▽現在のシート状況▽</div>
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	
+	${self.drawSeatInfoByKey(unique_name)}
+	
+	<div align="center" style="width:310px; height:30px; font-size:13;">
+		<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gacha)}" class="orange">獲得可能キャスト一覧</a>
+	</div>
+	
+	<%doc>リセット表示状態</%doc>
+	%if seatinfo and seatinfo['url_reset']:
+		<form action="${seatinfo['url_reset']}" method="post">
+			<table class="precheck" align="left"  style="width:280px; margin-left:16px; font-size:11px;">
+				<tr>
+					<td style="width:290px; ">
+						%if 0 < seatinfo['lap']:
+							<div class="red">
+								<%doc>
+								リセットを行うとシートの状態が2枚目の<br />
+								初期状態に戻ります。<br />
+								</%doc>
+								リセットを行うと元のシートに戻って引き直<br />
+								すことは出来ません。
+							</div>
+							<div>
+								本当にリセットする場合は、チェックボック<br />
+								スにチェックを入れてください
+							</div>
+						%else:
+							<div class="red">
+								<%doc>
+								リセットを行うとシートの内容が変わります<br />
+								元のシートに戻って引き直す事は出来ません<br />
+								</%doc>
+								リセットを行うと元のシートに戻って引き直<br />
+								すことは出来ません。
+							</div>
+							<div>
+								本当にリセットする場合は、チェックボック<br />
+								スにチェックを入れてください
+							</div>
+						%endif
+					</td>
+					<td style="width:30px;" >
+						<input type="checkbox" name="${Defines.URLQUERY_ACCEPT}" value="1" onclick="onClickCheckBox(this);" class="precheck" style=" position: relative; left:1px; width:20px;height:20px"  /><label><br /></label>
+					</td>
+				</tr>
+			</table>
+			<div style="text-align:center; margin-top:8px;">
+				<input type="submit" value="リセットする" class="sell_on btnsell_on" style="display:none;"/>
+				<input type="submit" value="リセットする" disabled="true" class="sell_off btnsell_off"/ >
+			</div>
+		</form>
+	%endif
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(unique_name)}
+	
+	${self.drawGachaSeat(unique_name)}
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextSheet()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

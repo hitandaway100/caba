@@ -1,0 +1,91 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+	%if not is_emergency:
+		<script type="text/javascript">
+			$(function () {
+				var etime = new Date("${etime.strftime('%Y/%m/%d %H:%M:%S')} GMT+9:00");
+				
+				function getRestSeconds(){
+					var now = new Date(new Date().toUTCString());
+					var diff = etime.getTime() - now.getTime();
+					if(diff < 0){
+						diff = 0;
+					}
+					return Math.floor(diff / 1000);
+				}
+				function timedeltaToString(sec){
+					function to_s(v){
+						return (+v < 10 ? "0" : "") + v;
+					}
+					var minutes = Math.floor((sec+59) / 60);
+					var h = Math.floor(minutes / 60);
+					var m = minutes % 60;
+					return to_s(h) + ":" + to_s(m);
+				}
+				
+				function update(){
+					var resttime = getRestSeconds();
+					
+					var vtimer = $("#mainte_announce #resttime");
+					if(0 < resttime){
+						var resttime_innerHTML = '(終了まであと<span class="yellow">'+ timedeltaToString(resttime) +'</span>)';
+						for(var i=0; i<vtimer.length; i++){
+							var spantag = vtimer[i];
+							spantag.innerHTML = resttime_innerHTML;
+						}
+						setTimeout(update, 5000);
+					}
+					else{
+						vtimer.css("display", "none");
+						$("#mainte_announce .btnpink").css("display", "");
+					}
+				}
+				update();
+			});
+		</script>
+	%endif
+	%if is_platform_maintenance:
+		<script type="text/javascript">
+			$(function () {
+				top.location.href = "${url_dmm_top}";
+			});
+		</script>
+	%endif
+</%def>
+<%def name="header()"></%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">メンテナンスのお知らせ</p>
+	</div>
+	<div style="padding-top: 8px; padding-bottom: 16px; margin-left: 1em; margin-right: 1em;">
+		いつも『${apptitle}』をご利用頂きまして、誠にありがとうございます。<br />
+		%if is_emergency:
+			<div style="padding-bottom: 16px;">
+				只今緊急メンテナンスを行っております。
+			</div>
+		%else:
+			下記のスケジュールにてメンテナンスを行っております。<br />
+			<div class="wrapper" style="padding-top: 16px;padding-bottom: 16px;">
+				${stime.strftime("%m/%d&nbsp;%H:%M")}〜${etime.strftime("%m/%d&nbsp;%H:%M")}
+				<div id="mainte_announce">
+					<div id="resttime">
+					</div>
+					<div>
+						<a class="btnpink" style="display: none;" href="${get_html_param('url_top', 'sp/top/top.html')}"><p class="caption">トップページへ</p></a>
+					</div>
+				</div>
+			</div>
+		%endif
+		ご理解の程、よろしくお願いいたします。
+	</div>
+	
+	
+	
+	
+</%def>
+
+<%def name="footer()"></%def>
+

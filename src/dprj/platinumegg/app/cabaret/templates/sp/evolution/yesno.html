@@ -1,0 +1,83 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+	<%def name="tutorialtext()">
+		<div class="back_black">
+		<div class="tutorial_ms">
+			ハメ管理には同じ名前のキャストが必要だ<br />
+			同じキャストを3人プレゼントするので<br />
+			ハメ管理をしてみよう。<br />
+			今回は無料でハメ管理されるぞ。
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">ハメ管理</p>
+		</div>
+	<%
+		clickable = True
+		if is_tutorial:
+			clickable = False
+	%>
+		<div class="topcap">
+			ハメ管理を行うキャスト
+		</div>
+	</div>
+	<%include file="../includes/listcard.html" args="card=basecard, url_static_img=url_static_img, card_select_type='evbasechange', get_html_param=get_html_param, clickable=clickable, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+	
+	%if deck_none:
+		<div class="wrapper">
+			<span class="red">出勤キャストを編成できなくなるため合成できません</span>
+		</div>
+	%elif cost_over:
+		<div class="wrapper">
+			<span class="red">${gold_name | h}が足りません</span>
+		</div>
+	%else:
+		<div>
+			%if is_pc and not is_tutorial:
+				<a class="btnpinkbig" href="${get_html_param('url_do', 'sp/evolution/effect_swf.html')}" onclick="window.parent.reserveGetStatus();return true;"><p class="caption">ハメ管理する</p></a>
+			%else:
+				<a class="btnpinkbig" href="${get_html_param('url_do', 'sp/evolution/effect_swf.html')}"><p class="caption">ハメ管理する</p></a>
+			%endif
+		</div>
+	%endif
+	
+	<div class="confirm">
+		%if is_tutorial:
+			今回は無料でハメ管理ができます。<br />
+		%else:
+			<span class="name">消費${gold_name | h}&nbsp;:&nbsp;</span>${cost}<br />
+			%if 0 <= gold_post:
+				<span class="name">所持${gold_name | h}&nbsp;:&nbsp;</span>${player['gold']}⇒<span class="orange">${gold_post}</span><br/>
+			%else:
+				<span class="name">所持${gold_name | h}&nbsp;:&nbsp;</span>${player['gold']}<br />
+			%endif
+		%endif
+		%if not cost_over:
+			下記のキャストをハメ管理合成に使用します。<br />
+			よろしいですか?
+		%endif
+	</div>
+	
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		<div class="wrapper" style="color:#ffffff;">
+			パートナー
+		</div>
+	</div>
+	%if is_tutorial:
+		%if materialcardlist:
+			%for mcard in materialcardlist:
+				<%include file="../includes/listcard.html" args="card=mcard, url_static_img=url_static_img, card_select_type='evselectchange', get_html_param=get_html_param, clickable=clickable, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+			%endfor
+		%endif
+	%else:
+		<%include file="../includes/listcard.html" args="card=materialcard, url_static_img=url_static_img, card_select_type='evselectchange', get_html_param=get_html_param, clickable=clickable, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+	%endif
+	
+</%def>

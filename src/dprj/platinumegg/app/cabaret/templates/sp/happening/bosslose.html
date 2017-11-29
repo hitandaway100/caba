@@ -1,0 +1,111 @@
+#coding:utf-8
+<%inherit file="happeningbase.html" />
+
+<%def name="happeningtop()">
+	<div class="scouttop" style="height:242px;">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">超太客来店中</span>
+		</div>
+		
+		<div class="scouttime" style="top:116;">
+			<%include file="../includes/inc_tutorialsatisfaction.html" args="hp=happening['raid']['hp'],hpmax=happening['raid']['hpmax'],damage=damage" />
+			<div style=" margin-top:-4px; padding-bottom:4px;">
+				<%
+					_hours = happening['timelimit']['hours']
+					_minutes = happening['timelimit']['minutes']
+					_seconds = happening['timelimit']['seconds']
+				%>
+				%if _hours:
+					残り時間:${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒
+				%else:
+					残り時間:${_minutes}分${'%02d' % _seconds}秒
+				%endif
+			</div>
+		</div>
+		<div class="boss_coment">
+			<div class="coment_text">
+				${happening['raid']['commentlose'] | h}
+			</div>
+		</div>
+	</div>
+</%def>
+
+<%def name="playerstatus()"></%def>
+<%def name="areastatus()"></%def>
+<%def name="prizelist()"></%def>
+<%def name="happeningbodybottom()">
+
+	<div style="margin-top:10px;">
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		<table class="spirit">
+			<tr>
+				<td class="spirit1">
+					体力
+				</td>
+				<td class="spirit2">
+					${player['ap']}/${player['apmax']}
+				</td>
+				<td class="spirit3">
+					<div class="st_frame" style="height:16px;">
+						<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}">
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="spirit">
+			<tr>
+				<td class="spirit1">
+					気力
+				</td>
+				<td class="spirit2">
+					${player['bp']}/${player['bpmax']}
+				</td>
+				<td class="spirit3">
+					<div class="st_frame" style="height:16px;">
+						<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	</div>
+	
+	%if happening['oid'] == player['id']:
+		%if happening['raid']['help']:
+			<div class="caution">
+				ヘルプ依頼しました
+			</div>
+			<div>
+				<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_return', 'sp/happening/happening.html')}"><div>続けて接客する</div></a>
+			</div>
+		%else:
+			<div>
+				<a class="btnlong" style="margin:8px auto 8px auto;" href="${get_html_param('url_helpsend', 'sp/raid/friendselect.html')}"><div>フレンドにヘルプを頼む</div></a>
+			</div>
+			<div style="font-size:12px;text-align: center;">
+				フレンドと一緒に攻略しよう!
+			</div>
+			<div>
+				<a class="btnlong" style="margin:8px auto 8px auto;" href="${get_html_param('url_return', 'sp/raidevent/christmas/bossappear.html')}"><div>ヘルプを頼まずに接客する</div></a>
+			</div>
+		%endif
+	%else:
+		<div>
+			<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_return', 'sp/happening/happening.html')}"><div>続けて接客する</div></a>
+		</div>
+	%endif
+	
+	<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img, skilllist=skilllist, helpplayerlist=playerlist" />
+	
+</%def>
+
+<%def name="happeningFooter()"></%def>

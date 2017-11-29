@@ -1,0 +1,214 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	${self.putScoutButtonScript()}
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="scouttop" style=" width : 320px;">
+			<div class="scoutpic" style="position:relative;">
+				<img src="${scout['thumbUrl']}" style="width:320px;height:180px;"/>
+			</div>
+			%if boss:
+				<div class="scoutpic2">
+					<img src="${boss['thumbUrl']}" width="320" height="180"/>
+				</div>
+				<div class="scoutflame">
+					<span class="wrapper">${scout['areaname'] | h}でスカウト</span>
+				</div>
+				<div class="boss_coment">
+					<div class="coment_text">
+						${boss['commentappear'] | h}
+					</div>
+				</div>
+			%else:
+				<div class="scoutflame">
+					<span class="wrapper">${scout['areaname'] | h}でスカウト</span>
+				</div>
+			%endif
+		</div>
+		
+		%if boss:
+			<div class="btn_ontext">
+				<a href = "${get_html_param('url_bossbattle', 'sp/boss/bosspre.html')}"><img src="${url_static_img}01/id_01_20/btn_boss.png" style="width:232px;height:49px;"/></a>
+			</div>
+		%endif
+
+		<div class="scoutstatus">
+			<table class="setbox">
+				<tr>
+					<td class="scset1">
+						体力
+					</td>
+					<td class="scset2">
+						${player['ap']}/${player['apmax']}
+					</td>
+					<td class="scset3">
+						経験値
+					</td>
+					<td class="scset4">
+						${player['exp'] - player['exp_prev']}/${player['exp_next'] - player['exp_prev']}
+					</td>
+				</tr>
+				<tr>
+					<td class="scset1" colspan="2">
+						<div class="st_frame" style="height:16px; margin-left:-4px;">
+							<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}"><%doc>バーは仮</%doc></div>
+						</div>
+					</td>
+					<td class="scset3" colspan="2">
+						<div class="st_frame" style="height:16px; margin-left:-4px;">
+							<%
+								exp_diff = player['exp_next'] - player['exp_prev']
+								exp_percent = 100
+								if 0 < exp_diff:
+									cur_exp = max(0, player['exp'] - player['exp_prev'])
+									exp_percent = min(100, 100 * cur_exp / exp_diff)
+							%>
+							<div class="st_gauge02" style="width:${int(exp_percent * 120 / 100)};"><%doc>バーは仮</%doc></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table class="setbox">
+				<tr>
+					<td class="scset5">
+						${gold_name | h}
+					</td>
+					<td class="scset6">
+						${player['gold']}CG
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<%doc>イベントスカウトTOPはフィーバー中に残り時間を表示</%doc>
+		${self.scoutevent_feverinfo()}
+		${self.scoutevent_lovetimeinfo()}
+		
+		%if not is_all_open and is_all_cleared:
+			<div class="topcap">
+				現在の公開エリアはここまでとなります。<br />
+				エリア開放まで少々お待ちください。
+			</div>
+		%endif
+		
+		%if overlimit_treasure or overlimit_card:
+			<div class="caution">
+				%if overlimit_card:
+					所属キャストが上限に達しています<br />
+				%endif
+				%for treasure_type in (overlimit_treasure or []):
+					${Defines.TreasureType.NAMES[treasure_type] | h}が最大数に達しています<br />
+				%endfor
+			</div>
+		%endif
+		
+		% if player['level'] < Defines.BIGINNER_PLAYERLEVEL:
+			<div class="topcap">
+				Lv10まで体力消費せず進めます
+			</div>
+		% endif
+		
+		<div style="padding: 8px 0px;">
+			<table>
+				<tr>
+					<td style="width:290px;">
+						<span style="font-size:12px;">スカウト演出をスキップする場合は<br />チェックボックスにチェックを入れてください。</span>
+					</td>
+					<td style="width:30px;">
+						<div class="precheck">
+							%if flag_skip:
+								<input id="scoutskip" type="checkbox" checked="checked" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+							%else:
+								<input id="scoutskip" type="checkbox" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+							%endif
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		${self.drawStarList()}
+		
+		% for stage in stagelist:
+			<div class="areastatus">
+				<span class="wrapper">${stage['name'] | h}</span>
+				<table class="areabox">
+					<tr>
+						<td class="areaset1" style="width:60px;">
+							達成度
+						</td>
+						<td class="areaset1" style="width:40px;">
+							${stage['percent']}%
+						</td>
+						<td class="areaset1" style="width:184px; margin-left:-10px;">
+							<div class="st_frame_big">
+								<div class="st_gauge04" style="width:${int(stage['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<table class="areabox2">
+					<tr>
+						<td class="areaset1">
+							体力
+						</td>
+						<td class="areaset2"  style="color:#FF0000;">
+							-${stage['apcost']}
+						</td>
+					</tr>
+					<tr>
+						<td class="areaset1">
+							経験値
+						</td>
+						<td class="areaset2">
+							${stage['exp']}
+						</td>
+					</tr>
+					<tr>
+						<td class="areaset1">
+							CG
+						</td>
+						<td class="areaset2">
+							＋${stage['goldmin']}〜${stage['goldmax']}
+						</td>
+					</tr>
+				</table>
+				
+				% if scout.has_key('dropitems'):
+				<table>
+					% for index, dropitem in enumerate(scout['dropitems']):
+						<tr class="area_deck" style="top:120px;left:${index * 54 + 10}px;">
+							<td> 
+								<img src="${url_static_img}01/scout_frame_photo.png"width="52px" height="52px"/><!--キャバ嬢写真の枠のみ-->
+							</td>
+							<td class="deck_photo">
+								% if dropitem['drop']:
+									<img src="${dropitem['thumbUrl']}"width="50px" height="50px"/><!--キャバ嬢の写真-->
+								% else:
+									<img src="${url_static_img}00/id_00_02/side_no_data.png"width="50px" height="50px"/>
+								% endif
+							</td>
+						</tr>
+					% endfor
+				</table>
+				%endif
+				
+				<!--スカウトボタン-->
+				% if stage['url_exec'] is not None:
+				<div class="scoutbtn">
+					<a onclick="onClickScout('${get_html_param('url_exec', 'sp/scoutevent/scoutdo_swf.html', stage)}');" href="javascript:void(0);"><img src="${url_static_img}common/btn_sukauto.png" width="104px" height="104px"></a>
+				</div>
+				%endif
+			</div>
+		% endfor
+	</div>
+	${self.drawTanzakuList()}
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+	</div>
+</%def>

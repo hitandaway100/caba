@@ -1,0 +1,74 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+
+	<img src="${url_static_img}banner/event/gcevent/${battleevent['codename']}/${battleevent['codename']}_battle_select.png" width="320" height="50" style="margin-bottom:4px;"/>
+
+	<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-top:5px; margin-left:5px;">
+		${self.drawEventtopic(cur_topic!='lv', get_html_param('url_battleevent_opplist_lv', 'sp/gcevent/battletop.html'), '競争相手')}
+		|
+		${self.drawEventtopic(cur_topic!='revenge', get_html_param('url_battleevent_opplist_revenge', 'sp/gcevent/battletop.html'), 'ライバル')}
+	</div>
+	
+	%if battleevent['bpcalctype'] == Defines.BattleEventPointCalculationType.COST:
+		<div class="wrapper">
+			総人件費の高いお店に勝利すると<br />
+			多くの好感度PTが手に入るよ!!
+		</div>
+	%elif battleevent['bpcalctype'] == Defines.BattleEventPointCalculationType.LEVEL:
+		<div class="wrapper">
+			高いレベルのお店に勝利すると<br />
+			多くの好感度PTが手に入るよ!!
+		</div>
+	%elif battleevent['bpcalctype'] == Defines.BattleEventPointCalculationType.OPPONENT_POWER:
+		<div class="wrapper">
+			総接客力の高いお店に勝利すると<br />
+			多くの好感度PTが手に入るよ!!
+		</div>
+	%endif
+	
+	%if playerlist:
+		%for player in playerlist:
+			<section class="basicinfo" style="margin-bottom:4px;">
+				<div class="basictop_s">
+				</div>
+				<div class="basicBack" style="height:80px;">
+					<ul class="link_arrow">
+						<li style="height:70px;">
+							%if player['is_battle_ok']:
+							<a href="${get_html_param('url_eventbattle', 'sp/gcevent/battleselect.html', player)}">
+							%else:
+							<a href="javascript:void(0);">
+							%endif
+								<img src="${player['leader']['master']['thumbUrl']}"width="60" height="60" align="left" class="itemimg"/>
+								<div class="itemtext">
+									<img src="${player['leader']['master']['iconUrl']}" width="20px" height="20px" /><!--
+									-->${player['person']['nickname'] | h}さん<br />
+									Lv：${player['level']}<br />
+									総接客力：<span  class="yellow">${player['power_total'] | h}</span><br />
+									%if not player['is_battle_ok']:
+										<span  class="yellow" style="font-size:13px;">※2時間以内は仕掛けられません</span>
+									%endif
+								</div>
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="basicbtm">
+				</div>
+			</section>
+		%endfor
+	%else:
+		<div class="list_not_found red">
+			見つかりませんでした
+		</div>
+	%endif
+	
+	<div style="margin-top:20px;">
+		<a class="btnlong" href="${get_html_param('url_battleevent_opplist_update', 'sp/gcevent/battletop.html')}"><div>他の店を探す</div></a>
+	</div>
+	
+	${self.eventfooter()}
+
+</%def>

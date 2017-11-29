@@ -1,0 +1,215 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+	<style>
+	.fottertextline{
+		text-align:left;
+		text-indent:-1em;
+		padding-left:1em;
+		margin:4px 0;
+	}
+	</style>
+	<script>
+		$(function(){
+			var cur_mission_id = null;
+			var onClickMission = function(e){
+				var target = e.target;
+				if(target.id == cur_mission_id){
+					return;
+				}
+				var target_text_id = target.id.replace("mission_img_", "mission_text_");
+				var target_text = document.getElementById(target_text_id);
+				if(!target_text){
+					return;
+				}
+				else if(cur_mission_id != null){
+					var cur_text_id = cur_mission_id.replace("mission_img_", "mission_text_");
+					$("#"+cur_text_id).css("display", "none");
+				}
+				$(target_text).css("display", "");
+				cur_mission_id = target.id;
+			}
+			$(".mission_img").on('click', onClickMission);
+		});
+	</script>
+</%def>
+
+<%def name="contents()">
+	
+	<%doc>ヘッダ画像</%doc>
+	%if panelmission['header']:
+		<div>
+			<img src="${panelmission['header']}" width="320" height="auto" />
+		</div>
+	%endif
+	
+	%if panelmission['cleared']:
+		<div class="wrapper red">
+			ミッションを全て達成しました
+		</div>
+	%endif
+	
+	<%doc>パネル名</%doc>
+	<div>
+		<div class="titlebar">
+			<p>${panelmission['name'] | h}</p>
+		</div>
+	</div>
+	<%doc>ミッション説明一旦消す
+	<div class="wrapper yellow">
+		パネルを選択すると適切なページに遷移します
+	</div>
+	</%doc>
+	
+	<%doc>パネル内容</%doc>
+	<div style="margin: 0 22px;"><!--
+		%for idx,mission in enumerate(panelmission['missionlist']):
+			--><img src="${mission['image_post'] if mission['received'] else mission['image_pre']}" class="mission_img" id="mission_img_${idx}" width="92" height="92" /><!--
+			%if idx % 3 == 2:
+				--><br /><!--
+			%endif
+		%endfor
+	--></div>
+	<%doc>ミッションの説明</%doc>
+	<div>
+		%for idx,mission in enumerate(panelmission['missionlist']):
+			%if not mission['received']:
+				<div id="mission_text_${idx}" style="display:none;">
+					<div class="titlesub topcap" style="line-height: 2.4">${mission['name'] | h}</div>
+					<div class="wrapper">${mission['condition_text'] | h}</div>
+				</div>
+			%endif
+		%endfor
+	</div>
+	
+	<%doc>報酬一覧</%doc>
+	<div>
+		<div class="titlebar">
+			<p>報酬一覧</p>
+		</div>
+		<div>
+			<%doc>全達成報酬</%doc>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					総達成報酬
+				</div>
+			</div>
+			%if panelmission['prize']['listitem_list']:
+				%for idx,prizeitem in enumerate(panelmission['prize']['listitem_list']):
+					%if 0 < idx:
+						<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+					%endif
+					<table style="margin-left:8px; width:300px; height:90px;">
+						<td  width="70">
+							<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+						</td>
+						<td>
+							<div class="itemtext" style="margin-top:-24px;">
+								%if panelmission['cleared']:
+									<span class="yellow">[受取済み]</span><br />
+								%endif
+								%if prizeitem['icon']:
+									<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+								%else:
+									<span><!--
+								%endif
+								-->${prizeitem['name'] | h}<!--
+								%if prizeitem['rare'] is not None:
+									-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+								%endif
+								-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+							</div>
+						</td>
+					</table>
+				%endfor
+			%endif
+			
+			<%doc>各ミッションの報酬</%doc>
+			%for mission in panelmission['missionlist']:
+				<div class="titlesub" style="padding-top:4px;">
+					<div class="wrapper">
+						${mission['name'] | h}
+					</div>
+				</div>
+				%if mission['prize']['listitem_list']:
+					%for idx,prizeitem in enumerate(mission['prize']['listitem_list']):
+						%if 0 < idx:
+							<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+						%endif
+						<table style="margin-left:8px; width:300px; height:90px;">
+							<td  width="70">
+								<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+							</td>
+							<td>
+								<div class="itemtext" style="margin-top:-24px;">
+									%if mission['received']:
+										<span class="yellow">[受取済み]</span><br />
+									%elif mission['cleared']:
+										<span class="red">[達成済み]</span><br />
+									%else:
+										[未達成]<br />
+									%endif
+									%if prizeitem['icon']:
+										<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+									%else:
+										<span><!--
+									%endif
+									-->${prizeitem['name'] | h}<!--
+									%if prizeitem['rare'] is not None:
+										-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+									%endif
+									-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+								</div>
+							</td>
+						</table>
+					%endfor
+				%endif
+			%endfor
+		</div>
+	</div>
+	
+	<%doc>ルール画像</%doc>
+	%if panelmission['rule']:
+		<div>
+			<img src="${panelmission['rule']}" width="320" height="auto" />
+		</div>
+	%endif
+	
+	<%doc>注意書き</%doc>
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					<div class="fottertextline">
+						・パネルミッションページにてクリアしていないミッションをタップすると、そのミッションを達成する為の情報がミッションパネル下に表示されます。
+					</div>
+					<div class="fottertextline">
+						・パネルミッションの報酬は、ミッション達成後にマイページへ戻って演出を確認するとプレゼントボックスに送られます。
+					</div>
+					<div class="fottertextline">
+						・ミッションの達成条件は、パネルミッションのパネルが開放され新しいものに切り替わった後からカウントされます。<br />
+						<span class="yellow">例）ログインボーナスを○回受け取るパネルが切り替わってから○回受け取る事で達成となります。パネルが切り替わる前の回数はカウントされませんのでご注意ください。</span>
+					</div>
+					<div class="fottertextline">
+						・本イベントの終了日時は予告なく変更される場合があります。予めご了承下さい。
+					</div>
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				&nbsp;
+			</div>
+		</div>
+		<div class="basicbtm">&nbsp;
+		</div>
+	</section>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}" ><div style="margin-left:14px;">マイページへ</div></a>
+	</div>
+</%def>

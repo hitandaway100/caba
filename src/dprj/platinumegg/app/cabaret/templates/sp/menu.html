@@ -1,0 +1,41 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+	<%include file="style/menu_style.html" />
+</%def>
+
+<%def name="contents()">
+
+<table class="menu_subbox">
+	<tr>
+			<td class="menu_sub1"><a href="${get_html_param('', 'sp/scout/scout.html')}">スカウト</a></td>
+			<td class="menu_sub1"><a href="${get_html_param('', 'sp/battle/battle.html')}">バトル</a></td>
+			<td class="menu_sub1"><a href="${get_html_param('', 'sp/gacha/gacha_payment.html')}">引き抜き</a></td>
+	</tr>
+		<tr>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/composition/baseselect.html')}">教育</a></td>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/evolution/baseselect.html')}">ハメ管理</a></td>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/deck/deck.html')}">キャスト編成</a></td>
+		</tr>
+		<tr>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/friend/friend.html')}">フレンド</a></td>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/card/cardbox.html')}">キャスト一覧</a></td>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/card/sell.html')}">退店</a></td>
+		</tr>
+		<tr>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/album/album.html')}">キャスト名鑑</a></td>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/shop/shop.html')}">ショップ</a></td>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/item/itemlist.html')}">持ち物</a></td>
+		</tr>
+		<tr>
+			<td class="menu_sub2"><a href="${get_html_param('', 'sp/present.html')}">プレゼント</a></td>
+		</tr>
+</table>
+
+<div class="menu_end" style="margin-top:16px;">
+	<a href="#" onclick="history.back(); return false;">閉じる</a>
+</div>
+
+</%def>				
+<%def name="footer()"></%def>

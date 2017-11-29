@@ -1,0 +1,78 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">キャストリスト</p>
+		</div>
+		
+		%if flag_include_hkincr_already or flag_include_rare:
+			<div class="caution" style="font-size:11px;">
+				%if flag_include_rare:
+					※R以上のキャストが含まれています
+				%endif
+				%if flag_include_hkincr_already:
+					※ハメ管理度が1以上のキャストを退店させようとしています<br />
+				%endif
+			</div>
+			<table class="precheck">
+				<tr>
+					<td style="width:290px; ">
+						<span style="font-size:14px;">本当に退店させる場合はチェックボックスにチェックを入れてください</span>
+					</td>
+					<td style="width:30px;" >
+						<input type="checkbox" id="_accept" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+					</td>
+				</tr>
+			</table>
+		%endif
+		
+		<div class="confirm" style="font-size:11px; margin-top:8px;">
+			下記キャストを<!--
+			%if 0 < sellprice:
+				-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}<span class="red">${sellprice}${gold_unit}</span><!--
+			%endif
+			%if 0 < sellprice_treasure:
+				%if 0 < sellprice:
+					-->と<br /><!--
+				%endif
+				-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}<span class="red">${sellprice_treasure}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}</span><!--
+			%endif
+			-->で退店させます。<br />
+			よろしいですか？<br />
+			%if 0 < sellprice:
+				${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}：</span>${gold_pre}⇒<span class="red">${gold_post}</span><br />
+			%endif
+			%if 0 < sellprice_treasure:
+				${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}：</span>${treasure_pre}⇒<span class="red">${treasure_post}</span><br />
+			%endif
+		</div>
+		
+		<div>
+			<script>
+				function onClickSellButton(){
+					%if flag_include_hkincr_already or flag_include_rare:
+					if($("#_accept")[0].checked != true){
+						return;
+					}
+					%endif
+					location.href = "${get_html_param('url_selldo', 'sp/card/sellcomplete.html')}";
+				}
+			</script>
+			<a class="btnlong" style="margin-top:8px;" href="javascript:void(0);" onclick="onClickSellButton();"><div>退店させる</div></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_sell', 'sp/card/sell.html')}"><div>やめる</div></a>
+		</div>
+		
+		%for card in cardlist:
+			<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='deselect', get_html_param=get_html_param, test_skill=True, Defines=Defines"/>
+		%endfor
+		<div style="padding-bottom:20px;">
+		</div>
+
+	</div>
+	
+</%def>

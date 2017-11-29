@@ -1,0 +1,49 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+  ${self.topheader(produceevent['id'])}
+
+  ${self.eventperiod(produceevent['starttime'], produceevent['endtime'], produceevent['is_opened'])}
+
+  ${self.eventtopic()}
+  <div class="titlesub">
+    <div class="wrapper">
+      獲得PPランキング
+    </div>
+  </div>
+  <div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-left:5px;">
+    % if is_myrank:
+      <a href="${get_html_param('url_ranking')}" style="color: #FFff00;">上位ランキング</a> | あなたの順位
+    % else:
+      上位ランキング | <a href="${get_html_param('url_myrank')}" style="color: #FFff00;">あなたの順位</a>
+    % endif
+  </div>
+
+  % if ranking_playerlist:
+    ${self.pagenation()}
+    % for idx, player in enumerate(ranking_playerlist):
+      % if 0 < idx:
+        <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="5">
+      %endif
+      <table style="margin-left: 8px; width: 300px; height: 90px;">
+        <td style="width: 89px;height: 86px;">
+          <img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg">
+        </td>
+        <td>
+          <div class="itemtext">
+            ${player['event_rank']}位<br>
+            <span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span><br>
+            獲得PP&nbsp; :&nbsp; <span class="yellow">${player['event_score']}</span>
+          </div>
+        </td>
+      </table>
+    %endfor
+    ${self.pagenation()}
+  % else:
+    <div class="list_not_found caution">
+      ランキングデータがありません
+    </div>
+  % endif
+
+  ${self.eventfooter()}
+</%def>

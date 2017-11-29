@@ -1,0 +1,147 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%namespace file="storecommon.html", name="storecommon" />
+
+<%def name="contents()">
+	<%
+		cabaclubstoremaster = cabaclubstore['master']
+	%>
+	<div class="titlebar">
+		<p class="caption">店舗</p>
+	</div>
+	
+	<%doc>店舗の画像</%doc>
+	<div>
+		<table>
+			<tr>
+				%if url_prev or flag_template_test:
+					<td><a href="${get_html_param('url_prev', 'sp/cabaclub/store_opened.html')}"><img src="${url_static_img}common/bnr_arrow_left.png" width="20px" height="16px" alt="◁" /></a></td>
+				%endif
+				<td>
+					${storecommon.drawStoreThumbnail(cabaclubstore['master'], store_state='closed', cabaclubstoreevent=cabaclubstore['event'])}
+				</td>
+				%if url_next or flag_template_test:
+					<td><a href="${get_html_param('url_next', 'sp/cabaclub/store_rental.html')}"><img src="${url_static_img}common/bnr_arrow_right.png" width="20px" height="16px" alt="▷" /></a></td>
+				%endif
+			<tr>
+		</table>
+	</div>
+	
+	<%doc>アイテムの状態使用</%doc>
+	${storecommon.drawItemTimeLimitInfo(cabaclubitemdata)}
+	
+	<%doc>アイテム使用</%doc>
+	%for item in item_list:
+		<div class="itembox">
+			% if index > 0:
+				<!-- ↓のラインは最下段には不要-->
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			% endif
+			<table>
+				<td>
+					<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td class="itemtext">
+					${item['master']['name'] | h}<br/>
+					<span style="color:#FF9900;">所持数:</span>
+					<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+				</td>
+			</table>
+			${self.drawItemLeadLinkButton(item)}
+		</div>
+	%endfor
+		
+	<div class="back_black">
+		<%doc>現在表示されている店舗の情報</%doc>
+		<div style="margin-top:8px;">
+			${storecommon.drawStoreStatus(cabaclubstore)}
+		</div>
+		
+		<%doc>設定中のキャスト</%doc>
+		<div>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					設定中のキャスト(${len(cardlist)}/${cabaclubstoremaster['cast_num_max']})
+				</div>
+			</div>
+
+			<%doc>一括編成</%doc>
+			<form action="${url_cabaclub_deckselect_add}" method="post" style="width:320px;">
+				<table class="pullmenuset">
+					<tr>
+						<td class="pullmenu1">
+							<%doc>属性</%doc>
+							<select class="select_type" name="${Defines.URLQUERY_CTYPE}"  style="width: 116px; height: 31px;z-index:100;">
+								<option value="${Defines.CharacterType.ALL}">全て &emsp; </option>
+								%for ct,ctname in Defines.CharacterType.NAMES.items():
+									%if ctype and ctype == ct:
+										<option selected="selected" value="${ct}">${ctname | h}</option>
+									%else:
+										<option value="${ct}">${ctname | h}</option>
+									%endif
+								%endfor
+							</select>
+							<div id="pull1"></div>
+						</td>
+					</tr>
+				</table>
+				%if cast_add:
+					<input class="btnpink_submit_txl" value="キャスト編成を最適化" type="submit" />
+				%else:
+					<input class="btnpink_submit_dark_large" value="キャスト編成を最適化" type="button" />
+					<div class="yellow" style="text-align:center;font-size:12px;">
+						配属できるキャストがいません
+					</div>
+				%endif
+			</form>
+
+			<%doc>一括解除<</%doc>
+			<form action="${url_cabaclub_deckselect_remove}" method="post">
+				%if cast_set:
+					<input class="btnpink_submit_txl" value="配属を一括解除" type="submit" />
+				%else:
+					<input class="btnpink_submit_dark_large" value="配属を一括解除" type="button" />
+				%endif
+			</form>
+			<div class="wrapper">
+				レア度、人件費が高いキャストから<br/>
+				自動編集します<br/>
+				キャスト編集や他の店舗に配属されていない<br/>
+				キャストのみ表示されています<br/>
+			</div>
+			</div>
+			%for card in cardlist:
+				${storecommon.drawCabaClubCardInfo(card, btn_type='change')}
+			%endfor
+			%if url_addmember:
+				${storecommon.drawCabaClubCardInfo(None, btn_type='add')}
+			%elif not memberlist:
+				<div class="list_not_found">
+					これ以上設定できません
+				</div>
+			%endif
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+	</div>
+	
+	<div style="margin:32px 0px;">
+		<%doc>店舗の状態切り替えボタン</%doc>
+		<div>
+			%if not cardlist:
+				<div class="yellow" style="text-align:center;font-size:12px;">
+					キャストを設定していないので<br />
+					集客数と売上が増えません
+				</div>
+			%endif
+			<a class="btnpink_txl" href="${get_html_param('url_open', 'sp/cabaclub/store_opened.html', cabaclubstore)}">開店する</a>
+		</div>
+		<%doc>店舗解約ボタン</%doc>
+		<div style="padding-top:16px;">
+			<a class="btnlong" href="${get_html_param('url_cancel', 'sp/cabaclub/cancelyesno.html', cabaclubstore)}">店舗解約</a>
+		</div>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

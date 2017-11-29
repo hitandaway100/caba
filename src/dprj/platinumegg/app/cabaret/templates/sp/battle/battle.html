@@ -1,0 +1,184 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<%
+		rankinfo = battleplayer['rank']
+	%>
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">キャバ王への道</p>
+		</div>
+		
+		<div style="margin-bottom:12px;">
+			<div class="battle_st" >
+				%if max_rank <= rankinfo['id']:
+					<div class="battle_long">
+						ランク&nbsp; :&nbsp; MAX[${rankinfo['region'] | h}&nbsp; ${rankinfo['town'] | h}]
+					</div>
+					<table class="battlebox" align="center">
+						<tr height="100%">
+							<td class="battleset1">
+								勝利条件
+							</td>
+							<td class="battleset2">
+								----<br />
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3">
+								消費気力
+							</td>
+							<td class="battleset4">
+								${rankinfo['bpcost']}<br />
+							</td>
+						</tr>
+						<tr height="100%">
+							<td class="battleset1" colspan="2" style="line-height: 2.2; font-size:10px;" >
+								ランクアップまで残クリア数
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								----
+							</td>
+						</tr>
+						<tr height="100%" style="line-height: 1.6;">
+							<td class="battleset1">
+								気力
+							</td>
+							<td class="battleset2">
+								${player['bp']}/${player['bpmax']}
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								<div class="st_frame" style="height:16px;">
+									<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+								</div>
+							</div>
+							</td>
+						</tr>
+					</table>
+				%else:
+					<div class="battle_long">
+						ランク&nbsp; :&nbsp; ${rankinfo['id']}[${rankinfo['region'] | h}&nbsp; ${rankinfo['town'] | h}]
+					</div>
+					<table class="battlebox" align="center">
+						<tr height="100%">
+							<td class="battleset1">
+								勝利条件
+							</td>
+							<td class="battleset2">
+								${rankinfo['win']}連勝<br />
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3">
+								消費気力
+							</td>
+							<td class="battleset4">
+								${rankinfo['bpcost']}<br />
+							</td>
+						</tr>
+						<tr height="100%">
+							<td class="battleset1" colspan="2" style="line-height: 2.2; font-size:10px;" >
+								ランクアップまで残クリア数
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								${rankinfo['times'] - battleplayer['times']}
+							</td>
+						</tr>
+						<tr height="100%" style="line-height: 1.6;">
+							<td class="battleset1">
+								気力
+							</td>
+							<td class="battleset2">
+								${player['bp']}/${player['bpmax']}
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								<div class="st_frame" style="height:16px;">
+									<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+								</div>
+							</div>
+							</td>
+						</tr>
+					</table>
+				%endif
+			</div>
+		</div>
+		
+		<div>
+			<a class="btnpink" href="${get_html_param('url_battlepre', 'sp/battle/battleselect.html')}"><p class="caption">ライバル店選択へ</p></a>
+		</div>
+		
+		%if battleevent:
+			<div class="wrapper" style="margin-bottom: 16px;">
+				<div class="topcap">
+					<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/><br />
+					<div class="wrapper">！！！${battleevent['mainname'] | h}開催中！！！</div>
+					<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+				</div>
+				<span class="orange">↓イベントバトルはこちら↓</span><br />
+				<a href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}"><!--
+					%if battleevent['is_goukon']:
+						--><img src="${url_static_img}banner/event/gcevent/${battleevent['codename']}/${battleevent['codename']}_banner.png" width="240" height="100"/><!--
+					%else:
+						--><img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_banner.png" width="240" height="100"/><!--
+					%endif
+				--></a>
+			</div>
+		%endif
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+				<span class="wrapper">カギ</span>
+			<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+			
+			<table style="margin:10px; auto 10px auto;" width="280" height="60">
+				<tr height="60">
+					<td width="60">
+						<img src="${treasurekey['gold']['thumbUrl']}" width="60" height="60"/>
+					</td>
+					<td style="font-size:12px;" width="80">
+						${treasurekey['gold']['name'] | h}<br/>
+						${treasurekey['gold']['num'] | h}${treasurekey['gold']['unit'] | h}
+					</td>
+					<td width="60">
+						<img src="${treasurekey['silver']['thumbUrl']}" width="60" height="60"/>
+					</td>
+					<td style="font-size:12px;" width="80">
+						${treasurekey['silver']['name'] | h}<br/>
+						${treasurekey['silver']['num'] | h}${treasurekey['silver']['unit'] | h}
+					</td>
+				</tr>
+			</table>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" style="margin-bottom:8px;" />
+			<div>
+					<a class="button" href="${get_html_param('url_treasurelist', 'sp/treasure/list.html')}"><div>宝箱</div></a>
+			</div>
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+			<span class="wrapper">メニュー</span>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+
+		<div>
+			<a class="btnpink" href="${get_html_param('url_battlepre', 'sp/battle/battleselect.html')}"><p class="caption">ライバル店選択へ</p></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_deck', 'sp/deck/deck.html')}"><div>キャストの編成</div></a>
+		</div>
+		<div style="padding-bottom:20px;">
+		</div>
+	</div>
+</%def>

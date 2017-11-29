@@ -1,0 +1,118 @@
+#coding:utf-8
+<%doc>セレクトボックス</%doc>
+<%page args="Defines=None, url_post=None, ctype=None, sortby=None, rare=None, ckind=None, ckindlist=None, checked_skill=None, skill=None, rarelist=None, rarepostfix=None, skillmaster_list=None, current_skill=None">
+	<form action="${url_post}" method="post" style="width:320px;">
+		<div style="padding-bottom:8px;">
+			<table class="pullmenuset">
+				<tr>
+					<td class="pullmenu1">
+						<%doc>属性</%doc>
+						<select class="select_type" name="${Defines.URLQUERY_CTYPE}"  style="width: 116px; height: 31px;z-index:100;">
+							<option value="${Defines.CharacterType.ALL}">全て &emsp; </option>
+							%for ct,ctname in Defines.CharacterType.NAMES.items():
+								%if ctype == ct:
+									<option selected="selected" value="${ct}">${ctname | h}</option>
+								%else:
+									<option value="${ct}">${ctname | h}</option>
+								%endif
+							%endfor
+						</select>
+						<div id="pull1"></div>
+					</td>
+					<td class="pullmenu2">
+						<%doc>ソート</%doc>
+						<select class="select_type" name="${Defines.URLQUERY_SORTBY}" style="width: 173px; height: 31px; left:130;z-index:100;">
+							%for st in Defines.CardSortType.SORTEDLIST:
+								%if sortby == st:
+									<option selected="selected" value="${st}">${Defines.CardSortType.NAMES[st] | h}</option>
+								%else:
+									<option value="${st}">${Defines.CardSortType.NAMES[st] | h}</option>
+								%endif
+							%endfor
+						</select>
+						<div id="pull2"></div>
+					</td>
+				</tr>
+			</table>
+			
+			%if ckindlist or rare is not None:
+				<%
+					if rarepostfix is None:
+						rarepostfix = '以下'
+				%>
+				<table class="pullmenuset" style="top:8px; height: 36px;">
+					<tr>
+						%if rare is not None:
+							<td class="pullmenu1">
+								<%doc>レア度</%doc>
+								<select class="select_type" name="${Defines.URLQUERY_RARE}"  style="width: 116px; height: 31px;z-index:99;">
+									%for rr in (rarelist or Defines.Rarity.LIST[::-1]):
+										%if rare == rr:
+											<option selected="selected" value="${rr}">${Defines.Rarity.NAMES[rr] | h}${rarepostfix | h}</option>
+										%else:
+											<option value="${rr}">${Defines.Rarity.NAMES[rr] | h}${rarepostfix | h}</option>
+										%endif
+									%endfor
+								</select>
+								<div id="pull1"></div>
+							</td>
+							%if ckindlist is None and skillmaster_list is None:
+								<td class="pullmenu2" style="visibility:hidden;">
+								</td>
+							%endif
+						%endif
+						%if ckindlist:
+							<td class="pullmenu2">
+								<%doc>種類</%doc>
+								<select class="select_type" name="${Defines.URLQUERY_CKIND}" style="width: 173px; height: 31px; left:130;z-index:99;">
+									%for ck in ckindlist:
+										%if ckind == ck:
+											<option selected="selected" value="${ck}">${Defines.CardKind.ListFilterType.NAMES[ck] | h}</option>
+										%else:
+											<option value="${ck}">${Defines.CardKind.ListFilterType.NAMES[ck] | h}</option>
+										%endif
+									%endfor
+								</select>
+								<div id="pull2"></div>
+							</td>
+						%endif
+					</tr>
+				</table>
+			%endif
+			%if skillmaster_list is not None:
+				<table class="pullmenuset" style="top:8px; height: 36px;">
+					<tr>
+						<td class="pullmenu2">
+							<%doc>スキル</%doc>
+							<select class="select_type" name="${Defines.URLQUERY_SKILL}" style="width: 173px; height: 31px;z-index:98;">
+								<option value="0">全てのサービス</option>
+								%for skillmaster in skillmaster_list:
+									%if current_skill == skillmaster['id']:
+										<option selected="selected" value="${skillmaster['id']}">${skillmaster['name'] | h}</option>
+									%else:
+										<option value="${skillmaster['id']}">${skillmaster['name'] | h}</option>
+									%endif
+								%endfor
+							</select>
+							<div class="pulltext" style="font-size: 10px;"></div>
+						</td>
+						<td class="pullmenu1" style="visibility:hidden;">
+						</td>
+					</tr>
+				</table>
+			%endif
+		</div>
+		%if skill:
+			<div class="btnlong" style="line-height: 1.8; margin-top:10px;">
+				<div class="precheck" style="text-align:center;padding: 4px;">
+					%if checked_skill and checked_skill == skill:
+						<input type="checkbox" checked="checked" id="skill_filter" name="${Defines.URLQUERY_SKILL}" value="${skill}" style="width:20px;height:20px;"/><label for="skill_filter" style="max-width:180px;">同じサービスのキャストのみ</label>
+					%else:
+						<input type="checkbox" id="skill_filter" name="${Defines.URLQUERY_SKILL}" value="${skill}" style="width:20px;height:20px;"/><label for="skill_filter" style="max-width:180px;">同じサービスのキャストのみ</label>
+					%endif
+				</div>
+			</div>
+		%endif
+		<input type="submit" class="button" style="margin:8px auto;" value="選 &nbsp;択" />
+	</form>
+</%page>

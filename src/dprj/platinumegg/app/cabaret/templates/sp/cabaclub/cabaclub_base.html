@@ -1,0 +1,53 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="eventtopic()">
+    <div style="text-align:center;">
+        <div class="btn_pink_s">
+            <a href="${url_explain_detail}"><div>ルール</div></a>
+        </div>
+        <div class="btn_pink_s">
+            <a href="${url_explain_prizes}"><div>報酬一覧</div></a>
+        </div>
+    </div>
+</%def>
+
+<%def name="eventperiod(start_datatime=0, end_datatime=0, is_open=0)">
+  <div style="text-align:center;padding-top:10px;padding-bottom:10px;">
+    %if is_open:
+      開催期間：${start_datatime.strftime("%-m/%-d %-H:%M")} 〜 ${end_datatime.strftime("%-m/%-d %-H:%M")}
+    %else:
+      前回のランキングは終了しました<br>
+      次回は${start_datatime.strftime("%-m/%-d %-H:%M")} 〜 ${end_datatime.strftime("%-m/%-d %-H:%M")}です
+    %endif
+  </div>
+</%def>
+
+<%def name="show_cabaclub_top_header()">
+  % if is_event_open:
+    <div>
+      <img src="${url_static_img}event/management/${eventmaster.codename}/management_${eventmaster.codename}_rule_header.png" width="320px" height="auto" />
+    </div>
+  % else:
+    <div>
+      <img src="${url_static_img}cb_system/cb_system_top_header.png" width="320px" height="auto" />
+    </div>
+  % endif
+</%def>
+
+<%doc>Show the today's total sales for a player</%doc>
+<%def name="today_total_sales(player_proceeds, show_top_header=False)">
+  % if is_event_open:
+    %if show_top_header:
+        ${self.show_cabaclub_top_header()}
+    %endif
+
+    <div style="position:relative"class="btevent_flame">
+        <img src="${url_static_img}event/management/common/event_top_head_managementrank_640_280.png" width="320" >
+        <div style="position:absolute; text-align:right; width:126px; height:auto; top:5px; left:176px; z-index: 3; font-size:13px; overflow:hidden; " >
+          ${player_proceeds}
+        </div>
+    </div>
+
+  % endif
+</%def>

@@ -1,0 +1,389 @@
+#coding:utf-8
+<%doc>一覧用のカード</%doc>
+
+<%page args="card=None, url_static_img='', framename='', card_select_type=None, **kwargs">
+	<%
+		is_tutorial = kwargs.get('is_tutorial', False)
+		
+		get_html_param = kwargs.get('get_html_param', None)
+		
+		bg_size = {
+			'card_frame_01.png' : (310, 241),
+			'card_frame_01_skill.png' : (310, 241),
+			'card_frame_02.png' : (310, 193),
+			'card_frame_03.png' : (310, 226),
+			'card_frame_03_skill.png' : (310, 226),
+			'card_frame_04.png' : (310, 178),
+			'card_frame_05.png' : (310, 201),
+			'card_frame_05_skill.png' : (310, 201),
+			'card_frame_06.png' : (310, 153),
+		}
+		
+		table = {
+			'baseselect' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'evbaseselect' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'basechange' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'evbasechange' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'materialselect' : (True, True, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'evmaterialselect' : (True, True, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'selectchange' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'evselectchange' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'deselect' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'ondeck' : (True, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'no1change' : (False, False, True, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'change' : (False, False, True, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'deckselect' : (True, False, False, ('card_frame_04.png', 'card_frame_03.png', 'card_frame_03_skill.png')),
+			'deckcostover' : (False, False, False, ('card_frame_04.png', 'card_frame_03.png', 'card_frame_03_skill.png')),
+			'deckremove' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'protect' : (False, False, False, ('card_frame_04.png', 'card_frame_03.png', 'card_frame_03_skill.png')),
+			'sell' : (True, True, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'none' : (False, False, False, ('card_frame_06.png', 'card_frame_05.png', 'card_frame_05_skill.png')),
+			'setting' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'transfer' : (True, True, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+			'deselect_transfer' : (False, False, False, ('card_frame_02.png', 'card_frame_01.png', 'card_frame_01_skill.png')),
+		}
+		do_check_deck, do_check_protect, do_check_costover, frames = table.get(card_select_type, table['none'])
+		
+		if do_check_deck and card.get('deckmember'):
+			card_select_type = 'deckselect'
+			do_check_deck, do_check_protect, do_check_costover, frames = table.get(card_select_type, table['none'])
+		elif do_check_protect and card.get('protection'):
+			card_select_type = 'protect'
+			do_check_deck, do_check_protect, do_check_costover, frames = table.get(card_select_type, table['none'])
+		elif do_check_costover and card.get('cost_over'):
+			card_select_type = 'deckcostover'
+			do_check_deck, do_check_protect, do_check_costover, frames = table.get(card_select_type, table['none'])
+		
+		skill = card['master'].get('skill')
+		if skill:
+			if skill['eskill'] == kwargs['Defines'].SkillEffect.CABACLUB:
+				int_flag_skill = 2
+				skillname = '経営スキル'
+			else:
+				int_flag_skill = 1
+				skillname = 'サービス'
+		else:
+			int_flag_skill = 0
+		
+		framename = frames[int_flag_skill]
+		clickable = kwargs.get('clickable', True)
+		
+		detail_linkurl = kwargs.get('detail_linkurl', None)
+		
+		bg_w, bg_h = bg_size.get(framename, (310, 100))
+		
+		Defines = kwargs['Defines']
+	%>
+	<div class="carddetail_frame" style="background: url(${url_static_img}common/${framename}) no-repeat; margin-left:auto; margin-right:auto; width:${bg_w}; height:${bg_h}; background-size:cover; -moz-background-size:cover; min-height: 153px;"><!--
+		%if detail_linkurl:
+			--><a href="${detail_linkurl}"><!--
+		%endif
+		--><div class="carddetail_main" style="padding-bottom:6px;">
+			<table>
+				<tr>
+					<td>
+						<div class="cardspace">
+							<img src="${card['master']['thumbnail']['middle']}" width="110px" height="138px" />
+						</div>
+					</td>
+					<td>
+						<table class="kyaba_name">
+							<tr>
+								%if card['master']['kind'] == Defines.CardKind.NORMAL:
+									<td class="name_st1l"><img src="${card['master']['iconUrl']}" width="28px" height="28px" /></td>
+								%else:
+									<td class="name_st1l"></td>
+								%endif
+								<td class="name_st2l">${card['master']['name'] | h}</td>
+							</tr>
+						</table>
+						<table class="kyaba_set2">
+							<tr>
+								<td class="kyaba_st1">レベル</td>
+								<td class="kyaba_st2">${card.get('level', 1)}/${card['master'].get('maxlevel')}</td>
+							</tr>
+							<tr>
+								<td class="kyaba_st1" style="color:#f470cf;">経験値</td>
+								<td class="kyaba_st2">
+									<div class="st_frame_small" style="height:16px;">
+										<%
+											exp_prev = card.get('exp_prev', 0)
+											exp_next = card.get('exp_next', 0)
+											exp = card.get('exp', 0)
+											exp_per = 100
+											if exp_prev < exp_next:
+												exp_per = min(100, 100 * (exp - exp_prev) / (exp_next - exp_prev))
+										%>
+										<div class="st_gauge05" style="width:${exp_per * 82 / 100}"><%doc>バーは仮</%doc></div>
+									</div>
+								</td>
+							</tr>
+								
+							<tr>
+								<td class="kyaba_st1">接客力</td>
+								<td class="kyaba_st2">${card['power']}</td>
+							</tr>
+								
+							<tr>
+								<td class="kyaba_st1" style="color:#f470cf;">ハメ管理度</td>
+								<td class="kyaba_st2">
+									<div>
+										% for _ in xrange(card['master']['hklevel'] - 1):
+											<img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+										% endfor
+									</div>
+								</td>
+							</tr>
+								
+							<tr>
+								<td class="kyaba_st_s">人件費</td>
+								<td class="kyaba_st2">${card['master']['cost']}</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			%if int_flag_skill:
+				<table class="kyaba_set3">
+					<tr>
+						<td class="kyaba_st3">
+							${skillname}
+						</td>
+						<td class="kyaba_st4">
+							<b>&nbsp; ${card['master']['skill'].get('name', '') | h}:</b>LV${card['skilllevel']}
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2 class="kyaba_st5">
+							${card['master']['skill'].get('text', '') | h}
+						</td>
+					</tr>
+				</table>
+			%endif
+		</div><!--
+		%if detail_linkurl:
+			--></a><!--
+		%endif
+		-->
+		%if not get_html_param:
+			<%doc>get_html_paramがない</%doc>
+		%elif not card_select_type:
+			<%doc>card_select_type未指定の場合</%doc>
+		%elif card_select_type == 'baseselect':
+				%if clickable:
+						%if is_tutorial:
+							<div>
+								<a class="btnlong_p" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', card)}"><div>このキャストを教育する</div></a>
+							</div>
+						%else:
+							<div>
+								<a class="cdbtnlong" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', card)}"><div>このキャストを教育する</div></a>
+							</div>
+						%endif
+				%else:
+					<div>
+						<a class="sell_off" onclick="return false;"><div>このキャストを教育する</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'evbaseselect':
+				%if clickable:
+						%if is_tutorial:
+							<div>
+								<a class="btnlong_p" style="font-size:13px; line-height: 2.4;" href="${get_html_param('url_evolution', 'sp/evolution/materialselect.html', card)}"><div>このキャストをハメ管理する</div></a>
+							</div>
+						%else:
+							<div>
+								<a class="cdbtnlong" style="font-size:13px; line-height: 2.4;" href="${get_html_param('url_evolution', 'sp/evolution/materialselect.html', card)}"><div>このキャストをハメ管理する</div></a>
+							</div>
+						%endif
+				%else:
+					<div>
+						<a class="sell_off" style="font-size:13px; line-height: 2.4;" onclick="return false;"><div>このキャストをハメ管理する</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'basechange':
+				%if clickable:
+					<div>
+						<a class="cdbtnlong" href="${get_html_param('url_composition', 'sp/composition/baseselect.html')}"><div>キャストを変更する</div></a>
+					</div>
+				%else:
+					<div>
+						<a class="sell_off" onclick="return false;"><div>キャストを変更する</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'evbasechange':
+				%if clickable:
+					<div>
+						<a class="cdbtnlong" href="${get_html_param('url_evolution', 'sp/evolution/baseselect.html')}"><div>キャストを変更する</div></a>
+					</div>
+				%else:
+					<div>
+						<a class="sell_off" onclick="return false;"><div>キャストを変更する</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'materialselect':
+				%if clickable:
+					<table class="precheck" style="margin-top:6px; padding-bottom:10px;">
+						<td>
+							<input id="${kwargs.get('checkboxname', 'test')}" type="checkbox" name="${kwargs.get('checkboxname', 'test')}" value="${card['id']}" onclick="onClickCheckBox(this);" style="width:20px;height:20px" /><label for="${kwargs.get('checkboxname', 'test')}">&nbsp;</label>
+						</td>
+						<td>
+							教育のパートナーにする
+						</td>
+					</table>
+				%else:
+					<div >
+						<a class="sell_off" style="padding-bottom:2px; margin-top:-6px;" onclick="return false;"><div>教育のパートナーにする</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'evmaterialselect':
+				%if clickable:
+						%if is_tutorial:
+							<div>
+								<a class="btnlong_p" style="font-size:13px; line-height: 2.4;" href="${get_html_param('url_evolution', 'sp/evolution/yesno.html', card)}"><div>ハメ管理のパートナーにする</div></a>
+							</div>
+						%else:
+							<div>
+								<a class="cdbtnlong" style="font-size:13px; line-height: 2.4;" href="${get_html_param('url_evolution', 'sp/evolution/yesno.html', card)}"><div>ハメ管理のパートナーにする</div></a>
+							</div>
+						%endif
+				%else:
+					<div>
+						<a class="sell_off" style="font-size:13px; line-height: 2.4;" onclick="return false;"><div>ハメ管理のパートナーにする</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'selectchange':
+				%if clickable:
+					<div>
+						<a class="cdbtnlong" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', card)}"><div>パートナーを変更する</div></a>
+					</div>
+				%else:
+					<div>
+						<a class="sell_off" onclick="return false;"><div>パートナーを変更する</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'evselectchange':
+				%if clickable:
+					<div>
+						<a class="cdbtnlong" href="${get_html_param('url_evolution', 'sp/evolution/materialselect.html', card)}"><div>パートナーを変更する</div></a>
+					</div>
+				%else:
+					<div>
+						<a class="sell_off" onclick="return false;"><div>パートナーを変更する</div></a>
+					</div>
+				%endif
+		%elif card_select_type == 'deselect':
+			<div>
+				<a class="cdbtnlong" href="${get_html_param('url_remove', 'sp/card/sellyesno.html', card)}"><div>退店候補から外す</div></a>
+			</div>
+		%elif card_select_type == 'deselect_transfer':
+			<div>
+				<a class="cdbtnlong" href="${get_html_param('url_remove', 'sp/card/sellyesno.html', card)}"><div>異動候補から外す</div></a>
+			</div>
+		%elif card_select_type == 'ondeck':
+			%if card['id'] in kwargs.get('store_castidlist', []):
+				<div class="caution" style=" margin-top:-6px;">
+					店舗に配属されています
+				</div>
+			%else:
+				<div>
+					<a class="cdbtnlong" href="${get_html_param('url_deck', 'sp/deck/deck.html', card)}"><div>配属する</div></a>
+				</div>
+			%endif
+		%elif card_select_type == 'no1change':
+			<div>
+				<a class="cdbtnlong" href="${get_html_param('url_deck', 'sp/deck/member.html', card)}"><div>No1を変更</div></a>
+			</div>
+		%elif card_select_type == 'change':
+			<div align="center">
+				<table width="220px" style="margin-top:-6px;">
+					<tr>
+						<td width="98px">
+							<div>
+								<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_remove', 'sp/deck/deck.html', card)}"><div>はずす</div></a>
+							</div>
+						</td>
+						<td width="24px">
+						</td>
+						<td width="98px">
+							<div>
+								<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_deck', 'sp/deck/member.html', card)}"><div>変更する</div></a>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		%elif card_select_type == 'deckremove':
+				<div  align="right" >
+					<a class="button" style="margin: 4 8 4 8px; padding-bottom:2;" href="${get_html_param('url_remove', 'sp/deck/deck.html', card)}"><div>はずす</div></a>
+				</div>
+		%elif card_select_type == 'deckselect':
+			<div class="caution" style=" margin-top:-6px;">
+				出勤キャストのため選択出来ません
+			</div>
+		%elif card_select_type == 'protect':
+			<div class="caution" style=" margin-top:-6px;">
+				キャストを保護しているため選択出来ません
+			</div>
+		%elif card_select_type == 'deckcostover':
+			<div class="caution" style=" margin-top:-6px;">
+				総人件費をオーバーしています
+			</div>
+		%elif card_select_type == 'sell':
+			<table class="precheck" style="margin:5px 0 0 10px;">
+				<tr>
+					<td>
+						<a href="#sellcheck"id="sellcheck" ><input type="checkbox" name="${kwargs.get('checkboxname', 'test')}" value="${card['id']}" onclick="onClickCheckBox(this);" style="width:20px;height:20px" /><label><br /></label></a>
+					</td>
+					<td><!--
+						%if 0 < card['sellprice']:
+							-->獲得CG:<span class="red">${card['sellprice']}</span>　<!--
+						%endif
+						%if 0 < card['sellprice_treasure']:
+							-->キャバ王の秘宝:<span class="red">${card['sellprice_treasure']}</span><!--
+						%endif
+					--></td>
+				</tr>
+			</table>
+		%elif card_select_type == 'transfer':
+			<%doc>異動の判定用にパラメータを配置</%doc>
+			<table class="precheck" style="margin-top:6px; padding-bottom:10px;">
+				<td>
+					<input type="checkbox" name="${kwargs.get('checkboxname', 'test')}" value="${card['id']}" onclick="onClickCheckBox(this);" style="width:20px;height:20px"/><label>&nbsp;</label>
+				</td>
+				<td id="transfer_value_${kwargs.get('checkboxname', 'test')}">
+					<span class="transfer_param" style="display:none;">${card['master']['album']}</span>
+					<span class="transfer_message">別店舗に異動させる</span>
+				</td>
+			</table>
+		%elif card_select_type == 'setting':
+			<div align="center" >
+				<a class="button" style="margin: 4 0 8 0px; padding-bottom:2;" href="${get_html_param('url_addmember', 'sp/deck/member.html')}"><div>設定する</div></a>
+			</div>
+		%endif
+	</div>
+</%page>
+
+<%def name="pagenation(url_page_prev, url_page_next, cur_page, page_max)">
+  <table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+    <tr>
+      <td width="160px" style="text-align: left;">
+        %if url_page_prev is not UNDEFINED:
+          <a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+        %else:
+          <div style="font-size: 0px opacity:0;">　</div>
+        %endif
+      </td>
+      <td>
+        <div class="count" style="font-size:12px; white-space: nowrap; font-weight: bold;">&#40;${cur_page}/${page_max}&#41;</div>
+      </td>
+      <td width="160px" style="text-align: right;">
+        %if url_page_next is not UNDEFINED:
+          <a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+        %else:
+          <div style="font-size: 0px opacity:0;">　</div>
+        %endif
+      </td>
+    </tr>
+  </table>
+</%def>

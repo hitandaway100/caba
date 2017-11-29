@@ -1,0 +1,103 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">称号交換所</p>
+	</div>
+	
+	<div>
+		<%doc>所持名誉ポイント</%doc>
+		<div class="itembox">
+			<table style="310px;">
+				<td>
+					<img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByType(Defines.ItemType.CABARETCLUB_HONOR_POINT)}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext">
+					${Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT] | h}<br />
+					${cabaclub_management_info['point']}
+				</td>
+			</table>
+			<div style="clear:both;">
+			</div>
+		</div>
+	</div>
+	
+	<div class="titlesub" style="margin-top:16px;">
+		<div class="wrapper">
+			称号一覧
+		</div>
+	</div>
+	%for i,titlemaster in enumerate(titlemaster_list):
+		<%
+			need_bar = i % 2 == 1
+		%>
+		<div ${'class="back_black"' if need_bar else ''}>
+			%if need_bar:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			%endif
+			<div class="itembox">
+				<table style="310px;">
+					<td>
+						<img src="${titlemaster['thumb']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${titlemaster['name'] | h}<br />
+						${titlemaster['text'] | h}<br />
+						${Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT] | h}：${titlemaster['cost']}<br />
+					</td>
+				</table>
+				<div style="clear:both;"></div>
+				
+				%if title and title['master']['id'] == titlemaster['id']:
+					<div class="caution">
+						現在の称号です
+					</div>
+				%elif cabaclub_management_info['point'] < titlemaster['cost']:
+					<div class="caution">
+						${Defines.ItemType.NAMES[Defines.ItemType.CABARETCLUB_HONOR_POINT] | h}が足りません
+					</div>
+				%else:
+					<div>
+						<a class="buttonshop" style="margin-left:200px;" href="${get_html_param('url_tradeyesno', 'sp/title/yesno.html', titlemaster)}">交換する</a>
+					</div>
+				% endif
+			</div>
+			%if need_bar:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			%endif
+		</div>
+	%endfor
+	
+	<div style="margin:16px 0px;">
+		<section class="basicinfo">
+			<div class="basictop">
+				<p>注意</p>
+				<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+			</div>
+			<div class="basicBack">
+				<ul>
+					<li>
+						<div class="red" style="text-align:left;text-indent:-1em;padding-left:1em;margin:4px 0;">・特効効果が上昇する称号は、特効キャストを所持している場合のみ、その特効キャストの補正値に加算されます</div>
+					</li>
+					<li>
+						<div style="text-align:left;text-indent:-1em;padding-left:1em;margin:4px 0;">・称号は獲得するとマイページに直接表示されます</div>
+					</li>
+					<li>
+						<div style="text-align:left;text-indent:-1em;padding-left:1em;margin:4px 0;">・称号には期間が存在し、期間を過ぎますと自動的に消滅します</div>
+					</li>
+					<li>
+						<div style="text-align:left;text-indent:-1em;padding-left:1em;margin:4px 0;">・称号の期間内に別の称号を獲得した場合、先の称号に新しい称号が上書きされます</div>
+					</li>
+				</ul>
+				<div style="font-size:0px;">.</div>
+			</div>
+			<div class="basicbtm">.</div>
+		</section>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>
+

@@ -1,0 +1,84 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head_additional()">
+	<script>
+		function downloadCSV(url){
+			window.open(url);
+		}
+		function deleteCSV(name, url){
+			if(!window.confirm(name+"を削除しますか？")){
+				return;
+			}
+			else if(!window.confirm(name+"を本当に削除しますか？")){
+				return;
+			}
+			else if(!window.confirm("本当に消しますよ？")){
+				return;
+			}
+			location.href = url;
+		}
+	</script>
+</%def>
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>${page_title | h}</h1>
+	</div>
+	
+	%if optional_form:
+		<form action="" method="post">
+			%for field in optional_form:
+				${field}
+			%endfor
+			<input type="submit" value="表示" class="btn" />
+		</form>
+	%endif
+	
+	%if filedata_table:
+		<div>
+			<table id="infos" class="table table-bordered table-striped">
+				%for trdata in filedata_table:
+					<tr>
+					%for tddata in trdata:
+						<td>${tddata | h}</td>
+					%endfor
+					</tr>
+				%endfor
+			</table>
+		</div>
+	%endif
+	
+	<div>
+		<table id="infos" class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>
+						ファイル名
+					</th>
+					<th style="text-align: center">
+						ダウンロード
+					</th>
+					<th style="text-align: center">
+						削除
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				%for filedata in filelist:
+					<tr>
+						<td width="70%">
+							${filedata['filename'] | h}
+						</td>
+						<td style="text-align: center" width="15%">
+							<button class="btn btn-info" onclick="downloadCSV('${filedata['url_download']}');">ＤＬ</button>
+						</td>
+						<td style="text-align: center">
+							<button class="btn btn-danger" onclick="deleteCSV('${filedata['filename']}', '${filedata['url_delete']}');">削除</button>
+						</td>
+					</tr>
+				%endfor
+			</tbody>
+		</table>
+	</div>
+</%def>

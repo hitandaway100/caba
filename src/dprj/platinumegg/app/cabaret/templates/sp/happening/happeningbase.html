@@ -1,0 +1,310 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+	%if is_pc:
+		${self.refresh_frame()}
+	%endif
+</%def>
+
+<%def name="happeningtime()">
+	<div class="scouttime">
+		<%
+			_hours = happening['timelimit']['hours']
+			_minutes = happening['timelimit']['minutes']
+			_seconds = happening['timelimit']['seconds']
+		%>
+		%if _hours:
+			残り時間:${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒
+		%else:
+			残り時間:${_minutes}分${'%02d' % _seconds}秒
+		%endif
+	</div>
+</%def>
+
+<%def name="happeningsatisfaction()">
+	<div class="scouttime" style="margin-top:-21px;">
+		満足度:${happening['raid']['hpmax'] - happening['raid']['hp']}/${happening['raid']['hpmax']}
+	</div>
+</%def>
+
+<%def name="happeningtop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">超太客来店中</span>
+		</div>
+		${self.happeningtime()}
+	</div>
+</%def>
+
+<%def name="drawTreasureInfo()">
+	<!--秘宝-->
+	<div class="titlesub">
+		<div class="wrapper">
+			秘宝
+		</div>
+	</div>
+	
+	<div>
+		<div class="itembox">
+			<table style="310px;">
+				<td>
+					<img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByType(Defines.ItemType.CABARETKING_TREASURE)}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext">
+					キャバ王の秘宝<br />
+					${player['cabaretking']}個
+				</td>
+			</table>
+		</div>
+		<div>
+			<a class="btnlong" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><div>アイテムと交換する</div></a>
+		</div>
+	</div>
+	<!--秘宝ここまで-->
+</%def>
+
+<%def name="drawFriendHelpList()">
+	<!--フレンドへの太客来店表示-->
+	<a id="help"></a>
+	<a name="help"></a>
+	<div class="titlesub">
+		<div class="wrapper">
+			フレンドの店に来店した超太客
+		</div>
+	</div>
+	
+	<!--フレンドからのヘルプ要請-->
+	<div>
+		%if raidhelplist:
+			%for raidhelp in raidhelplist:
+				<table style="margin-left:8px;">
+					<td>
+						<img src="${raidhelp['listThumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td>
+						<div class="itemtext">
+							${raidhelp['ctime'] | h}<br />
+							${raidhelp['o_nickname'] | h}<br />
+							<span  class="orange">満足度:</span>${raidhelp['hpmax'] - raidhelp['hp']}/${raidhelp['hpmax']}<br />
+						</div>
+					</td>
+				</table>
+				<div>
+					<a class="btnlong" style="margin-top:4px;" href="${get_html_param('url_helpdetail', 'sp/raid/helpdetail.html', raidhelp)}"><div>ヘルプする</div></a>
+				</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5"/>
+			%endfor
+		%else:
+			<div class="list_not_found red">
+				今は来店していないようだ
+			</div>
+		%endif
+	</div>
+	
+	<!--フレンドからのヘルプ要請ここまで-->
+</%def>
+
+<%def name="happeningFooter()">
+	
+	${self.drawTreasureInfo()}
+	
+	${self.drawFriendHelpList()}
+	
+	<div>
+		<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_raidloglist', 'sp/raid/loglist.html')}"><div>超太客履歴</div></a>
+	</div>
+</%def>
+
+<%def name="playerstatus()">
+	<div class="scoutstatus">
+		<table class="setbox">
+			<tr>
+				<td class="scset1">
+					体力
+				</td>
+				<td class="scset2">
+					${player['ap']}/${player['apmax']}
+				</td>
+				<td class="scset3">
+					経験値
+				</td>
+				<td class="scset4">
+					${player['exp'] - player['exp_prev']}/${player['exp_next'] - player['exp_prev']}
+				</td>
+			</tr>
+			<tr>
+				<td class="scset1" colspan="2">
+					<div class="st_frame" style="height:16px; margin-left:-4px;">
+						<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+				<td class="scset3" colspan="2">
+					<div class="st_frame" style="height:16px; margin-left:-4px;">
+						<%
+							exp_diff = player['exp_next'] - player['exp_prev']
+							exp_percent = 100
+							if 0 < exp_diff:
+								cur_exp = max(0, player['exp'] - player['exp_prev'])
+								exp_percent = min(100, 100 * cur_exp / exp_diff)
+						%>
+						<div class="st_gauge02" style="width:${int(exp_percent * 120 / 100)};"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table class="setbox">
+			<tr>
+				<td class="scset5">
+					${gold_name | h}
+				</td>
+				<td class="scset6">
+					${player['gold']}CG
+				</td>
+			</tr>
+		</table>
+	</div>
+</%def>
+
+<%def name="areastatus()">
+	<div class="areasmall">
+		<table class="areabox">
+			<tr>
+				<td class="areaset1" style="width:60px; right:8px;">
+					達成度
+				</td>
+				<td class="areaset1" style="width:40px;">
+					${happening['percent']}%
+				</td>
+				<td class="areaset1" style="width:184px; margin-left:-10px;">
+					<div class="st_frame_big" >
+						<div class="st_gauge04" style="width:${int(happening['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<table class="areabox2">
+			<tr>
+				<td class="areaset1" style="right:4px;">
+					体力
+				</td>
+				<td class="areaset2" style="color:#FF0000;">
+					-${happening['apcost']}
+				</td>
+				<td class="areaset1">
+					経験値
+				</td>
+				<td class="areaset2">
+					${happening['exp']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1" style="right:4px;">
+					PM
+				</td>
+				<td class="areaset2">
+					＋${happening['goldmin']}〜${happening['goldmax']}
+				</td>
+			</tr>
+		</table>
+	</div>
+		${self.happeningexecbutton()}
+</%def>
+
+<%def name="prizelist()">
+	<div class="titlesub">
+		<div class="wrapper">
+			GETしたアイテム
+		</div>
+	</div>
+	<div style="text-align:center; margin:8px auto 8px; auto">
+		%if happening.get('prize'):
+			<%
+				_flag = False
+			%>
+			% if happening['prize']['itemlist']:
+				% for item in happening['prize']['itemlist']:
+					${item['master']['name']}×${item['num']}${item['master']['unit'] | h}<br />
+				% endfor
+				<%
+					_flag = True
+				%>
+			% endif
+			
+			% if happening['prize']['cardlist']:
+				% for card in happening['prize']['cardlist']:
+					${card['master']['name']}×${card['num']}${card['master']['unit'] | h}<br />
+				% endfor
+				<%
+					_flag = True
+				%>
+			% endif
+			
+			% if happening['prize']['gold']:
+				${happening['prize']['gold']}${happening['prize']['gold_unit'] | h}
+				<%
+					_flag = True
+				%>
+			% endif
+		%else:
+			<div class="list_not_found">
+				まだありません.
+			</div>
+		%endif
+		${self.cancelbutton()}
+	</div>
+</%def>
+
+<%doc>ここからページごとに設定するであろうブロック</%doc>
+<%def name="happeningbodytop()"></%def>
+<%def name="happeningbodybottom()"></%def>
+<%def name="happeningexecbutton()">
+		<div class="btn_ontext">
+				<a href ="${get_html_param('url_exec', 'sp/happening/happeningdo_swf.html')}"><img src="${url_static_img}01/btn_sc_yoko.png" width="232px" height="49px" /></a>
+		</div>
+</%def>
+<%def name="cancelbutton()">
+	%if flag_template_test or url_happeningcancel_yesno:
+		<div>
+			<a class="btnlong" href="${get_html_param('url_happeningcancel_yesno', 'sp/happening/cancelyesno.html')}"><div>超太客を諦める</div></a>
+		</div>
+	%endif
+</%def>
+
+<%def name="presentlookbutton()">
+	<div>
+		<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_present', 'sp/present.html')}"><div>プレゼントを確認</div></a>
+	</div>
+</%def>
+
+<%doc>ここまでページごとに設定するであろうブロック</%doc>
+
+<%def name="contents()">
+	<div class="back_black">
+		${self.happeningtop()}
+		${self.happeningbodytop()}
+	</div>
+	
+	${self.playerstatus()}
+	
+	${self.happeningbodybottom()}
+	
+	${self.areastatus()}
+	${self.prizelist()}
+	
+	${self.happeningFooter()}
+</%def>
+
+<%doc>PC版ワイヤーフレーム更新</%doc>
+<%def name="refresh_frame()">
+	<script type="text/javascript">
+		parent.getStatus();
+	</script>
+</%def>

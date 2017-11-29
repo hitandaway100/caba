@@ -1,0 +1,29 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">あいさつ</p>
+	</div>	
+	
+	<div class="wrapper">
+		${person['nickname'] | h}さんにコメントしました<br />
+		${gachapt_name | h}:${gacha_pt_pre}⇒<span style="color:#ff0000;">${gacha_pt_post}</span><br /><!-- 引き抜きポイント-->
+	</div>
+		
+	% if is_duplicate:
+		<div class="btmcap1">
+			既にコメント済みのため${gachapt_name | h}を獲得できません<br/>
+		</div>
+	% endif
+	
+	<div>
+		<a class="btnlong" style="margin:10px auto 20px auto;" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><div>続けてあいさつする</div></a>
+	</div>
+	
+	<div class="btmcap2">
+		コメントをすると5${gachapt_name | h}獲得出来ます。フレンドへのコメントではさらに5${gachapt_name | h}を獲得出来ます。<br/>
+		※同じ人にして${gachapt_name | h}がもらえるのは2時間に1回です。
+	</div>
+</%def>
+

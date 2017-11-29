@@ -1,0 +1,41 @@
+#coding:utf-8
+<%inherit file="listbase.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">ユーザーを探す</p>
+		</div>
+		
+		<div class="topcap">
+			現在のフレンド数:${friendnum}/${friendnummax}<br/>
+			% if 0 < restnum:
+				※あと${restnum}人に申請することができます<br/>
+			% else:
+				※これ以上フレンド申請を送ることができません<br/>
+			% endif
+			% for player in playerlist:
+				${player['person']['nickname'] | h}さんにフレンド申請を送りました<br/>
+			% endfor
+		</div>
+	</div>
+		
+		% for player in playerlist:
+			<section class="basicinfo">
+				<div class="basictop_s">
+				</div>
+				<div class="basicBack">
+					${self.playerinfo(player=player)}
+					<div style="font-size:0px;">
+						.
+					</div>
+				</div>
+				<div class="basicbtm">.
+				</div>
+			</section>
+		% endfor
+		
+		<div>
+			<a class="btnlong" style="margin-top:10px; margin-bottom:20px;" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><div>フレンド申請TOPへ</div></a>
+		</div>
+</%def>

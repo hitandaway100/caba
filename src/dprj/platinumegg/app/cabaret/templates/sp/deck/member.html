@@ -1,0 +1,79 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">キャスト編成</p>
+		</div>
+		
+		%if current_card:
+			<div class="topcap">
+				選択中のキャスト
+			</div>
+			<%
+				if current_card.get('url_remove'):
+					card_select_type='deckremove'
+				else:
+					card_select_type=None
+			%>
+			<%include file="../includes/listcard.html" args="card=current_card, card_select_type=card_select_type, get_html_param=get_html_param, url_static_img=url_static_img, test_skill=True, Defines=Defines" />
+		%endif
+		
+		<div class="titlesub">
+			<div class="wrapper">
+				変更するキャスト
+			</div>
+		</div>
+		
+		<%include file="../includes/select_card.html" args="Defines=Defines, url_post=url_self, ctype=ctype, sortby=sortby" />
+		
+		<div class="wrapper">
+			残りの人件費で追加可能なキャストが<br />
+			表示されています
+		</div>
+		
+		%if cardlist:
+			%for card in cardlist:
+				<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='ondeck', get_html_param=get_html_param, test_skill=True, Defines=Defines, store_castidlist=store_castidlist" />
+			%endfor
+		%else:
+			<div class="list_not_found">
+				選択できるキャストがいません
+			</div>
+		%endif
+	</div>
+	
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="count" style="font-size:12px; white-space: nowrap;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_deck', 'sp/deck/deck.html')}"><span style="margin-left:14px;">出勤キャスト編成へ戻る</span></a>
+	</div>
+	
+</%def>

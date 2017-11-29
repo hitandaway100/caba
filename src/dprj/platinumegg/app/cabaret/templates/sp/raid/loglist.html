@@ -1,0 +1,101 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">超太客履歴一覧</p>
+		</div>
+		
+		<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+			<tr>
+				<td width="68px">
+					% if url_page_prev is not UNDEFINED:
+						<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ" /></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+				<td class="wrapper" style="font-size:12px;">
+					&#40;${cur_page}/${page_max}&#41;
+				</td>
+				<td width="68px">
+					% if url_page_next is not UNDEFINED:
+						<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ" /></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+			</tr>
+		</table>
+		
+		%if raidloglist:
+			<%
+				_bar = ''
+			%>
+			%for raidlog in raidloglist:
+				${_bar}
+				<section class="basicinfo" style="margin-bottom:6px ;">
+					<div class="basictop_s">
+					</div>
+					<div class="basicBack">
+						<ul class="link_arrow" style="margin-left:-2px; width:294px;">
+							<li>
+								<img src="${raidlog['owner']['leader']['master']['thumbUrl']}" width="60" height="60" style="float:left; margin:10 4 10 4;"/>
+								<a href="${get_html_param('url_detail', 'sp/raid/log.html', raidlog)}" style="font-size:13px; margin-left:-4px; height:80px; background-color:rgba(255,255,255,0.1); ">
+									${raidlog['raid']['ctime'] | h}<br />
+									%if raidlog['is_win']:
+										%if raidlog['owner']['id'] != raidlog['destroyer']['id']:
+											${raidlog['owner']['person']['nickname'] | h}さんが接客した<br />
+											${raidlog['raid']['name'] | h}Lv.${raidlog['raid']['level']}を<br />
+											${raidlog['destroyer']['person']['nickname'] | h}さんが接客に成功！
+										%else:
+											${raidlog['owner']['person']['nickname'] | h}さんが<br />
+											${raidlog['raid']['name'] | h}Lv.${raidlog['raid']['level']}の接客に成功！
+										%endif
+									%else:
+										${raidlog['owner']['person']['nickname'] | h}さんが接客した<br />
+										${raidlog['raid']['name'] | h}Lv.${raidlog['raid']['level']}が帰ってしまった！
+									%endif
+								</a>
+								<div style="clear:both;"><%doc>このfloatは必要(横の矢印がうまくでないので)</%doc>
+								</div>
+							</li>
+						</ul>
+						<div style="font-size:0px;">
+							.
+						</div>
+					</div>
+					<div class="basicbtm">
+					</div>
+				</section>
+			%endfor
+		%else:
+			<div class="list_not_found">
+				超太客履歴はありません
+			</div>
+		%endif
+		
+		<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+			<tr>
+				<td width="68px">
+					% if url_page_prev is not UNDEFINED:
+						<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+				<td class="wrapper" style="font-size:12px;">
+					&#40;${cur_page}/${page_max}&#41;
+				</td>
+				<td width="68px">
+					% if url_page_next is not UNDEFINED:
+						<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+			</tr>
+		</table>
+	</div>
+</%def>

@@ -1,0 +1,31 @@
+#coding:utf-8
+<%doc>フレンドページ</%doc>
+
+<!--フレンドTOP挨拶履歴-->
+		<ul class="link_arrow">
+			<li style="height:60px; background-color:rgba(255,255,255,0.1); ">
+				<a href="${get_html_param('', 'sp/profile.html')}"><img src="${url_static_img}common/item.png" width="60" height="60" align="left" />
+				05月07日　12:00<br/>
+				せんとくんさんから<br/>あいさつがありました。<br/></a>
+			</li>
+		</ul>
+		
+<!--フレンド詳細リンク有り-->
+		<ul class="link_arrow">
+			<li style="height:60px; background-color:rgba(255,255,255,0.1); ">
+				<a href="${get_html_param('', 'sp/profile.html')}"><img src="${url_static_img}common/item.png" width="60" height="60" align="left" />
+				ユーザー<br/>
+				Lv100<br/>
+				フレンド:0/10<br/></a>
+			</li>
+		</ul>
+
+<!--フレンド詳細リンクなし-->
+			<ul class="link_arrow">
+				<li style="height:60px; background-color:rgba(255,255,255,0.1); ">
+					<img src="${url_static_img}common/item.png" width="60" height="60" align="left" />
+					ユーザー<br/>
+					Lv100<br/>
+					フレンド:0/10<br/>
+				</li>
+			</ul>

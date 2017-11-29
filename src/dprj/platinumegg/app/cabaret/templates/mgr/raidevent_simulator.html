@@ -1,0 +1,62 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="content()">
+  <div class="page-header">
+    <h1>レイドイベントシミュレータ　<small>レイドボスシミュレート</small></h1>
+  </div>
+  <div class="well">
+    <form action="" method="post">
+      <p>
+        <label for="mid">レイドイベントID:</label>
+        <select id="mid" name="mid">
+          <option value="0">----------</option>
+          %for master in eventmasters:
+            %if cur_eventmaster and cur_eventmaster.id == master.id:
+              <option value="${master.id}" selected="selected">${master.name | h}(ID: ${master.id})</option>
+            %else:
+              <option value="${master.id}">${master.name | h}(ID: ${master.id})</option>
+            %endif
+          %endfor
+        </select>
+      </p>
+      <p>
+        <label for="stgid">ステージID:</label>
+        <input type="number" id="stgid" name="stgid" min="0" value="${_stgid if _stgid else 0}" >
+      </p>
+      <p>
+        <label for="cnt">実行回数:</label>
+        <input type="number" id="cnt" name="cnt" min="0" value="${_cnt if _cnt else 0}" >
+      </p>
+      <p>
+        <button type="submit">実行</button>
+      </p>
+    </form>
+  </div>
+
+  %if happenings_data:
+    <h3>結果</h3>
+    <div class="well">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>レイドボス</th>
+            <th>出現回数</th>
+            <th>出現率</th>
+            <th>設定値</th>
+          </tr>
+        </thead>
+        <tbody>
+          %for happening in happenings_data:
+            <tr>
+              <td>${happening['boss_name']}</td>
+              <td>${happening['occurrences']}</td>
+              <td>${'{:.1f}'.format(happening['occurrences'] / float(total_rate) * 100)}%</td>
+              <td>${happening['rate'] / float(10)}%</td>
+            </tr>
+          %endfor
+        </tbody>
+      </table>
+    </div>
+  %endif
+</%def>

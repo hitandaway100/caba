@@ -1,0 +1,45 @@
+#coding: utf-8
+<%inherit file="cabaclub_base.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="contents()">
+  <%doc>ヘッダ</%doc>
+  ${self.today_total_sales(today_proceeds, show_top_header=True)}
+  <%doc>開催期間</%doc>
+  ${self.eventperiod(event_start_time, event_end_time, is_event_open)}
+  <%doc>タブ</%doc>
+  ${self.eventtopic()}
+  
+  <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom: 4px;" /><br />
+  <img src="${url_static_img}event/management/${eventmaster.codename}/management_${eventmaster.codename}_rule.png" width="320" height="auto" style="padding-bottom: 10px;" />
+
+  <div>
+    <div class="help_slide">
+      <input type="submit" value="ヘルプ" class="help_btn"/>
+    </div>
+    <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+      <br />
+      <div class="wrapper">■経営ランキングとは</div> <br />
+            経営を行うことで獲得できる全店舗の総売上をユーザー同士で競うイベントです。<br />
+            ランキングは開催期間中に獲得した総売上で競われます。 集計期間外の売上はランキングに影響しません。<br />
+            経営についての詳細は、経営トップで確認できます。<br /> <br />
+
+
+            <div class="wrapper">■経営スキルについて </div> <br />
+            経営に効果を発揮する特別なスキルです。
+      スキルが発動することで店舗の売り上げを増やすことができます。 経営スキルは店舗に配属することで発動します。<br />
+            キャストを所持しているだけでは発動しません。<br />
+            経営スキルは通常の経営でも発動します。<br />
+            経営スキルは開店中の店舗でのみ発動し、閉店中の店舗や、キャストを配属していない店舗、他店舗では発動しません。<br />
+            経営スキルの効果などは、キャスト詳細で確認することができます。 経営スキルを持ったキャストは、キャバ道や太客で使用するサービスを持ちません。<br />
+      <br />
+    </div>
+  </div>
+
+  <div class="link_arrow_re">
+    <a class="btnfoot" href="${url_cabaclubrank}"><span style="margin-left:14px;">経営ランキングへ</span></a>
+  </div>
+</%def>

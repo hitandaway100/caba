@@ -1,0 +1,26 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			これでチュートリアルは終わりです。<br />
+			最後までプレイした報酬として、<br />
+			レア以上チケットをプレゼントBOXに送りました。<br />
+			ぜひ受け取ってください!
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+
+<%def name="contents()">
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" style="margin-top:20px;" />
+	
+	<%include file="../includes/prize_info.html" args="prize=prize, url_static_img=url_static_img" />
+	
+	<div>
+			<a class="btnpink" style="margin-top:8px;" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><p class="caption">ゲームを開始</p></a>
+	</div>
+	
+</%def>

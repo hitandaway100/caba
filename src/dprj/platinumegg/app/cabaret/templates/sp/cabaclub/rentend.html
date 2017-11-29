@@ -1,0 +1,17 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">レンタル完了</p>
+	</div>
+	<div class="wrapper orange">
+		レンタルしました
+	</div>
+	<div style="margin:16px 0px;">
+		<a class="btnlong" href="${get_html_param('url_store', 'sp/cabaclub/store_closed.html')}">店舗へ</a>
+	</div>
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

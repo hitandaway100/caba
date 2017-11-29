@@ -1,0 +1,250 @@
+<%namespace name='lib' file='functions.html' />
+
+<%def name='list()'>
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>スカウトイベントパラメータ変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_scouteventscore" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          何を:<br />
+          <select name="_target">
+            <option value="point">イベントポイント</option>
+            <option value="stage">現在ステージ</option>
+            <option value="progress">ポチポチ回数</option>
+            <option value="producepoint">所持ハート数</option>
+            <option value="gachapoint">所持カカオ数</option>
+            <option value="tip">所持チップ数</option>
+          </select>
+        </p>
+        <p>
+          値:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>フィーバー残り時間変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_scoutevent_fever" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          値:<br />
+          <input type="text" name="_value" value="0" />[sec]
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>シナリオ閲覧フラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_scoutevent_opening" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          オープニング:<br />
+          <select name="_flag_op">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          エピローグ:<br />
+          <select name="_flag_ep">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>プレゼント数をリセット</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_scoutevent_presentnum" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          <input class="btn" type="submit" value="リセット" />
+        </p>
+      </form>
+    </div>
+  </li>
+  %if cur_scoutevent and 0 < cur_scoutevent.lovetime_star and 0 < cur_scoutevent.lovetime_timelimit:
+  <li>
+    <div class="well">
+      <p><strong>逢引ラブタイム状態変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_lovetime" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          <select name="_flag">
+            <option value="1">On</option>
+            <option value="0">Off</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>星の数を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_star" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          <input type="text" name="_num" value="" />個
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  %endif
+  %if cur_tanzaku_master_list:
+  <li>
+    <div class="well">
+      <p><strong>指名用名刺所持数を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_tanzaku" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          指名用名刺:<br />
+          <select name="_tanzaku">
+            <option value="">------</option>
+            %for tanzakumaster in cur_tanzaku_master_list:
+            <option value="${tanzakumaster.number}">${tanzakumaster.number}:${tanzakumaster.tanzakuname | h}</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          所持数:<br />
+          <input type="text" name="_num" value="" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>チップ投入数を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_tip" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectScoutEvent(label='イベント:<br />')}
+        <p>
+          キャスト:<br />
+          <select name="_tanzaku">
+            <option value="">------</option>
+            %for tanzakumaster in cur_tanzaku_master_list:
+            <option value="${tanzakumaster.number}">${tanzakumaster.number}:${tanzakumaster.castname | h}</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          投入数:<br />
+          <input type="text" name="_num" value="" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  %endif
+</ul>
+</%def>
+
+<%def name="drawSelectScoutEvent(name='_mid', label=None)">
+	${lib.drawSelectEvent(cur_scoutevent, scoutevent, name=name, label=label)}
+</%def>

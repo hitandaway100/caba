@@ -1,0 +1,71 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="head()">
+	<style>
+	.serial_text{
+	text-align: left;
+	padding:15px;
+	width: 280px;
+	font-size:12px;
+	}
+	.serial_undertx{
+	text-align:left;
+	text-indent:-1em;
+	padding-left:1em;
+	margin:4px 0;
+	}
+	</style>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">シリアルコード入力</p>
+	</div>
+	<div class="topcap">
+		テキストボックスにシリアルコードを<br />
+		入力してください<br />
+	</div>
+	
+	%if message:
+		<div class="caution">
+			${message}
+		</div>
+	%endif
+	
+	<form action="${get_html_param('url_input', 'sp/serialcode/input.html')}" method="post">
+		<div style="text-align:center;">
+			<input type="text" name="${Defines.URLQUERY_SERIALCODE}" maxlength="32" value="${serialcode}" />
+		</div>
+		<div>
+			<input type="submit" class="btnpink_submit" value="確定する!" />
+		</div>
+	</form>
+	
+	<section class="basicinfo">
+		<div class="basictop">
+			<p class="caption">注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" >
+		</div>
+			
+		<div class="basicBack">
+			<div class="serial_text">
+				<span class="red">◎シリアルコード入力</span><br />
+				<div class="serial_undertx">
+					・同じシリアルコードを二回入力することはできません。<br />
+				</div>
+				<div class="serial_undertx">
+					・入力後、アイテムはプレゼントに送られます。<br />
+				</div>
+			</div>
+			<div style="font-size:0px;">
+				&nbsp;
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+</%def>

@@ -1,0 +1,72 @@
+#coding:utf-8
+<%inherit file="cardlistbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<script type="text/javascript" src="${url_static_js}transfer.js?v=0"></script>
+</%def>
+
+<%def name="tabs()">
+	<div class="selltab" >
+		<ul class="tabs clearFix" id="tabs" style="width: 320px; margin:4 0 4 12;">
+			<li id="tab1">
+				<a href="${get_html_param('url_cardbox', 'sp/card/cardbox.html')}">一 &nbsp; 覧</a>
+			</li>
+			<li id="tab2">
+				<a href="${get_html_param('url_sell', 'sp/card/sell.html')}">退 &nbsp; 店</a>
+			</li>
+			<li id="tab3">
+				<a onclick="return false;">異 &nbsp; 動</a>
+			</li>
+		</ul>
+		<script type="text/javascript">
+			topics(3); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+</%def>
+
+<%def name="select_card()">
+	<%include file="../includes/select_card.html" args="Defines=Defines, url_post=url_self, ctype=ctype, sortby=sortby, rare=maxrare, rarelist=Defines.Rarity.TRANSFER[::-1], rarepostfix=''" />
+</%def>
+
+<%def name="confirm_text()">
+	<div>
+		<a class="btnlong" onclick="onClickAllCheckButton('#cardsell_form'); return false;"><div>すべてチェック</div></a>
+	</div>
+	<div class="caution red transfer_info"></div>
+	<div style="text-align:center; margin:8 0 8 0px;">
+		<input type="button" value="一括で異動させる" class="sell_on btnsell_on" style="display:none;" onclick="$('#cardsell_form')[0].submit()"/>
+		<input type="button" value="一括で異動させる" disabled="true" class="sell_off btnsell_off" / >
+	</div>
+</%def>
+
+<%def name="draw_cardlist()">
+	%if cardlist:
+		<form id="cardsell_form" action="${get_html_param('url_transferyesno', 'sp/card/transferyesno.html')}" method="post">
+			%for i, card in enumerate(cardlist):
+				<%
+					checkboxname = '%s%s' % (Defines.URLQUERY_CARD, i)
+				%>
+				<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='transfer', get_html_param=get_html_param, test_skill=True, checkboxname=checkboxname, Defines=Defines"/>
+			%endfor
+			<div class="caution red transfer_info"></div>
+			<div style="text-align:center; margin-top:8px;">
+				<input type="submit" value="一括で異動させる" class="sell_on btnsell_on" style="display:none;"/>
+				<input type="submit" value="一括で異動させる" disabled="true" class="sell_off btnsell_off"/ >
+			</div>
+		</form>
+		<script type="text/javascript">
+			(function(){
+				var carddata = {};
+				%for card in cardlist:
+				carddata["${card['master']['album']}"] = {name:"${card['master']['name']}", num:${card['stock_num']}};
+				%endfor
+				initSellButton(carddata, ${Defines.ALBUM_STOCK_NUM_MAX});
+			})();
+		</script>
+	%else:
+		<div class="list_not_found">
+			選択できるキャストがいません
+		</div>
+	%endif
+</%def>

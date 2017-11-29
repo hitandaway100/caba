@@ -1,0 +1,50 @@
+#coding: utf-8
+<%inherit file="cabaclub_base.html" />
+
+<%def name="contents()">
+	<%doc>ヘッダ</%doc>
+	${self.today_total_sales(today_proceeds, show_top_header=True)}
+	<%doc>開催期間</%doc>
+	${self.eventperiod(event_start_time, event_end_time, is_event_open)}
+	<%doc>タブ</%doc>
+	${self.eventtopic()}
+	
+	%for rankingprize in rankingprizelist:
+		<div>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					%if rankingprize['rank_min'] == rankingprize['rank_max']:
+						${rankingprize['rank_min']}位
+					%else:
+						${rankingprize['rank_min']}位〜${rankingprize['rank_max']}位
+					%endif
+				</div>
+			</div>
+			%for prizeitem in rankingprize['prizeinfo']['listitem_list']:
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td  width="70">
+						<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext" style="margin-top:-24px;">
+							%if prizeitem['icon']:
+								<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+							%else:
+								<span><!--
+							%endif
+							-->${prizeitem['name'] | h}<!--
+							%if prizeitem['rare'] is not None:
+								-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+							%endif
+							-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+						</div>
+					</td>
+				</table>
+			%endfor
+		</div>
+	%endfor
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${url_cabaclubrank}"><span style="margin-left:14px;">経営ランキングへ</span></a>
+	</div>
+</%def>

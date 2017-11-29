@@ -1,0 +1,82 @@
+#coding:utf-8
+<%doc>デッキ情報</%doc>
+
+<%page args="power_total, cost_total, cardlist, url_static_img, skilllist=None, helpplayerlist=None">
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+			<div class="wrapper">
+				現在のキャスト編成<br />
+				総接客力:${power_total}&nbsp;人件費:${cost_total}
+			</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	<%
+		card_num = len(cardlist)
+		length = 5
+		line_num = (card_num + length - 1) / length
+		loop_num = card_num
+	%>
+	<table class="battle_ob">
+		%for idx in xrange(loop_num):
+			%if idx % 5 == 0:
+				</table>
+				<table class="battle_ob">
+			%endif
+			<td width="60px" height="75px" style="padding: 0;">
+				%if idx < card_num:
+					<img src="${cardlist[idx]['master']['thumbnail']['small']}" width="60px" height="75px" />
+				%endif
+			</td>
+		%endfor
+	</table>
+	
+	%if helpplayerlist:
+		<div class="titlesub">
+			<div class="wrapper">
+				フレンドから借りたキャスト
+			</div>
+		</div>
+		<div>
+			<%
+				helpplayer = helpplayerlist[0]
+			%>
+			<div class="itembox" style="margin-top:1px;">
+				<table>
+					<td>
+						<img src="${helpplayer['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${helpplayer['person']['nickname'] | h}<br />
+						Lv&nbsp; :&nbsp; ${helpplayer['level']}<br />
+						接客力&nbsp; :&nbsp; ${helpplayer['leader']['power']}<br />
+					</td>
+				</table>
+			</div>
+		</div>
+	%endif
+	
+	%if skilllist is not None:
+		<div class="skilllist">
+			<div class="skilllist_bg" style="background-color: #cc00ff;">
+			</div>
+			<div class="skilllist_body">
+				<div class="topcap">
+					発動したテクニック
+				</div>
+				<div style="margin-left:8px;">
+					%if skilllist:
+						%for skill in skilllist:
+							%if skill['color']:
+								<span style="color:${skill['color']}">${skill['name'] | h}</span><br />
+							%else:
+								${skill['name'] | h}<br />
+							%endif
+						%endfor
+					%else:
+						無し
+					%endif
+				</div>
+			</div>
+		</div>
+	%endif
+</%page>

@@ -1,0 +1,1292 @@
+#coding:utf-8
+
+<style type="text/css">
+body{
+	background-image: url(${url_static_img}common/back.png); 
+	background-repeat: repeat-y;
+	background-position:center;
+}
+/* --- チュートリアルバナー--- */
+.tutorial_bn{
+	
+	width:240px;
+	height:60px;
+	text-align: center;
+	margin: auto;
+}
+/* --- 共通使用タイトル--- */
+.titlebar{
+	background: url(${url_static_img}common/kyoutsu_tittle_bar_4.png) no-repeat;
+	width : 312px;
+	height : 37px;
+	background-position : 0px;
+	margin: auto;
+	margin-top: -17px;
+}
+
+/* --- 共通使用タイトルサブ--- */
+.titlesub{
+	background: url(${url_static_img}common/kyoutsu_tittle_bar_3.png) no-repeat;
+	width : 320px;
+	height : 38px;
+	background-position : 0px;
+	margin: auto;
+	text-align: center;
+}
+
+.titlesubtx{
+	display:block;
+	padding-top:6px;
+}
+
+/* --- 共通使用タイトル装飾無し--- */
+.titlesub2{
+	background: url(${url_static_img}common/kyoutsu_tittle_bar_2.png) no-repeat;
+	width : 320px;
+	height : 31px;
+	background-position : 0px;
+	margin: auto;
+	text-align: center;
+}
+
+
+.btnpink_submit{
+	background: url(${url_static_img}common/btn_bassic_pink.png) no-repeat;
+	width : 198px;
+	height : 44px;
+	background-position : 0px;
+	border:0px;
+	text-align : center;
+	margin: auto;
+	margin-top:10px;
+	margin-bottom:10px;
+ 	display:block;
+	color: #fff;
+	text-decoration:none;
+	font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif';
+	font-size: large;
+	font-weight: bold;
+	text-shadow: -1px 1px 2px rgba(0, 0, 0,1);
+}
+
+/* --- 共通ボタンピンク--- */
+.btnpink{
+	background: url(${url_static_img}common/btn_bassic_pink.png) no-repeat;
+	width : 198px;
+	height : 44px;
+	background-position : 0px;
+	text-align : center;
+	margin: auto;
+	margin-bottom:10px;
+}
+
+.btnpink a{
+ 	display:block;
+	color: #fff;
+	text-decoration:none;
+	padding-top: 4px;
+}
+
+/* --- 共通ボタンピンク小-- */
+.btnpink_s{
+	background: url(${url_static_img}common/btn_temporary.png) no-repeat;
+	width : 155px;
+	height : 44px;
+	overflow:hidden;
+	text-align : center;
+	margin: auto;
+}
+
+.btnpink_s a{
+ 	display:block;
+	color: #fff;
+	text-decoration:none;
+	padding-top: 3px;
+}
+
+/* --- 共通ボタンピンク小、押し下げ不可-- */
+.btnpink_s_dark{
+	background: url(${url_static_img}common/btn_temporary_dark.png) no-repeat;
+	width : 155px;
+	height : 44px;
+	overflow:hidden;
+	text-align : center;
+	margin: auto;
+}
+
+.btnpink_s_dark a{
+ 	display:block;
+	color: #778899;
+	text-decoration:none;
+	padding-top: 3px;
+	pointer-events:none;
+}
+/* --- 共通ボタンピンク大--- */
+
+.btnpinkbig{
+	background: url(${url_static_img}common/btn_bassic_pink_big.png) no-repeat;
+	width : 232px;
+	height : 49px;
+	background-position : 0px;
+	text-align : center;
+	margin: auto;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+
+.btnpinkbig a{
+ 	display:block;
+ 	font-size:22px;
+	color: #fff;
+	text-decoration:none;
+	padding-top: 3px;
+}
+
+/* --- テキスト入りボタン--- */
+.btn_ontext{
+	text-align: center;
+	margin: 10 0 10 0px;
+}
+
+/* --- ボタングレー大--- */
+.btnlong{
+	background: url(${url_static_img}common/btn_long.png) no-repeat;
+	background-position : 0px;
+	width : 187px;
+	height : 31px;
+	text-align:center;
+	margin: auto;
+	margin-bottom:10px;
+}
+
+.btnlong a{
+	display:block;
+	padding-top:4px;
+	color:#fff;
+	text-decoration:none;
+}
+
+.btnlong_p{
+	background: url(${url_static_img}common/btn_long_pink.png) no-repeat;
+	background-position : 0px;
+	width : 187px;
+	height : 31px;
+	text-align:center;
+	margin: auto;
+	margin-bottom:10px;
+}
+
+.btnlong_p a{
+	display:block;
+	padding-top:4px;
+	color:#fff;
+	text-decoration:none;
+}
+.sell_on{
+	background: url(${url_static_img}common/btn_long.png) no-repeat;
+	background-position : 0px;
+	border:0;
+	width:187px;
+	height:31px;
+	color:#ffffff;
+	text-decoration:none;
+	text-align:center;
+	font-size:14px;
+	margin: auto;
+	margin-bottom:10px;
+	}
+
+.sell_off{
+	background: url(${url_static_img}common/btn_long_dark.png) no-repeat;
+	border:0;
+	width:187px;
+	height:31px;
+	color:#778899;
+	text-decoration:none;
+	text-align:center;
+	font-size:14px;
+	margin: auto;
+	margin-bottom:10px;
+	padding-top:4px;
+}
+
+.sell_off a{
+	display:block;
+	color:#778899;
+	text-decoration:none;
+}
+
+/* --- ボタングレー中--- */
+
+.button,.button_more{
+	background: url(${url_static_img}common/common_btn_short.png) no-repeat;
+	width : 98px;
+	height : 31px;
+	background-position : 0px;
+	margin: 4 0 4 200px;
+	text-align : center;
+	color:#FFFFFF;
+	font-size:14px;
+}
+
+.button a{
+ 	display:block;
+	padding-top:4px;
+	color:#fff;
+	text-decoration:none
+}
+
+.buttonshop{
+	background: url(${url_static_img}common/common_btn_short.png) no-repeat;
+	width : 98px;
+	height : 31px;
+	background-position : 0px;
+	margin: auto;
+	margin-top:-2px;
+	text-align : center;
+	color:#FFFFFF;
+	font-size:14px;
+	position: relative;
+}
+
+.button_more a{
+	display: block;
+	position: relative;
+	color: #fff;
+	top:4px;
+	right:4px;
+	text-decoration: none;
+}
+
+.button_more a:after{
+	color:#fff;
+	text-decoration:none;
+	display: block;
+	position: absolute;
+	top: 60%;
+	right: 6px;
+	width: 7px;
+	height: 7px;
+	margin-top: -6px;
+	border-top: solid 2px #ffffff;
+	border-right: solid 2px #ffffff;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	content: "";	
+}
+
+.buttonshort{
+	background: url(${url_static_img}06/id_06_01/btn_bassic_short_02.png) no-repeat;
+	width : 82px;
+	height : 31px;
+	margin:auto;
+	text-align : center;
+	color:#FFFFFF;
+	font-size:14px;
+	display:block;
+	padding-top:4px;
+	text-decoration:none
+}
+
+.buttonshort a{
+ 	display:block;
+	padding-top:4px;
+	color:#fff;
+	text-decoration:none
+}
+
+
+.cdbtnlong{
+	background: url(${url_static_img}common/btn_long.png) no-repeat;
+	background-position : 0px;
+	width : 187px;
+	height : 31px;
+	text-align:center;
+	margin: auto;
+	padding-top: 14px;
+	text-decoration:none;
+}
+
+.cdbtnlong a{
+ 	display:block;
+	color:#fff;
+	margin-top:-2px;
+	text-decoration:none;
+}
+
+/* --- 共通下部グレーボタン--- */
+.btnfoot{
+	background: url(${url_static_img}common/btn_foot.png) no-repeat;
+	width : 320px;
+	height : 40px;
+	background-position : 0px;
+	margin-top: 10px;
+}
+
+.btnfoot a{
+	display:block;
+	padding-top:7px;
+	margin-left:20px;
+	color:#fff;
+	text-decoration:none
+	
+}
+
+/* --- コンプリートボタン--- */
+.btncomp{
+	background: url(${url_static_img}02/btn_comp.png) no-repeat;
+	width : 87px;
+	height : 22px;
+	margin:auto;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	text-align:center;
+}
+
+.btncomp a{
+	display:block;
+	color:#fff;
+	text-decoration:none
+}
+
+/* --- アイテムアイコンダミー(トロフィー)-- */
+.icon_l{
+	width : 90px;
+	height : 90px;
+	margin: auto;
+}
+
+/* --- グレー枠-- */
+.glayinfo
+.infotop{
+	background: url(${url_static_img}00/id_00_01/common_bar_01_top.png) no-repeat;
+	width: 311px;
+	height : 37px;
+	background-position : 0px;
+	margin-left: 4px;
+}
+
+.glayinfo
+.infoBack{
+	background:url(${url_static_img}00/id_00_01/common_bar_01_mid.png) repeat-y top left; 
+	width: 304px;
+	margin-left:8px;
+}
+
+.glayinfo
+.infobtm{
+	background:url(${url_static_img}00/id_00_01/common_bar_01_btm.png);
+	width: 304px;
+	height: 16px;
+	margin-left:8px;
+	margin-bottom:5px;	
+	font-size:0px;
+}
+
+
+/* ---ムラサキ枠--- */
+.information
+.infotop{
+	background: url(${url_static_img}common/kyoutsu_tittle_bar_1.png) no-repeat;
+	width : 312px;
+	height : 37px;
+	background-position : 0px;
+	margin:  auto;
+}
+
+.information
+.infoBack{
+	background:url(${url_static_img}common/kyoutsu_tittle_frame_bar_2_s.png) repeat-y top left; 
+	width: 304px;
+	margin:auto;
+}
+
+.information
+.infobtm{
+	background:url(${url_static_img}common/kyoutsu_tittle_frame_bar_3_s.png)no-repeat;
+	width: 304px;
+	height: 10px;
+	margin:auto;
+	margin-bottom:5px;
+	font-size:0px;
+	line-height:1px;	
+}
+
+.infoBack ul{
+	margin-top:0px;
+	overflow:hidden;
+	width:280px;
+	height:auto;
+	font-size:12px;
+	padding-top:3px;
+	padding-left:10px;
+	margin-left:5px;
+	list-style:none;
+}
+
+ .infoBack ul li{
+ 	background-color:rgba(255,255,255,0.1);
+ 	margin:2 2 2 2 ;
+ 	padding:2 2 2 2;
+ 	display:block;
+	height:auto;
+	color:#fff;
+}
+
+ .infoBack ul li a{
+	display: block;
+	position: relative;
+	color: #fff;
+	text-decoration: none;
+}
+
+ .infoBack ul li a:after{
+ 	color:#fff;
+	text-decoration:none;
+	display: block;
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	width: 7px;
+	height: 7px;
+	margin-top: -4px;
+	border-top: solid 2px #fff000;
+	border-right: solid 2px #fff000;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	content: "";	
+}
+
+ .infoBack ul li.link a{
+ 	color:#FFF000;
+ 	text-decoration:underline;
+ }
+ 
+ 
+ 	
+/* ---汎用枠--- */
+.basicinfo{
+	width: 304px;
+	margin: auto;
+	
+}
+
+.basicinfo p{
+	font-size: 12px;
+	color: #fff000;
+	text-align: center;
+}
+
+.basictop{
+	background: url(${url_static_img}common/bassic_frame_head.png) no-repeat;
+	width: 304px;
+	height : 34px;
+	background-position : 0px;
+	text-align: center;
+}
+
+.basictop_s{
+	background: url(${url_static_img}common/bassic_frame_head_s.png) no-repeat;
+	width: 304px;
+	height : 12px;
+	background-position : 0px;
+	text-align: center;
+}
+
+.basicinfo
+.basicBack{
+	background:url(${url_static_img}common/bassic_frame_mid.png) repeat-y top left; 
+	width: 304px;
+	margin: auto;
+}
+
+
+.basicbtm{
+	background:url(${url_static_img}common/bassic_frame_fot_s.png) no-repeat;
+	width: 304px;
+	height: 12px;
+	margin: auto;
+	font-size: 0px;
+}
+
+.basicinfo
+.basicBack ul{
+	margin-top:0px;
+	overflow:hidden;
+	width:280px;
+	height:auto;
+	font-size:12px;
+	padding-top:5px;
+	line-height:14px;
+	padding-left:10px;
+	margin-left:5px;
+	list-style:none;
+}
+
+.basicinfo
+ .basicBack ul li{
+ 	margin:2 2 2 2 ;
+ 	padding:2 2 2 2;
+ 	display:block;
+	height:auto;
+	color:#fff;
+}
+
+.basicinfo
+ .basicBack ul li a{
+ 	color:#fff;
+	text-decoration:none
+}
+
+/* ---ステータスバー中--- */
+.st_frame{
+	background:url(${url_static_img}common/statusbar_frame.png) no-repeat;
+	width:138px;
+	height: 16px;
+	margin: auto;
+	margin-top: 1;
+}
+
+.st_gauge01{
+	background:url(${url_static_img}common/statusbar_gauge_01.png) repeat-x;
+	position:relative;
+	width:1px;
+	height: 10;
+	top:3px;
+	left: 10;
+}
+
+.st_gauge02{
+	background:url(${url_static_img}common/statusbar_gauge_02.png) repeat-x;
+	position:relative;
+	width:1px;
+	height: 10;
+	top:3px;
+	left: 10;
+}
+
+.st_gauge03{
+	background:url(${url_static_img}common/statusbar_gauge_03.png) repeat-x;
+	position:relative;
+	width:1px;
+	height: 10;
+	top:3px;
+	left: 10;
+}
+
+/* ---スライドバナー--- */
+	.flex-prev,
+	.flex-next{ right:-28px;top:50%;}
+	.flex-prev{ left:-28px;top:50%;}
+	.flex-direction-nav a{ width:20px; height: 17px;}
+	.flex-control-paging li a{ width:12px;height:12px; }
+	.flex-direction-nav .flex-prev{
+		background:url(${url_static_img}common/bnr_arrow_left.png) no-repeat;
+		background-position:center center;
+		opacity: 1;
+	}
+	.flex-direction-nav .flex-next{
+		background:url(${url_static_img}common/bnr_arrow_right.png) no-repeat;
+		background-position:center center;
+		opacity: 1;
+	}
+	
+	.flex-control-paging li a{
+		background:url(${url_static_img}common/bnr_scroll_01.png) no-repeat;
+		background-position:center center;
+		opacity: 1;
+	}
+	.flex-control-paging li a.flex-active{
+		background:url(${url_static_img}common/bnr_scroll_02.png) no-repeat;
+		background-position:center center;
+		opacity: 1;
+	}
+
+/* ---ステータスバー大--- */
+.st_frame_big{
+	background:url(${url_static_img}01/scout_gauge_frame.png) no-repeat;
+	width:180px;
+	height: 20px;
+	margin: auto;
+}
+
+.st_gauge04{
+	background:url(${url_static_img}01/scout_gauge.png) repeat-x;
+	position:relative;
+	width:1px;
+	height: 10px;
+	top:6px;
+	left: 15px;
+}
+
+.st_frame_small{
+	background:url(${url_static_img}common/cardbar_frame.png) no-repeat;
+	position:relative;
+	width:102px;
+	height: 19px;
+	top:-1;
+	margin: auto;
+}
+
+.st_gauge05{
+	background:url(${url_static_img}common/cardbar_gauge.png) repeat-x;
+	position:relative;
+	width:1px;
+	height: 10;
+	top:4px;
+	left: 12px;
+}
+
+.pullmenuset
+{
+	position: relative;
+	font-size: 14px;
+	margin: auto;
+}
+
+.pullmenuset
+.pull1, .pull2:before{
+	content:"";
+	display: block;
+	width:8px;
+	height:10px;
+	padding:3px;
+	position: absolute;
+}
+
+.pullmenuset
+.pull1, .pull2:after{
+	content:"";
+	width:0;
+	height:0;
+	display: block;
+	position: absolute;
+}
+
+.pullmenu1{
+	background:url(${url_static_img}common/pull_down_02.png)no-repeat;
+	width: 116px;
+	height: 31px;
+	padding-left:8px;
+	font-size: 12px;
+	color:#000000;
+	}
+
+.pullmenu2{/* ---プルダウン--- */
+	background:url(${url_static_img}common/pull_down_03.png)no-repeat;
+	width: 173px;
+	height: 31px;
+	padding-left:8px;
+	font-size: 12px;
+	color:#000000;
+	}
+
+.pullmenu3{/* ---プルダウン--- */
+	background:url(${url_static_img}common/pull_down_01.png)no-repeat;
+	width: 80px;
+	height: 31px;
+	padding-left:8px;
+	font-size: 12px;
+	color:#000000;
+	}
+
+.select_type{
+	position:absolute;
+	height:31px;
+	margin: auto;
+	opacity: 0;
+}
+
+.submit{
+	opacity: 0;
+}
+
+
+/* --- チェックボックス--- */
+input[type='checkbox']{
+	filter: alpha(opacity=0);
+	opacity:0;
+	position: absolute;
+}
+
+.precheck {
+	font-size:12px;
+	margin: auto;
+	padding-bottom: 8px;
+}
+
+.precheck td input {
+  margin: 0 -20px 0 0;
+  padding: 0;
+  border: 0;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+.precheck td label {
+  padding: 1px 0 1px 20px;
+  display: inline-block;
+  max-width: 140px;
+  min-height: 20px;
+  vertical-align: middle;
+  background: url(${url_static_img}common/radio_btn_off.png) no-repeat ;
+  cursor: pointer;
+}
+
+.precheck td input:checked+label {
+  background: url(${url_static_img}common/radio_btn_on.png) no-repeat ;
+}
+
+/* --- プレゼントボックスボタン配置--- */
+.present{
+	width: 300px;
+	height: 38px;
+	margin: 5 0 5 10px;
+	padding: 0px;
+}
+.present li{
+	background: url(${url_static_img}00/id_00_03/tab_btn_off.png)no-repeat;
+	width: 70px;
+	height: 38px;
+	display: inline-block;
+	text-align: center;
+
+}
+
+.present li a{
+	color: #FFFFFF;
+	text-align: center;
+	display:block;
+	padding-top:8px;
+	color:#fff;
+	text-decoration:none
+}
+
+/* --- スカウト気力表示-- */
+.spirit{
+	background:url(${url_static_img}02/scout_st_back.png)no-repeat;
+	width: 320px;
+	height:28px; 
+	margin: auto;
+	font-size: 12px;
+}
+
+.spirit1{
+	position: relative;
+	width: 64px;
+	height: 18px;
+	text-align: center;
+	left:18px;
+	top:1px;
+	
+}
+
+.spirit2{
+	position: relative;
+	width: 78px;
+	height: 18px;
+	text-align: left;
+	left:12px;
+	top:1px;
+}
+
+.spirit3{
+	position: relative;
+	width: 144px;
+	height: 20px;
+	text-align: left;
+}
+
+/* --- バトル相手選択--- */
+.battle_rival{
+	margin-bottom: 10px;
+	overflow: hidden;
+}
+
+.battle_ob{
+	position: relative;
+	margin: 7 10 6 10;
+}
+
+.obtext{
+	padding-left:8px;
+	font-size: 12px;
+	line-height: 16px;
+}
+
+.obtext_right{
+	position: relative;
+	left:140;
+	text-align:right;
+	font-size: 12px;
+	line-height: 16px;
+}
+/* --- バトル相手確認--- */
+.battle_select{
+	background: url(${url_static_img}02/btl_back_01.png) no-repeat;
+	width: 320;
+	height:73;
+	overflow: hidden;
+}
+
+.battle_select_ob_l{
+	position: relative;
+	width: 68;
+	height:73;
+	left:4;
+}
+
+.battle_select_tx_l{
+	width: 252;
+	height:73;
+	margin: auto;
+	text-align:left;
+	font-size: 12px;
+	line-height: 16px;	
+}
+
+.battle_select_r{
+	background: url(${url_static_img}02/btl_back_02.png) no-repeat;
+	width: 320;
+	height:73;
+	overflow: hidden;
+}
+
+.battle_select_ob_r{
+	width: 64;
+	height:73;
+	margin: auto;	
+}
+
+.battle_select_tx_r{
+	width: 256;
+	height:73;
+	margin: auto;
+	text-align:right;
+	font-size: 12px;
+	line-height: 16px;	
+}
+
+/* --- カード共通-- */
+
+.cardspace{
+	position: relative;
+	top: 6px;
+	left: 5px;
+}
+
+.kyaba_name{
+	position: relative;
+	width: 184px;
+	font-size: 12px;
+	line-height: 14px;
+}
+
+.name_st1l{
+	width:50px;
+	height: 28px;
+	text-align:center;
+	font-size: 14px;
+	line-height: 14px;
+	padding-bottom: 4px;
+
+}
+
+.name_st2l{
+	width: 134px;
+	height: 28px;
+	text-align:left;
+	font-size: 14px;
+	line-height: 14px;
+	padding-bottom: 4px;
+}
+
+.kyaba_set2{
+	position: relative;
+	width: 184px;
+	top:-2px;
+	left:12px;
+	font-size: 12px;
+	line-height: 16px;
+}
+
+.kyaba_st1{
+	width:74px;
+	height: 20px;
+	text-align: center;
+}
+
+.kyaba_st2{
+	width: 110px;
+	height: 20px;
+	text-align:left;
+}
+
+.kyaba_st_s{
+	width: 108px;
+	height: 20px;
+	text-align:center;
+	font-size: 11px;
+	letter-spacing: -1px;
+}
+.kyaba_set3{
+	position: relative;
+	width: 300px;
+	margin: auto;
+	left: 5px;
+	font-size: 12px;
+	line-height: 8px;
+
+}
+
+.kyaba_st3{
+	width: 72px;
+	height: 20px;
+	text-align:center;
+}
+.kyaba_st4{
+	width: 220px;
+	height: 20px;
+	text-align:left;
+	font-size: 14px;
+}
+
+.kyaba_st4 b{
+	color: #FF9900;
+}
+.kyaba_st5{
+	width: 300px;
+	height: 20px;
+	font-size: 14px;
+	text-align:left;
+}
+
+
+
+
+/* --- カードステータス名前-- */
+
+.cardname{
+	background: url(${url_static_img}common/card_bar_s.png)no-repeat;
+	position: relative;
+	width: 320px;
+	height: 28px;
+}
+.cardname
+.type{
+	position: relative;
+	width:28px;
+	height:28px;
+	left: 90px;
+	float: left;
+}
+
+/* --- カードステータス大-- */
+
+.cardstset{
+	position: relative;
+	width: 306px;
+	height: 60px;
+	top: 10px;
+	left:11px;
+	line-height: 18px;
+}
+
+.cdset1 {
+	position: relative;
+	width: 158px;
+	font-size: 12px;
+	top: 10px;
+	left: 6px;
+	line-height: 18px;
+}
+
+.cdset1
+.cdst1 {
+	position: relative;
+	width:48px;
+	height: 18px;
+	text-align: center;
+}
+
+.cdset1
+.cdst2{
+	position: relative;
+	width: 110px;
+	height: 18px;
+	text-align:left;
+	padding-left: 8px;
+}
+
+.cdset2{
+	position: relative;
+	width: 158px;
+	font-size: 12px;
+	top: 10px;
+	left: 6px;
+	line-height: 17px;
+}
+
+.cdset2
+.cdst3{
+	width: 64px;
+	height: 18px;
+	text-align:center;}
+
+.cdset2
+.cdst4{
+	width: 78px;
+	height: 18px;
+	text-align:left;
+}
+
+.cdset2
+.cdst5{
+	width: 75px;
+	height: 18px;
+	text-align:center;
+	padding-top:-10px;
+}
+
+.cdset4 {
+	position: relative;
+	width: 300px;
+	margin: auto;
+	top: 12px;
+	font-size: 12px;
+	line-height: 14px;
+
+}
+
+.cdset4
+.cdst5{
+	width: 72px;
+	height: 20px;
+	text-align:center;
+	padding-top: 5px;
+}
+
+.cdset4
+.cdst6{
+	width: 220px;
+	height: 20px;
+	text-align:left;
+	font-size: 14px;
+	padding-top: 5px;
+}
+
+.cdset4
+.cdst6 b{
+	color: #FF9900;
+}
+
+.cdset4
+.cdst7{
+	width: 300px;
+	height:20px;
+	font-size: 14px;
+	text-align:left;
+}
+
+/* --- タブボタン2ここから--- */
+
+.evotab ul.tabs {
+	width: 310px; /* タブエリアの幅 */
+	margin:10 14 10 14;
+	padding: 0;
+	list-style-type: none;
+}
+
+.evotab ul.tabs li {
+	background: url(${url_static_img}04/tab_big_off.png)no-repeat; /* タブの背景 */
+	position: relative;
+	width: 94px; /* タブの幅 */
+	height: 38px;
+	margin: 0 2 0 2; /* タブのマージン（上右下左） */
+	text-align: center;
+	float: left;
+}
+
+/* --- アクティブなタブ --- */
+.evotab ul.tabs li.active {
+	background: url(${url_static_img}04/tab_big_on.png)no-repeat; /* アクティブタブの背景 */
+	position: relative;
+	width: 94px; /* タブの幅 */
+	height: 38px;
+	margin: 0 2 0 2; /* タブのマージン（上右下左） */
+	text-align: center;
+	float: left;
+}
+
+/* --- リンク --- */
+.evotab ul.tabs li a {
+	display: block;
+	position: relative;
+	padding-top: 8px; /* リンクエリアのパディング） */
+	outline: none; /* アウトライン（なし） */
+	color: #c9c0a4; /* ボックスの文字色 */
+	text-decoration: none; /* テキストの下線（なし） */
+}
+
+.evotab ul.tabs li.active a {
+	color: #FFFFFF; /* アクティブタブの文字色 */
+}
+
+
+/* --- タブボタン3ここから--- */
+
+.selltab ul.tabs {
+	width: 196px; /* タブエリアの幅 */
+	margin:8 auto 8 auto;
+	padding: 0;
+	list-style-type: none;
+}
+
+.selltab ul.tabs li {
+	background: url(${url_static_img}04/tab_big_off.png)no-repeat; /* タブの背景 */
+	position: relative;
+	width: 94px; /* タブの幅 */
+	height: 38px;
+	margin: 0 2 0 2; /* タブのマージン（上右下左） */
+	text-align: center;
+	float: left;
+}
+
+/* --- アクティブなタブ --- */
+.selltab ul.tabs li.active {
+	background: url(${url_static_img}04/tab_big_on.png)no-repeat; /* アクティブタブの背景 */
+	position: relative;
+	width: 94px; /* タブの幅 */
+	height: 38px;
+	margin: 0 2 0 2; /* タブのマージン（上右下左） */
+	text-align: center;
+	float: left;
+}
+
+/* --- リンク --- */
+.selltab ul.tabs li a {
+	display: block;
+	position: relative;
+	padding-top: 8px; /* リンクエリアのパディング） */
+	outline: none; /* アウトライン（なし） */
+	color: #c9c0a4; /* ボックスの文字色 */
+	text-decoration: none; /* テキストの下線（なし） */
+}
+
+.selltab ul.tabs li.active a {
+	color: #FFFFFF; /* アクティブタブの文字色 */
+}
+
+/* --- タブボタン3ここまで--- */
+
+
+/* ---アルバム用ステータス-- */
+.albumstatus{
+	background: url(${url_static_img}06/id_06_03/card_st_back_03.png)no-repeat;
+	position: relative;
+	margin: auto;
+	width:320px;
+	height:75px;
+}
+
+.albumstatus
+.albumstatus_set{
+	position: relative;
+	width: 306px;
+	height: 60px;
+	top: 10px;
+	left:11px;
+	line-height: 18px;
+}
+
+/* --- 進化合成ボタン配置--- */
+.evo{
+	width: 300px;
+	height: 38px;
+	margin: 5 0 5 10px;
+	padding: 0px;
+}
+.evo li{
+	background: url(${url_static_img}04/tab_big_off.png)no-repeat;
+	width: 94px;
+	height: 38px;
+	display: inline-block;
+	text-align: center;
+
+}
+
+.evo li a{
+	color: #A8A087;
+	text-align: center;
+	display:block;
+	padding-top:8px;
+	text-decoration:none
+}
+
+/* --- アルバム背景--- */
+.albumset{
+	background: url(${url_static_img}common/back_albam.png)no-repeat;
+	position: relative;
+	width: 320px;
+	height: 256px;
+	display: inline-block;
+}
+
+.albumset
+.photobox{
+	width: 318px;
+	height: 254;
+	margin: auto;
+}
+
+/* --- カードアルバムセット--- */
+.cardalbum{
+	background: url(${url_static_img}06/card_albam_bar_re.png)no-repeat;
+	position: relative;
+	width: 320px;
+	height: 153px;
+	z-index: 0;
+}
+
+.cardalbum_head{
+	position: relative;
+	text-align: center;
+	font-size:16px;
+	margin-bottom:24px;
+	z-index: 1;
+	
+}
+
+/* ---思い出ボタン--- */
+.memory{
+	background:url(${url_static_img}06/id_06_03/omoide.png)no-repeat;
+	position: relative;
+	width : 76px;
+	height : 26px;
+	margin: auto;
+	padding-top:4px;
+	top: -8px;
+	left:120px;
+	font-size: 12px;
+	text-align : center;
+	}
+	
+/* ---思い出アルバム写真枠--- */
+.photo_flame{
+	display:block;
+	position:absolute;
+	width : 70px;
+	height : 88px;
+	z-index: 2;
+}
+
+.album_new{
+	position:absolute;
+	width : 62px;
+	height : 22px;
+	top:24px;
+	margin-left:4px;
+	z-index: 3;	
+}
+
+</style>

@@ -1,0 +1,1469 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head_additional()">
+	<script>
+		var cookie_opt = {path: '/',}
+		
+		function makeCookieKey(name){
+			return "manage_tree:" + name;
+		}
+		function onClickCategory(target){
+			var name = target.id;
+			var targ = $(target).parent().children('.treecontent');
+			var cookie_key = makeCookieKey(name);
+			
+			if (targ.css("display") == 'none'){
+				$.cookie(cookie_key, 'open', cookie_opt);
+				targ.slideDown();
+			} else {
+				$.cookie(cookie_key, 'close', cookie_opt);
+				targ.slideUp();
+			}
+		}
+		
+		$(function(){
+			function updateHTMLBlock(target_bloack_id, select_tag_id, cur_block_id){
+				var select_tag = document.getElementById(select_tag_id);
+				var tmplate_id = select_tag.options[select_tag.selectedIndex].value;
+				if(tmplate_id != cur_block_id){
+					var tmplate_block = document.getElementById(tmplate_id);
+					var target_block = document.getElementById(target_bloack_id);
+					target_block.innerHTML = tmplate_block.innerHTML;
+				}
+				return tmplate_id;
+			}
+			(function(){
+				var current_ids = {};
+				
+				function updatePresentForm(formid){
+					current_ids[formid] = updateHTMLBlock(formid+"_presentform", formid+"_present_type", current_ids[formid]);
+				}
+				function setUpdatePresentForm(formid){
+					$("#"+formid+"_present_type").on("change", function(){
+						updatePresentForm(formid);
+					});
+					updatePresentForm(formid);
+				}
+				var arr = $(".presentform");
+				for(var i=0; i<arr.length; i++){
+					setUpdatePresentForm(arr[i].id);
+				}
+			})();
+			
+			(function(){
+				var current_ids = {};
+				function updateTextForm(formid){
+					current_ids[formid] = updateHTMLBlock(formid+"_textform", formid+"_text_type", current_ids[formid]);
+				}
+				function setUpdateTextForm(formid){
+					$("#"+formid+"_text_type").on("change", function(){
+						updateTextForm(formid);
+					});
+					updateTextForm(formid);
+				}
+				var arr = $(".presentform");
+				for(var i=0; i<arr.length; i++){
+					setUpdateTextForm(arr[i].id);
+				}
+			})();
+			
+			function sendRequest(url, postdata, callback){
+				var xhr= new XMLHttpRequest();
+				xhr.addEventListener("error", function(e){
+					if(callback){
+						callback(xhr.statusText, null);
+					}
+				})
+				xhr.addEventListener("load", function(e){
+					if(callback){
+						callback(null, xhr.response);
+					}
+				})
+				if(postdata){
+					xhr.open("POST", url);
+					xhr.send(postdata);
+				}
+				else{
+					xhr.open("GET", url);
+					xhr.send();
+				}
+			}
+			
+			var running = false;
+			
+			function setCloseRaideventStart(){
+				running = true;
+				$("#no_running_close_raidevent").css("display", "none");
+				$("#running_close_raidevent").css("display", "");
+				$("#ind_close_raidevent").activity({width:2,length:3,space:1});
+			}
+			function setCloseRaideventEnd(result, err_message){
+				// 結果.
+				var resultarea = $("#pre_result_close_raidevent");
+				var texts = [];
+				if(err_message){
+					texts.push("エラー:");
+					texts.push(err_message);
+					texts.push("");
+				}
+				if(result){
+					texts.push("出力:");
+					texts.push(result);
+					texts.push("");
+				}
+				resultarea[0].value = texts.join("\n");
+				resultarea.css("display", "");
+				
+				$("#no_running_close_raidevent").css("display", "");
+				$("#running_close_raidevent").css("display", "none");
+				$("#ind_close_raidevent").activity(false);
+				running = false;
+			}
+			
+			function startCloseRaidevent(){
+				if(running){
+					return;
+				}
+				setCloseRaideventStart();
+				
+				sendRequest("${url_manage_menu}?method=close_raidevent", null, function(err, response){
+					setCloseRaideventEnd(response, err);
+					/*
+					if(err){
+						setCloseRaideventEnd(null, err);
+					}
+					else{
+						startCheckCloseRaidevent();
+					}
+					*/
+				});
+			}
+			
+			function startCheckCloseRaidevent(){
+				
+				setCloseRaideventStart();
+				
+				var url = "${url_manage_menu}?method=get_close_raidevent_log";
+				function exec(){
+					sendRequest(url, null, function(err, response){
+						if(err){
+							setCloseRaideventEnd(null, err);
+						}
+						else if(response != "running"){
+							var jsonobj = JSON.parse(response);
+							var result = null;
+							var err_message = null;
+							if(jsonobj){
+								result = jsonobj['log'];
+								err_message = jsonobj['err'];
+							}
+							else{
+								err_message = response;
+							}
+							setCloseRaideventEnd(result, err_message);
+						}
+						else{
+							setTimeout(exec, 5000);
+						}
+					});
+				}
+				exec();
+			}
+			
+			$(".btn_close_raidevent").click(function(){
+				startCloseRaidevent();
+			});
+			%if raidevent_config['is_exists_closeevent_process']:
+				startCheckCloseRaidevent();
+			%endif
+			
+			function setCloseProduceeventStart(){
+				running = true;
+				$("#no_running_close_produceevent").css("display", "none");
+				$("#running_close_produceevent").css("display", "");
+				$("#ind_close_produceevent").activity({width:2,length:3,space:1});
+			}
+			function setCloseProduceeventEnd(result, err_message){
+				// 結果.
+				var resultarea = $("#pre_result_close_produceevent");
+				var texts = [];
+				if(err_message){
+					texts.push("エラー:");
+					texts.push(err_message);
+					texts.push("");
+				}
+				if(result){
+					texts.push("出力:");
+					texts.push(result);
+					texts.push("");
+				}
+				resultarea[0].value = texts.join("\n");
+				resultarea.css("display", "");
+				
+				$("#no_running_close_produceevent").css("display", "");
+				$("#running_close_produceevent").css("display", "none");
+				$("#ind_close_produceevent").activity(false);
+				running = false;
+			}
+			
+			function startCloseProduceevent(){
+				if(running){
+					return;
+				}
+				setCloseProduceeventStart();
+				
+				sendRequest("${url_manage_menu}?method=close_produceevent", null, function(err, response){
+					setCloseProduceeventEnd(response, err);
+				});
+			}
+			
+			function startCheckCloseProduceevent(){
+				
+				setCloseProduceeventStart();
+				var url = "${url_manage_menu}?method=get_close_produceevent_log";
+				function exec(){
+					sendRequest(url, null, function(err, response){
+						if(err){
+							setCloseProduceeventEnd(null, err);
+						}
+						else if(response != "running"){
+							var jsonobj = JSON.parse(response);
+							var result = null;
+							var err_message = null;
+							if(jsonobj){
+								result = jsonobj['log'];
+								err_message = jsonobj['err'];
+							}
+							else{
+								err_message = response;
+							}
+							setCloseProduceeventEnd(result, err_message);
+						}
+						else{
+							setTimeout(exec, 5000);
+						}
+					});
+				}
+				exec();
+			}
+			
+			$(".btn_close_produceevent").click(function(){
+				startCloseProduceevent();
+			});
+			
+			%if produceevent_config['is_exists_closeevent_process']:
+				startCheckCloseProduceevent();
+			%endif
+			
+			
+			var trees = $(".treetrigger");
+			trees.click(function(event){
+				onClickCategory(event.target);
+			}).children().click(function(event){
+				onClickCategory($(event.target).parent()[0]);
+				return false;
+			});
+			for(var i=0; i<trees.length; i++){
+				var item = trees[i];
+				if($.cookie(makeCookieKey(item.id)) != 'open'){
+					$(item).parent().children('.treecontent').css("display","none");
+				}
+			}
+		});
+		
+		function makeMasterSelectMultiConfigSettings(midlist, options_html){
+			var form_settings = [
+				{
+					type : 'select',
+					name : 'mid',
+					vlist : midlist,
+					options : options_html,
+					postfix : "を"
+				},
+				{
+					type : 'datetime',
+					name : 'start',
+					postfix : "から"
+				},
+				{
+					type : 'datetime',
+					name : 'end',
+					postfix : "まで"
+				}
+			];
+			return form_settings;
+		}
+		
+		function initMultiConfig(name, form_settings, default_items){
+			var strNow = "${now.strftime('%Y-%m-%d %H:%M:%S')}"
+			var cnt = 0;
+			
+			var addMultiConfig = function(data){
+				
+				var parent_obj = document.createElement("p");
+				parent_obj.setAttribute("id", name+"_config"+cnt);
+				
+				for(var i=0; i<form_settings.length; i++){
+					var settings_data = form_settings[i];
+					var v = data[settings_data.name];
+					var obj = null;
+					var idx;
+					
+					switch(settings_data.type){
+					case 'select':
+						obj = document.createElement("select");
+						idx = settings_data.vlist.indexOf(v)
+						obj.innerHTML = settings_data.options;
+						if(idx != -1){
+							obj.options[idx].setAttribute("selected", "selected");
+						}
+						break;
+					case 'datetime':
+						obj = document.createElement("input");
+						obj.setAttribute("value", v || strNow);
+						obj.setAttribute("type", "datetime");
+						break;
+					case 'text':
+						obj = document.createElement("input");
+						obj.setAttribute("value", v || '');
+						obj.setAttribute("type", "text");
+						break;
+					case 'number':
+						obj = document.createElement("input");
+						obj.setAttribute("value", v || 0);
+						obj.setAttribute("type", "number");
+						break;
+					case 'checkbox':
+						obj = document.createElement("input");
+						obj.setAttribute("type", "checkbox");
+						if(v == "1"){
+							obj.setAttribute("checked", "checked");
+						}
+						obj.setAttribute("value", "1");
+						break;
+					}
+					if(obj != null){
+						obj.setAttribute("name", "_"+name+"_"+settings_data.name+"_"+cnt);
+						parent_obj.appendChild(obj);
+						if(settings_data.postfix){
+							parent_obj.innerHTML += settings_data.postfix;
+						}
+					}
+				}
+				
+				// button.
+				obj = document.createElement("button");
+				obj.innerHTML = "x"
+				obj.setAttribute("class", "btn btn-danger");
+				obj.setAttribute("value", cnt);
+				obj.addEventListener("click", function(e){
+					e.preventDefault();
+					deleteMultiConfig(this);
+					return false;
+				});
+				parent_obj.appendChild(obj);
+				
+				document.getElementById("block_set_"+name+"_config_data").appendChild(parent_obj);
+				
+				cnt ++;
+				document.getElementById(name+"_config_cnt").value = cnt;
+			}
+			
+			// 項目を消す.
+			var deleteMultiConfig = function(btn){
+				var elem = document.getElementById(name+"_config"+btn.value);
+				// removeChild出来ないので中身を消して見えなくする.
+				elem.innerHTML = "";
+				$(elem).css("display", "none");
+			}
+			
+			// 追加ボタンの設定.
+			var btn = document.getElementById(name+"_add");
+			btn.addEventListener("click", function(e){
+				e.preventDefault();
+				addMultiConfig({});
+				return false;
+			});
+			
+			// 設定済みの項目を並べる.
+			for(var i=0; i<default_items.length; i++){
+				var data = default_items[i]
+				addMultiConfig(data);
+			}
+		}
+		
+		function previewInfomation(){
+			var form_ori = document.getElementById("form_save_infomation");
+			var form = document.createElement("form");
+			form.action = "";
+			form.method = "post";
+			form.target = "_blank";
+			
+			function appendPostValue(name, value){
+				if(!value){
+					return;
+				}
+				var obj = document.createElement("input");
+				obj.type = "hidden";
+				obj.name = name;
+				obj.value = value;
+				form.appendChild(obj);
+				return obj;
+			}
+			function copyFormValue(name){
+				appendPostValue(name, form_ori.elements[name].value);
+			}
+			appendPostValue("method", "prev_infomation");
+			copyFormValue("_title");
+			copyFormValue("_body");
+			copyFormValue("_stime");
+			copyFormValue("_etime");
+			
+			form.submit();
+		}
+	</script>
+</%def>
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>管理機能一覧　<small>管理機能..</small></h1>
+	</div>
+	<div class="well">
+		<p class="treetrigger" id="maintenance_mode"><strong>メンテナンスモード変更</strong>　メンテナンスモードの設定・解除をします</p>
+		<div class="treecontent">
+			<p>
+				現在の状態：
+				<strong>
+					%if is_maintenance:
+						<span style="color:red;">ON</span>
+					%else:
+						<span style="color:green;">OFF</span>
+					%endif
+				</strong>
+			</p>
+			<form action="" method="post">
+				<input type="hidden" name="method" value="set_app_config" />
+				<p>
+					<select name="_is_platform_maintenance">
+						%if app_config['is_platform_maintenance']:
+							<option value="0">アプリ側のメンテ</option>
+							<option value="1" selected="selected">プラットフォーム側のメンテ</option>
+						%else:
+							<option value="0" selected="selected">アプリ側のメンテ</option>
+							<option value="1">プラットフォーム側のメンテ</option>
+						%endif
+					</select>
+				</p>
+				<p>
+					<label>
+						%if app_config['is_emergency']:
+							<input type="radio" name="_is_emergency" style="display: inline;" value="0" />定期メンテ（開始・終了時刻が分かる場合）
+						%else:
+							<input type="radio" name="_is_emergency" style="display: inline;" value="0" checked="checked" />定期メンテ（開始・終了時刻が分かる場合）
+						%endif
+					</label>
+					<label>
+						%if app_config['is_emergency']:
+							<input type="radio" name="_is_emergency" style="display: inline;" value="1" checked="checked" />緊急メンテ（開始・終了時刻が分からない場合）
+						%else:
+							<input type="radio" name="_is_emergency" style="display: inline;" value="1" />緊急メンテ（開始・終了時刻が分からない場合）
+						%endif
+					</label>
+				</p>
+				
+				<p><input type="datetime" name="_maintenance_start" value="${app_config['stime']}" />から</p>
+				<p><input type="text" name="_maintenance_end" value="${app_config['etime']}" />まで</p>
+				<p style="color:#666;">※日本時間で入力。</p>
+				<input class="btn" type="submit" value="変更" />
+			</form>
+		</div>
+	</div>
+	
+	<%doc>
+	<div class="well">
+		<p><strong>事前登録設定</strong>　事前登録期間と報酬を設定します</p>
+		<p>
+			現在の状態：
+			<strong>
+				%if preregist_config['is_before_publication']:
+					<span style="color:red;">事前登録期間</span>
+				%else:
+					<span style="color:green;">公開中</span>
+				%endif
+			</strong>
+		</p>
+		<form action="" method="post">
+			<input type="hidden" name="method" value="set_preregist_config" />
+			<p>
+				事前登録期間:<br />
+				<input type="datetime" name="_etime" value="${preregist_config['etime']}" />まで
+			</p>
+			<p>
+				報酬:<br />
+				<input type="text" name="_prizes" value="${preregist_config['prizes']}" />
+			</p>
+			<input class="btn" type="submit" value="更新" />
+		</form>
+	</div>
+	</%doc>
+	
+	<div class="well">
+		<p class="treetrigger" id="raidevent_config"><strong>経営イベント設定</strong>　経営イベント期間を設定します</p>
+		<div class="treecontent">
+			<p>
+				現在の設定：
+				<strong>
+					${cabaclubrankevent_config['name'] | h}(ID:${cabaclubrankevent_config['mid']})
+					%if cabaclubrankevent_config['is_opened']:
+						<span style="color:red;">開催中</span>
+					%else:
+						<span style="color:green;">開催していません</span>
+					%endif
+				</strong>
+			</p>
+			<p>
+				現在の週：
+				<strong>
+					${cabaclubrankevent_config['now']}
+				</strong>
+			</p>
+			<form action="" method="post">
+				<input type="hidden" name="method" value="set_cabaclubrankevent_config" />
+				<p>
+					イベント:<br />
+					<select name="_cabaclubrankevent_mid">
+						<option value="">------</option>
+						% for cabaclubrankevent in cabaclubrankeventlist:
+							%if cabaclubrankevent_config['mid'] == cabaclubrankevent.id:
+								<option value="${cabaclubrankevent.id}" selected="selected">${cabaclubrankevent.name | h}(ID:${cabaclubrankevent.id})</option>
+							%else:
+								<option value="${cabaclubrankevent.id}">${cabaclubrankevent.name | h}(ID:${cabaclubrankevent.id})</option>
+							%endif
+						% endfor
+					</select>
+				</p>
+				<p><input type="text" name="_cabaclubrankevent_start" value="${cabaclubrankevent_config['stime']}" />から</p>
+				<p><input type="text" name="_cabaclubrankevent_end" value="${cabaclubrankevent_config['etime']}" />まで</p>
+				<p>次回開催日:</p>
+				<p><input type="text" name="_cabaclubrankevent_next_start" value="${cabaclubrankevent_config['next_stime']}" />から</p>
+				<p><input type="text" name="_cabaclubrankevent_next_end" value="${cabaclubrankevent_config['next_etime']}" />まで</p>
+				<input class="btn" type="submit" value="変更" />
+			</form>
+		</div>
+	</div>
+
+	<div class="well">
+		<p class="treetrigger" id="produceevent_config"><strong>プロデュースイベント設定</strong>　プロデュースイベント期間を設定します</p>
+		<div class="treecontent">
+			<p>
+				現在の設定：
+				<strong>
+					${produceevent_config['name'] | h}(ID:${produceevent_config['mid']})
+					%if produceevent_config['is_exists_closeevent_process']:
+					    <span style="color:red;">終了処理を実行中</span>
+					%elif produceevent_config['is_opened']:
+						<span style="color:red;">開催中</span>
+					%elif produceevent_config['is_end']:
+						<span style="color:green;">終了済み</span>
+					%else:
+						<span style="color:green;">開催していません</span>
+					%endif
+				</strong>
+			</p>
+
+			<form action="" method="post">
+				<input type="hidden" name="method" value="set_produceevent_config" />
+				<p>
+					イベント:<br />
+					<select name="_produceevent_mid">
+						<option value="">------</option>
+						% for produceevent in produceevent_list:
+							%if produceevent_config['mid'] == produceevent.id:
+								<option value="${produceevent.id}" selected="selected">${produceevent.name | h}(ID:${produceevent.id})</option>
+							%else:
+								<option value="${produceevent.id}">${produceevent.name | h}(ID:${produceevent.id})</option>
+							%endif
+						% endfor
+					</select>
+				</p>
+				<p><input type="text" name="_produceevent_start" value="${produceevent_config['stime']}" />から</p>
+				<p><input type="text" name="_produceevent_end" value="${produceevent_config['etime']}" />まで</p>
+				<p><input type="text" name="_produceevent_bigtime" value="${produceevent_config['bigtime']}" />から大ボス出現</p>
+				<p>
+					エピローグ公開期限:<br />
+					<input type="text" name="_produceevent_epilogue_endtime" value="${produceevent_config['epilogue_endtime']}" />
+				</p>
+				<input class="btn" type="submit" value="変更" />
+			</form>
+			%if produceevent_config['is_end']:
+			<div id="no_running_close_produceevent">
+				<button class="btn btn_close_produceevent">終了処理開始</button><br />
+				<textarea id="pre_result_close_produceevent" style="display:none;"> </textarea>
+			</div>
+			<div id="running_close_produceevent" style="display: none;">
+				<div id="ind_close_produceevent" style="display: table-cell; width: 24px; height: 32px;">
+				</div>
+				<div style="display: table-cell; width: 320px; height: 32px; vertical-align: middle;">
+					終了処理を実行中です
+				</div>
+			</div>
+		%endif
+		</div>
+	</div>
+    
+	<div class="well">
+		<p class="treetrigger" id="raidevent_config"><strong>レイドイベント設定</strong>　レイドイベント期間を設定します</p>
+		<div class="treecontent"><p>
+			現在の設定：
+			<strong>
+				${raidevent_config['name'] | h}(ID:${raidevent_config['mid']})
+				%if raidevent_config['is_exists_closeevent_process']:
+					<span style="color:red;">終了処理を実行中</span>
+				%elif raidevent_config['is_opened']:
+					%if raidevent_config['is_big_opened']:
+						<span style="color:red;">大ボス出現+開催中</span>
+					%else:
+						<span style="color:red;">開催中</span>
+					%endif
+				%elif raidevent_config['is_end']:
+					<span style="color:green;">終了済み</span>
+				%else:
+					<span style="color:green;">開催していません</span>
+				%endif
+			</strong>
+		</p>
+		<form action="" method="post">
+			<input type="hidden" name="method" value="set_raidevent_config" />
+			<p>
+				イベント:<br />
+				<select name="_raidevent_mid">
+					<option value="">------</option>
+					% for raidevent in raideventlist:
+						%if raidevent_config['mid'] == raidevent.id:
+							<option value="${raidevent.id}" selected="selected">${raidevent.name | h}(ID:${raidevent.id})</option>
+						%else:
+							<option value="${raidevent.id}">${raidevent.name | h}(ID:${raidevent.id})</option>
+						%endif
+					% endfor
+				</select>
+			</p>
+			<p><input type="datetime" name="_raidevent_start" value="${raidevent_config['stime']}" />から</p>
+			<p><input type="text" name="_raidevent_end" value="${raidevent_config['etime']}" />まで</p>
+			<p><input type="text" name="_raidevent_bigtime" value="${raidevent_config['bigtime']}" />から大ボス出現</p>
+			<p><input type="text" name="_raidevent_ticketend" value="${raidevent_config['ticket_endtime']}" />までガチャと秘宝交換可能</p>
+			<p>
+				タイムボーナス:<br />
+				<textarea name="_raidevent_timebonus_time">${raidevent_config['timebonus_time']}</textarea>
+			</p>
+			<p>
+				コンボボーナス:<br />
+				<textarea name="_raidevent_combobonus_opentime">${raidevent_config['combobonus_opentime']}</textarea>
+			</p>
+			<p>
+				フィーバーチャンス:<br />
+				<textarea name="_raidevent_feverchance_opentime">${raidevent_config['feverchance_opentime']}</textarea>
+			</p>
+			<p>
+				秘宝ボーナス:<br />
+				<textarea name="_raidevent_fastbonus_opentime">${raidevent_config['fastbonus_opentime']}</textarea>
+			</p>
+			<p>
+				エピローグ公開期限:<br />
+				<input type="text" name="_raidevent_epilogue_endtime" value="${raidevent_config['epilogue_endtime']}" />
+			</p>
+			<p style="color:#666;">※日本時間で入力。</p>
+			${self.drawEventStageScheduleForm('raideventadditionalstage')}
+			<input class="btn" type="submit" value="変更" />
+		</form>
+		${self.drawEventStageScheduleScript(raidevent_config['stageschedule'], 'raideventadditionalstage')}
+		%if raidevent_config['is_end']:
+			<div id="no_running_close_raidevent">
+				<button class="btn btn_close_raidevent">終了処理開始</button><br />
+				<textarea id="pre_result_close_raidevent" style="display:none;"> </textarea>
+			</div>
+			<div id="running_close_raidevent" style="display: none;">
+				<div id="ind_close_raidevent" style="display: table-cell; width: 24px; height: 32px;">
+				</div>
+				<div style="display: table-cell; width: 320px; height: 32px; vertical-align: middle;">
+					終了処理を実行中です
+				</div>
+			</div>
+		%endif
+		</div>
+	</div>
+	<div class="well">
+		<p class="treetrigger" id="raidevent_init"><strong>レイドイベント初期化</strong>　レイドイベントを初期化します</p>
+		<div class="treecontent">
+		%if is_maintenance:
+			<form action="" method="post" onsubmit="return confirm('本当に初期化しますか？(1)') && confirm('本当に初期化しますか？(2)');">
+				<input type="hidden" name="method" value="init_raidevent" />
+				<p>
+					イベント:<br />
+					<select name="_raidevent_mid">
+						<option value="">------</option>
+						% for raidevent in raideventlist:
+							%if raidevent_config['mid'] == raidevent.id:
+								<option value="${raidevent.id}" selected="selected">${raidevent.name | h}(ID:${raidevent.id})</option>
+							%else:
+								<option value="${raidevent.id}">${raidevent.name | h}(ID:${raidevent.id})</option>
+							%endif
+						% endfor
+					</select>
+				</p>
+				<input class="btn" type="submit" value="初期化" />
+			</form>
+		%else:
+			メンテナンスモードにしてください
+		%endif
+		</div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="scoutevent_config"><strong>スカウトイベント設定</strong>　スカウトイベント期間を設定します</p>
+		<div class="treecontent">
+		<p>
+			現在の設定：
+			<strong>
+				${scoutevent_config['name'] | h}(ID:${scoutevent_config['mid']})
+				%if scoutevent_config['is_exists_closeevent_process']:
+					<span style="color:red;">終了処理を実行中</span>
+				%elif scoutevent_config['is_opened']:
+					<span style="color:red;">開催中</span>
+				%elif scoutevent_config['is_end']:
+					<span style="color:green;">終了済み</span>
+				%else:
+					<span style="color:green;">開催していません</span>
+				%endif
+			</strong>
+		</p>
+		<form action="" method="post">
+			<input type="hidden" name="method" value="set_scoutevent_config" />
+			<p>
+				イベント:<br />
+				<select name="_scoutevent_mid">
+					<option value="">------</option>
+					% for scoutevent in scouteventlist:
+						%if scoutevent_config['mid'] == scoutevent.id:
+							<option value="${scoutevent.id}" selected="selected">${scoutevent.name | h}(ID:${scoutevent.id})</option>
+						%else:
+							<option value="${scoutevent.id}">${scoutevent.name | h}(ID:${scoutevent.id})</option>
+						%endif
+					% endfor
+				</select>
+			</p>
+			<p><input type="datetime" name="_scoutevent_start" value="${scoutevent_config['stime']}" />から</p>
+			<p><input type="text" name="_scoutevent_end" value="${scoutevent_config['etime']}" />まで</p>
+			<p>
+				エピローグ公開期限:<br />
+				<input type="text" name="_scoutevent_epetime" value="${scoutevent_config['epetime']}" />
+			</p>
+			<p>
+				プロデュース期限:<br />
+				<input type="text" name="_scoutevent_presentetime" value="${scoutevent_config['presentetime']}" />
+			</p>
+			${self.drawEventStageScheduleForm('scouteventadditionalstage')}
+			<input class="btn" type="submit" value="変更" />
+		</form>
+		${self.drawEventStageScheduleScript(scoutevent_config['stageschedule'], 'scouteventadditionalstage')}
+		%if scoutevent_config['is_end']:
+			<div id="no_running_close_scoutevent">
+				<button class="btn btn_close_scoutevent">終了処理開始</button><br />
+				<textarea id="pre_result_close_scoutevent" style="display:none;"> </textarea>
+			</div>
+			<div id="running_close_scoutevent" style="display: none;">
+				<div id="ind_close_scoutevent" style="display: table-cell; width: 24px; height: 32px;">
+				</div>
+				<div style="display: table-cell; width: 320px; height: 32px; vertical-align: middle;">
+					終了処理を実行中です
+				</div>
+			</div>
+		%endif
+		</div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="battleevent_config"><strong>バトルイベント設定</strong>　バトルイベント期間を設定します</p>
+		<div class="treecontent">
+		<p>
+			現在の設定：
+			<strong>
+				${battleevent_config['name'] | h}(ID:${battleevent_config['mid']})
+				%if battleevent_config['is_opened']:
+					%if battleevent_config['is_emergency']:
+						<span style="color:red;">緊急停止中</span>
+					%else:
+						<span style="color:red;">開催中</span>
+					%endif
+				%elif battleevent_config['is_end']:
+					<span style="color:green;">終了済み</span>
+				%else:
+					<span style="color:green;">開催していません</span>
+				%endif
+			</strong>
+		</p>
+		<form action="" method="post">
+			<input type="hidden" name="method" value="set_battleevent_config" />
+			<input type="hidden" id="battleeventadditionalrank_config_cnt" name="cnt_max" value="0" />
+			<p>
+				イベント:<br />
+				<select name="_battleevent_mid">
+					<option value="">------</option>
+					% for battleevent in battleeventlist:
+						%if battleevent_config['mid'] == battleevent.id:
+							<option value="${battleevent.id}" selected="selected">${battleevent.name | h}(ID:${battleevent.id})</option>
+						%else:
+							<option value="${battleevent.id}">${battleevent.name | h}(ID:${battleevent.id})</option>
+						%endif
+					% endfor
+				</select>
+			</p>
+			<p><input type="datetime" name="_battleevent_start" value="${battleevent_config['stime']}" />から</p>
+			<p><input type="text" name="_battleevent_end" value="${battleevent_config['etime']}" />まで</p>
+			<p><input type="text" name="_battleevent_ticketend" value="${battleevent_config['ticketetime']}" />ticket</p>
+			<p>
+				エピローグ公開期限:<br />
+				<input type="text" name="_battleevent_epend" value="${battleevent_config['epetime']}" />
+			</p>
+			<p style="color:#666;">※日本時間で入力。</p>
+			<p>
+				<label>
+					%if battleevent_config['is_emergency']:
+						<input type="radio" name="_is_emergency" style="display: inline;" value="0" />公開
+					%else:
+						<input type="radio" name="_is_emergency" style="display: inline;" value="0" checked="checked" />公開
+					%endif
+				</label>
+				<label>
+					%if battleevent_config['is_emergency']:
+						<input type="radio" name="_is_emergency" style="display: inline;" value="1" checked="checked" />緊急停止
+					%else:
+						<input type="radio" name="_is_emergency" style="display: inline;" value="1" />緊急停止
+					%endif
+				</label>
+			</p>
+			<p>
+				ランク追加スケジュール:<button class="btn" id="battleeventadditionalrank_add">追加</button><br />
+				<div id="block_set_battleeventadditionalrank_config_data">
+				</div>
+			</p>
+			<input class="btn" type="submit" value="変更" />
+		</form>
+		<script>
+			(function(){
+				var default_items = [];
+				%for data in battleevent_config['rankschedule']:
+				default_items.push({rank:${data['rank']},start:"${data['time']}"});
+				%endfor
+				var settings = [
+					{
+						type : 'number',
+						name : 'rank',
+						postfix : "以降を"
+					},
+					{
+						type : 'datetime',
+						name : 'start',
+						postfix : "から公開"
+					},
+				];
+				initMultiConfig("battleeventadditionalrank", settings, default_items);
+			})();
+		</script>
+		
+		<form action="" method="post" onsubmit="return confirm('本当に配布しますか？(1)');">
+			<input type="hidden" name="method" value="send_battleevent_grouprankprizes" />
+			<p>
+				<input class="btn" type="submit" value="未受取のグループ別ランキング報酬を配布" />
+			</p>
+		</form>
+		
+		<%
+			btevent_procname = None
+			if battleevent_config['is_opened']:
+				if battleevent_config['is_emergency']:
+					btevent_procname = "aggregate"
+			elif battleevent_config['is_end']:
+				btevent_procname = "close"
+			else:
+				btevent_procname = "preparation"
+		%>
+		%if btevent_procname:
+			<form action="" method="post" onsubmit="return confirm('本当に実行しますか？');">
+				<input type="hidden" name="method" value="${btevent_procname}_battleevent" />
+				<p>
+					%if btevent_procname == "aggregate":
+						<input class="btn" type="submit" value="集計処理開始" />
+					%elif btevent_procname == "preparation":
+						<input class="btn" type="submit" value="開始処理開始" />
+					%elif btevent_procname == "close":
+						<input class="btn" type="submit" value="終了処理開始" />
+					%endif
+				</p>
+			</form>
+		%endif
+		</div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="totallogin_config"><strong>累計ログインボーナス設定</strong>　累計ログインボーナスを設定します</p>
+		<div class="treecontent">
+		<p>
+			現在の設定：<br />
+			<strong>
+				%if totalloginbonus_config.get('current'):
+					<%
+						current = totalloginbonus_config['current']
+					%>
+					${current['name'] | h}(ID:${current['mid']})
+					%if current['is_open']:
+						<span style="color:red;">開催中</span>
+					%else:
+						<span style="color:green;">開催していません</span>
+					%endif
+				%else:
+					<span style="color:green;">開催していません</span>
+				%endif
+				
+				%if totalloginbonus_config.get('next'):
+					<%
+						next = totalloginbonus_config['next']
+					%>
+					<br />
+					${next['stime'] | h}から<br />
+					<span style="color:red;">${next['name'] | h}(ID:${next['mid']})</span>に切替わります
+				%endif
+			</strong>
+		</p>
+		<form action="" method="post">
+			<input type="hidden" name="method" value="set_totalloginbonus_config" />
+			<p>
+				マスター:<br />
+				<select name="_totalloginbonus_mid">
+					<option value="">------</option>
+					% for totalloginbonus in loginbonustimelimitedlist:
+						%if totalloginbonus_config['mid'] == totalloginbonus.id:
+							<option value="${totalloginbonus.id}" selected="selected">${totalloginbonus.name | h}(ID:${totalloginbonus.id})</option>
+						%else:
+							<option value="${totalloginbonus.id}">${totalloginbonus.name | h}(ID:${totalloginbonus.id})</option>
+						%endif
+					% endfor
+				</select>
+			</p>
+			<p><input type="datetime" name="_totalloginbonus_start" value="${totalloginbonus_config['stime']}" />から</p>
+			<p><input type="datetime" name="_totalloginbonus_end" value="${totalloginbonus_config['etime']}" />まで</p>
+			<p style="color:#666;">※日本時間で入力。</p>
+			<p>
+				切り替え予約:<br />
+				<select name="_totalloginbonus_mid_next">
+					<option value="0">------</option>
+					% for totalloginbonus in loginbonustimelimitedlist:
+						%if totalloginbonus_config['mid_next'] == totalloginbonus.id:
+							<option value="${totalloginbonus.id}" selected="selected">${totalloginbonus.name | h}(ID:${totalloginbonus.id})</option>
+						%else:
+							<option value="${totalloginbonus.id}">${totalloginbonus.name | h}(ID:${totalloginbonus.id})</option>
+						%endif
+					% endfor
+				</select>
+			</p>
+			<p>
+				未開催時に連続ログインボーナスを<br />
+				<label>
+					%if totalloginbonus_config['continuity_login']:
+						<input type="radio" name="_continuity_login" style="display: inline;" value="1" checked="checked" />公開する
+					%else:
+						<input type="radio" name="_continuity_login" style="display: inline;" value="1" />公開する
+					%endif
+				</label>
+				<label>
+					%if totalloginbonus_config['continuity_login']:
+						<input type="radio" name="_continuity_login" style="display: inline;" value="0" />公開しない
+					%else:
+						<input type="radio" name="_continuity_login" style="display: inline;" value="0" checked="checked" />公開しない
+					%endif
+				</label>
+			</p>
+			<input class="btn" type="submit" value="変更" />
+		</form>
+		</div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="longlogin_config"><strong>ロングログインボーナス設定</strong>　ロングログインボーナス期間を設定します</p>
+		<div class="treecontent">
+			<p>
+				現在の設定：
+				<strong>
+					%if loginbonustimelimited_config:
+						%for data in loginbonustimelimited_config:
+							<div>
+								${data['name'] | h}(ID:${data['mid']})
+								%if data['is_open']:
+									<span style="color:red;">開催中</span>
+								%else:
+									<span style="color:green;">開催していません</span>
+								%endif
+							</div>
+						%endfor
+					%else:
+						<span style="color:green;">開催していません</span>
+					%endif
+				</strong>
+			</p>
+			<form action="" method="post" id="form_set_loginbonustimelimited_config">
+				<input type="hidden" name="method" value="set_loginbonustimelimited_config" />
+				<input type="hidden" id="loginbonustimelimited_config_cnt" name="cnt_max" value="0" />
+				<p style="color:#666;">※日本時間で入力。</p>
+				<div id="block_set_loginbonustimelimited_config_data">
+				</div>
+				<button class="btn" id="loginbonustimelimited_add">追加</button>
+				<input class="btn" type="submit" value="変更" />
+			</form>
+			<script>
+				(function(){
+					var options_html = '<option value="">------</option>';
+					var midlist = [0];
+					
+					% for loginbonustimelimited in loginbonustimelimitedlist:
+					<%
+						v = "login,{}".format(loginbonustimelimited.id)
+					%>
+					options_html += '<option value="${v}">${loginbonustimelimited.name | h}(ID:${loginbonustimelimited.id})</option>';
+					midlist.push("${v}");
+					% endfor
+					
+					% for loginbonussugoroku in loginbonussugorokulist:
+					<%
+						v = "sugoroku,{}".format(loginbonussugoroku.id)
+					%>
+					options_html += '<option value="${v}">${loginbonussugoroku.name | h}(ID:${loginbonussugoroku.id})[双六]</option>';
+					midlist.push("${v}");
+					% endfor
+					
+					var default_items = [];
+					%for data in loginbonustimelimited_config:
+					default_items.push({ mid:"${"{},{}".format("sugoroku" if data.get('sugoroku') else "login", data['mid'])}", start:"${data['stime']}", end:"${data['etime']}", beginer:"${1 if data['beginer'] else 0}"});
+					%endfor
+					var settings = makeMasterSelectMultiConfigSettings(midlist, options_html);
+					settings.push({
+						type : "checkbox",
+						name : "beginer",
+						postfix : "初心者限定",
+					});
+					initMultiConfig("loginbonustimelimited", settings, default_items);
+				})();
+			</script>
+		</div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="comebackcampaign_config"><strong>カムバックキャンペーン設定</strong>　カムバックキャンペーン期間を設定します</p>
+		<div class="treecontent">
+			<p>
+				現在の設定：
+				<strong>
+					%if comebackcampaign_config:
+						%for data in comebackcampaign_config:
+							<div>
+								${data['name'] | h}(ID:${data['mid']})
+								%if data['is_open']:
+									<span style="color:red;">開催中</span>
+								%else:
+									<span style="color:green;">開催していません</span>
+								%endif
+							</div>
+						%endfor
+					%else:
+						<span style="color:green;">開催していません</span>
+					%endif
+				</strong>
+			</p>
+			<form action="" method="post" id="form_set_comebackcampaign_config">
+				<input type="hidden" name="method" value="set_comebackcampaign_config" />
+				<input type="hidden" id="comebackcampaign_config_cnt" name="cnt_max" value="0" />
+				<p style="color:#666;">※日本時間で入力。</p>
+				<div id="block_set_comebackcampaign_config_data">
+				</div>
+				<button class="btn" id="comebackcampaign_add">追加</button>
+				<input class="btn" type="submit" value="変更" />
+			</form>
+			<script>
+				(function(){
+					var options_html = '<option value="">------</option>';
+					var midlist = [0];
+					
+					% for comebackcampaign in comebackcampaignlist:
+					options_html += '<option value="${comebackcampaign.id}">${comebackcampaign.name | h}(ID:${comebackcampaign.id})</option>';
+					midlist.push(${comebackcampaign.id});
+					% endfor
+					
+					var default_items = [];
+					%for data in comebackcampaign_config:
+					default_items.push({ mid:${data['mid']}, start:"${data['stime']}", end:"${data['etime']}"});
+					%endfor
+					var settings = makeMasterSelectMultiConfigSettings(midlist, options_html);
+					initMultiConfig("comebackcampaign", settings, default_items);
+				})();
+			</script>
+		</div>
+	</div>
+	
+	<div class="well">
+		<p><strong>キャッシュクリア</strong>　キャッシュを全て削除します</p>
+		<form action="" method="post" onsubmit="return confirm('本当に削除しますか？(1)') && confirm('本当に削除しますか？(2)');">
+			<input type="hidden" name="method" value="flush_cache" />
+			<input class="btn" type="submit" value="実行" />
+		</form>
+	</div>
+	
+	<div class="well">
+		<p><strong>セッションクリア</strong>　全ユーザのセッションを全て削除します</p>
+		<form action="" method="post" onsubmit="return confirm('本当に削除しますか？(1)') && confirm('本当に削除しますか？(2)');">
+			<input type="hidden" name="method" value="flush_session" />
+			<input class="btn" type="submit" value="実行" />
+		</form>
+	</div>
+	
+	<div class="well">
+		<p><strong>最後に見たスカウトエリアをクリア</strong>　最後に閲覧したスカウトエリアを削除して実行可能な最新のエリアを開くようにします</p>
+		<form action="" method="post" onsubmit="return confirm('本当に削除しますか？(1)') && confirm('本当に削除しますか？(2)');">
+			<input type="hidden" name="method" value="flush_lastview_area" />
+			<input class="btn" type="submit" value="実行" />
+		</form>
+	</div>
+	
+	<div class="well">
+		<p><strong>検索関係リフレッシュ</strong>　負荷軽減のためのデータを取り直します</p>
+		<form action="" method="post" onsubmit="return confirm('メンテナンスモードにすることをおすすめします。続行しますか？');">
+			<input type="hidden" name="method" value="reflesh_redisdata" />
+			<input class="btn" type="submit" value="実行" />
+		</form>
+	</div>
+	
+	<div class="well">
+		<p><strong>討伐回数リセット</strong>　レイドの討伐回数を全て0にします</p>
+		<form action="" method="post" onsubmit="return confirm('本当に削除しますか？(1)') && confirm('本当に削除しますか？(2)');">
+			<input type="hidden" name="method" value="reset_raiddestroycount" />
+			<input class="btn" type="submit" value="実行" />
+		</form>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="present_once"><strong>プレゼント</strong>　アイテムなどをプレゼントBOXに送ります</p>
+		<%
+			opt_items = [
+				{'name':'_uid', 'type':'text', 'postfix':u'に'},
+			]
+		%>
+		${self.presentForm("send_present", opt_items=opt_items)}
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="present_everyone"><strong>全プレ</strong>　アイテムなどをマイページアクセス時にプレゼントBOXに送ります.色々マスターデータを作成します.</p>
+		<%
+			opt_items = [
+				{'name':'_present_name', 'type':'text', 'prefix':u'名前(管理用)'},
+				{'name':'_date_from', 'type':'text', 'postfix':u'から', 'value':now.strftime("%Y-%m-%d %H:%M")},
+				{'name':'_date_to', 'type':'text', 'postfix':u'まで', 'value':now.strftime("%Y-%m-%d %H:%M")},
+			]
+		%>
+		${self.presentForm("send_presenteveryone", opt_items=opt_items)}
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="save_infomation"><strong>お知らせ設定</strong>　IDを選択すると上書きされます.</p>
+		<div class="treecontent"><p>
+			<form id="form_save_infomation" action="" method="post" onsubmit="return confirm('本当に作成しますか？(1)') && confirm('本当に作成しますか？(2)');">
+				<input type="hidden" name="method" value="save_infomation" />
+				<div>
+					ID:<br />
+					<select name="_mid">
+						<option value="0">新規作成</option>
+						%for infomation in infomationlist:
+							<option value="${infomation.id}">${infomation.id}:${infomation.title | h}</option>
+						%endfor
+					</select>
+				</div>
+				<div>
+					タイトル:<br />
+					<textarea name="_title"></textarea>
+				</div>
+				<div>
+					本文:<br />
+					<textarea name="_body"></textarea>
+				</div>
+				<div>
+					掲載時間(yyyy-mm-dd hh:mm):<br />
+					<input type="text" name="_stime" value="${now.strftime('%Y-%m-%d %H:%M')}" /><!--
+					-->〜<!--
+					--><input type="text" name="_etime" value="${now.strftime('%Y-%m-%d %H:%M')}" />
+				</div>
+				<button onclick="previewInfomation(); return false;" class="btn btn-info">プレビュー</button> <input class="btn" type="submit" value="設定" />
+			</form>
+		</p></div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="messagerequest"><strong>メッセージ送信</strong>　ユーザのDMMマイページにメッセージを送ります.</p>
+		<div class="treecontent"><p>
+			<form action="" method="post" onsubmit="return confirm('本当に送信しますか？(1)') && confirm('本当に送信しますか？(2)');">
+				<input type="hidden" name="method" value="add_messagerequest" />
+				<div>
+					タイトル(全角13文字,半角26文字まで):<br />
+					<textarea name="_title"></textarea>
+				</div>
+				<div>
+					本文(全角50文字,半角100文字まで):<br />
+					<textarea name="_body"></textarea>
+				</div>
+				<div>
+					掲載時間(yyyy-mm-dd hh:mm):<br />
+					<input type="text" name="_stime" value="${now.strftime('%Y-%m-%d %H:%M')}" />
+				</div>
+				<input type="submit" value="設定" class="btn btn-info" />
+			</form>
+			%if messagelist:
+				<div>
+					予約済みのメッセージ<br />
+					<table id="infos" class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>ID</th>
+								<th>タイトル</th>
+								<th>本文</th>
+								<th>送信時間</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for messagedata in messagelist:
+								<tr>
+									<td>
+										${messagedata.id}
+									</td>
+									<td>
+										${messagedata.title | h}
+									</td>
+									<td>
+										${messagedata.body | h}
+									</td>
+									<td>
+										${messagedata.stime.strftime('%Y-%m-%d %H:%M')}
+									</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			%endif
+		</p></div>
+	</div>
+	
+	<div class="well">
+		<p class="treetrigger" id="reset_trade"><strong>秘宝交換のリセット</strong>　秘宝交換の在庫数をリセット.</p>
+		<div class="treecontent">
+			<p>
+				今すぐ:<br />
+				<form action="" method="post" onsubmit="return confirm('本当にリセットしますか？(1)') && confirm('本当にリセットしますか？(2)');">
+					<input type="hidden" name="method" value="reset_tradestock" />
+					<input type="hidden" name="_resettime" value="now" />
+					<input type="submit" value="今すぐリセットする" class="btn btn-info" />
+				</form>
+			</p>
+			<p>
+				予約(現在の設定 ${trade_resettime.resettime.strftime("%Y-%m-%d %H:%M")}):<br />
+				<form action="" method="post" onsubmit="return confirm('本当に設定しますか？(1)') && confirm('本当に設定しますか？(2)');">
+					<input type="hidden" name="method" value="reset_tradestock" />
+					<input type="text" name="_resettime" value="${trade_resettime.resettime.strftime("%Y-%m-%d %H:%M")}" />
+					<input type="submit" value="予約する" class="btn btn-info" />
+				</form>
+			</p>
+		</div>
+	</div>
+	
+	<div class="well">
+		<p><strong>ポップアップの閲覧をリセット</strong></p>
+		<form action="" method="post" onsubmit="return confirm('本当にリセットしますか？(1)') && confirm('本当にリセットしますか？(2)');">
+			<input type="hidden" name="method" value="reset_popuptime" />
+			<input class="btn" type="submit" value="実行" />
+		</form>
+	</div>
+	
+	${self.presentFormContents()}
+</%def>
+
+<%def name="presentForm(processname, opt_items=None)">
+	<div class="treecontent presentform" id="${processname}">
+		<form action="" method="post">
+			<input type="hidden" name="method" value="${processname}" />
+			%if opt_items:
+				%for item in opt_items:
+					<p>
+						%if item.get('prefix', ''):
+							${item.get('prefix', '')}:<br />
+						%endif
+						%if item.get('choices'):
+							<select name="${item['name']}">
+								%for value,text in item['choices']:
+									%if item.get('value') == value:
+										<option value="${value}" selected="selected">${text | h}</option>
+									%else:
+										<option value="${value}">${text | h}</option>
+									%endif
+								%endfor
+							</select>${item.get('postfix', '')}
+						%else:
+							<input type="${item['type']}" name="${item['name']}" value="${item.get('value') or ''}" />${item.get('postfix', '')}
+						%endif
+					</p>
+				%endfor
+			%endif
+			<select id="${processname}_present_type">
+				<option value="presentform_gold">キャバゴールド</option>
+				<option value="presentform_gachapt">引抜Pt</option>
+				<option value="presentform_ticket">チケット</option>
+				<option value="presentform_item">アイテム</option>
+				<option value="presentform_card">カード</option>
+				<option value="presentform_additional_ticket">追加チケット</option>
+				<option value="presentform_prize">報酬</option>
+			</select>
+			<div id="${processname}_presentform">
+			</div>
+			<select id="${processname}_text_type">
+				<option value="_empty">メッセージ無しで</option>
+				<option value="_existing_message">既存のメッセージをつけて</option>
+				<option value="_free_message">自由入力をつけて(注:マスターデータを作成します)</option>
+			</select>
+			<span id="${processname}_textform">
+			</span>
+			<p>
+				<input class="btn" type="submit" value="送信" />
+			</p>
+		</form>
+	</div>
+</%def>
+
+<%def name="presentFormContents()">
+	<div>
+		<div id="presentform_gold" style="display: none;">
+			<input type="hidden" name="_itype" value="${Defines.ItemType.GOLD}" />
+			<input type="hidden" name="_num" value="1" />
+			<p>
+				<input type="text" name="_value" value="1" />PMを
+			</p>
+		</div>
+		<div id="presentform_gachapt" style="display: none;">
+			<input type="hidden" name="_itype" value="${Defines.ItemType.GACHA_PT}" />
+			<input type="hidden" name="_num" value="1" />
+			<p>
+				<input type="text" name="_value" value="1" />Ptを
+			</p>
+		</div>
+		<div id="presentform_ticket" style="display: none;">
+			<input type="hidden" name="_num" value="1" />
+			<p>
+				<select name="_itype">
+					<option value="">------</option>
+					% for key, value in Defines.ItemType.TICKET_ITEM_TYPES.items():
+						<option value="${key}">${value}</option>
+					% endfor
+				</select>を
+			</p>
+			<p>
+				<input type="text" name="_value" value="1" />枚
+			</p>
+		</div>
+		<div id="presentform_item" style="display: none;">
+			<input type="hidden" name="_itype" value="${Defines.ItemType.ITEM}" />
+			<p>
+				<select name="_value">
+					<option value="">------</option>
+					%for item in itemlist:
+						<option value="${item.id}">${item.name | h}(ID:${item.id})</option>
+					%endfor
+				</select>を
+			</p>
+			<p>
+				<input type="text" name="_num" value="1" />個
+			</p>
+		</div>
+		<div id="presentform_card" style="display: none;">
+			<input type="hidden" name="_itype" value="${Defines.ItemType.CARD}" />
+			<p>
+				<select name="_value">
+					<option value="">------</option>
+					%for card in cardlist:
+						<option value="${card.id}">${card.name | h}(ID:${card.id})</option>
+					%endfor
+				</select>を
+			</p>
+			<p>
+				<input type="text" name="_num" value="1" />枚
+			</p>
+		</div>
+		<div id="presentform_additional_ticket" style="display: none;">
+			<input type="hidden" name="_itype" value="${Defines.ItemType.ADDITIONAL_GACHATICKET}" />
+			<p>
+				<select name="_value">
+					<option value="">------</option>
+					%for k,v in Defines.GachaConsumeType.GachaTicketType.NAMES.items():
+						<option value="${k}">${v | h}</option>
+					%endfor
+				</select>を
+			</p>
+			<p>
+				<input type="text" name="_num" value="1" />枚
+			</p>
+		</div>
+		<div id="presentform_prize" style="display: none;">
+			<p>
+				<input type="text" name="_prize_id" value="" /> を
+			</p>
+		</div>
+		<div id="_empty" style="display: none;">
+		</div>
+		<div id="_existing_message" style="display: none;">
+			<select name="_message_id">
+				% for textmaster in textlist:
+					<option value="${textmaster.id}">${textmaster.text[:20]}</option>
+				% endfor
+			</select>
+		</div>
+		<div id="_free_message" style="display: none;">
+			<input type="text" name="_message" value="" />
+		</div>
+	</div>
+</%def>
+
+<%def name="drawEventStageScheduleForm(classname)">
+	<p>
+		ステージ追加スケジュール:<br />
+		<div id="block_set_${classname}_config_data">
+		</div>
+	</p>
+	<input type="hidden" id="${classname}_config_cnt" name="cnt_max" value="0" />
+	<button class="btn" id="${classname}_add">ステージ追加スケジュールを追加</button>
+</%def>
+
+<%def name="drawEventStageScheduleScript(stageschedule, classname)">
+	<script>
+		(function(){
+			var default_items = [];
+			%for data in stageschedule:
+			default_items.push({stage:${data['stage']},start:"${data['time']}"});
+			%endfor
+			var settings = [
+				{
+					type : 'number',
+					name : 'stage',
+					postfix : "以降を"
+				},
+				{
+					type : 'datetime',
+					name : 'start',
+					postfix : "から公開"
+				},
+			];
+			initMultiConfig("${classname}", settings, default_items);
+		})();
+	</script>
+</%def>

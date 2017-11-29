@@ -1,0 +1,48 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms">
+			まずはNO1キャストを決めないとな・・・<br />
+			この店で一緒に働いていたキャストを<br />
+			説得して店に戻ってきてもらおうか。
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="typeinfo(ptype, Defines, banner, leaders, urls)">
+	<%
+		leader = leaders.get(ptype, None)
+	%>
+	<div style="text-align:center;" >
+		<img src="${banner}" width="240px" height="60px" style="margin-bottom:4px;"/>
+		<div class="back_black">
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" style="margin-bottom:4px;"/>
+			<div>
+				%if leader:
+					<div class="yellow">キャストを選ぶ　${leader['name'] | h}</div>
+				%endif
+				<div>
+					<a class="btnlong_p" href="${urls[ptype]}"><div>${Defines.CharacterType.NAMES[ptype] | h}を選ぶ！</div></a>
+				</div>
+			</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		</div>
+	</div>
+	
+</%def>
+
+<%def name="contents()">
+	
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" style=" margin-top:30px; margin-bottom:4px;"/>
+	${self.typeinfo(Defines.CharacterType.TYPE_001, Defines, url_static_img+'tutorial_new/tutorial_01_select_type_banner_01.png', leaders, url_enters)}
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" style=" margin-top:20px; margin-bottom:4px;"/>
+	${self.typeinfo(Defines.CharacterType.TYPE_003, Defines, url_static_img+'tutorial_new/tutorial_01_select_type_banner_03.png', leaders, url_enters)}
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" style=" margin-top:20px; margin-bottom:4px;"/>
+	${self.typeinfo(Defines.CharacterType.TYPE_002, Defines, url_static_img+'tutorial_new/tutorial_01_select_type_banner_02.png', leaders, url_enters)}
+	
+</%def>
+
+<%def name="footer()"></%def>

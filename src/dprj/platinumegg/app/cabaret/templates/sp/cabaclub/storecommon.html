@@ -1,0 +1,255 @@
+#coding:utf-8
+
+<%doc>イベント発生表示</%doc>
+<%def name="drawStoreEventIcon(cabaclubstoreevent, with_storelink, style='text-align:center;')">
+	%if cabaclubstoreevent:
+		<div style="${style}">
+			%if with_storelink:
+				<a href="${get_html_param('url_store', 'sp/cabaclub/eventanim.html', cabaclubstoreevent)}"><!--
+			%else:
+				<!--
+			%endif
+			--><img src="${cabaclubstoreevent['master']['thumb']}" alt="イベント発生有無アイコン" width="37px" height="37px" /><!--
+			%if with_storelink:
+				--></a>
+			%else:
+				-->
+			%endif
+		</div>
+	%endif
+</%def>
+
+<%doc>店舗画像表示</%doc>
+<%def name="drawStoreThumbnail(cabaclubstoremaster, store_state=None, cabaclubstoreevent=None)">
+	<div style="position:relative; background: url(${cabaclubstoremaster['thumb']}) no-repeat; width:272px; height:170px; background-size:272px 170px; -moz-background-size:272px 170px;">
+		<img src="${url_static_img}cb_system/cb_system_rental_branch_00.png" width="272px" alt="店舗画像の枠" style="position:absolute;z-index:0;" />
+		%if store_state == 'opened':
+			<%doc>open画像</%doc>
+			<img src="${url_static_img}cb_system/cb_system_signboard_open.png" width="82px" height="62px" alt="OPEN" style="position:absolute;z-index:2;left:190px;top:104px;" />
+		%elif store_state == 'closed':
+			<%doc>close画像</%doc>
+			<img src="${url_static_img}cb_system/cb_system_signboard_close.png" width="82px" height="62px" alt="CLOSED" style="position:absolute;z-index:2;left:190px;top:104px;" />
+		%endif
+	</div>
+</%def>
+
+<%doc>アイテム残り時間表示</%doc>
+<%def name="drawItemTimeLimitInfo(cabaclubitemdata)">
+	%if cabaclubitemdata:
+		<div style="background-color:#ffff00 ; opacity: 0.70; width:320; color:#000000; text-align:center; line-height:2;"  >
+			<%
+				arr = (
+					
+				)
+				preferential = cabaclubitemdata.get('preferential')
+				barrier = cabaclubitemdata.get('barrier')
+			%>
+			%for key in ('preferential', 'barrier'):
+				<%
+					obj = cabaclubitemdata.get(key)
+				%>
+				%if obj:
+					<%
+						obj_timelimit = obj['timelimit']
+						_hours = obj_timelimit['hours']
+						_minutes = obj_timelimit['minutes']
+						_seconds = obj_timelimit['seconds']
+					%>
+					${obj['master']['name'] | h}：残り<!--
+						%if _hours:
+							-->${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒<!--
+						%else:
+							-->${_minutes}分${'%02d' % _seconds}秒<!--
+						%endif
+					--><br />
+				%endif
+			%endfor
+		</div>
+	%endif
+</%def>
+
+<%doc>カード表示</%doc>
+<%def name="drawCabaClubCardInfo(card, btn_type=None)">
+	<%
+		if btn_type is None:
+			# ボタンがない場合.
+			framename = 'card_frame_06.png'
+			bg_w = '310'
+			bg_h = '153'
+		else:
+			# ボタンがある場合.
+			framename = 'card_frame_02.png'
+			bg_w = '310'
+			bg_h = '193'
+	%>
+	<div>
+		<div style="background: url(${url_static_img}cb_system/cb_system_setting_cast.png) no-repeat; margin-left:auto; margin-right:auto; width:320px; height:64px; background-size:320px 64px; -moz-background-size:320px 64px;">
+			%if card:
+				<table cellpadding="0" cellspacing="0">
+					<tr>
+						<td rowspan="2">
+							<img src="${card['master']['thumbUrl']}" width="52px" height="52px" style="padding:6px 4px;" />
+						</td>
+						<td>
+							<table cellpadding="0" cellspacing="0" style="margin-left:8px;margin-top:4px;">
+								<td style="vertical-align:middle;width:36px;">
+									<img src="${card['master']['iconUrl']}" width="28px" height="28px" />
+								</td>
+								<td style="vertical-align:middle;height:28px;">
+									${card['master']['name'] | h}
+								</td>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td style="vertical-align:top;">
+							<table cellpadding="0" cellspacing="0" style="margin-left:3px;margin-top:8px;font-size:10px;text-align:center;">
+								<tr>
+									<td width="66px">
+										レアリティ
+									</td>
+									<td width="56px">
+										<span style="color:${card['master']['rare_color']}">${card['master']['rare_str'] | h}</span>
+									</td>
+									<td width="6px"></td>
+									<td width="66px">
+										人件費
+									</td>
+									<td width="56px">
+										${card['master']['cost']}
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			%endif
+		</div>
+		%if btn_type == 'add':
+			<div align="center">
+				<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_addmember', 'sp/cabaclub/castselect.html')}"><div>配属する</div></a>
+			</div>
+		%elif btn_type == 'select':
+			<div align="center">
+				<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_selectdo', 'sp/cabaclub/store_closed.html', card)}"><div>配属する</div></a>
+			</div>
+		%elif btn_type == 'change':
+			<table width="220px" style="margin:0px auto;">
+				<tr>
+					<td width="98px">
+						<div>
+							<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_remove', 'sp/cabaclub/store_closed.html', card)}"><div>はずす</div></a>
+						</div>
+					</td>
+					<td width="24px">
+					</td>
+					<td width="98px">
+						<div>
+							<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_change', 'sp/cabaclub/castselect.html', card)}"><div>変更する</div></a>
+						</div>
+					</td>
+				</tr>
+			</table>
+		%elif btn_type == 'remove':
+			<div align="center">
+				<a class="button" style="margin: 4 0 4 0px;" href="${get_html_param('url_remove', 'sp/cabaclub/store_closed.html', card)}"><div>はずす</div></a>
+			</div>
+		%endif
+	</div>
+</%def>
+
+<%doc>4項目フォーム</%doc>
+<%def name="drawCabaClubStatus4Items(title, items)">
+	<div style="background: url(${url_static_img}cb_system/cb_system_status_form_4.png) no-repeat; width:320px; height:142px; background-size:320px 142px; -moz-background-size:320px 142px;">
+		<div style="text-align:center;padding:8px 0px;">
+			${title | h}
+		</div>
+		<div style="margin-top:1px;">
+			%for name, value in items:
+				<div style="padding:5px 0px 5px 21px;line-height:12px;">
+					<div style="display:table-cell;width:134px;height:12px;font-size:12px;text-align:center;">
+						${name | h}
+					</div>
+					<div style="display:table-cell;width:140px;height:12px;text-align:right;font-size:10px;">
+						${value}
+					</div>
+				</div>
+			%endfor
+		</div>
+	</div>
+</%def>
+
+<%doc>3項目フォーム</%doc>
+<%def name="drawCabaClubStatus3Items(title, items)">
+	<div style="background: url(${url_static_img}cb_system/cb_system_status_form_5.png) no-repeat; width:320px; height:118px; background-size:320px 118px; -moz-background-size:320px 118px;">
+		<div style="text-align:center;padding:8px 0px;">
+			${title | h}
+		</div>
+		<div style="margin-top:1px;">
+			%for name, value in items:
+				<div style="padding:5px 0px 5px 21px;line-height:12px;">
+					<div style="display:table-cell;width:134px;height:12px;font-size:12px;text-align:center;">
+						${name | h}
+					</div>
+					<div style="display:table-cell;width:140px;height:12px;text-align:right;font-size:10px;">
+						${value}
+					</div>
+				</div>
+			%endfor
+		</div>
+	</div>
+</%def>
+
+<%doc>店舗の状態</%doc>
+<%def name="drawStoreStatus(cabaclubstore)">
+	<%
+		cabaclubstoremaster = cabaclubstore['master']
+		timelimit = cabaclubstore['rental_timelimit']
+		days = int(timelimit['hours'] / 24)
+		hours = timelimit['hours'] % 24
+		if 0 < days:
+			rental_timelimit_string = '%d日' % days
+		elif 0 < hours:
+			rental_timelimit_string = '%d時間' % hours
+		else:
+			rental_timelimit_string = '%d分%d秒' % (timelimit['minutes'], timelimit['seconds'])
+		status_items = (
+			('レンタル残日数', rental_timelimit_string),
+			('スカウトマン人数', cabaclubstore['scoutman_add'] + cabaclubstoremaster['scoutman_num_max']),
+			('売上', cabaclubstore['proceeds']),
+			('来客数', cabaclubstore['customer']),
+		)
+	%>
+	${self.drawCabaClubStatus4Items(cabaclubstoremaster['name'], status_items)}
+</%def>
+
+<%doc>残り時間表記</%doc>
+<%def name="drawStoreLimitTime(timelimit)"><!--
+	<%
+		days = int(timelimit['hours'] / 24)
+		hours = timelimit['hours'] % 24
+		if 0 < days:
+			rental_timelimit_string = '%d日' % days
+		elif 0 < hours:
+			rental_timelimit_string = '%d時間' % hours
+		else:
+			rental_timelimit_string = '%d分%d秒' % (timelimit['minutes'], timelimit['seconds'])
+	%>
+	-->${rental_timelimit_string | h}<!--
+--></%def>
+
+<%def name="drawCabaClubSkills(cabaclub_skills)">
+<div style="text-align: center; color: orange;">
+	%if cabaclub_skills:
+		%for skill, cnt in cabaclub_skills.items():
+			%if 1 < cnt:
+				${skill}x${cnt}<br/>
+			%else:
+				${skill}<br/>
+			%endif
+		%endfor
+	%else:
+		なし
+	%endif
+</div>
+</%def>

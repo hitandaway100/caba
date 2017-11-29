@@ -1,0 +1,29 @@
+#coding:utf-8
+<%inherit file="present.html" />
+
+<%def name="drawRecievedList()">
+	<div class="titlebar">
+		<p>プレゼント受取</p>
+	</div>
+	%if presentreceivedlist:
+		<div class="wrapper">
+			以下のプレゼントを受け取りました
+		</div>
+		<div class="back_black">
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5"/>
+			<div style="text-align:center;padding: 8px 0px;">
+				% for present in presentreceivedlist:
+					<span class="orange">${present['name'] | h}</span>${present['numtext'] | h}<br />
+				% endfor
+			</div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5"/>
+		</div>
+	% else:
+		<div class="list_not_found" style="margin-top:30px;">
+			受け取れませんでした
+		</div>
+	% endif
+	<div class="titlebar">
+		<p class="caption">プレゼントボックス</p>
+	</div>
+</%def>

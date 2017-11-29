@@ -1,0 +1,127 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<link href="${url_static_css}treasure_list.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="drawTreasureListInfo()">
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<span class="wrapper">宝箱</span>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	% if overlimit:
+		<div class="caution" style="margin-bottom:20px;">
+			所属キャストが上限に達しています<br />
+			上限以下にしてから再度お試しください。<br />
+		</div>
+	% endif
+	
+	<div class="boxtab">
+		<ul class="tabs clearFix" id="tabs">
+			<li id="tab1">
+				<a href="${get_html_param('url_treasure_gold', 'sp/treasure/list.html')}">${Defines.TreasureType.NAMES[Defines.TreasureType.GOLD]}<br />
+				(${treasure_nums.get(Defines.TreasureType.GOLD, 0)}個)</a>
+			</li>
+			<li id="tab2">
+				<a href="${get_html_param('url_treasure_silver', 'sp/treasure/list.html')}">${Defines.TreasureType.NAMES[Defines.TreasureType.SILVER]}<br />
+				(${treasure_nums.get(Defines.TreasureType.SILVER, 0)}個)</a>
+			</li>
+			<li id="tab3">
+				<a href="${get_html_param('url_treasure_bronze', 'sp/treasure/list.html')}">${Defines.TreasureType.NAMES[Defines.TreasureType.BRONZE]}<br />
+				(${treasure_nums.get(Defines.TreasureType.BRONZE, 0)}個)</a>
+			</li>
+		</ul>
+			<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:8px;"/>
+		<script type="text/javascript">
+			topics(${treasure_type}); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+	
+	% if treasurelist:
+		<div class="itembox">
+			%if str_treasure_type and treasurekey.has_key(str_treasure_type) and treasurekey[str_treasure_type].get('num', 0) < 1:
+				<div>
+					<div class="wrapper red">
+						カギがありません
+					</div>
+					<a href="${url_battle}" class="btnlong">カギを手に入れにいく</a>
+				</div>
+			%elif allopendata:
+				<form action="${allopendata['url']}" method="post">
+					<input type="hidden" name="${Defines.URLQUERY_ID}" value="${','.join(allopendata['id'])}" />
+					<div style="text-align:center; margin:8 0 8 0px;">
+						<input type="submit" value="${Defines.TreasureType.NAMES[treasure_type]}を全て開ける" class="sell_on" / >
+					</div>
+				</form>
+			%endif
+			% for index, data in enumerate(treasurelist):
+				% if index > 0:
+					<!-- ↓のラインは最下段には不要-->
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+				% endif
+				<table style="310px;">
+					<td>
+						<img src="${data['view']['thumbUrl'] | h}" width="60" height="60" class="itemimg" style="margin-top:8px;" />
+					</td>
+					<td class="itemtext" style="margin-top:8px;">
+						${data['view']['name'] | h}<br />
+						<span  class="orange">残り時間:</span>${data['timelimit']['hours']}時間${data['timelimit']['minutes']}分${data['timelimit']['seconds']}秒<br />
+					</td>
+				</table>
+				
+				% if is_openable:
+						<div>
+							<a class="button" href="${get_html_param('get_url', 'sp/treasure/opend.html', data)}"><div>宝箱を開ける</div></a>
+						</div>
+				% endif
+			% endfor
+		</div>
+	% else:
+		<div class="list_not_found">
+			${treasure_name}を持っていません
+		</div>
+	% endif
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		${treasure_name}の中身
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<%doc>
+	<div class="topcap">
+		2月22日のメンテナンスで<br />
+		宝箱の中身を変更します
+	</div>
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5"/>
+	</%doc>
+	
+	<div class="itembox" style="margin-top:1px;">
+		% for index, data in enumerate(treasure_item_list):
+			% if index > 0:
+				<!-- ↓のラインは最下段には不要-->
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			% endif
+			<table style="310px;">
+				<td>
+					<img src="${data['item']['thumbUrl']}" width="60" height="60" class="itemimg" style="margin-top:8px; margin-bottom:7px;"/>
+				</td>
+				<td class="itemtext" style="margin-top:8px;">
+					${data['item']['name'] | h}
+					%if data['item']['rareData']:
+						(<span style="color:${data['item']['rareData']['color']}">${data['item']['rareData']['text'] | h}</span>)
+					%endif
+					<br />
+					%if data['numtext']:
+						${data['numtext'] | h}<br />
+					%endif
+					%if data['item']['statusText']:
+						${data['item']['statusText'] | h}<br />
+					%endif
+				</td>
+			</table>
+		% endfor
+	</div>
+</%def>

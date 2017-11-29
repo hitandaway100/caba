@@ -1,0 +1,253 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="contents()">
+	${self.topheader()}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		${self.event_schedule()}
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div> 
+		${self.eventtopic()}
+	</div>
+	
+	<img src="${url_static_img}event/btevent/${battleevent['codename']}/${battleevent['codename']}_sp_rule.png" width="320" height="auto" style="margin-bottom:10px;"/>
+
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			イベントの流れ
+		</div>
+	</div>
+	<img src="${url_static_img}event/btevent/${battleevent['codename']}/${battleevent['codename']}_rule.png" width="320" height="auto" style="padding-bottom:10px;"/>
+	
+	%if is_opened:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				期間限定ガチャ
+			</div>
+		</div>
+		<div class="topcap">
+			イベント限定のキャストをゲットしよう!!
+		</div>
+		<div style="text-align: center; padding-bottom:10px;">
+			<a href="${get_html_param('url_battleevent_gacha', 'sp/gacha/gacha_premium.html')}"><!--
+				--><img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_gacha_banner.png" width="240" height="auto"/><!--
+			--></a>
+		</div>
+	%endif
+	
+	<div style="padding-top:10px;">
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="「${battleevent['subname'] | h}」とは?" class="help_btn" style="font-size: 13px;"/>
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・毎日LVが近いユーザー同士でグループを組み、グループ内でその日の獲得バトルPTを競います。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・1日の獲得バトルPTでグループ内順位が決まりその順位により翌日のランクが変動します。<br />
+					また、１日のバトルPTのグループランキングに応じて、毎日報酬を獲得する事ができます。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・獲得したバトルPT数に応じてイベント全体のランキングが決定します。
+				</div>
+				<br />
+			</div>
+		</div>
+		
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="バトルPTとは?" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベントページのイベントバトルから他ユーザーとバトルをすることで獲得できます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベントバトル以外で獲得することはできません。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・バトル勝利時には100PTを獲得できます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・バトル敗北時には10PTを獲得できます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・他ユーザーから挑まれたバトルに勝利すると50PTを獲得できます。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・相手デッキの総接客力で獲得ptが変動します。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・自分のデッキの総接客力は獲得ptに関わりません。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・ボーナスを駆使して強い相手を打ち倒し、獲得ptを稼いでください。
+				</div>
+				<br />
+			</div>
+		</div>
+
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="ピースとは?" class="help_btn"/>
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・バトルで他ユーザーに勝利する事で、ドロップする事のあるイベント専用アイテムとなります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・同じキャストのピースを9枚集める事で、そのキャストが手に入ります。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・ピースのドロップ率は連勝する事で上昇していきます。※上昇率には上限がございます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・ライバルとのバトルに勝利した場合、連勝とは別にそのバトルでのドロップ率が上昇します。
+				</div>
+				<br />
+			</div>
+		</div>
+
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="ランクを上げるには？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・毎日各ランクの順位によって翌日のランクが決まります。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・ランクは上がるだけではなく順位によっては下がることもあります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・各ランクによってグループの参加人数が変動します。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・グループ内ランキングの集計はAM1:00が締切です。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・グループ作成後のAM4:00から当日分の集計が始まります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベント初日は全ユーザーが「無名の店」からスタートします。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・翌日以降のイベント新規参加ユーザーは「普通の店」からのスタートになります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・キャバ王ランクのユーザーには毎日イベントに参加する度にレア以上チケットと10000CGが配布されます。
+				</div>
+				<hr />
+				・ランク一覧<br />
+				<div style="position:relative;text-align:left;">
+					<div style="padding-left:4em;position:relative;z-index:0;">
+						キャバ王<br />
+						超人気店<br />
+						有名店<br />
+						普通の店<br />
+						無名の店<br />
+					</div>
+					<div style="padding-left:1em;position:absolute;z-index:1;top:0;">
+						高<br />
+						↑<br />
+						<br />
+						<br />
+						低
+					</div>
+				</div>
+				<br />
+			</div>
+		</div>
+		
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="属性ボーナスとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベントバトル限定で特定の属性に接客力ボーナスが付きます。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・ボーナスの倍率はレア度とハメ管理Lvによって変わります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・属性ボーナスとは別に、イベント限定でボーナスの入る特効カードがあります。<br />
+					そちらの詳細に関しては、「特効キャスト」ページをご覧下さい。
+				</div>
+				<br />
+			</div>
+		</div>
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="獲得PTボーナスとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・特効カードがデッキ内に入っていると、バトル勝利時のバトルPT獲得量にボーナスが加わります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・各レアリティ、各ハメ管理度毎の詳細な上昇値は「特効キャスト」ページをご確認ください。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・特効キャストは各キャスト毎に1枚のみしか効果を発揮しません。ご了承ください。
+				</div>
+				<br />
+			</div>
+		</div>
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="特効バトルチケットボーナスとは？" class="help_btn"/>
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・特効カードがデッキ内に入っていると、バトル勝利時、敗北時のバトルチケット獲得量にボーナスが加わります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・各レアリティ、各ハメ管理度毎の詳細な上昇値は「特効キャスト」ページをご確認ください。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・特効キャストは各キャスト毎に1枚のみしか効果を発揮しません。ご了承ください。
+				</div>
+				<br />
+			</div>
+		</div>
+	</div>
+	<div class="topcap">
+		※同名の特効キャストの効果は<br>
+		重複してかかりません
+	</div>
+	
+	${self.eventfooter()}
+
+</%def>

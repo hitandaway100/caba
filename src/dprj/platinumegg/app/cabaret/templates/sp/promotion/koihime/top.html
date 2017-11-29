@@ -1,0 +1,62 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+	<script type="text/javascript">
+		function onClickBanner(){
+			to_top("${get_html_param('url_promotion_app', '')}");
+		}
+	</script>
+</%def>
+
+<%def name="contents()">
+	<img src="${url_static_img}event/crosspromo/01/crosspromo_title.png" width="320px" height="51px" />
+	<div>
+		<img src="${url_static_img}event/crosspromo/01/cross_promo_01_hdr_640_264.png" width="320" height="132"/>
+	</div>
+	<div class="topcap">
+		<a class="btnpink" href="${get_html_param('url_promotion_prizelist', 'sp/promotion/koihime/prizelist.html')}" style="margin-bottom:2px;"><p>報酬をチェック!</p></a>
+		ここでしか手に入らない限定報酬を確認!
+	</div>
+
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div class="wrapper" style="margin-bottom: 8px;">
+		<a href="javascript:void(0);" onclick="onClickBanner()">
+			<img src="${url_static_img}banner/event/crosspromo/01/koihime_480_140.png" width="240" height="70"/>
+		</a>
+		<div style="line-height:1.2;">
+			<span class="yellow" style="font-size:13;">↑【恋姫†夢想三国コレクション】へはこちらから!↑</span>
+		</div>
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">クロスプロモーション内容をチェック!</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div style="margin-top:4px;">
+		<img src="${url_static_img}event/crosspromo/01/cross_promo_01_640_620.png" width="320" height="310"/>
+	</div>
+	
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div class="wrapper" style="margin-bottom: 8px;">
+		<a href="javascript:void(0);" onclick="onClickBanner()">
+			<img src="${url_static_img}banner/event/crosspromo/01/koihime_480_140.png" width="240" height="70"/>
+		</a>
+		<div class="yellow" style="line-height:1.2;">
+			↑↑【恋姫†夢想三国コレクション】に↑↑<br />
+			今すぐ遊びにいこう!
+		</div>
+	</div>
+	
+	<div style="padding: 8px 0;text-align:center;">
+		<div style="display:inline-block;width:120px;">
+			<a class="button" href="${get_html_param('url_mypage', 'sp/mypage.html')}" style="margin:auto;">マイページへ</a>
+		</div>
+		<div style="display:inline-block;width:120px;">
+			<a class="button" href="${get_html_param('url_promotion_prizelist', 'sp/promotion/koihime/prizelist.html')}" style="margin:auto;">報酬確認へ</a>
+		</div>
+	</div>
+</%def>

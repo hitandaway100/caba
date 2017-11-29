@@ -1,0 +1,68 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	${self.happeningtop()}
+	${self.discoverer()}
+	
+	<div>
+		<a class="btnlong" href="${get_html_param('url_scout_top', 'sp/scout/scout.html')}"><div>スカウトへ</div></a>
+	</div>
+	
+	<div>
+		<a class="btnlong" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><div>秘宝を交換する</div></a>
+	</div>
+	
+	${self.eventbonus()}
+	
+	%if url_raidevent_prizereceive:
+		<div>
+			<a class="btnpinkbig" href="${get_html_param('url_raidevent_prizereceive', 'sp/raidevent/prizeget.html')}">
+				<div style="text-align : center; font-size: large; color:#FFFFFF; margin-top:4px; line-height: 1; font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif'; text-decoration:none; font-weight: bold; text-shadow: 0px -1px 0px #260b34, 2px  0px 0px #260b34, 0px  2px 0px #260b34, -1px  0px 0px #260b34;">
+					接客成功回数報酬を<br />
+					受け取れます
+				</div>
+			</a>
+		</div>
+	%endif
+	
+	%if cardlist:
+		<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img, skilllist=skilllist, helpplayerlist=playerlist" />
+	%endif
+	
+	%if next_prizeinfo:
+		<%doc>次の報酬(dummy)</%doc>
+		<div style="text-align:center;margin:4 0 4 0;">
+			あと<span class="yellow">${next_prizeinfo['rest']}回</span>接客成功で<br />
+			<span class="yellow">${next_prizeinfo['info']['listitem_list'][0]['text'] | h}</span>を<br />
+			獲得できます
+		</div>
+	%endif
+	
+	${self.mvpuser()}
+	${self.helpuser()}
+	${self.eventfooter()}
+</%def>
+
+<%def name="happeningtop()">
+	<img src="${url_static_img}11/tutorial_win.png" width="320px" height="60px" />
+	<div class="scouttop">
+		<div class="scoutpic" style="position: absolute; z-index:0; top:0;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic" style="position: relative; z-index:1;">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">${happening['raid']['name'] | h}Lv${happening['raid']['level']}来店</span>
+		</div>
+		<div class="scouttime" style="top:136;">
+			<%include file="../includes/inc_tutorialsatisfaction.html" args="hp=happening['raid']['hp'],hpmax=happening['raid']['hpmax'],damage=damage,specialcard_powup=specialcard_powup" />
+		</div>
+		<div class="boss_coment" style="margin-bottom:8;">
+			<div class="coment_text">
+				${happening['raid']['commentwin'] | h}
+			</div>
+		</div>
+	</div>
+</%def>

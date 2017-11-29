@@ -1,0 +1,269 @@
+#coding:utf-8
+<html>
+<head>
+	<title>${apptitle}</title>
+	<link href="${url_static_css}base.css" rel="stylesheet" type="text/css" />
+	<%include file="../pc/_styles/commonCss.html" />
+	%if cookie:
+		<script>
+			document.cookie="${cookie}";
+		</script>
+	%endif
+</head>
+<body>
+	<div id="CabaretQuest">
+		## CONTENT
+		<h1>PC版テンプレート一覧</h1>
+		<div style="overflow:scroll;width: 100%; height: 80%;background-color:#ffffff;font-size:15px;padding: 30px 0;">
+<p>
+	<a href="${get_html_param('', 'pc/top.html')}">00-01　トップページ</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/mypage.html')}">00-02　マイページ</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/present.html')}">00-03　プレゼント受け取り</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/presentrecieve.html')}">00-04　プレゼント受け取り完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/information.html')}">00-05　お知らせ一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/infordetail.html')}">00-06　お知らせ詳細</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend.html')}">00-07　フレンドの近況一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/playerlog.html')}">00-08　行動履歴一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/greeting.html')}">00-09　あいさつ履歴一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/profile.html')}">00-10　プロフィールページ</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/greetingcomp.html')}">00-11　挨拶完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/scout/scout.html')}">01-01　スカウトTOP</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/scout/cardget.html')}">01-02　カード獲得完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/scout/trophiget.html')}">01-03　トロフィー獲得完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/scout/happening.html')}">01-04　ハプニング発生(詳細)</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/scout/levelup.html')}">01-05　レベルアップ完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/scout/apnone.html')}">01-06　スカウト行動力不足</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/boss/bosspre.html')}">01-20　ボス戦確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/boss/bosswin.html')}">01-21　ボス戦勝利</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/boss/bosslose.html')}">01-22　ボス戦敗北</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/happening.html')}">01-30　ハプニングTOP</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/itemget.html')}">01-31　アイテム獲得結果</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/apnone.html')}">01-32　ハプニング行動力不足</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/bosswin.html')}">01-33　ハプニングボス勝利</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/prizeget.html')}">01-34　ハプニング戦利品獲得</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/bosslose.html')}">01-35　ハプニングボス敗北</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/failed.html')}">01-36　ハプニング失敗</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/cancelyesno.html')}">01-37　ハプニング諦める確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/happening/bossappear.html')}">01-38　ハプニングボス登場</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/battle/battle.html')}">02-01　バトルTOP</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/battle/battleselect.html')}">02-02　バトル確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/battle/battlewin.html')}">02-03　戦闘結果（勝利）</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/battle/battlelose.html')}">02-04　戦闘結果（敗北）</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/battle/rival.html')}">02-05　ライバルから探す</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/battle/revenge.html')}">02-06　リベンジしたい相手から探す</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/trophy/trophylist.html')}">02-07　トロフィー一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/trophy/trophyseries.html')}">02-08　トロフィーカラー選択</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/trophy/trophy.html')}">02-09　トロフィー詳細</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/trophy/trapyesno.html')}">02-10　罠設置確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/trophy/trapcomplete.html')}">02-11　罠設置完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/composition/baseselect.html')}">03-01　強化合成ベース選択</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/composition/materialselect.html')}">03-02　強化合成素材選択</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/composition/yesno.html')}">03-03　強化合成確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/composition/complete.html')}">03-04　強化合成完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/evolution/baseselect.html')}">03-10　進化合成ベース選択</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/evolution/materialselect.html')}">03-11　進化合成素材選択</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/evolution/yesno.html')}">03-12　進化合成確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/evolution/complete.html')}">03-13　進化合成完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/card/cardbox.html')}">04-01　カードBOX</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/card/sell.html')}">04-02　カード売却</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/card/sellyesno.html')}">04-03　カード売却確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/card/sellcomplete.html')}">04-04　カード売却完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/card/carddetail.html')}">04-20　カード詳細</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/deck/deck.html')}">05-01　デッキ編成</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/deck/member.html')}">05-02　追加カードの選択</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/album/album.html')}">06-01　アルバム</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/album/detail.html')}">06-02　カード詳細(アルバム)</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/album/memories.html')}">06-03　思い出アルバム閲覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/gacha/gacha.html')}">07-01　引き抜きTOP</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/gacha/result.html')}">07-03　ガチャ結果</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/friend.html')}">08-01　仲間TOP</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/search.html')}">08-02　仲間申請相手検索</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/sendyesno.html')}">08-03　仲間申請確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/sendcomplete.html')}">08-04　仲間申請完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/packsendcomp.html')}">08-05　一括仲間申請完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/requestlist.html')}">08-06　仲間申請中一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/requestcancel.html')}">08-07　仲間申請取り消し</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/requestcancelcomplete.html')}">08-08　仲間申請取り消し完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/receivelist.html')}">08-09　仲間承認待ち一覧</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/acceptyesno.html')}">08-10　仲間承認待ち承認確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/acceptcomplete.html')}">08-11　仲間承認待ち承認結果</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/vetoyesno.html')}">08-12　仲間承認待ち拒否確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/vetocomplete.html')}">08-13　仲間承認待ち拒否結果</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/removeyesno.html')}">08-14　仲間から外す確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/friend/removecomplete.html')}">08-15　仲間から外す完了</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/shop/shop.html')}">09-01　ショップ</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/shop/buyresult.html')}">09-03　購入結果</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/item/itemlist.html')}">11-01　持ち物</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/item/use.html')}">11-02　持ち物使用確認</a>
+</p>
+<p>
+	<a href="${get_html_param('', 'pc/item/usecomplete.html')}">11-03　持ち物使用結果</a>
+</p>
+
+		</div>
+	</div>
+	<div>
+		% if dbg_print_log is not UNDEFINED:
+			<div>
+				${dbg_print_log}
+			</div>
+		%endif
+	</div>
+</body>
+</html>

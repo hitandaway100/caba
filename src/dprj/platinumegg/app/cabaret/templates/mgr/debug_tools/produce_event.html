@@ -1,0 +1,111 @@
+<%namespace name='lib' file='functions.html' />
+
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>プロデュースキャスト、パラメータ変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_produceeventscore" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_target">
+            <option value="level">教育レベル</option>
+            <option value="heart">ハート</option>
+            <option value="cast_order">何番目のキャストを育成中</option>
+          </select>
+        </p>
+        <p>
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>シナリオ閲覧フラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_produceevent_opening" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+              <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectProduceEvent()}
+        <p>
+          オープニング:<br />
+          <select name="_flag_op">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          エピローグ:<br />
+          <select name="_flag_ep">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>プロデュースイベントステージ情報変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_produceeventstage" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_target">
+            <option value="stage">現在ステージ</option>
+            <option value="progress">ポチポチ回数</option>
+          </select>
+        </p>
+        <p>
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>クローズ時の処理を実行(専用アイテム交換と、ランキング報酬の配布).<br>
+      イベントを終了してメンテナンスモードにしてから実行してください</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="exec_close_produceevent" />
+        <p>
+          <input class="btn" type="submit" value="実行" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>
+
+<%def name="drawSelectProduceEvent(name='_mid', label=None)">
+  ${lib.drawSelectEvent(cur_produceevent, produceevent, name=name, label=label)}
+</%def>

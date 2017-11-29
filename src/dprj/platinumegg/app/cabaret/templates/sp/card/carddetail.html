@@ -1,0 +1,82 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+%if Defines.Rarity.RARE <= card['master']['rare']:
+	<%def name="head()">
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${card['master']['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	</%def>
+%endif
+
+<%def name="contents()">
+	<div class="titlesub2">
+		<div class="wrapper">キャスト詳細
+		</div>
+	</div>
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px" />
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	%if Defines.Rarity.RARE <= card['master']['rare']:
+		<canvas id="kiraCardCanvas" width="320" height="400">
+		</canvas>
+	%else:
+		<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" />
+	%endif
+	
+	<%include file="../includes/carddetail.html" args="card=card, url_static_img=url_static_img, test_skill=True"/>
+	
+	%if card['master']['kind'] == Defines.CardKind.NORMAL:
+		%if card['is_can_composition']:
+			<div>
+				<a class="btnpink" style="margin-top:8px;" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', card)}"><p class="caption">教育する</p></a>
+			</div>
+		%else:
+			<div class="wrapper red">
+				これ以上教育できません
+			</div>
+		%endif
+		%if is_stockable:
+			%if is_stock_overlimit:
+				<div class="caution red">
+					異動上限に達しています
+				</div>
+			%else:
+				<div>
+					<a class="btnpink" href="${get_html_param('url_transfer', 'sp/card/transferyesno.html', card)}"><p class="caption">異動させる</p></a>
+				</div>
+			%endif
+		%endif
+		<div>
+			<a class="btnpink" href="${get_html_param('master.url_album', 'sp/album/detail.html', card)}"><p class="caption">思い出部屋を覗く</p></a>
+		</div>
+		<div>
+			<a class="btnlong" href="${get_html_param('url_deck', 'sp/deck/deck.html', card)}"><div>出勤キャスト編成へ</div></a>
+		</div>
+	%endif
+	
+	%if not (card['deckmember'] or card['protection']):
+		<div>
+			<a class="btnlong" href="${get_html_param('url_sell', 'sp/card/sellyesno.html', card)}"><div>退店させる</div></a>
+		</div>
+	%endif
+
+	<div class="link_arrow_re">
+		%if url_back:
+			<a class="btnfoot" href="${get_html_param('url_back', 'sp/card/cardbox.html')}"><span style="margin-left:14px;">戻る</span></a>
+		%else:
+			<a class="btnfoot" href="javascript:void();" onclick="history.go(-1);"><span style="margin-left:14px;">戻る</span></a>
+		%endif
+	</div>
+	
+</%def>

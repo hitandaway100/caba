@@ -1,0 +1,70 @@
+#coding:utf-8
+<%inherit file="treasurebase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">宝箱一覧</p>
+	</div>
+	<div class="back_black">	
+		<img src="${url_static_img}12/id_12_02/banner12_02_01.png" width="320" height="100" />
+	
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">獲得アイテム</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5"/>
+		
+		%for treasure_get_data in treasure_get_data_list:
+			<div class="itembox" style="margin-top:8px;">
+				<table style="310px;">
+					<td>
+						<img src="${treasure_get_data['item']['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${treasure_get_data['item']['name'] | h}<br />
+						${treasure_get_data['num']}${treasure_get_data['item']['unit'] | h}<br />
+					</td>
+				</table>
+					<div style="clear:both;">
+				</div>
+			</div>
+		%endfor
+		
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5"/>
+		
+		<div>
+			<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_present', 'sp/present.html')}"><div>プレゼントを確認</div></a>
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">カギ</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+		<table style="margin:auto; width:300px;">
+			<tr>
+				<td>
+					<img src="${treasurekey['gold']['thumbUrl']}" width="60" height="60"/>
+				</td>
+				<td style="font-size:12px;">
+					${treasurekey['gold']['name']}<br/>
+					${treasurekey['gold']['num']}${treasurekey['gold']['unit']}
+				</td>
+				<td>
+					<img src="${treasurekey['silver']['thumbUrl']}" width="60" height="60"/>
+				</td>
+				<td style="font-size:12px;">
+					${treasurekey['silver']['name']}<br />
+					${treasurekey['silver']['num']}${treasurekey['silver']['unit']}
+				</td>
+			</tr>
+		</table>
+		
+		<div class="back_black">
+			${self.drawTreasureListInfo()}
+			
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="${get_html_param('url_treasurelist', 'sp/treasure/list.html')}"><span style="margin-left:14px;">宝箱一覧</span></a>
+			</div>
+		</div>
+	</div>
+</%def>

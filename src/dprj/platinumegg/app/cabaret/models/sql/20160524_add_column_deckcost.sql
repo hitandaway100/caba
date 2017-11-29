@@ -1,0 +1,1 @@
+ALTER TABLE cabaret_playerdeck ADD COLUMN deckcost INT(10) DEFAULT 0 NOT NULL;

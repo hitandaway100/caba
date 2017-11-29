@@ -1,0 +1,34 @@
+#coding:utf-8
+<%inherit file="listbase.html" />
+
+<%def name="drawtitle()">フレンド</%def>
+
+<%def name="drawtitlesub()">${player['person']['nickname'] | h}さんのフレンド</%def>
+
+<%def name="setdefaulttopic()">
+	<script type="text/javascript">
+		topics(2); //タブボックス用の関数の呼び出し
+	</script>
+</%def>
+
+<%def name="drawplayerinfo(targetplayer)">
+	<section class="basicinfo">
+		<div class="basictop_s">
+		</div>
+		<div class="basicBack">
+			${self.playerinfo(player=targetplayer)}
+			<div >
+				<a class="button" style="font-size:13px; line-height: 2.2;" href="${get_html_param('url_friendrequest_cancel', 'sp/friend/requestcancel.html',targetplayer)}"><div>申請を取り消す</div></a>
+			</div>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">
+		</div>
+	</section>
+</%def>
+
+<%def name="drawNotFoundText()">
+	フレンド申請はありません
+</%def>

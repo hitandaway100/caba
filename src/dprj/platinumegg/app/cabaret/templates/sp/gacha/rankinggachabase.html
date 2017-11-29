@@ -1,0 +1,79 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="head()">
+	%if rankinggacha['appeal']:
+		<link href="${url_static_css}ev_slider.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+		<script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+		<script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+	%endif
+</%def>
+
+<%def name="rankinggachaslide()">
+	%if rankinggacha['appeal']:
+		<div class="flexslider">
+			<ul class="slides">
+				%for img in rankinggacha['appeal']:
+					<li>
+						<img src="${img}" width="320" height="380"/>
+					</li>
+				%endfor
+			</ul>
+		</div>
+	%endif
+</%def>
+
+<%def name="rankinggachfooter()">
+	%if is_opened:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				期間限定同伴ガチャ
+			</div>
+		</div>
+		<div class="topcap">
+			獲得キャストでランキングを競え！
+		</div>
+		<div style="text-align: center; padding-bottom:10px;">
+			<a href="${get_html_param('url_gacha_ranking', 'sp/gacha/gacha_ranking.html')}"><!--
+				--><img src="${gacha['banner']}" width="320" height="auto" /><!--
+			--></a>
+		</div>
+	%endif
+</%def>
+
+<%def name="drawRankingPrizeTabs(is_whole=False)">
+	%if rankinggacha['is_support_wholepoint'] or (same_rankingmaster_linklist and 1 < len(same_rankingmaster_linklist)):
+		<div align="center" style="background-color: #8D35B8; width:310px; border-radius: 3px; line-height:2; margin-top:0px; margin-left:5px;"><!--
+			%if same_rankingmaster_linklist:
+				%for idx,data in enumerate(same_rankingmaster_linklist):
+					%if 0 < idx:
+						%if idx % 2 == 0:
+							--><br /><!--
+						%else:
+							-->|<!--
+						%endif
+					%endif
+					%if data['boxid'] == rankinggacha['boxid']:
+						-->${data['name'] | h}<!--
+					%else:
+						--><a href="${get_html_param('url', 'sp/gacha/rankbonus.html', data)}" style="color: #FFff00;">${data['name'] | h}</a><!--
+					%endif
+				%endfor
+			%endif
+			%if rankinggacha['is_support_wholepoint']:
+				%if same_rankingmaster_linklist:
+					--><br /><!--
+				%endif
+				%if is_whole:
+					--><a href="${get_html_param('url_rankprize', 'sp/gacha/rankbonus.html', rankinggacha)}" style="color: #FFff00;">ランキング報酬</a><!--
+					-->|<!--
+					-->総同伴Pt達成報酬<!--
+				%else:
+					-->ランキング報酬<!--
+					-->|<!--
+					--><a href="${get_html_param('url_wholeprize', 'sp/gacha/rankbonus.html', rankinggacha)}" style="color: #FFff00;">総同伴Pt達成報酬</a><!--
+				%endif
+			%endif
+		--></div>
+	%endif
+</%def>

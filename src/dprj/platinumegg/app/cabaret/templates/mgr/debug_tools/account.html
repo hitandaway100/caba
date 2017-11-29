@@ -1,0 +1,46 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>ユーザー作成</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="create_player" />
+        <p>
+          <label>
+            DMMのテストアカウントID:<br />
+            <input type="text" name="_dmmid" />
+          </label>
+        </p>
+        <p>
+          <label>
+            タイプ:<br />
+            <select name="_ctype">
+              %for typevalue,typename in ctype:
+              <option value="${typevalue}">${typename | h}</option>
+              %endfor
+            </select>
+          </label>
+        </p>
+        <input class="btn" type="submit" value="作成" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p>
+        <strong>プレイヤー削除</strong>　プレイヤーを削除します
+      </p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="delete_player" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>を
+        </p>
+        <input class="btn btn-danger" type="submit" value="削除" onclick="return confirm('本当に削除しますか？')" />
+      </form>
+    </div>
+  </li>
+</ul>

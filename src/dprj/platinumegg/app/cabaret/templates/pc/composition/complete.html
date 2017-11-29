@@ -1,0 +1,16 @@
+#coding:utf-8
+<%inherit file="../../sp/composition/complete.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+	<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+	<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			kiraCardEffect("${basecard_post['master']['thumbnail']['large']}", "${url_static_img}");
+		});
+	</script>
+	<script type="text/javascript">
+		parent.getStatus();
+	</script>
+</%def>

@@ -1,0 +1,110 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<style>
+	.xm_tree{
+		position:relative;
+		width: 320px;
+		height: 320px;
+		background: url(${url_static_img}event/btevent/${battleevent['codename']}/${battleevent['codename']}_tree.png) no-repeat;
+		background-size:320px 320px;
+	}
+	
+	.tree_text{
+		width:126px;
+		position:absolute;
+		background-color: rgba(0,0,0,0.5);
+		border:ridge;
+		border-color:#EECC00;
+		text-align:center;
+		font-size: 12px;
+		top:8px;
+		left:184px;
+	}
+	.xm_present{
+		width:102px;
+		height:280px;
+		position:absolute;
+		top:40px;
+		left: 109px;
+	}
+	</style>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p>贈り物確認</p>
+	</div>
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>	
+	<div class="xm_tree">
+		<div class="tree_text">
+			現在の満足度<br />
+			${battleeventpresent['point']}/${battleeventpresent['point_max']}Pt
+		</div>
+		<div class="xm_present">
+			<img src="${battleeventpresent['thumb']}" width="102px" height="280px"/>
+		</div>
+	</div>
+	
+	<%doc>贈り物を受け取る場合
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="topcap">
+		受け取っていない贈り物は<br />ありません
+	</div>
+	</%doc>
+	
+	%if prize:
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="topcap">
+			以下の贈り物を<br />プレゼントボックスに送りました
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+		<table style="margin-left:8px; width:300px; height:90px;">
+			%for prizeitem in prize['listitem_list']:
+			<tr>
+				<td  width="70">
+					<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td>
+					<div class="itemtext">
+						%if prizeitem['icon']:
+							<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+						%else:
+							<span><!--
+						%endif
+						-->${prizeitem['name'] | h}<!--
+						%if prizeitem['rare'] is not None:
+							-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+						%endif
+						-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+					</div>
+				</td>
+			</tr>
+			%endfor
+		</table>
+	%endif
+	
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div>
+		<a class="btnpink" href="${get_html_param('url_battleevent_presentlist', 'sp/btevent/presentlist.html')}"><p class="caption">贈り物内容確認</p></a>
+	</div>
+	
+	<img src="${url_static_img}event/btevent/${battleevent['codename']}/${battleevent['codename']}_sp_rule.png" width="320px" height="auto"/>
+	
+	<div class="wrapper">
+		<a href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}">
+			<img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_banner.png" width="240" height="auto"/>
+		</a>
+	</div>
+	%if battleevent['is_battle_opened']:
+		<div style="padding-bottom:20px;">
+			<a class="btnpink" href="${get_html_param('url_battleevent_opplist', 'sp/btevent/battletop.html')}"><p class="caption">バトル相手を探す</p></a>
+		</div>
+	%endif
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+</%def>

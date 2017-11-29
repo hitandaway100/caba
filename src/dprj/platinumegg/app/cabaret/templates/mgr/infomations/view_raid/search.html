@@ -1,0 +1,95 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>レイド情報</h1>
+	</div>
+	<div class="well">
+		<div>
+			<h3>アプリ内ユーザIDから</h3>
+			<form action="${url_view_raid}" method="post">
+				<select name="_serchtype">
+					%if serchtype == 'uid':
+						<option value="dmmid">DMMIDから</option>
+						<option value="uid" selected="selected">アプリ内ユーザIDから</option>
+					%else:
+						<option value="dmmid">DMMIDから</option>
+						<option value="uid">アプリ内ユーザIDから</option>
+					%endif
+				</select>
+				<div>
+					ID:<br />
+					<input type="text" name="_value" value="${value or ''}" />
+				</div>
+				<div>
+					状態:<br />
+					<select name="_state">
+						%for st,name in HappeningState.MGR_NAMES.items():
+							%if state == st:
+								<option value="${st}" selected="selected">${name | h}</option>
+							%else:
+								<option value="${st}">${name | h}</option>
+							%endif
+						%endfor
+					</select>
+				</div>
+				<input type="submit" class="btn btn-primary" value="検索" />
+			</form>
+		</div>
+	</div>
+	%if raidlist:
+		<%include file='../../inc_pagination.html' />
+		
+		<div class="well">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							ID
+						</th>
+						<th>
+							ボス
+						</th>
+						<th>
+							レベル
+						</th>
+						<th>
+							発生時間
+						</th>
+						<th>
+							詳細
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					%for raid in raidlist:
+						<tr>
+							<td>
+								${raid['id']}
+							</td>
+							<td>
+								${raid['name'] | h}(ID:${raid['mid']})
+							</td>
+							<td>
+								${raid['level']}
+							</td>
+							<td>
+								${raid['ctime'] | h}
+							</td>
+							<td>
+								%if raid['url']:
+									<a href="${raid['url']}">⇛詳細</a>
+								%else:
+									⇛閲覧できません
+								%endif
+							</td>
+						</tr>
+					%endfor
+				</tbody>
+			</table>
+		</div>
+		
+		<%include file='../../inc_pagination.html' />
+	%endif
+</%def>

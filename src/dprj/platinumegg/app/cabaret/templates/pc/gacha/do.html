@@ -1,0 +1,42 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	${self.payment_script()}
+</%def>
+
+<%def name="contents()">
+</%def>
+
+<%doc>PC用課金スクリプト</%doc>
+<%def name="payment_script()">
+	<script type="text/javascript">
+		function doGachPayment() {
+			// parent.document: for Opera compatibility
+			var target = (parent.parent.parent.postMessage ?
+					parent.parent.parent : (parent.parent.parent.document.postMessage ? parent.parent.parent.document : undefined));
+			if (typeof target != 'undefined') {
+				var json = '{"type":"payment_gacha",';
+				json += '"sku_id":"${sku_id}",';
+				json += '"price":"${price}",';
+				json += '"count":"${count}",';
+				json += '"name":"${name}",';
+				json += '"description":"${description}",';
+				json += '"image_url":"${image_url}",';
+				json += '"finish_page_url":"${finish_page_url}"}';
+				target.postMessage(json, '*');
+				console.log("post message from gacha");
+			}
+			if(window.parent.reserveGetStatus){
+				window.parent.reserveGetStatus();
+			}
+			%if is_dev:
+			console.log(window.parent);
+			%endif
+			if(window.parent.resetPaymentHiddenFrame){
+				window.parent.resetPaymentHiddenFrame();
+			}
+		}
+		addWindowOnLoad(doGachPayment);
+	</script>
+</%def>

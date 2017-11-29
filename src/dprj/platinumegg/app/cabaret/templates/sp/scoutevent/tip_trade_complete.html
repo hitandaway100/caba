@@ -1,0 +1,28 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">${scoutevent['lovetime_pointname'] | h}交換結果</p>
+	</div>
+	<div class="wrapper">
+		${scoutevent_tanzaku['tanzakuname'] | h}を${scoutevent['lovetime_pointname'] | h}に交換し<br />
+		${scoutevent_tanzaku['tip_rate'] * tanzaku_num}枚<br />
+		獲得しました。
+	</div>
+	
+	<dl class="tip_flame" style="background-color: #9370DB;">
+		<dt class="tip_text">所持${scoutevent['lovetime_pointname'] | h}</dt>
+		<dd class="tip_text_3">${scouteventscore['tip']}枚</dd>
+	</dl>
+	
+	<div>
+		<a class="btnlong" href="${get_html_param('url_scoutevent_tiptrade', 'sp/scoutevent/tip_trade.html')}"><div>${scoutevent['tanzaku_name'] | h}を交換</div></a>
+	</div>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_scoutevent_castnomination', 'sp/scoutevent/tanzaku_castnomination.html')}"><div>キャストを指名</div></a>
+	</div>
+	
+	${self.eventfooter()}
+	
+</%def>

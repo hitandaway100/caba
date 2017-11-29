@@ -1,0 +1,39 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			DMM側の課金情報
+		</h1>
+	</div>
+	<div class="well">
+		<form action="" method="post">
+			<p>
+				paymentId:<input type="text" name="_paymentId" value="" />
+			</p>
+			<p>
+				dmmid:<input type="text" name="_dmmId" value="" />
+			</p>
+			<input type="submit" class="btn btn-primary" value="表示" />
+		</form>
+	</div>
+	% if payment_record:
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>paymentId</th>
+					<th>dmmid</th>
+					<th>status</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>${payment_record.paymentId | h}</td>
+					<td>${payment_record.userId | h}</td>
+					<td>${payment_record.status | h}</td>
+				</tr>
+			</tbody>
+		</table>
+	%endif
+</%def>

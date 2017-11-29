@@ -1,0 +1,508 @@
+#coding:utf-8
+
+<style type="text/css">
+
+/* --- スライドバナーパーツ--- */
+.slide{
+	position:relative;
+	list-style: none;
+	overflow: hidden ;  
+}
+
+.slide
+#arrowleft{
+	width: 20px;
+	height: 17px;
+	float:left;
+	margin: 20 0 0 -32;
+}
+
+.slide
+#slidebn{
+	width: 240px;
+	height: 60px;
+	float:left;
+}
+	
+
+.slide
+#arrowright{
+	width: 20px;
+	height: 17px;
+	margin: 20 10 0 0 ;
+	float:right;
+}
+
+.slideunder{
+	position:relative;
+	width: 48px;
+	left:100px;
+	list-style: none;
+	overflow: hidden; 
+	}
+
+.slideunder
+#left{
+	width: 12px;
+	height: 12px;
+	margin: auto;
+	float:left;
+	margin-right:4px;
+}
+
+.slideunder
+#center{
+	width: 12px;
+	height: 12px;
+	float:left;
+	margin-right:4px;
+}
+
+.slideunder
+#right{
+	width: 12px;
+	height: 12px;
+	float:right;
+	margin-right:4px;
+}
+
+/* --- マイページ・プロフィールページ最上部-- */
+.mytop{
+	position: relative;
+	width:320px;
+	height:360px;
+	top:0;
+}
+
+.mytop
+.mytop1{
+	display:block;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
+}
+
+.mytop
+.mytop2{
+	display:block;
+	position: absolute;
+	background: url(${url_static_img}00/id_00_02/main_head_color.png)no-repeat;
+	width:320px;
+	top:0px;
+	z-index: 2;
+}
+
+.mytop2
+.tex{
+	margin-top:2px;
+	margin-left:38px;
+}
+
+.mytop3{
+	display:block;
+	position: absolute;
+	background: url(${url_static_img}00/id_00_02/color_bar.png) no-repeat;
+	width:320px;
+	margin-top:244px;
+	z-index: 2;
+}
+
+.mytop3
+.tex{
+	margin-left:20px;
+	font-size:12px;
+}
+
+.mytop3_s{
+	display:block;
+	position: absolute;
+	background: url(${url_static_img}00/id_00_02/color_bar_s.png) no-repeat;
+	width:200px;
+	height:26px;
+	margin-top:214px;
+	text-align:center;
+	z-index: 4;
+}
+
+.mytop3_s a{
+	color:yellow;
+	font-size:14px;
+	margin-left:60px;
+	text-decoration: none;
+	margin-top: -4px;
+	z-index: 5;
+}
+
+
+.mytop4{
+	display:block;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 3;	
+}
+
+		.mytop5{/* --- キャバ嬢表示枠-- */
+			position:absolute;
+			background: url(${url_static_img}00/id_00_02/side_data_frame.png)no-repeat;
+			width: 58px; 
+			height: 196px;	
+			top:40;
+			left:0;
+			z-index: 5;
+		}
+		.mytop5
+		.deckmembers{
+			display:block;
+			position:absolute;
+			left:-1;
+			width: 52px;
+		}
+		
+		.mytop5
+		.deckmembers
+		.photo{
+			display:block;
+			position:absolute;
+			left:3;
+			width: 50px; 
+		}
+
+.mybt1{
+	display:block;
+	position:absolute;
+	top:289px;
+	left:22px;
+	z-index: 4;	
+}
+
+.mybt2{
+	position:absolute;
+	top:301px;
+	left:89px;
+	z-index: 4;	
+}
+
+.mybt3{
+	display:block;
+	position:absolute;
+	top:290px;
+	left:156px;
+	z-index: 4;
+}
+
+.mybt4{
+	display:block;
+	position:absolute;
+	top:240px;
+	left:218px;
+	z-index: 4;	
+}
+
+.mybt5{
+	display:block;
+	position:absolute;
+	top:173px;
+	left:250px;
+	z-index: 4;
+}
+
+.mybt6{
+	display:block;
+	position:absolute;
+	top:0px;
+	left:270px;
+	z-index: 4;	
+}
+
+.mybt7{
+	display:block;
+	position:absolute;
+	top:60px;
+	left:260px;
+	z-index: 4;
+}
+
+.mybt7
+.newcount{
+	display:block;
+	position:absolute;
+	font-size:10px;
+	text-align:center;
+	color:#FFFFFF;
+	top: 18px;
+	left:8px;
+	z-index: 4;
+	text-decoration:none;
+	}
+
+
+.mybt8{
+	display:block;
+	position:absolute;
+	top:9px;
+	left:145px;	
+	z-index: 4;
+}
+
+.mybt9{
+	display:block;
+	position:absolute;
+	top:2px;
+	left:2px;	
+	z-index: 5;
+}
+
+
+/* --- マイページステータス-- */
+.mystatus{
+	background: url(${url_static_img}00/id_00_02/st_back_frame.png)no-repeat;
+	position: relative;
+	margin: auto;
+	width:320px;
+	height:223px;
+}
+
+.mystbox1{
+	position: relative;
+	width: 138px;
+	font-size: 12px;
+	top: 4px;
+	left: 22px;
+	line-height: 18px;
+}
+
+.mystbox2{
+	position: relative;
+	width: 138px;
+	font-size: 12px;
+	top: 6px;
+	left:26px;
+	line-height: 18px;
+}
+
+.mystbox1_{
+	position: relative;
+	width: 138px;
+	font-size: 12px;
+	top: 6px;
+	left: 22px;
+	line-height: 18px;
+}
+
+.mystbox2_{
+	position: relative;
+	width: 138px;
+	font-size: 12px;
+	top: 8px;
+	left:26px;
+	line-height: 18px;
+}
+
+.myst1{
+	position: relative;
+	width:64px;
+	height: 18px;
+	text-align: center;
+}
+
+.myst2{
+	position: relative;
+	width: 74px;
+	height: 18px;
+	text-align:left;
+	padding-left: 8px;
+}
+
+.myst_s{
+	width: 64px;
+	height: 18px;
+	text-align:center;
+	font-size: 10px;
+	letter-spacing: -1px;
+}
+
+.mystbox3{
+	position: relative;
+	width: 138px;
+	font-size: 12px;
+	top: 6px;
+	line-height: 18px;
+}
+
+.mystbox4 {
+	position: relative;
+	width: 278px;
+	font-size: 12px;
+	top:4px;
+	left:24px;
+	line-height: 18px;
+}
+
+.myst5 {
+	position: relative;
+	width:94px;
+	height: 18px;
+	text-align: center;
+}
+
+.myst6{
+	position: relative;
+	width: 184px;
+	height: 18px;
+	text-align:left;
+	padding-left: 8px;
+}
+
+
+/* --- マイページタブエリアここから--- */
+
+.mypagetab {
+	width: 304px; /* ボックスの幅 */
+	font-size: 12px; /* ボックスの文字サイズ */
+	color: #FFFFFF; /* ボックスの文字色 */
+	margin: 10 8 0 8; 
+}
+
+.mypagetab ul.tabs {
+	width: 304px; /* タブエリアの幅 */
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+
+.mypagetab ul.tabs li {
+	position: relative;
+	z-index: 1;
+	width: 96px; /* タブの幅 */
+	height: 36px;
+	margin: 0 1 -1px 0; /* タブのマージン（上右下左） */
+	background: url(${url_static_img}00/id_00_02/tab_off.png)no-repeat; /* タブの背景 */
+	border: 2px #a8a087; /* タブの境界線（太さ、色） */
+	border-style: groove; /* タブの境界線スタイル（上、左右、下） */
+	text-align: center;
+	float: left;
+}
+
+.mypagetab ul.tabs li.active a {
+color: #000000; /* アクティブタブの文字色 */
+}
+/* --- ポイント時の設定 --- */
+.mypagetab ul.tabs li.active a:hover {
+text-decoration: none; /* テキストの下線（なし） */
+}
+
+/* --- 本文領域 --- */
+.mypagetab .topicArea {
+	position: relative;
+	z-index: 2;
+	height: auto; /* 本文領域の高さ */
+	text-align: left;
+	overflow: auto; /* はみ出た場合はスクロールで表示 */
+	padding-left: 10px; /* 本文領域のパディング */
+	background-color:rgba(0,0,0,0.4); /* 本文領域の背景色 */
+	border: 2px groove; /* 本文領域の境界線 */
+	border-top-color: #f586d6;
+	border-right-color: #a83688;
+	border-bottom-color: #f586d6;
+	border-left-color: #a83688;
+	margin-bottom: 20px;
+}
+
+/* --- リンクエリア --- */
+.mypagetab ul.tabs li a {
+	display: block;
+	position: relative;
+	padding: 6px 2px; /* リンクエリアのパディング（上下、左右） */
+	outline: none; /* アウトライン（なし） */
+	color: #c9c0a4; /* ボックスの文字色 */
+	text-decoration: none; /* テキストの下線（なし） */
+}
+
+/* --- アクティブなタブ --- */
+.mypagetab ul.tabs li.active {
+	border: 2px #a83688; /* タブの境界線（太さ、色） */
+	margin: 0 1 -1px 0; /* タブのマージン（上右下左） */
+	background: url(${url_static_img}00/id_00_02/tab_on.png)no-repeat; /* アクティブタブの背景 */
+	width: 96px; /* タブの幅 */
+	height: 36px;
+	border-style: groove; /* タブの境界線スタイル（上、左右、下） */
+	text-align: center;
+	float: left;
+	z-index: 3;	
+}
+
+.mypagetab ul.tabs li.active a {
+	color: #FFFFFF; /* アクティブタブの文字色 */
+}
+
+
+/* --- 本文領域内の各ボックス --- */
+.mypagetab
+.topicArea
+.topic ul{
+	margin-top:0px;
+	overflow:hidden;
+	width:275px;
+	height:auto;
+	font-size:12px;
+	line-height:14px;
+	padding-top:3px;
+	padding-left:0px;
+	list-style:none;
+}
+.mypagetab
+.topicArea
+.topic ul li{
+	background-color:rgba(255,255,255,0.1);
+ 	margin:2 2 2 2 ;
+ 	padding:2 2 2 2;
+ 	display:block;
+	height:auto;
+	color:#fff;
+}
+
+.mypagetab
+.topicArea
+.topic li a{
+	display: block;
+	position: relative;
+	color: #fff;
+	text-decoration: none;
+}
+
+.mypagetab
+.topicArea
+.topic li a:after{
+	text-decoration:none;
+	display: block;
+	position: absolute;
+	top: 50%;
+	right: 10px;
+	width: 7px;
+	height: 7px;
+	margin-top: -4px;
+	border-top: solid 2px #fff000;
+	border-right: solid 2px #fff000;
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	content: "";
+}
+
+/* --- clearfix --- */
+.clearFix:after {
+	content: ".";
+	display: block;	
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+.clearFix {
+	min-height: 1px;
+}
+
+/* --- マイページタブエリアここまで--- */
+
+
+</style>

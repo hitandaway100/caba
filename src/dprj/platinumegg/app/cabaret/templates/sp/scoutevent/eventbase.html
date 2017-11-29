@@ -1,0 +1,324 @@
+#coding:utf-8
+<%inherit file="../gacha/gacha.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+	<link href="${url_static_css}ev_slider.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+	<script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+	<style type="text/css">
+	.cardspace{
+		position: relative;
+		left: 2px;
+	}
+	
+	.nominate_set2{
+		position: relative;
+		width: 184px;
+		top:-2px;
+		left:4px;
+		font-size: 12px;
+		line-height: 16px;
+	}
+	
+	.nominate_st1{
+		width:74px;
+		height:20px;
+		text-align: center;
+	}
+	
+	.nominate_st2{
+		width: 110px;
+		height: 20px;
+		text-align:left;
+	}
+	
+	.nominate_big{
+		width:184px;
+		height:40px;
+		text-align: center;
+	}
+	
+	
+	.nominate_st_s{
+		width: 108px;
+		height: 20px;
+		text-align:center;
+		font-size: 11px;
+		letter-spacing: -1px;
+	}
+	.nominate_set3{
+		position: relative;
+		width: 300px;
+		top:-2px;
+		left:4px;
+		margin: auto;
+		font-size: 12px;
+		line-height: 8px;
+	}
+	
+	.nominate_st3{
+		width: 72px;
+		height: 20px;
+		text-align:center;
+		
+	}
+	.nominate_st4{
+		width: 220px;
+		height: 20px;
+		text-align:left;
+		font-size: 14px;
+	}
+	
+	.nominate_st4 b{
+		color: #FF9900;
+	}
+	.nominate_st5{
+		width: 300px;
+		height: 20px;
+		font-size: 14px;
+		text-align:left;
+	}
+	
+	.tip_text{
+		width: 280px;
+		height: 20px;
+		text-align:left;
+		margin:auto;
+		color:yellow;
+		font-size: 14px; 
+	}
+	.tip_text_3{
+		width: 280px;
+		height: 20px;
+		text-align:right;
+		margin:auto;
+		font-size: 14px;
+	}
+	.tip_flame{
+	width: 300px;
+	margin:10px auto 10px auto;
+	border-top:2px solid #c79947;
+	border-bottom:2px solid #be781f;
+	border-left:2px solid #c79947	;
+	border-right:2px solid #be781f	;
+	border-radius:6px;
+	box-shadow:3px 3px rgba(0,0,0,0.4);
+	}
+
+	</style>
+	${self.head_opt()}
+</%def>
+<%def name="head_opt()"></%def>
+
+<%def name="eventtime()">
+	<div class="scouttime">
+		<%
+			_hours = happening['timelimit']['hours']
+			_minutes = happening['timelimit']['minutes']
+			_seconds = happening['timelimit']['seconds']
+		%>
+		%if _hours:
+			残り時間:${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒
+		%else:
+			残り時間:${_minutes}分${'%02d' % _seconds}秒
+		%endif
+	</div>
+</%def>
+
+<%def name="eventsatisfaction()">
+	<div class="scouttime" style="margin-top:-21px;">
+		満足度:${happening['raid']['hpmax'] - happening['raid']['hp']}/${happening['raid']['hpmax']}
+	</div>
+</%def>
+
+<%def name="timebonus()">
+	%if raidevent['timebonus_etime']:
+		<div style="background-color:#ffff00 ; opacity: 0.60; width:320; height:28; color:#000000; text-align:center; line-height:2;"  >
+			タイムボーナス中!!&nbsp; ${raidevent['timebonus_etime'].strftime("%H:%M")}まで
+		</div>
+	%endif
+</%def>
+
+<%def name="eventdata()">
+	<%
+		if scoutevent and scoutevent["point_name"]:
+			point_name = scoutevent["point_name"]
+		else:
+			point_name = "ハート"
+	%>
+	<div class="titlesub">
+		<div class="wrapper">
+			イベントデータ
+		</div>
+	</div>
+	<div style="width:300px; margin:10px;">
+		現在の達成エリア：<span class="yellow">${scouteventdata['areanum_cleared']}</span>/${scouteventdata['areanum_total']}<br /> 
+		獲得${point_name}数：<span class="yellow">${scouteventdata['score']['point']}</span>個<br /> 
+		%if scouteventdata['rank']:
+			ランキング：<span class="yellow">${scouteventdata['rank']}</span>位<br /> 
+		%else:
+			ランキング：<span class="yellow">--</span>位<br /> 
+		%endif
+		%if is_beginer:
+			新店舗ランキング：<span class="yellow">${scouteventdata['rank_beginer'] or '--'}</span>位<br /> 
+		%endif
+	</div>
+</%def>
+
+<%def name="contents()">
+	${self.timebonus()}
+</%def>
+
+<%def name="eventhdr()">
+	<img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_header.png" width="320" style="margin-bottom:4px;"/>
+</%def>
+
+<%def name="eventtopic()">
+	%if not scoutevent['is_produce'] and url_eventmovie_top:
+		<div>
+			<a class="btnpink" href="${get_html_param('url_eventmovie_top', 'sp/scoutevent/ev_album.html')}"><p>イベント思い出へ</p></a>
+		</div>
+	%endif
+	<div style="padding: 8px 0px;text-align:center;">
+		<div class="btn_pink_s">
+			<a href="${get_html_param('url_explain_detail', 'sp/scoutevent/manual.html')}"><div>ルール</div></a>
+		</div>
+		<div class="btn_pink_s">
+			<a href="${get_html_param('url_explain_prizes', 'sp/scoutevent/successbonus.html')}"><div>報酬一覧</div></a>
+		</div>
+		<div class="btn_pink_s">
+			<a href="${get_html_param('url_explain_nomination', 'sp/scoutevent/nominatecast.html')}" style="font-size:13px; line-height: 2.7;"><div>特効キャスト</div></a>
+		</div>
+	</div>
+</%def>
+
+<%def name="drawEventtopic(flag, url, text)">
+	%if flag:
+		<a href="${url}" class="yellow">${text | h}</a>
+	%else:
+		${text | h}
+	%endif
+</%def>
+
+<%def name="eventtopic2()">
+	<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-top:-8px; margin-left:5px;">
+		${self.drawEventtopic(current_topic!='detail', get_html_param('url_explain_detail', 'sp/scoutevent/manual.html'), 'イベント概要')}
+		|
+		${self.drawEventtopic(current_topic!='prizes', get_html_param('url_explain_prizes', 'sp/scoutevent/successbonus.html'), '報酬')}
+		|
+		${self.drawEventtopic(current_topic!='nomination', get_html_param('url_explain_nomination', 'sp/scoutevent/nominatecast.html'), '指名')}
+		|
+		${self.drawEventtopic(current_topic!='faq', get_html_param('url_explain_faq', 'sp/scoutevent/eventfaq.html'), 'FAQ')}
+	</div>
+</%def>
+
+<%def name="eventtopic3()">
+	<%
+		if scoutevent and scoutevent["point_name"]:
+			point_name = scoutevent["point_name"]
+		else:
+			point_name = "ハート"
+	%>
+	<div align="center" style="background-color: #8D35B8; width:310px; height:auto; border-radius: 3px; line-height:2; margin-top:5px; margin-left:5px;">
+		${self.drawEventtopic(current_prize!='point', get_html_param('url_prizes_point', 'sp/scoutevent/successbonus.html'), point_name + '獲得報酬')}
+		|
+		${self.drawEventtopic(current_prize!='areabonus', get_html_param('url_prizes_areabonus', 'sp/scoutevent/areabonus.html'), 'エリア達成報酬')}<br />
+		${self.drawEventtopic(current_prize!='ranking', get_html_param('url_prizes_ranking', 'sp/scoutevent/rankbonus.html'), 'ランキング報酬')}
+		|
+		${self.drawEventtopic(current_prize!='ranking_beginer', get_html_param('url_prizes_ranking_beginer', 'sp/scoutevent/rankbonus.html'), '新店舗ランキング報酬')}<br />
+		%if url_prizes_performance or flag_template_test:
+			${self.drawEventtopic(current_prize!='performance', get_html_param('url_prizes_performance', 'sp/scoutevent/performancebonus.html'), 'キャスト業績報酬')}<br />
+		%endif
+	</div>
+</%def>
+
+<%def name="eventfooter()">
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+	</div>
+</%def>
+
+<%def name="event_schedule()"><!--
+	<%
+		event_stime = scoutevent['starttime']
+		event_etime = scoutevent['endtime']
+	%>
+	%if event_stime and event_etime:
+-->開催期間：${event_stime.month}/${event_stime.day} ${event_stime.hour}:${'%02d' % event_stime.minute}〜${event_etime.month}/${event_etime.day} ${event_etime.hour}:${'%02d' % event_etime.minute}<!--
+	%elif event_etime:
+-->開催期間：${event_etime.month}/${event_etime.day} ${event_etime.hour}:${'%02d' % event_etime.minute}まで<!--
+	%endif
+--></%def>
+
+<%def name="eventslide()">
+	%if scoutevent['appeal']:
+	<div class="flexslider" style="padding-bottom: 4px;">
+		<ul class="slides">
+			%for img in scoutevent['appeal']:
+			<li>
+				<img src="${img}" width="320" height="380" />
+			</li>
+			%endfor
+		</ul>
+	</div>
+	%endif
+</%def>
+
+<%def name="eventfooter()">
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+	</div>
+</%def>
+
+<%def name="eventgacha()">
+	%if gachadata and scouteventscore:
+		<%
+			gacha_list = []
+		%>
+		%for gacha in gachadata.values():
+			%if gacha['consumetype'] == Defines.GachaConsumeType.SCOUTEVENT:
+				<%
+					gacha_list.append(gacha)
+				%>
+				${self.drawGachaScoutEvent(gacha['unique_name'], scouteventscore['point_gacha'], True, etime=scoutevent_gacha_etime)}
+			%endif
+		%endfor
+		%if gacha_list:
+			<%doc>注意事項等の画面下部テキスト</%doc>
+			<section class="basicinfo" style="padding-bottom:10px;">
+				<div class="basictop">
+					<p>注意</p>
+					<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+				</div>
+				
+				<div class="basicBack">
+					<ul>
+						<li>
+							${self.drawExplainTextScoutEvent(gacha_list)}
+						</li>
+					</ul>
+					<div style="font-size:0px;">
+						&nbsp;
+					</div>
+				</div>
+				<div class="basicbtm">&nbsp;
+				</div>
+			</section>
+		%endif
+	%endif
+</%def>
+
+<%def name="show_gacha_banner()">
+  <div style="text-align: center; padding-bottom:10px;">
+    <a href="${get_html_param('url_sp_gacha', 'sp/gacha/gacha_stepup.html')}">
+      <img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_gacha_banner.png" width="240" />
+    </a>
+  </div>
+</%def>

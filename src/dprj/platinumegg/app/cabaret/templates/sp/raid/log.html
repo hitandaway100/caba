@@ -1,0 +1,114 @@
+#coding:utf-8
+<%inherit file="../happening/happeningbase.html" />
+
+<%def name="happeningtop()">
+	<div class="scouttop" style="height:242px;">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scoutflame">
+			%if is_cleared:
+				<span class="wrapper" style="color:#01fee9;">接客に成功</span>
+			%elif is_canceled:
+				<span class="wrapper" style="color:#2093ff;">超太客を諦めた</span>
+			%else:
+				<span class="wrapper" style="color:#2093ff;">接客失敗</span>
+			%endif
+		</div>
+		<div class="boss_coment">
+			<div class="coment_text" style="margin-top:-2px; color:red;">
+				%if damagerecordlist:
+					${len(damagerecordlist)}人接客しました
+				%else:
+					だれも接客しませんでした
+				%endif
+			</div>
+		</div>
+	</div>
+</%def>
+
+<%def name="prizelist()">
+	%if happening['prize']:
+		<div class="titlesub" style="margin:12 auto 12px auto;">
+			<div class="wrapper">
+				あなたが獲得したアイテム
+			</div>
+		</div>
+		<div style="text-align:center; margin:8px auto 8px; auto">
+			%if scoutevent_tanzaku and tanzaku_num_add:
+				${scoutevent_tanzaku['tanzakuname'] | h}×${tanzaku_num_add}${scoutevent_tanzaku['tanzakuunit'] | h}<br />
+			%endif
+			
+			% if happening['prize']['itemlist']:
+				% for item in happening['prize']['itemlist']:
+					${item['master']['name']}×${item['num']}${item['master']['unit'] | h}<br />
+				% endfor
+			% endif
+			
+			% if happening['prize']['cardlist']:
+				% for card in happening['prize']['cardlist']:
+					${card['master']['name']}×${card['num']}${card['master']['unit'] | h}<br />
+				% endfor
+			% endif
+			
+			% if happening['prize']['gold']:
+				${happening['prize']['gold']}${happening['prize']['gold_unit'] | h}
+			% endif
+			${self.presentlookbutton()}
+		</div>
+	%endif
+</%def>
+
+<%def name="happeningFooter()">
+	
+	${self.drawTreasureInfo()}
+	
+	%if damagerecordlist:
+		<div class="titlesub" style="margin:12 auto 12px auto;">
+			<div class="wrapper">
+				接客履歴
+			</div>
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		
+		<!--接客履歴-->
+		<div>
+			<%
+				_bar = ''
+			%>
+			%for damagerecord in damagerecordlist:
+				${_bar}
+				<table style="margin-left:8px;">
+					<td>
+						<img src="${damagerecord['thumbUrl']}" width="60" height="60"  class="itemimg"/>
+					</td>
+					<td>
+						<div style="font-size:14px;">
+							%if damagerecord['id'] == happening['oid']:
+								${damagerecord['nickname'] | h}[指名]<br />
+							%else:
+								${damagerecord['nickname'] | h}[ヘルプ]<br />
+							%endif
+							<span  class="orange">レベル:</span>${damagerecord['level']}<br />
+							<span  class="orange">満足度</span>を${damagerecord['damage']}上げた<br />
+						</div>
+					</td>
+				</table>
+				<%
+					_bar = '<img src="'+url_static_img+'common/kyoutsu_bar_06.png" width="320" height="5" />'
+				%>
+			%endfor
+		</div>
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="javascript:history.back()"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>
+
+<%def name="playerstatus()"></%def>
+<%def name="areastatus()"></%def>
+<%def name="drawFriendHelpList()"></%def>

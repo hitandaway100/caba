@@ -1,0 +1,12 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div style="background-color:rgba(0,0,0,0.4); width:320;">
+		<div class="titlebar">
+			<p class="caption">ノルマ達成アニメーション</p>
+		</div>
+		1秒後に次のページへ移動します。
+		<meta http-equiv="refresh" content="1;url=${url_next}">
+	</div>
+</%def>

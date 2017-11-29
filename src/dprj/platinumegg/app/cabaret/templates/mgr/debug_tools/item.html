@@ -1,0 +1,66 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>課金購入分のアイテム所持数変更</strong>　課金購入分のアイテムの所持数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_itemnum" />
+        <input type="hidden" name="_pay" value="1" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for item in itemlist:
+            <option value="${item.id}">${item.name | h}(ID:${item.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          所持数:<br />
+          <input type="text" name="_num" value="1" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>無料分のアイテム所持数変更</strong>　無料分のアイテムの所持数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_itemnum" />
+        <input type="hidden" name="_pay" value="0" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for item in itemlist:
+            <option value="${item.id}">${item.name | h}(ID:${item.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          所持数:<br />
+          <input type="text" name="_num" value="1" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

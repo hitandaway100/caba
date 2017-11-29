@@ -1,0 +1,38 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="scouttop" style=" width : 320px;">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${scoutevent_tanzaku['castbg']}" style="width:320px;height:180px;"/>
+		</div>
+		<div class="scoutpic2">
+			<img src="${scoutevent_tanzaku['castthumb']}" width="320" height="180"/>
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">${scoutevent_tanzaku['castname'] | h}</span>
+		</div>
+	</div>
+	
+	<div class="topcap">
+		${scoutevent_tanzaku['castname'] | h}さんに<br />
+		${scoutevent['lovetime_pointname'] | h}を<br />
+		${tip_add}枚<br />
+		あげました！
+	</div>
+	
+	<div class="topcap">
+		<div>
+			<a class="btnlong" href="${get_html_param('url_scoutevent_castnomination', 'sp/scoutevent/tanzaku_castnomination.html')}"><div>キャストを指名</div></a>
+		</div>
+	</div>
+	<div class="topcap">
+		<div>
+			<a class="btnlong" href="${get_html_param('url_scoutevent_tiptrade', 'sp/scoutevent/tip_trade.html')}"><div>${scoutevent['tanzaku_name'] | h}を交換</div></a>
+		</div>
+	</div>
+	
+	${self.drawTip()}
+	
+	${self.eventfooter()}
+</%def>

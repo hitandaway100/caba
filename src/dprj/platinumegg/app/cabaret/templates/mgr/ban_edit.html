@@ -1,0 +1,61 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>アクセス禁止管理</h1>
+	</div>
+	
+	<div class="well">
+		<p><strong>禁止ユーザを追加</strong>　アクセス禁止ユーザの追加をします(カンマ[","]区切りで複数指定可能)</p>
+		<form action="${url_add}" method="post" onsubmit="return window.confirm('アクセス禁止に登録します。');">
+			<p>
+				ユーザID:<br />
+				<input type="text" name="_id" value="" />
+			</p>
+			<input type="submit" class="btn btn-danger" value="追加" />
+		</form>
+	</div>
+	
+	<p><strong>禁止中のユーザー</strong></p>
+	<div class="well">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>
+						アプリ内ユーザID
+					</th>
+					<th>
+						DMMID
+					</th>
+					<th>
+						詳細
+					</th>
+					<th>
+						禁止を解除する
+					</th>
+				</tr>
+			</thead>
+			%if playerlist:
+				<tbody>
+					%for player in playerlist:
+						<tr>
+							<td>
+								${player['id']}
+							</td>
+							<td>
+								${player['dmmid']}
+							</td>
+							<td>
+								<a class="btn btn-info" href="${player['url']}">⇛詳細</a>
+							</td>
+							<td>
+								<button class="btn btn-danger" onclick="if(window.confirm('本当に解除しますか？')){location.href='${player['url_rem']}'}">解除</button>
+							</td>
+						</tr>
+					%endfor
+				</tbody>
+			%endif
+		</table>
+	</div>
+</%def>

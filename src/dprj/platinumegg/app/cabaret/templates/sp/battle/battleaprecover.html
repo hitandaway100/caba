@@ -1,0 +1,63 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">気力回復</p>
+		</div>
+		
+		<table class="spirit">
+			<tr>
+				<td class="spirit1">
+					気力
+				</td>
+				<td class="spirit2">
+					${player['bp']}/${player['bpmax']}
+				</td>
+				<td class="spirit3">
+					<div class="st_frame" style="height:16px;">
+						<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">
+			%if player['bp'] < rankmaster['bpcost']:
+				気力は1分間で1回復します&nbsp;<span style="color:#FFFF00;">(${player['str_bprtime'] | h}に全回復)</span>
+			%else:
+				気力は1分間で1回復します
+			%endif
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+			
+	%for item in item_list:
+		<div class="itembox">
+			<table>
+				<td>
+					<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td class="itemtext">
+					<b>${item['master']['name'] | h}</b><br/>
+					<span style="color:#FF9900;">所持数:</span>
+						<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+				</td>
+			</table>
+			${self.drawItemLeadLinkButton(item)}
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/ >
+	%endfor
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battle', 'sp/battle/battle.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</div>
+</%def>

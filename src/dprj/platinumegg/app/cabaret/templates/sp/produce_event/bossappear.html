@@ -1,0 +1,118 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position: absolute; z-index:0; top:0;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic" style="position: relative; z-index:1;">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scoutflame">
+			%if is_end:
+				<span class="wrapper">${happening['raid']['name'] | h}来店終了</span>
+			%else:
+				<span class="wrapper">${happening['raid']['name'] | h}来店中</span>
+			%endif
+		</div>
+		%if not is_end:
+		%endif
+		%if not is_end:
+		%endif
+		<div class="boss_coment" style="margin-bottom:8;">
+			%if is_end:
+				<div class="coment_text caution">
+					%if damagerecordnum:
+						${damagerecordnum}人が接客しました
+					%else:
+						誰も接客しませんでした
+					%endif
+				</div>
+			%else:
+				<div class="coment_text">
+					${happening['raid']['commentappear'] | h}
+				</div>
+				%if damagerecordnum:
+					<div class="caution" style="margin-top:-2px;">
+						${damagerecordnum}人接客中!!
+					</div>
+				%endif
+			%endif
+		</div>
+	</div>
+
+	%if is_end:
+		<div class="wrapper caution" style="margin:20px auto;">
+			この超太客への接客は終了しました
+		</div>
+	%else:
+		<%
+			lead_recover = False
+		%>
+		%if happening['raid']['damage_cnt'] == 0 and 0 <= happening['raid']['bpcost_first']:
+			<table style="margin-top:8px; margin-bottom:8px; width:310px;">
+				<tr>
+					<td valign="top">
+						<div>
+							<a class="btnpink_s" href="${get_html_param('url_exec', 'sp/happening/boss_swf.html')}" style="margin-top:0px; margin-bottom:26px;"><p class="caption">通常接客</p></a>
+						</div>
+					</td>
+					<td valign="top">
+						%if event_item['num']-1 < 0:
+							<div>
+								<a class="btnpink_s_dark" href="javascript:void(0);" style="margin-top:0;margin-bottom:0;"><p class="caption">超接客</p></a>
+								<div class="wrapper" style="font-size:12px;">
+									<span class="orange">${event_item['name']}の所持数</span>${event_item['num']}
+								<div>
+							</div>
+						%else:
+							<div>
+								<a class="btnpink_s" href="${get_html_param('url_exec_strong', 'sp/happening/boss_swf.html')}" style="margin-top:0;margin-bottom:0;" ><p class="caption">超接客</p></a>
+								<div class="wrapper" style="font-size:12px;">
+									<span class="orange">${event_item['name']}の所持数</span>
+									${event_item['num']}→
+									<span class="red">${event_item['num']-1}</span>
+								<div>
+							</div>
+						%endif
+					</td>
+				</tr>
+			</table>
+		%endif
+
+		<div>
+			%if lead_recover:
+				%for item in item_list:
+					<div  class="itembox">
+						<table>
+							<td>
+								<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+							</td>
+							<td class="itemtext" >
+								<b>${item['master']['name'] | h}</b><br/>
+								<span style="color:#FF9900;">所持数:</span>
+									<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+							</td>
+						</table>
+						${self.drawItemLeadLinkButton(item)}
+					</div>
+				%endfor
+			%endif
+		</div>
+
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" height="2" width="320">
+		${self.shop_banner(produceevent["id"] ,shop_url)}
+		${self.specialcard()}
+
+		<div>
+			<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img" />
+			<div style="padding-top:4px;">
+				<a class="btnlong" href="${get_html_param('url_deck_raid', 'sp/deck/deck.html')}"><div>キャストの編成</div></a>
+			</div>
+		</div>
+	%endif
+
+	${self.eventdata()}
+	
+	${self.eventfooter()}
+</%def>

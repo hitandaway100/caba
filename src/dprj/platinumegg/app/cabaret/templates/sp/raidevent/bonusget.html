@@ -1,0 +1,15 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<div>
+		<%include file="../includes/prize_info.html" args="prize=prize, url_static_img=url_static_img" />
+	</div>
+	
+	<div style="padding-top:10px;">
+		<a class="btnlong" href="${get_html_param('url_present', 'sp/present.html')}"><div>プレゼントBOXへ</div></a>
+	</div>
+	<div>
+		<a class="btnlong" href="${get_html_param('url_scout_top', 'sp/scout/scout.html')}"><div>スカウトを続ける</div></a>
+	</div>
+	${self.eventfooter()}
+</%def>

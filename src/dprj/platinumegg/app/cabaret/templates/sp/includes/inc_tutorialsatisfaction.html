@@ -1,0 +1,24 @@
+
+<%page args="hp, hpmax, damage=None, specialcard_powup=None">
+	%if damage is not None:
+	<div class="yellow">
+		今回の満足度&nbsp;:&nbsp;${damage}
+		%if specialcard_powup:
+			<span style="font-size:12px;">(ご指名${specialcard_powup})</span>
+		%endif
+	</div>
+	%endif
+	<div style="font-size:11px; position:relative; z-index:10; margin-left:56px;">${hpmax - hp}/${hpmax}</div>
+	<table align="center" style="margin-top:-21px; position:relative; z-index:; ">
+	<td style="font-size:13px;">
+		満足度:
+	</td>
+	<td>
+		<div class="st_frame_big_mat">
+			<div class="st_gauge04_mat" style="width:${int((hpmax-hp) * 155 / hpmax)}px">
+			</div>
+		</div>
+	</td>
+	</table>
+</%page>
+

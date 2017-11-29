@@ -1,0 +1,171 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawGachaList()">
+	<%
+		tmp = {}
+		for gacha in gachadata.values():
+			if not (gacha['consumetype'] == Defines.GachaConsumeType.RANKING and gacha['tabengname'] == current_tab):
+				continue
+			boxid = gacha['boxid']
+			rankingdata = gacharankingdata.get(boxid)
+			group = rankingdata['master']['group'] if rankingdata else 'no:%d' % boxid
+			group_gachalist = tmp[group] = tmp.get(group) or []
+			group_gachalist.append(gacha)
+		self.gachalist_by_group = tmp
+	%>
+	%for group_gachalist in self.gachalist_by_group.values():
+		${self.drawGachaListSub(group_gachalist)}
+	%endfor
+</%def>
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.RANKING)}
+</%def>
+
+<%def name="drawGachaListSub(group_gachalist)">
+	<%
+		group_gachalist.sort(key=lambda x:x['id'])
+		infotarget_gacha = group_gachalist[0]
+		unique_name = infotarget_gacha['unique_name']
+	%>
+	
+	${self.drawSchedule(unique_name)}
+	
+	${self.drawBoxBanner(unique_name)}
+	
+	${self.drawHeader(unique_name)}
+	
+	${self.drawSlide(unique_name)}
+	
+	${self.reaSetsumei()}
+	
+	<%doc>各ランキングの総同伴Pt</%doc>
+  <%doc>第4回では必要の無い機能. 再度必要になったら整理を考える.</%doc>
+	<div class="versus">
+		%for idx,group_gacha in enumerate(group_gachalist):
+			<%
+				rankingdata = gacharankingdata.get(group_gacha['boxid'])
+			%>
+			%if rankingdata:
+				%if 0 < idx:
+					<div>
+						VS
+					</div>
+				%endif
+				<div>
+					${rankingdata['master']['name'] | h}　総同伴Pt：${rankingdata['master']['wholepoint']}
+				</div>
+			%endif
+		%endfor
+	</div>
+	%for gacha in group_gachalist:
+		${self.drawRankingGacha(gacha['unique_name'], True)}
+		<div align="center" style="width:310px; height:30px; margin:0 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gacha)}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endfor
+	
+	<%doc>ランキングガチャとは？</%doc>
+	${self.drawRankingImage(unique_name)}
+	
+	<%
+		rankingdata = gacharankingdata.get(infotarget_gacha['boxid'])
+	%>
+	%if rankingdata:
+		<div>
+			<a class="btnpink" href="${get_html_param('url_prize', 'sp/gacha/rankbonus.html', rankingdata)}"><p class="caption">報酬一覧</p></a>
+		</div>
+		
+		<%doc>勝利報酬</%doc>
+		%if rankingdata.get('wholewinprizeinfo'):
+			<div class="titlebar">
+				<p>勝利報酬</p>
+			</div>
+			<%include file="../includes/prize_info.html" args="prize=rankingdata['wholewinprizeinfo'],bar=False" />
+		%endif
+		
+		<%doc>総同伴Pt達成報酬</%doc>
+		%if rankingdata.get('wholeprizelist'):
+			<div class="titlebar">
+				<p>総同伴Pt達成報酬</p>
+			</div>
+			${self.drawPointPrizeInfoList(rankingdata['wholeprizelist'], titleformat='{point}Pt獲得', titleformat_repeat='{point}Pt以降{intervalPt}獲得ごとに', received_text='達成済み')}
+			<div>
+				<a class="btnpink" href="${get_html_param('url_wholeprize', 'sp/gacha/rankbonus.html', rankingdata)}"><p class="caption">もっと見る</p></a>
+			</div>
+		%endif
+	%endif
+	
+	<%
+		ranking_rendered = []
+	%>
+	%for group_gacha in group_gachalist:
+		<%
+			boxid = group_gacha['boxid']
+			rankingdata = None
+			if not boxid in ranking_rendered:
+				rankingdata = gacharankingdata.get(boxid)
+				ranking_rendered.append(boxid)
+		%>
+		%if rankingdata:
+			%if rankingdata['master']['is_support_totalranking']:
+				<%doc>累計ランキング</%doc>
+				<div class="titlebar">
+					<p>累計同伴Ptランキング</p>
+				</div>
+				<div>
+					${self.drawRankingPlayerList(group_gacha['unique_name'], rankingtype='total', put_url_more=True)}
+				</div>
+				
+				<%doc>単発ランキング</%doc>
+				<div class="titlebar">
+					<p>単発同伴Ptランキング</p>
+				</div>
+				<div>
+					${self.drawRankingPlayerList(group_gacha['unique_name'], rankingtype='single', put_url_more=True)}
+				</div>
+			%else:
+				<%doc>単発ランキング</%doc>
+				<div class="titlebar">
+					<p>${rankingdata['master']['name'] | h}ランキング</p>
+				</div>
+				<div>
+					${self.drawRankingPlayerList(group_gacha['unique_name'], rankingtype='single', put_url_more=True)}
+				</div>
+			%endif
+		%endif
+	%endfor
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueNameList([gacha['unique_name'] for gacha in group_gachalist], do_render_time=True)}
+	
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextRanking(gacharanking_is_support_totalranking, gachalist_by_group=self.gachalist_by_group)}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

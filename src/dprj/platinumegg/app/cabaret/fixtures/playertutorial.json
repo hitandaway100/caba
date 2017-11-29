@@ -1,0 +1,26 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.playertutorial",
+        "fields": {
+            "tutorialstate": 65535,
+            "etime": "2015-12-07T15:06:25+09:00"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "cabaret.playertutorial",
+        "fields": {
+            "tutorialstate": 65535,
+            "etime": "2015-12-07T15:09:09+09:00"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "cabaret.playertutorial",
+        "fields": {
+            "tutorialstate": 65535,
+            "etime": "2015-12-07T15:13:01+09:00"
+        }
+    }
+]

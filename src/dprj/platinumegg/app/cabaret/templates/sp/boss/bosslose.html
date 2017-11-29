@@ -1,0 +1,71 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+</%def>
+
+<%def name="contents()">
+	<img src="${url_static_img}11/tutorial_lose.png" width="320px" height="60px" />
+	<div class="scouttop" style="height:242px;">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${area['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${boss['thumbUrl']}" width="320" height="180" />
+		</div>
+		<div class="scouttime" style="top:116;">
+			<%include file="../includes/inc_tutorialsatisfaction.html" args="hp=boss['hp_rest'],hpmax=boss['hp'],damage=boss['hp']-boss['hp_rest']" />
+		</div>
+		<div class="boss_coment">
+			<div class="coment_text">
+				${boss['commentlose'] | h}
+			</div>
+		</div>
+	</div>
+	
+	%if is_tutorial:
+		<div class="wrapper">
+			満足させる事ができなかった・・・<br />
+			さすがに目の肥えた客だな<br />
+			キャストを教育して成長させてから<br />
+			再度チャレンジするか。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	%else:
+		<div class="topcap" style="font-size:13px;">
+			No.1を教育して接客力を強化しよう!<br/>
+			引抜ガチャで優秀なキャストを引くのもいいかも
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	% endif
+	
+	<div>
+		<a class="btnpink" href="${get_html_param('url_composition_material', 'sp/composition/materialselect.html')}"><p class="caption">教育する</p></a>
+	</div>
+	
+	% if eventbanners:
+		% for eventbanner in eventbanners:
+			%if not eventbanner['is_external_link']:
+				<div class="bunnerwrap">
+					${self.drawEventBanner(eventbanner, comment=True)}
+				</div>
+			%endif
+		% endfor
+	% endif
+	
+	<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img, skilllist=skilllist" />
+	
+	%if url_scoutevent_top:
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+		</div>
+	%endif
+	%if url_raidevent_top:
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_raidevent_top', 'sp/raidevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+		</div>
+	%endif
+</%def>

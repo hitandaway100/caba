@@ -1,0 +1,39 @@
+#coding:utf-8
+<%doc>行動履歴テキスト</%doc>
+<%page args="playerlog, Defines, **kwargs">
+	<%
+		logtype = playerlog['logtype']
+		username = playerlog['params']['username']
+		get_html_param = kwargs.get('get_html_param', None)
+	%>
+	%if logtype == Defines.PlayerLogType.BATTLE_RECEIVE_WIN:
+		<span class="txred">防御成功</span><br />
+		%if get_html_param:
+			<a href="${get_html_param('params.url', 'sp/profile.html', playerlog)}">${username | h}</a>さんからの攻撃
+		%else:
+			<span style="color:#ffff00;">${username | h}</span>さんからの攻撃
+		%endif
+	%elif logtype == Defines.PlayerLogType.BATTLE_RECEIVE_LOSE:
+		<span class="txred">防御失敗</span><br />
+		%if get_html_param:
+			<a href="${get_html_param('params.url', 'sp/profile.html', playerlog)}">${username | h}</a>さんからの攻撃
+		%else:
+			<span style="color:#ffff00;">${username | h}</span>さんからの攻撃
+		%endif
+	%elif logtype == Defines.PlayerLogType.BATTLE_WIN:
+		<span class="txred">攻撃成功</span><br />
+		<span style="color:#ffff00;">${username | h}</span>さんへ攻撃
+		%if get_html_param:
+			<a href="${get_html_param('params.url', 'sp/profile.html', playerlog)}">${username | h}</a>さんへ攻撃
+		%else:
+			<span style="color:#ffff00;">${username | h}</span>さんへ攻撃
+		%endif
+	%elif logtype == Defines.PlayerLogType.BATTLE_LOSE:
+		<span class="txred">攻撃失敗</span><br />
+		%if get_html_param:
+			<a href="${get_html_param('params.url', 'sp/profile.html', playerlog)}">${username | h}</a>さんへ攻撃
+		%else:
+			<span style="color:#ffff00;">${username | h}</span>さんへ攻撃
+		%endif
+	%endif
+</%page>

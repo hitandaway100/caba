@@ -1,0 +1,162 @@
+#coding:utf-8
+<%inherit file="battleresultbase.html" />
+
+<%def name="contents()">
+	<img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_battle_select.png" width="320" height="50" style="margin-bottom:4px;"/>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">イベントバトル確認</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	%if battleevent['specialtype_long']:
+		<div class="topcap">
+			${battleevent['specialtype_long'] | h}属性のキャストはイベントバトルで<br />
+			接客力に属性ボーナスがつきます
+		</div>
+	%endif
+	
+	%if battleevent_rank['bpcost'] <= player['bp'] or flag_template_test:
+		%if o_player['is_battle_ok']:
+			<div>
+				<a class="btnpink" href="${get_html_param('url_battle_do', 'sp/btevent/battle_swf.html')}" style="margin:10 auto 0 auto;"><p class="caption">接客開始</p></a>
+			</div>
+			<div class="wrapper">
+				気力：${player['bp']}⇒${player['bp'] - battleevent_rank['bpcost']}
+			</div>
+		%else:
+			<div style="padding:16 0 16 0;">
+				<div class="caution" style="font-size:13px;">
+					${self.drawIntervalText()}
+				</div>
+			</div>
+		%endif
+	%else:
+		<div class="caution">
+			気力が不足しています
+		</div>
+		<div class="wrapper">
+			消費気力：${battleevent_rank['bpcost']}
+		</div>
+		<div class="wrapper">
+			<a href="${get_html_param('url_shop', 'sp/shop/shop.html')}"><!--
+				--><img src="${url_static_img}banner/campaign/discount/discount01.png" width="240" height="60"/><!--
+			--></a>
+		</div>
+		%for item in item_list:
+			<div class="itembox">
+				<table>
+					<td>
+						<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td class="itemtext">
+						<b>${item['master']['name'] | h}</b><br/>
+						<span style="color:#FF9900;">所持数:</span>
+							<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+					</td>
+				</table>
+				${self.drawItemLeadLinkButton(item)}
+			</div>
+			<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		%endfor
+	%endif
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">出勤キャスト</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+	<div>
+		<table style="width:300px; margin:auto;">
+			<td width="76">
+				<img src="${player['leader']['master']['thumbnail']['middle']}" width="70" height="88" />
+			</td>
+			<td>
+				<div style="padding-left:8px; font-size: 13px; line-height: 16px;">
+					${player['person']['nickname'] | h} Lv：${player['level']}<br />
+					NO.1キャスト：${player['leader']['master']['name'] | h}<br />
+					Lv：${player['leader']['level']}<br />
+					総接客力：${player['power_total']}
+				</div>
+			</td>
+		</table>
+		
+		<%
+			_membernum = len(player['deckmember'])
+			rownum = int((_membernum + Defines.BATTLE_OPPONENTDECK_COL_NUM - 1) / Defines.BATTLE_OPPONENTDECK_COL_NUM)
+		%>
+		%for row in xrange(rownum):
+			<table class="battle_ob">
+				<tr>
+					<%
+						_offset = row * Defines.BATTLE_OPPONENTDECK_COL_NUM
+						_cardnum = min(max(_membernum - _offset, 0), Defines.BATTLE_OPPONENTDECK_COL_NUM)
+						_spacenum = Defines.BATTLE_OPPONENTDECK_COL_NUM - _cardnum
+						_tr_open = '</tr><tr>'
+					%>
+					%for col in xrange(_cardnum):
+						<td>
+							<img src="${player['deckmember'][_offset+col]['master']['thumbnail']['small']}" width="60px" height="75px" />
+						</td>
+					%endfor
+					%for col in xrange(_spacenum):
+						<td width="60" height="75">
+							&nbsp;
+						</td>
+					%endfor
+				</tr>
+			</table>
+		%endfor
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">対戦相手</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		
+	<div>
+		<table style="width:300px; margin:auto;">
+			<td width="76">
+				<img src="${o_player['leader']['master']['thumbnail']['middle']}" width="70" height="88" />
+			</td>
+			<td>
+				<div style="padding-left:8px; font-size: 13px; line-height: 16px;">
+					${o_player['person']['nickname'] | h} Lv：${o_player['level']}<br />
+					NO.1キャスト：${o_player['leader']['master']['name'] | h}<br />
+					Lv：${o_player['leader']['level']}<br />
+					総接客力：${o_player['power_total']}
+				</div>
+			</td>
+		</table>
+		
+		<%
+			_membernum = len(o_player['deckmember'])
+			rownum = int((_membernum + Defines.BATTLE_OPPONENTDECK_COL_NUM - 1) / Defines.BATTLE_OPPONENTDECK_COL_NUM)
+		%>
+		%for row in xrange(rownum):
+			<table class="battle_ob">
+				<tr>
+					<%
+						_offset = row * Defines.BATTLE_OPPONENTDECK_COL_NUM
+						_cardnum = min(max(_membernum - _offset, 0), Defines.BATTLE_OPPONENTDECK_COL_NUM)
+						_spacenum = Defines.BATTLE_OPPONENTDECK_COL_NUM - _cardnum
+					%>
+					%for col in xrange(_cardnum):
+						<td>
+							<img src="${url_static_img}06/card_albam_frame_look.png" width="60px" height="75px" />
+						</td>
+					%endfor
+				</tr>
+			</table>
+		%endfor
+	</div>
+	
+	%if battleevent_rank['bpcost'] <= player['bp'] or flag_template_test:
+		%if o_player['is_battle_ok']:
+			<div>
+				<a class="btnpink" href="${get_html_param('url_battle_do', 'sp/btevent/battle_swf.html')}" style="margin:10 auto 0 auto;"><p class="caption">接客開始</p></a>
+			</div>
+		%endif
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}" ><div style="margin-left:14px;">イベントトップへ</div></a>
+	</div>
+</%def>

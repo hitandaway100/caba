@@ -1,0 +1,26 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.playertreasure",
+        "fields": {
+            "cabaretking": 0,
+            "demiworld": 0
+        }
+    },
+    {
+        "pk": 2,
+        "model": "cabaret.playertreasure",
+        "fields": {
+            "cabaretking": 0,
+            "demiworld": 0
+        }
+    },
+    {
+        "pk": 3,
+        "model": "cabaret.playertreasure",
+        "fields": {
+            "cabaretking": 0,
+            "demiworld": 0
+        }
+    }
+]

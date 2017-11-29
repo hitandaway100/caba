@@ -1,0 +1,272 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="drawManualText()">
+  <div style="padding-top:10px;">
+    <div>  
+      <div class="help_slide">
+        <input type="submit" value="${scoutevent['mainname']}とは" class="help_btn"/>  
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        期間中イベント限定エリアが開放されます。そのエリアでのスカウトを進めることで${scoutevent['point_name']}を入手することができます。<br />
+        <br />
+        エリアの最後では太客への接客が行われ、その接客に成功することで、次のエリアの開放と報酬を手に入れることができます。<br />
+        また、限定エリアのスカウト中は通常のスカウトと同じように、キャストを獲得したり超太客の来店などが発生します。<br />
+        <br />
+        限定エリアは16あり、イベント期間中に新たに4のエリアが追加されます。<br />
+        開放されているエリアを全てクリアしたあとは、最上位のスカウトが繰り返し実行できます。<br />
+        過去のスカウトに戻って遊ぶことはできません。<br />
+        <br />
+      </div>
+    </div>
+
+    %if is_open['tanzaku']:
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="${scoutevent['tanzaku_name']}とは?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          イベント超太客に接客成功する事で、獲得可能な専用アイテムです。<br />
+          「青」「紫」「緑」「紅」「黄」の5色があります。<br />
+          ${scoutevent['tanzaku_name']}を規定数使用し、イベント特別キャストの呼び出しや、チップへの交換を行う事が出来ます。<br />
+          <br />
+          <span class="red">※イベント特別キャストは、<br />チップを1枚以上所持していると呼び出すことができます。</span><br />
+        </div>
+      </div>
+
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="チップとは?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          ${scoutevent['tanzaku_name']}を交換する事で、獲得可能な専用アイテムです。<br />
+          イベント特別キャストに規定数渡す事で、キャストの業績が上がり、特別な報酬を獲得できます。<br />
+          <br />
+        </div>
+      </div>
+
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="イベント特別キャストを呼び出すには?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          決められた「${scoutevent['tanzaku_name']}」を15枚消費することで呼び出す事ができます。<br />
+          ※ただし、所持チップが0枚の時は呼び出すことができません<br />
+          <br />
+        </div>
+      </div>
+
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="イベント特別キャストの業績を上げるには?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          「${scoutevent['tanzaku_name']}」でイベント特別キャストを呼び出し、所持しているチップを付与することでそのキャストの業績を上げることができます。<br />
+          <br />
+        </div>
+      </div>
+
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="チップはどうやって手に入れるの?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          「${scoutevent['tanzaku_name']}」1枚につき、チップ1枚と交換することができます。<br />
+          ※どの色の「${scoutevent['tanzaku_name']}」とでも交換することができます<br />
+          <br />
+        </div>
+      </div>
+
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="業績を上げたキャストを獲得するには?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          イベント終了時、全ユーザー様からのチップ付与数が1位となったキャストを獲得することができます。<br />
+          ※ただし、1位となったキャストに個人で400枚以上のチップを付与している場合のみとなります。<br />
+          ※また、400枚以上チップを付与した場合でも、獲得できるキャスト数は1キャストとなります。<br />
+          <br />
+        </div>
+      </div>
+
+      <div>
+        <div class="help_slide">
+          <input type="submit" value="逢引ラブタイムとは?" class="help_btn"/>
+        </div>
+        <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+          <br />
+          イベント専用スカウト進行中に獲得する事が出来る専用アイテムの「${scoutevent['lovetime_starname']}」を
+           7つ集める事で「逢引ラブタイム」状態となり、ドロップされる${scoutevent['tanzaku_name']}が一定時間2倍になります。<br />
+          <br />
+        </div>
+      </div>
+    %endif
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="名刺の効果について" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        イベントエリアのスカウトでは限定キャストが獲得できます。<br />
+        そのままスカウトする事も可能ですが、名刺を使用する事でスカウトの成功率を高める事ができます。<br />
+        <br />
+        名刺には「普通名刺」と「上質名刺」の2種類があり、普通名刺は5%、上質名刺は10%、それぞれスカウトの成功率を上昇させることができます。<br />
+        <br />
+        また、名刺は複数枚を同時に使用する事ができ、さらに成功率を高める事ができます。<br />
+        名刺はイベントエリアのスカウト中に発生する超太客から手に入れる事ができます。<br />
+        <br />
+        ※通常エリアのスカウトから出現する超太客からは手に入りません。<br />
+        <br />
+      </div>
+    </div>
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="${scoutevent['point_name']}について" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        限定エリアのスカウトを進めることで${scoutevent['point_name']}を獲得することができます。<br />
+        ${scoutevent['point_name']}の獲得数に応じて様々な報酬を手に入れることができます。<br />
+        また、イベント終了時の獲得数でランキングを発表し、上位入賞者にはランキング報酬が配布されます。<br />
+        <br />
+        ランキング報酬を目指してより多くの${scoutevent['point_name']}獲得を目指しましょう。<br />
+        <br />
+      </div>
+    </div>
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="新店舗ランキングについて" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br>
+        各イベント開始日時より30日以前にゲームを開始されたユーザーのみ参加できるランキングです。<br>
+        新店舗ランキング報酬はイベント自体のランキング報酬とは別途で獲得する事ができます。<br>
+        また、イベント開催時にランキング対象となった後、イベント開催期間中に「ゲーム開始から30日」を超過した場合におきましても、イベント期間内はランキングが継続されます。
+        <br>
+      </div>
+    </div>
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="仲間のイベント参加によるボーナスについて" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        自分の仲間が毎日1度でもイベントスカウトを行っていると、スカウトで獲得できる${scoutevent['point_name']}にボーナスが付きます。<br />
+        イベントに参加している仲間が多いほど${scoutevent['point_name']}にボーナス付きます。<br />
+        仲間の為にもイベントへ参加し、報酬獲得を目指しましょう。<br />
+        <br />
+      </div>
+    </div>
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="フィーバーについて" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        スカウトを進めているとフィーバーモードに入ることがあります。<br />
+        フィーバー中は獲得できる${scoutevent['point_name']}にボーナスがつきます。<br />
+        フィーバーの制限時間は10分間です。<br />
+        <br />
+      </div>
+    </div>
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="スカウトガムについて" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        イベント期間中ショップにて販売されています。<br />
+        使用する事でフィーバーを発生させる事ができます。<br />
+        フィーバーの制限時間は10分間です。<br />
+        <hr />
+        <hr />
+        <font color="#ff0000">注意</font><br />
+        スカウトガムは次回イベントに持ち越す事はできません。<br />
+        イベント終了後余ったガムは全て、ガム1つにつき赤ハブドリンク【大】1個に変換されます。<br />
+        <br />
+      </div>
+    </div>
+
+    <div>
+      <div class="help_slide">
+        <input type="submit" value="特効キャストの効果について" class="help_btn"/>
+      </div>
+      <div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+        <br />
+        イベント期間中、特定の特効キャストを出勤キャスト編成をおこなうことで、スカウト中に手に入る${scoutevent['point_name']}に、編成した特効キャストのレア度やハメ管理度に合わせたボーナスがつきます。<br />
+        さらに、イベント限定エリアを進行中に出現するシルエットからキャストをスカウト成功した際にも${scoutevent['point_name']}を獲得する事ができ、特効キャストを編成していた場合にはボーナスがつきます。<br />
+        ※同名の特効キャストの効果は重複しません。<br />
+        特効キャストの詳細については「特効キャストページ」にてご確認ください。<br />
+        <br />
+      </div>
+    </div>
+  </div>
+</%def>
+
+<%def name="contents()">
+  <img src="${url_static_img}event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_reward_ranking_01.png" alt="上位報酬画像" width="320px" height="380px" style="padding-bottom:10px;"/>
+  <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+  <div class="wrapper">
+    ${self.event_schedule()}
+  </div>
+  <img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+
+  ${self.drawEventScoutEarlyBonus()}
+
+  <div>
+    ${self.eventtopic()}
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:4px;"/>
+  </div>
+
+  <img src="${url_static_img}event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_rule.png" alt="説明" width="320" height="auto" style="padding-bottom:10px;"/>
+
+  %if is_open['tanzaku']:
+    <div class="caution">
+      曜日によってキャストの出勤日が異なります。<br />
+      詳細に関してはお知らせをご確認ください。<br/>
+    </div>
+  %endif
+
+  ${self.drawManualText()}
+
+  <div style="padding:10px;">
+    <a  class="btnlong_p" href="${get_html_param('url_explain_nomination', 'sp/scoutevent/nominatecast.html')}"><div>特効キャスト詳細</div></a>
+  </div>
+
+  %if scoutevent['is_opened']:
+    <div class="titlesub" style="padding-top:4px;">
+      <div class="wrapper">
+        期間限定ガチャ
+      </div>
+    </div>
+    <div class="wrapper">
+      イベント限定のキャストをゲットしよう!!
+    </div>
+    ${self.show_gacha_banner()}
+
+    <div class="topcap">
+      ※同名の特効キャストの効果は<br />
+      重複してかかりません
+    </div>
+  %endif
+
+  ${self.eventfooter()}
+
+</%def>

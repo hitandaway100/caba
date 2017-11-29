@@ -1,0 +1,121 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%namespace name="eventbanners" file="../includes/eventbanners.html"/>
+
+<%def name="head()">
+	<link href="${url_static_css}mypage.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}flexslider.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+	<link href="${url_static_css}eventbanners.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}eventbanners.js?v=${self.js_version}"></script>
+	<style type="text/css">
+	/* --- トップページのウインドウ重なり順--- */
+	.topimage{
+	position: relative;
+	top:0px;
+	left:0;
+	 }
+	 
+	 .topwaku2{
+	position:absolute;
+	top:240px;
+	left:0px;
+	z-index: 1;
+	}
+	 
+	.topback{
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index: 0;
+	}
+	</style>
+
+</%def>
+
+<%def name="contents()">
+	<div class="topimage">
+		<div class="topback">
+			<!-- 画像ランダム表示 -->
+			<img src="${url_topimage}" width="320px" height="240px" />
+		</div>
+		<div class="topwaku2">
+			<!-- 下枠 -->
+			<img src="${url_static_img}00/id_00_01/bar_02.png" width="320px" height="33px" />
+		</div>
+	</div>
+	
+	<div class="bnback" style="margin-top: 280px;">
+		<a href="${url_enter}"><img src="${url_static_img}00/id_00_01/id_00-01_btn_001.png" width="320px" height="52px" /></a>
+	</div>
+	
+	<div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	
+	<div>
+		${eventbanners.groupEventBanners(groups, cross_promotion_args=None)}
+	</div>
+
+	
+	% if slidebanners:
+		<div class="flexslider">
+			<ul class="slides">
+				% for slidebanner in slidebanners:
+					<li>
+						%if slidebanner['jumpto']:
+							<a href="${slidebanner['jumpto']}"><img src="${slidebanner['imageurl']}" alt="${slidebanner['name'] | h}" style="width:240px; height:60px;  margin:-1px auto;" /></a>
+						%else:
+							<img src="${slidebanner['imageurl']}" alt="${slidebanner['name'] | h}" style="width:240px; height:60px;  margin:-1px auto;" />
+						%endif
+					</li>
+				% endfor
+			</ul>
+		</div>
+	% endif
+	
+	% if infomations:
+		<section class="glayinfo">
+			<div class="infotop">
+				<p>更新情報</p>
+			</div>
+			<div class="infoBack">
+				<ul>
+					%for infomation in infomations:
+						<li>
+							<a href="${get_html_param('url_detail', 'sp/infomation.html', infomation)}">
+								<div>
+									%if infomation['is_new']:
+										<img src="${url_static_img}06/new.png" width="62px" height="22px" style="margin-bottom:-6;"/>
+									%endif
+									${infomation['date']}<br/>${infomation['title']}<br/>
+								</div>
+							</a>
+						</li>
+					%endfor
+				</ul>
+				<div>
+					<a class="button" style="margin-left:180px;" href="${get_html_param('url_infomation', 'sp/infomation.html')}"><div>もっと見る</div></a>
+				</div>
+				<div style="font-size:0px;">
+				&nbsp;
+				</div>
+			</div>
+			<div class="infobtm">
+			</div>
+		</section >
+	% endif
+	
+		<div style="font-size:13px; text-align:center;">
+			<a href="${get_html_param('url_warnpage', 'sp/warnpage.html')}" style=" color:yellow;">
+				不正ユーザーへの処置につきまして
+			</a>
+		</div>
+		
+		<div class="caution" style="font-size:12px;">
+			この作品はフィクションです。<br />
+			実在の人物、団体、事件などには関係ありません
+		</div>
+</%def>

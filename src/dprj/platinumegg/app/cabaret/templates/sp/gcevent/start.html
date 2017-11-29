@@ -1,0 +1,77 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="contents()">
+	${self.topheader()}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		${self.event_schedule()}
+	</div>
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	
+	<div> 
+		${self.eventtopic()}
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />	
+	<%
+		LINE_CONTENT_NUM = 2
+	%>
+
+	<div style="padding: 12px 0;text-align:center;line-height:2;">
+		%for idx, obj in enumerate(battleevent_rank_select):
+			<table style="display:inline-block;width:280px; border:1;">
+				<tr>
+					<td width="90px">
+						<img src="${obj['cardmaster']['thumbnail']['bustup']}" width="80" height="78"/><br />
+					</td>
+					<td>
+						<span class="orange">${obj['cardmaster']['name'] | h}</span><br />
+						<div style="font-size:12px;">
+							<%doc>好感度PT倍率：${obj['str_battlepointrate']}倍<br /></%doc>
+							%if obj['no1_prizeinfo']:
+								<%
+									prizeitem = obj['no1_prizeinfo']['listitem_list'][0]
+								%>
+								グループ1位報酬<br />
+								%if prizeitem['icon']:
+									<img src="${prizeitem['icon']}" width="14px" height="14px" /><span style="height:28px; vertical-align:20%;">&nbsp;<!--
+								%else:
+									<span><!--
+								%endif
+								-->${prizeitem['name'] | h}<!--
+								%if prizeitem['rare'] is not None:
+									-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+								%endif
+								-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}獲得!
+							%endif
+						</div>
+					</td>
+				<tr>
+			</table>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		%endfor
+	</div>
+
+	<form action="${get_html_param("url_do", "sp/gcevent/top.html")}" method="post">
+		<table class="pullmenuset" style="margin:8px 0 8px 73px;">
+			<td class="pullmenu2">
+				<select name="${Defines.URLQUERY_ID}" class="select_type" style="width: 173px; height: 31px; left:73px; margin-left: -73px;">
+					%for obj in battleevent_rank_select:
+					<option value="${obj['rank']}">${obj['cardmaster']['name'] | h}</option>
+					%endfor
+				</select>
+				<div id="pull2">　</div>
+			</td>
+		</table>
+		<input type="submit" value="彼女を狙う" class="btnpink_submit" />
+	</form>
+	<div class="caution" style="font-size:12px;">
+		意中の女性は一度決定すると翌日まで変更出来ません。<br />
+		ご注意ください。
+	</div>
+</%def>

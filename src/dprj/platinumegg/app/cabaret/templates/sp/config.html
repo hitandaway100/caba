@@ -1,0 +1,108 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+	<style>
+		.fottertextline{
+			text-align:left;
+			text-indent:-1em;
+			padding-left:1em;
+			margin:4px 0;
+		}
+	</style>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">コンフィグ</p>
+	</div>
+	
+	%if is_update:
+		<div class="wrapper red">
+			設定を変更しました
+		</div>
+	%endif
+	
+	<form action="${get_html_param('url_self', 'sp/config.html')}" method="post" >
+		<input type="hidden" name="${Defines.URLQUERY_FLAG}" value="1" />
+		<div style="margin: 8px 0px;">
+			<table class="pullmenuset" style="margin-left: 8px;">
+				<td width="132px">
+					<span class="orange">・スカウト演出</span>
+				</td>
+				<td class="pullmenu2">
+					<select class="select_type" style="width: 173px; height: 31px; left:139px;" name="_scoutskip">
+						<option value="0">スキップしない</option>
+						%if playerconfigdata['scoutskip']:
+							<option value="1" selected="selected">スキップする</option>
+						%else:
+							<option value="1">スキップする</option>
+						%endif
+					</select>
+					<div class="pulltext"></div>
+				</td>
+			</table>
+		</div>
+		
+		<div style="margin: 8px 0px;">
+			<table class="pullmenuset" style="margin-left: 8px;">
+				<td width="188px">
+					<span class="orange">・自動退店</span>
+				</td>
+				<td class="pullmenu1">
+					<select class="select_type" style="width: 116px; height: 31px; left:196px;" name="_auto_sell">
+						<option value="">設定しない</option>
+						%for rare in Defines.Rarity.AUTO_SELL:
+							%if playerconfigdata['autosell'] == rare:
+								<option value="${rare}" selected="selected">${Defines.Rarity.NAMES[rare] | h}以下</option>
+							%else:
+								<option value="${rare}">${Defines.Rarity.NAMES[rare] | h}以下</option>
+							%endif
+						%endfor
+					</select>
+					<div class="pulltext"></div>
+				</td>
+			</table>
+		</div>
+		
+		<input type="submit" value="設定する" class="btnpink ev_btn" />
+	</form>
+	
+	<section class="basicinfo" style="padding-bottom:8px;">
+		<div class="basictop" >
+			<p>各項目について</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" style="margin-top: -8px;"/>
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					<div class="orange">
+						◎スカウト演出
+					</div>
+					<div class="fottertextline">
+						・スカウト中の演出をスキップさせたい場合は<br />
+						<span class="red">「スキップする」</span>を選択してください。
+					</div>
+				</li>
+				<li>
+					<div class="orange">
+						◎自動退店
+					</div>
+					<div class="fottertextline">
+						・自動退店の項目では<br />
+						<span class="red">「${'以下」、「'.join([Defines.Rarity.NAMES[rare] for rare in Defines.Rarity.AUTO_SELL])}以下」</span>を<br />
+						選ぶ事が出来ます。
+					</div>
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		
+		<div class="basicbtm">
+		</div>
+	</section>
+</%def>
+

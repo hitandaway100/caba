@@ -1,0 +1,15 @@
+#coding:utf-8
+<%inherit file="rankinggachabase.html" />
+
+<%def name="contents()">
+	
+	${self.rankinggachaslide()}
+	
+	<div style="margin: 16px 0px;">
+		<a class="btnlong" href="${get_html_param('url_ranking', 'sp/gacha/ranking.html')}">ランキングを見る</a>
+	</div>
+	
+	${self.drawRankingPrizeTabs(True)}
+	
+	${self.drawPointPrizeInfoList(pointprizelist, titleformat='{point}同伴Pt達成', titleformat_repeat='{point}以降{interval}同伴Pt達成', received_text='達成済み')}
+</%def>

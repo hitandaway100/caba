@@ -1,0 +1,868 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="content()">
+	%if player:
+		<div class="page-header">
+			<h1>
+				${player['person']['nickname'] | h}の情報
+			</h1>
+		</div>
+		
+		<h2>
+			基本情報
+		</h2>
+		<div class="row">
+			<div class="span6">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>
+								要素
+							</th>
+							<th>
+								値
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td width="30%">ユーザID</td>
+							<td>
+								${player['id'] | h}
+								%if is_ban:
+									<span class="label label-red">禁止</span>
+								%endif
+							</td>
+						</tr>
+						<tr>
+							<td>DMMID</td>
+							<td>
+								${player['dmmid'] | h}(${player['userType'] | h})
+							</td>
+						</tr>
+						<tr>
+							<td>名前</td>
+							<td>
+								${player['person']['nickname'] | h}
+							</td>
+						</tr>
+						<tr>
+							<td>インストール時間</td>
+							<td>
+								${player['itime'].strftime("%Y/%m/%d %H:%M:%S") | h}
+							</td>
+						</tr>
+						<tr>
+							<td>事前登録</td>
+							<td>
+								%if player['preregist']:
+									<span class="label label-info">Yes</span>
+								%else:
+									<span class="label label-warning">No</span>
+								%endif
+							</td>
+						</tr>
+						<tr>
+							<td>招待してくれた人</td>
+							<td>
+								%if invitedata:
+									<a href="${invitedata['url']}">${invitedata['player']['person']['nickname'] | h}(ID:${invitedata['player']['id']})</a><br />
+									${invitedata['ctime'].strftime("%Y/%m/%d %H:%M:%S") | h}<span class="label label-info">${invitedata['state'] | h}</span>
+								%else:
+									----
+								%endif
+							</td>
+						</tr>
+						%if player['regist']:
+							<tr>
+								<td>登録時間</td>
+								<td>
+									${player['ctime'].strftime("%Y/%m/%d %H:%M:%S") | h}
+								</td>
+							</tr>
+							<tr>
+								<td>タイプ</td>
+								<td>
+									${Defines.CharacterType.NAMES[player['ptype']] | h}
+								</td>
+							</tr>
+							<tr>
+								<td>体力</td>
+								<td>
+									${player.get('ap', 0)}/${player.get('apmax', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>気力</td>
+								<td>
+									${player.get('bp', 0)}/${player.get('bpmax', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>レベル</td>
+								<td>
+									${player.get('level', 0)}(Exp:${player.get('exp', 0)})
+								</td>
+							</tr>
+							<tr>
+								<td>総人件費</td>
+								<td>
+									${player.get('deckcapacity', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>カードBOX</td>
+								<td>
+									${len(deckcardlist)+len(raiddeckcardlist)+len(cardlist)}/${player.get('cardlimit', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>フレンド数</td>
+								<td>
+									${player.get('friendnum', 0)}(${len(friendlist)})/${player.get('friendlimit', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>キャバゴールド</td>
+								<td>
+									${player.get('gold', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>引抜Pt</td>
+								<td>
+									${player.get('gachapt', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>チケット</td>
+								<td>
+									ﾚｱ:${player.get('rareoverticket', 0)}&nbsp;
+									思:${player.get('memoriesticket', 0)}&nbsp;
+									運:${player.get('tryluckticket', 0)}&nbsp;
+									引:${player.get('gachaticket', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>秘宝</td>
+								<td>
+									${player.get('cabaretking', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>鍵</td>
+								<td>
+									金:${player.get('goldkey', 0)}&nbsp;
+									銀:${player.get('silverkey', 0)}
+								</td>
+							</tr>
+							<tr>
+								<td>チュートリアル</td>
+								<td>
+									%if player['tutorialstate'] == Defines.TutorialStatus.COMPLETED:
+										<span class="label label-info">済</span>
+									%else:
+										<span class="label label-warning">未</span>[${Defines.TutorialStatus.NAMES.get(player['tutorialstate'], '') | h}(${player['tutorialstate']})]
+									%endif
+								</td>
+							</tr>
+						%else:
+							<tr>
+								<td>登録状態</td>
+								<td>
+									<span class="label label-warning">未登録</span>
+								</td>
+							</tr>
+						%endif
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<h2>
+			招待成功数
+		</h2>
+		%if inviterecordlist:
+			<div class="row">
+				<div class="span6">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									招待イベント名
+								</th>
+								<th>
+									人数(報酬獲得回数)
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for inviterecord in inviterecordlist:
+								<tr>
+									<td>
+										${inviterecord['name'] | h}(ID:${inviterecord['id']})
+									</td>
+									<td>
+										${inviterecord['cnt']}
+									</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			</div>
+		%else:
+			<div class="well">
+				ありません
+			</div>
+		%endif
+		
+		%if player['regist']:
+			<h2>
+				所持アイテム
+			</h2>
+			%if itemlist:
+				<div class="row">
+					<div class="span6">
+						<table class="table table-bordered table-striped">
+							<thead>
+								<tr>
+									<th>
+										アイテム名
+									</th>
+									<th>
+										課金分
+									</th>
+									<th>
+										無料分
+									</th>
+									<th>
+										合計
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								%for data in itemlist:
+									<%
+										master = data['master'];
+										item = data['nums'];
+									%>
+									<tr>
+										<td>
+											${master.name | h}(ID:${master.id})
+										</td>
+										<td>
+											${item.rnum}
+										</td>
+										<td>
+											${item.vnum}
+										</td>
+										<td>
+											${item.num}
+										</td>
+									</tr>
+								%endfor
+							</tbody>
+						</table>
+					</div>
+				</div>
+			%else:
+				<div class="well">
+					ありません
+				</div>
+			%endif
+			
+			<h2>
+				新規追加ガチャチケット
+			</h2>
+			<div class="row">
+				<div class="span10">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									名前
+								</th>
+								<th>
+									所持数
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for data in ticket_list:
+							<tr>
+								<td>
+									${data['name'] | h}
+								</td>
+								<td>
+									${data['num']}
+								</td>
+							</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<h2>
+				所持カード
+			</h2>
+			<div class="row">
+				<div class="span10">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									ID
+								</th>
+								<th>
+									MID
+								</th>
+								<th>
+									名前
+								</th>
+								<th>
+									レベル
+								</th>
+								<th>
+									接客力
+								</th>
+								<th>
+									コスト
+								</th>
+								<th>
+									保護
+								</th>
+								<th>
+									デッキ
+								</th>
+								<th>
+									レイドデッキ
+								</th>
+								<th>
+									取得方法
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for card in (deckcardlist+raiddeckcardlist+cardlist):
+								<tr>
+									<td width="10%">
+										${card['id']}
+									</td>
+									<td width="10%">
+										${card['master']['id']}
+									</td>
+									<td>
+										${card['master']['name'] | h}
+									</td>
+									<td>
+										${card['level']}(Exp:${card['exp']})
+									</td>
+									<td>
+										${card['power']}(${card['power'] - card['takeover']}:${card['takeover']})
+									</td>
+									<td width="6%">
+										${card['master']['cost']}
+									</td>
+									<td style="text-align: center;" width="6%">
+										%if card['protection']:
+											<span class="label label-info">◯</span>
+										%endif
+									</td>
+									<td style="text-align: center;" width="4%">
+										%if card['deckmember']:
+											<span class="label label-info">◯</span>
+										%endif
+									</td>
+									<td style="text-align: center;" width="4%">
+										%if card['raiddeckmember']:
+											<span class="label label-info">◯</span>
+										%endif
+									</td>
+									<td>
+										${card['way'] | h}
+									</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<h2>
+				所持カード種類数
+			</h2>
+			<div class="row">
+				<div class="span6">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									ID
+								</th>
+								<th>
+									名前
+								</th>
+								<th>
+									所持数
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							%for mid in cardcounts.keys():
+								<%
+									countdata = cardcounts[mid]
+								%>
+								<tr>
+									<td>
+										${mid}
+									</td>
+									<td>
+										${countdata['name'] | h}
+									</td>
+									<td>
+										${countdata['cnt']}
+									</td>
+								</tr>
+							%endfor
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<h2>
+				キャバ道
+			</h2>
+			<div class="row">
+				<div class="span4">
+					%if battleplayer:
+						<%
+							rankinfo = battleplayer['rank']
+						%>
+						<table class="table table-bordered table-striped">
+							<tr>
+								<td>
+									ランク
+								</td>
+								<td>
+									%if max_rank <= rankinfo['id']:
+										ランクMAX[${rankinfo['region'] | h}&nbsp; ${rankinfo['town'] | h}]
+									%else:
+										ランク${rankinfo['id']}[${rankinfo['region'] | h}&nbsp; ${rankinfo['town'] | h}]
+									%endif
+								</td>
+							</tr>
+							<tr>
+								<td>
+									ランクアップまで
+								</td>
+								<td>
+									%if max_rank <= rankinfo['id']:
+										${rankinfo['times'] - battleplayer['times']}
+									%else:
+										----
+									%endif
+								</td>
+							</tr>
+							<tr>
+								<td>
+									連勝数
+								</td>
+								<td>
+									%if max_rank <= rankinfo['id']:
+										${battleplayer['win']}
+									%else:
+										----
+									%endif
+								</td>
+							</tr>
+						</table>
+					%else:
+						未プレイ
+					%endif
+				</div>
+			</div>
+			
+			<h2>
+				戦績
+			</h2>
+			<div class="row">
+				<div class="span4">
+					<table class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>
+									
+								</th>
+								<th>
+									勝利
+								</th>
+								<th>
+									敗北
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td width="40%">
+									攻めた時
+								</td>
+								<td>
+									${battleKOs['win']}
+								</td>
+								<td>
+									${battleKOs['lose']}
+								</td>
+							</tr>
+							<tr>
+								<td width="40%">
+									攻められた時
+								</td>
+								<td>
+									${battleKOs['win_receive']}
+								</td>
+								<td>
+									${battleKOs['lose_receive']}
+								</td>
+							</tr>
+							<tr>
+								<td width="40%">
+									計
+								</td>
+								<td>
+									${battleKOs['win_total']}
+								</td>
+								<td>
+									${battleKOs['lose_total']}
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			<h2>
+				フレンド
+			</h2>
+			${self.drawFriendList(friendlist, 'フレンドになった時間')}
+			<h2>
+				送信したフレンド申請
+			</h2>
+			${self.drawFriendList(friendrequestlist, '送信時間')}
+			<h2>
+				届いているフレンド申請
+			</h2>
+			${self.drawFriendList(friendreceivelist, '送信時間')}
+			<h2>
+				スカウトイベント
+			</h2>
+			<div class="row">
+				<div class="span8">
+					%if len(scevent) > 0:
+						%for event in scevent:
+						<h3>${event['name'] | h}</h3>
+						<table class="table table-bordered table-striped">
+							<tr>
+								<td>現在のステージ</td>
+								<td>
+									%if event['stage']:
+										ID:${event['stage'].id | h} ${event['stage'].areaname | h} ${event['stage'].name | h}
+									%else:
+										----
+									%endif
+								</td>
+							</tr>
+							<tr>
+								<td>クリア済ステージ</td>
+								<td>
+									%if event['cleared']:
+										ID:${event['cleared'].id | h} ${event['cleared'].areaname | h} ${event['cleared'].name | h}
+									%else:
+										----
+									%endif
+								</td>
+							</tr>
+							<tr>
+								<td>獲得ポイント</td>
+								<td>
+									%if event['scorerecord']:
+										${event['scorerecord'].point_total | h}
+									%else:
+										----
+									%endif
+								</td>
+							</tr>
+							<tr>
+								<td>カカオ</td>
+								<td>
+									%if event['scorerecord']:
+										${event['scorerecord'].point_gacha | h}
+									%else:
+										----
+									%endif
+								</td>
+							</tr>
+							%if event['produce_list']:
+							<tr>
+								<td>ハートプレゼント数</td>
+								<td>
+									%for name, num in event['produce_list']:
+										${name | h}:${num}<br />
+									%endfor
+								</td>
+							</tr>
+							%endif
+							<tr>
+								<td>チップ所持数</td>
+								<td>
+									${event['scorerecord'].tip if event['scorerecord'] else 0}
+								</td>
+							</tr>
+							%if event['tanzaku_list']:
+							<tr>
+								<td>指名用名刺所持数</td>
+								<td>
+									%for tanzaku in event['tanzaku_list']:
+										${tanzaku['number']}:${tanzaku['tanzakuname'] | h}：${tanzaku['userdata']['tanzaku']}<br />
+									%endfor
+								</td>
+							</tr>
+							<tr>
+								<td>チップ投入数</td>
+								<td>
+									%for tanzaku in event['tanzaku_list']:
+										${tanzaku['number']}:${tanzaku['castname'] | h}：${tanzaku['userdata']['tip']}<br />
+									%endfor
+								</td>
+							</tr>
+							<tr>
+								<td>指名中のキャスト</td>
+								<td>
+									%for tanzaku in event['tanzaku_list']:
+										%if tanzaku['current']:
+											${tanzaku['number']}:${tanzaku['castname'] | h}
+										%endif
+									%endfor
+								</td>
+							</tr>
+							%endif
+						</table>
+						%endfor
+					%else:
+					<div class="well">
+						スカウトイベントマスター未設定
+					</div>
+					%endif
+				</div>
+			</div>
+			%if battleevent:
+				<h2>
+					バトルイベント
+				</h2>
+				<div class="row">
+					<div class="span8">
+						<table class="table table-bordered table-striped">
+							<tr>
+								<td>イベント名</td>
+								<td>${battleevent['name'] | h}(ID:${battleevent['id']})</td>
+							</tr>
+							<tr>
+								<td>ランク</td>
+								<td>${battleevent['rankname'] | h}(ランク:${battleevent['rank']})</td>
+							</tr>
+							<tr>
+								<td>バトルポイント</td>
+								<td>${battleevent['point']}(Total:${battleevent['point_total']})</td>
+							</tr>
+							<tr>
+								<td>名声ポイント</td>
+								<td>${battleevent['fame_next']}(${battleevent['fame']})</td>
+							</tr>
+							<tr>
+								<td>ランク別獲得ポイント</td>
+								<td>
+									%for data in battleevent['rankscorelist']:
+										${data['rankname'] | h}:${data['score']}<br />
+									%endfor
+								</td>
+							</tr>
+							<tr>
+								<td>現在の贈り物</td>
+								<td>
+									%if battleevent['presentdata']:
+										${battleevent['presentdata']['present'].number}.${battleevent['presentdata']['present'].name | h}<br />
+										[中身:${battleevent['presentdata']['content'].id | h}(${battleevent['presentdata']['content'].name | h})]
+									%else:
+										未設定
+									%endif
+								</td>
+							</tr>
+							<tr>
+								<td>贈り物投入ポイント</td>
+								<td>
+									%if battleevent['presentdata']:
+										${battleevent['presentdata']['point']} / ${battleevent['presentdata']['present'].point}
+									%else:
+										0 / 0
+									%endif
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			%endif
+			<h2>
+				同伴ガチャ
+			</h2>
+			%if rankinggacha_list:
+				<div class="row">
+					<div class="span8">
+						<table class="table table-bordered table-striped">
+							<tr>
+								<th>ID</th>
+								<th>名前</th>
+								<th>単発</th>
+								<th>累計</th>
+								<th>初回時間</th>
+								<th>初回総計Pt</th>
+							</tr>
+							%for rankinggacha in rankinggacha_list:
+								<tr>
+									<td>${rankinggacha['id']}</td>
+									<td>${rankinggacha['name'] | h}</td>
+									<td>${rankinggacha['single']}</td>
+									<td>${rankinggacha['total']}</td>
+									<td>${rankinggacha['firsttime']}</td>
+									<td>${rankinggacha['firstpoint']}</td>
+								</tr>
+							%endfor
+						</table>
+					</div>
+				</div>
+			%else:
+				<div class="row">
+					<div class="span8">
+						未プレイです
+					</div>
+				</div>
+			%endif
+			<h2>
+				キャバクラ経営店舗
+			</h2>
+			<div class="row">
+				<div class="span8">
+					<table class="table table-bordered table-striped">
+						<tr>
+							<th>ID</th>
+							<th>名前</th>
+							<th>借りた時間</th>
+							<th>レンタル期限</th>
+							<th>更新確認時間</th>
+							<th>集客数</th>
+							<th>売上</th>
+							<th>開店中</th>
+							<th>イベント</th>
+						</tr>
+						%for cabaclubstore in cabaclubstore_list:
+							<tr>
+								<%
+									cabaclubstoremaster = cabaclubstore['master']
+								%>
+								<td>${cabaclubstoremaster['id']}</td>
+								<td>${cabaclubstoremaster['name'] | h}</td>
+								<td>${cabaclubstore['rtime'].strftime("%Y-%m-%d %H:%M:%S")}</td>
+								<td>${cabaclubstore['ltime'].strftime("%Y-%m-%d %H:%M:%S")}</td>
+								<td>${cabaclubstore['utime'].strftime("%Y-%m-%d %H:%M:%S")}</td>
+								%if cabaclubstore['is_alive']:
+									<td>${cabaclubstore['customer']}</td>
+									<td>${cabaclubstore['proceeds']}</td>
+									<td>
+										%if cabaclubstore['is_open']:
+											<span class="label label-info">◯</span>
+										%else:
+											<span class="label label-error">×</span>
+										%endif
+									</td>
+									<td>
+										%if cabaclubstore['event']:
+											<%
+												cabaclubstoreevent = cabaclubstore['event']
+												cabaclubstoreeventmaster = cabaclubstoreevent['master']
+											%>
+											${cabaclubstoreeventmaster['id']}:${cabaclubstoreeventmaster['name'] | h}<br />
+											${cabaclubstoreevent['endtime'].strftime("%Y-%m-%d %H:%M:%S")}まで(UA:${'済' if cabaclubstoreevent['ua_flag'] else '未'})
+										%else:
+											未発生
+										%endif
+									</td>
+								%else:
+									<td>-----------</td>
+									<td>-----------</td>
+									<td>
+										<span class="label label-error">×</span>
+									</td>
+									<td>
+										未発生
+									</td>
+								%endif
+							</tr>
+						%endfor
+					</table>
+				</div>
+			</div>
+		%endif
+	%endif
+</%def>
+
+<%def name="drawFriendList(friendlist, time_title)">
+	%if friendlist:
+		<div class="row">
+			<div class="span6">
+				<table class="table table-bordered table-striped">
+					<thead>
+						<tr>
+							<th>
+								アプリ内ユーザID
+							</th>
+							<th>
+								DMMID
+							</th>
+							<th>
+								${time_title | h}
+							</th>
+							<th>
+								詳細
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						%for friend in friendlist:
+							<tr>
+								<td>
+									${friend['id']}
+								</td>
+								<td>
+									${friend['dmmid']}
+								</td>
+								<td>
+									%if friend.get('f_time'):
+										${friend['f_time']}
+									%else:
+										----/--/--&nbsp;--:--:--
+									%endif
+								</td>
+								<td>
+									<a href="${friend['url']}">⇛詳細</a>
+								</td>
+							</tr>
+						%endfor
+					</tbody>
+				</table>
+			</div>
+		</div>
+	%else:
+		<div class="well">
+			ありません
+		</div>
+	%endif
+</%def>

@@ -1,0 +1,15 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.playerlogin",
+        "fields": {
+            "ltime": "2015-12-07T15:06:29+09:00",
+            "ldays": 1,
+            "pdays": 1,
+            "lbtime": "2015-12-07T15:06:29+09:00",
+            "tldays_view": 2,
+            "tldays": 1,
+            "tlmid": 0
+        }
+    }
+]

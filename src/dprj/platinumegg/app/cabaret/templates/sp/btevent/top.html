@@ -1,0 +1,428 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+  ${parent.head()}
+  <link href="${url_static_css}battleevent/top.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="${url_static_js}battleevent/top.js?v=${self.js_version}"></script>
+</%def>
+  
+<%def name="contents()">
+  <div class="scouttop">
+    <div class="scoutpic" style="position: relative; z-index:0; top:0;">
+      <img src="${battleevent_rank['thumbUrl']}" width="320px" height="140px" />
+    </div>
+    
+    <div class="btevent_flame">
+      <img src="${url_static_img}event/btevent/common/event_top_head_no1caba_640_280.png" width="320" height="140" />
+    </div>
+
+    <%doc>今使ってない
+    <div class="btevent_cast">
+      <img src="${url_static_img}event/btevent/${battleevent['codename']}/battle_cast.png" width="auto" height="124" />
+    </div>
+    
+    <div class="btevent_title">
+      <img src="${url_static_img}event/btevent/${battleevent['codename']}/battle_title.png" width="122" height="80" />
+    </div>
+    </%doc>
+
+    %if battleevent['is_battle_opened']:
+      <%doc>イベント開催中でバトルも開催中</%doc>
+      <div style="position:absolute; text-align:center; width:72px; height:auto; top:32px; left:236px; z-index: 3; font-size:13px;" >
+        <span class="red">${battleevent_rank['name'] | h}</span>
+      </div>
+      <div style="position:absolute; text-align:center; width:84px; height:auto; top:62px; left:230px; z-index: 3; font-size:12px; line-height:1.2;" >
+        <span class="red">${battleevent_rank['grouprankingdata']['rank'] or '--'}</span>位<br/>
+        %if 0 < battleevent_score['point']:
+          <span style=" font-size:6px;">(${battleevent_rank['rankuptext'] | h})</span>
+        %else:
+          <span style=" font-size:6px;">(${battleevent_rank['rankuptext_zero'] | h})</span>
+        %endif
+      </div>
+    %elif battleevent['is_opened']:
+      <%doc>イベント開催中で集計中</%doc>
+      <div style="position:absolute; text-align:center; width:72px; height:auto; top:32px; left:236px; z-index: 3; font-size:13px;" >
+        <span class="red">集計中</span>
+      </div>
+      <div style="position:absolute; text-align:center; width:72px; height:auto; top:64px; left:236px; z-index: 3; font-size:13px;" >
+        <span class="red">集計中</span>
+      </div>
+    %else:
+      <%doc>イベント終了済み</%doc>
+      <div style="position:absolute; text-align:center; width:72px; height:auto; top:32px; left:236px; z-index: 3; font-size:13px;" >
+        <span class="red">${battleevent_rank['name'] | h}</span>
+      </div>
+      <div style="position:absolute; text-align:center; width:72px; height:auto; top:64px; left:236px; z-index: 3; font-size:10px;" >
+        <span class="red">--</span>
+      </div>
+    %endif
+    
+    <div style="position:absolute; text-align:right; width:126px; height:auto; top:118px; left:176px; z-index: 3; font-size:13px; overflow:hidden; " >
+      ${battleevent_score['point']}
+    </div>
+  </div>
+  <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+  
+  %if battleevent['is_battle_opened'] and battleevent_score['point'] < 1:
+    <%doc>PT獲得後に表示を消す</%doc>
+    <div class="topcap" style="background-color: #cc00ff;">
+      バトルPTを未獲得の場合<br />
+      順位に関わらずランクUPしません
+    </div>
+  %endif
+  
+  <div class="wrapper">
+    ${self.event_schedule()}
+  </div>
+  
+  <%doc>タブ</%doc>
+  <div>
+    ${self.eventtopic()}
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+  </div>
+  
+  <div>
+    %if battleevent['is_battle_opened']:
+      ${self.feverinfo()}
+      <%doc>イベント開催中でバトルも開催中</%doc>
+      %if battleevent['timelimit_end']:
+        <div class="wrapper">
+          本日残り：<span class="yellow">${self.drawTimeLimitText(battleevent['timelimit_end'])}</span>
+        </div>
+      %endif
+      %if continue_victory_count:
+        <div id="continue_victory">
+          ${continue_victory_count}連勝中!!
+        </div>
+      %endif
+      <div style="padding-bottom:20px;">
+        <a class="btnpink" href="${get_html_param('url_battleevent_opplist', 'sp/btevent/battletop.html')}"><p class="caption">対戦相手選択へ</p></a>
+      </div>
+      <div>
+        <a class="btnlong" href="${get_html_param('url_battleevent_group', 'sp/btevent/grouprank.html')}">グループランキングを見る</a>
+      </div>
+      <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+
+      ${piece_content()}
+    %elif battleevent['is_opened']:
+      ${self.feverinfo()}
+      <%doc>イベント開催中で集計中</%doc>
+      %if battleevent['is_emergency']:
+        <div class="wrapper">
+          準備中
+        </div>
+      %elif battleevent['timelimit_start']:
+        <div class="wrapper">
+          次の開催まで：<span class="yellow">${self.drawTimeLimitText(battleevent['timelimit_start'])}</span>
+        </div>
+      %endif
+      <div>
+        <a class="btnlong" href="${get_html_param('url_mypage', 'sp/mypage.html')}">マイページへ</a>
+      </div>
+    %else:
+      <%doc>イベント終了済み</%doc>
+      <div class="wrapper orange">
+        イベントは終了しました
+      </div>
+      <div>
+        <a class="btnlong" href="${get_html_param('url_mypage', 'sp/mypage.html')}">マイページへ</a>
+      </div>  
+    %endif
+  </div>
+  
+  %if battleevent['is_opened']:
+    <div class="wrapper">
+      <a href="${get_html_param('url_battleevent_gacha', 'sp/gacha/gacha_premium.html')}"><!--
+        --><img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_gacha_banner.png" width="240" height="auto"/><!--
+      --></a><br />
+      %if battleevent['specialtype_long']:
+        <span class="orange">└${battleevent['specialtype_long'] | h}キャストが出やすいガチャ!!┘</span>
+      %endif
+    </div>
+  %endif
+    <div class="topcap">
+      ※同名の特効キャストの効果は<br>
+      重複してかかりません
+    </div>
+
+  <%doc>改修で未使用になった
+    %if not battleevent['is_emergency']:
+      %if battleevent_rank['grouprankingdata'].get('playerlist'):
+        <div>
+          <div class="titlesub" >
+            <div class="wrapper">
+              本日グループ内ランキング
+            </div>
+          </div>
+          %for _player in battleevent_rank['grouprankingdata']['playerlist'][:2]:
+            <table style="width:280px; height:70px;margin: 0 auto 0 auto;">
+              <td style="width:60px;">
+                <img src="${_player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+              </td>
+              <td>
+                <div class="itemtext">
+                  ${_player['event_rank']}位<br />
+                  %if _player['id'] == player['id']:
+                    <span  class="yellow">あなた(Lv${_player['level']})</span><br />
+                  %else:
+                    <a href="${get_html_param('url', 'sp/profile.html', _player)}"><span class="yellow">${_player['person']['nickname'] | h}さん(Lv${_player['level']})</span></a><br />
+                  %endif
+                  獲得バトルPT：<span  class="yellow">${_player['event_score']}</span><br />
+                </div>
+              </td>
+            </table>
+            <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" style="padding-bottom:10px;"/>  
+          %endfor
+          <div>
+            <a class="button" style="margin-left:194px;" href="${get_html_param('url_battleevent_group', 'sp/btevent/grouprank.html',)}"><div>もっと見る</div></a>
+          </div>
+        </div>
+      %endif
+      %if prize:
+        <div>
+          <div class="titlesub" >
+            <div class="wrapper">
+              ${battleevent_rank['name'] | h}${battleevent_rank['grouprankingdata']['rank']}位報酬
+            </div>
+          </div>
+          <table style="width:280px; height:70px;margin: 0 auto 0 auto;">
+            %for prizeitem in prize['listitem_list']:
+              <tr>
+                <td style="width:60px;">
+                  <img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg"/>
+                </td>
+                <td>
+                  <div class="itemtext">
+                    ${prizeitem['name'] | h}${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}<br />
+                  </div>
+                </td>
+              </tr>
+            %endfor
+          </table>
+          <div>
+            <a class="button" style="margin-left:194px;" href="${get_html_param('url_prizes_group_ranking', 'sp/btevent/daily_groupbonus.html',)}"><div>もっと見る</div></a>
+          </div>
+        </div>
+      %endif
+    %endif
+  </%doc>
+
+  <div>
+    <%doc>イベントデータ表示</%doc>
+    <div class="titlesub">
+      <div class="wrapper">
+        イベントデータ
+      </div>
+    </div>
+    <div style="width:300px; margin:10px; ">
+      獲得バトルPT：<span class="yellow">${battleevent_score.get('point_total') or 0}</span><br />
+      バトルランキング：<span class="yellow">${battleevent_score['rank'] or '----'}</span>位<br />
+      %if is_beginer:
+        新店舗ランキング：<span class="yellow">${battleevent_score['rank_beginer'] or '----'}</span>位<br /> 
+      %endif
+    </div>  
+    <div>
+      <a class="btnlong" href="${get_html_param('url_battleevent_grouplog', 'sp/btevent/rankloglist.html')}">ランク履歴を見る</a>
+    </div>
+
+    <%doc>バトルチケット表示</%doc>
+    <div class="titlesub">
+      <div class="wrapper">
+        バトルチケット
+      </div>
+    </div>
+    <div style="width:300px; margin:10px;">
+      % if battle_ticket_expiry_date:
+        <div class="caution blink" style="text-align: center; padding:10px 0;">
+          チケットの使用期限は${battle_ticket_expiry_date}まで!!<br/>
+          <div style="text-align: center;">期限を過ぎると消滅します!</div>
+          次のイベントまで持ち越す事は出来ません!<br/>
+        </div>
+      % endif
+      <div>
+        <div style="display: table-cell;">
+          ${battleticket['name']}
+        </div>
+        <div style="display: table-cell;">
+          ：<span class="yellow">${battleticket['num']}</span>${battleticket['unit'] | h}<br />
+        </div>
+      </div>
+    </div>
+    <div style="text-align: center; padding:10px 0;">
+      <a href="${get_html_param('url_battleticket_trade')}">
+        <img src="${url_static_img}banner/event/btevent/common/btev_exchange_shop_2.png" width="240" height="auto"/>
+      </a>
+    </div>
+    <%doc>バトルチケット表示ここまで</%doc>
+
+    <div>
+      <div class="titlesub" >
+        <div class="wrapper">
+          バトル履歴
+        </div>
+      </div>
+      %if battleloglist:
+        %for battlelog in battleloglist:
+          <section class="basicinfo">
+            <div class="basictop_s">
+            </div>
+            <div class="basicBack" style="height:80px;">
+                <ul>
+                  <li style="height:60px;">
+                  <img src="${battlelog['player']['leader']['master']['thumbUrl']}"width="60" height="60" align="left" class="itemimg"/>
+                  %if battlelog['is_win']:
+                    %if battlelog['is_attack']:
+                      <span class="red">[攻めて勝利]</span> ${battlelog['ctime'] | h}<br />
+                    %else:
+                      <span class="red">[受けて勝利]</span> ${battlelog['ctime'] | h}<br />
+                    %endif
+                  %else:
+                    %if battlelog['is_attack']:
+                      <span class="blue">[攻めて敗北]</span> ${battlelog['ctime'] | h}<br />
+                    %else:
+                      <span class="blue">[受けて敗北]</span> ${battlelog['ctime'] | h}<br />
+                    %endif
+                  %endif
+                  対戦相手：${battlelog['player']['person']['nickname'] | h}<br />
+                  %if battlelog['point']:
+                    獲得バトルポイント：${battlelog['point']}
+                  %endif
+                </li>
+              </ul>
+            </div>
+            <div class="basicbtm">
+            </div>
+          </section>
+        %endfor
+        <div>
+          <a class="button" style="margin-left:194px;" href="${get_html_param('url_battleevent_battlelog', 'sp/btevent/battlelog.html')}"><div>もっと見る</div></a>
+        </div>
+      %else:
+        <div class="list_not_found red">
+          まだありません
+        </div>
+      %endif
+    </div>
+  </div>
+  
+  <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:8px;"/>
+    ${self.eventslide()}
+  
+  <div class="red" style="padding: 4px 12px; font-size: 12px;">
+    ※新店舗ランキングはイベント開催から30日前以内に登録したユーザーが対象となります。
+  </div>
+  
+  <a id="ranking" name="ranking"></a>
+  <div style="padding-top: 8px; text-align:center;">
+    <div class="${'btn_kira' if not is_view_beginer else 'btn_kira_off'}" style="margin-bottom:-2px;">
+      <a href="${get_html_param('url_battleevent_myrank' if is_view_myrank else 'url_battleevent_ranking', 'sp/btevent/top.html') if is_view_beginer else 'javascript:void(0);'}"><div>全&nbsp;体</div></a>
+    </div>　
+    <div class="${'btn_kira' if is_view_beginer else 'btn_kira_off'}" style="margin-bottom:-2px;">
+      <a href="${get_html_param('url_battleevent_myrank_beginer' if is_view_myrank else 'url_battleevent_ranking_beginer', 'sp/btevent/top.html') if not is_view_beginer else 'javascript:void(0);'}"><div>新店舗</div></a>
+    </div>
+  </div>
+  
+  <div class="titlesub" style="padding-top:4px;">
+    <div class="wrapper">
+      %if is_view_beginer:
+        新店舗ランキング
+      %else:
+        獲得バトルPTランキング
+      %endif
+    </div>
+  </div>
+  
+  %if not is_view_beginer or is_beginer:
+    <div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-left:5px;"><!--
+      %if is_view_myrank:
+        --><a href="${get_html_param('url_battleevent_ranking_beginer' if is_view_beginer else 'url_battleevent_ranking', 'sp/btevent/ranking.html')}" class="yellow">上位ランキング</a>
+        |
+        あなたの順位
+      %else:
+        -->上位ランキング
+        |
+        <a href="${get_html_param('url_battleevent_myrank_beginer' if is_view_beginer else 'url_battleevent_myrank', 'sp/btevent/ranking.html')}" class="yellow">あなたの順位</a>
+      %endif
+    </div>
+  %endif
+  
+  %if ranking_playerlist:
+    ${self.pagenation()}
+    %for idx,player in enumerate(ranking_playerlist):
+      %if 0 < idx:
+        <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+      %endif
+      <table style="margin-left:8px; width:300px; height:90px;">
+        <td style="width:60px;">
+          <img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+        </td>
+        <td style="width:240px;">
+          <div class="itemtext">
+            ${player['event_rank']}位<br />
+            %if player.get('is_me'):
+              <span class="yellow">あなた(Lv${player['level']})</span><br />
+            %else:
+              <span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span><br />
+            %endif
+            獲得バトルPT&nbsp; :&nbsp; <span class="yellow">${player['event_score']}</span>
+          </div>
+        </td>
+      </table>
+    %endfor
+    ${self.pagenation()}
+  %else:
+    %if is_view_myrank:
+      <div class="list_not_found caution">
+        ランキングデータがありません
+      </div>
+    %else:
+      <div class="list_not_found caution">
+        まだありません
+      </div>
+    %endif
+  %endif
+</%def>
+
+<%def name="piece_content()">
+  <div id="piece_content">
+    <div id="title">
+      ピース取得状況
+    </div>
+    
+    <div id="panel">
+      %for id, card in enumerate(allrarity_piece):
+        <div class="images ${id}">
+          %if card['is_complete']:
+            <img src="${url_static_img}event/btevent/${battleevent['codename']}/${card['rarity']}/piece_complete.png" class="complete_image" />
+          %else:
+              %for y in xrange(1, 4):
+              <div class="td">
+                  %for x in xrange(1, 4):
+                  <% index = x + ((y - 1) * 3) %>
+                      %if card.get(index):
+                      <img id="mission_img_${x}" class="piece_image" src="${url_static_img}event/btevent/${battleevent['codename']}/${card['rarity']}/piece_0${index}.png" />
+                      %else:
+                      <img  id="mission_img_${index}" class="piece_image" src="" />
+                      %endif
+                  %endfor
+              </div>
+              <div style="clear:both"></div>
+              %endfor
+          %endif
+        </div>
+      %endfor
+    </div>
+    <div id="select">
+      <select>
+        %for i, card in enumerate(allrarity_piece):
+          %if card['is_complete']:
+          <option value="${i}">${card['complete_prize_name'] | h} (獲得済)</option>
+          %else:
+          <option value="${i}">${card['complete_prize_name'] | h} (${card['complete_cnt']+1 | h}枚目)</option>
+          %endif
+        %endfor
+      </select>
+    </div>
+  </div>
+</%def>

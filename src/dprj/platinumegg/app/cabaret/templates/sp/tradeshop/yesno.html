@@ -1,0 +1,64 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head()">
+    ${parent.head()}
+    <link href="${url_static_css}/tradeshop/yesno.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+  <div class="titlebar">
+    <p class="caption">Pt交換確認</p>
+  </div>
+  
+  <div class="icon_l">
+    <img src="${item['thumbUrl']}" width="90" height="90" />
+  </div>
+  
+  <div class="wrapper">
+    <div class="message">
+      %if 1 < item['itemnum']:
+        ${item['name']} x${item['itemnum']}を<br />
+        交換Ptで交換しますか？<br />
+      %else:
+        ${item['name']}を
+        <br />交換Ptで交換しますか？<br />
+      %endif
+    </div>
+    <div class="point_text">
+    所持交換Pt<br />
+    </div>
+    <%
+      balance = user_point - (item['use_point'] * usenum)
+    %>
+    %if 0 <= balance:
+      ${user_point}Pt => ${balance}Pt<br />
+    %else:
+      Ptが足りません<br />
+    %endif
+  </div>
+  
+  <div>
+    %if err_mess:
+      <div class="caution">
+        ${err_mess | h}
+      </div>
+    %else:
+
+  <table class="tablecenter">
+    <tr>
+      <td>
+        <a class="button" style="margin-top:10px;" href="${get_html_param('url_tradeshop', 'sp/tradeshop/top.html')}"><div>キャンセル</div></a>
+      </td>
+      %if 0 <= balance:
+      <td>
+        <a class="button" style="margin-top:10px;" href="${get_html_param('next_url', 'sp/tradeshop/result.html', item)}"><div>交換する</div></a>
+      </td>
+      %endif
+    </tr>
+  </table>
+    %endif
+  </div>
+  <div class="link_arrow_re">
+    <a class="btnfoot" href="${get_html_param('url_gacha', 'sp/gacha/top.html')}"><span style="margin-left:14px;">ガチャトップへ</span></a>
+  </div>
+</%def>

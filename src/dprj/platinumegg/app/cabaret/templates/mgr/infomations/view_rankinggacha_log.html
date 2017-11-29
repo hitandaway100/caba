@@ -1,0 +1,49 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			同伴ガチャ履歴
+		</h1>
+	</div>
+	<div class="well">
+		<form action="${url_view_rankinggacha_log}" method="post">
+			<select name="_mid">
+				%for master in rankinggachamaster_list:
+					%if master.id == cur_mid:
+						<option value="${master.id}" selected="selected">${master.id}:${master.name | h}</option>
+					%else:
+						<option value="${master.id}">${master.id}:${master.name | h}</option>
+					%endif
+				%endfor
+			</select>
+			<input type="submit" class="btn btn-primary" value="表示" />
+		</form>
+	</div>
+	
+	% if loglist:
+		<%include file='../inc_pagination.html' />
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>日付</th>
+					<th>ユーザー</th>
+					<th>単発</th>
+					<th>総計</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for logdata in loglist:
+					<tr>
+						<td>${logdata['ctime'] | h}</td>
+						<td><a href="${logdata['url']}">${logdata['uid'] | h}</a></td>
+						<td>${logdata['single']}</td>
+						<td>${logdata['whole']}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+		<%include file='../inc_pagination.html' />
+	%endif
+</%def>

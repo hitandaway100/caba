@@ -1,0 +1,137 @@
+#coding:utf-8
+<%inherit file="cardgetresult.html" />
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			スカウトに成功した!<br />
+			さらに良い子がいないか探してみよう。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	
+	<div class="topcap">
+		Lv10まで体力消費せず進めます
+	</div>
+	<div class="areastatus">
+		<span class="wrapper">${scout['name'] | h}</span>
+		<table class="areabox">
+			<tr>
+				<td class="areaset1" style="width:60px;">
+					達成度
+				</td>
+				<td class="areaset1" style="width:40px;">
+					${scout['percent']}%
+				</td>
+				<td class="areaset1" style="width:184px; margin-left:-10px;">
+					<div class="st_frame_big">
+						<div class="st_gauge04" style="width:${int(scout['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<table class="areabox2">
+			<tr>
+				<td class="areaset1">
+					体力
+				</td>
+				<td class="areaset2"  style="color:#FF0000;">
+					-${scout['apcost']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1">
+					経験値
+				</td>
+				<td class="areaset2">
+					${scout['exp']}
+				</td>
+			</tr>
+			<tr>
+				<td class="areaset1">
+					CG
+				</td>
+				<td class="areaset2">
+					＋${scout['goldmin']}〜${scout['goldmax']}
+				</td>
+			</tr>
+		</table>
+		
+		<table>
+			% for index, dropitem in enumerate(scout['dropitems']):
+				<tr class="area_deck" style="top:120px;left:${index * 54 + 10}px;">
+					<td> 
+						<img src="${url_static_img}01/scout_frame_photo.png"width="52px" height="52px"/><!--キャバ嬢写真の枠のみ-->
+					</td>
+					<td class="deck_photo">
+						% if dropitem['drop']:
+							<img src="${dropitem['thumbUrl']}"width="50px" height="50px"/><!--キャバ嬢の写真-->
+						% else:
+							<img src="${url_static_img}00/id_00_02/side_no_data.png"width="50px" height="50px"/>
+						% endif
+					</td>
+				</tr>
+			% endfor
+		</table>
+		
+		<!--スカウトボタン-->
+		<div class="scoutbtn">
+			<a href="${get_html_param('url_exec', 'sp/scout/scoutdo_swf.html', scout)}"><img src="${url_static_img}common/btn_sukauto.png" width="104px" height="104px"></a>
+		</div>
+	</div>
+</%def>
+
+<%def name="drawCardGetResultTop()">
+
+	<img src="${url_static_img}01/id_01_45/banner_01_45_01.png" width="320" height="100"/ >
+	
+	%if autosell:
+		<div class="confirm"><!--
+			%if _gold_add:
+				-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}${_gold_add}${Defines.ItemType.UNIT[Defines.ItemType.GOLD] | h}<!--
+			%endif
+			%if _ckt:
+				%if _gold_add:
+					-->と<br /><!--
+				%endif
+				-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}${_ckt}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}<!--
+			%endif
+			-->で退店させました。<br />
+		</div>
+	%endif
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px" />
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	%if Defines.Rarity.RARE <= card['master']['rare']:
+		<canvas id="kiraCardCanvas" width="320" height="400">
+		</canvas>
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${card['master']['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	%else:
+		<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" />
+	%endif
+	
+	<%include file="../includes/carddetail.html" args="card=card, url_static_img=url_static_img, test_skill=True"/>
+	
+	%if is_tutorial:
+		<script type="text/javascript">
+			$(function(){
+				setInterval(function(){
+					$('.s_blink').fadeOut(600, function(){$(this).fadeIn(600)});
+				}, 800);
+			});
+		</script>
+	%endif
+</%def>

@@ -1,0 +1,27 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="contents()">
+<div style="background-color:rgba(0,0,0,0.4); width:320;">
+	<div class="titlebar">
+		<p class="caption">ハプニング - 実行アニメーション</p>
+	</div>
+	
+	%if flag_template_test:
+		<div class="btncom">
+			<a href="${get_html_param('', 'sp/happening/itemget_swf.html')}">アイテム獲得</a><br />
+			<a href="${get_html_param('', 'sp/happening/levelup_swf.html')}">レベルアップ</a><br />
+			<a href="${get_html_param('', 'sp/happening/apnone.html')}">行動力不足</a><br />
+			<a href="${get_html_param('', 'sp/happening/bossappear.html')}">超太客出現</a><br />
+		</div>
+	%else:
+		<div>
+			%for resulttext in resultlist:
+				${resulttext |h}<br />
+			%endfor
+		</div>
+		<div class="btnlong" style="margin-top:10px;">
+			<a href="${url_next}">${eventtext | h}</a><br>
+		</div>
+	%endif
+</div>
+</%def>

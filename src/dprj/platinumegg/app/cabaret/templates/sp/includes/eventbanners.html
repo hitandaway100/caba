@@ -1,0 +1,94 @@
+<%namespace name="slide" file="../namespace/slide.html"/>
+
+<%def name="groupEventBanners(groups, cross_promotion_args=None, url_offerwall=None, url_offerwallR18=None)">
+	<div class="eventbanners">
+		<div class="show">
+			${self.eventBanners(event_banners=groups.show)}
+		</div>
+		%if cross_promotion_args:
+			${self.dmmCrossPromotionBanner(**cross_promotion_args)}
+		%endif
+		%if url_offerwall:
+			<a href="javascript:void(0);" onclick="window.open('${url_offerwall | h}'); return false"><img id="offerwall" src="${url_static_img}banner/dxp/offerwall_banner.png" /></a>
+		%endif
+		%if url_offerwallR18:
+			<a href="javascript:void(0);" onclick="window.open('${url_offerwallR18 | h}'); return false"><img id="offerwallR18" src="${url_static_img}banner/dxp/offerwall_bannerR18.png" /></a>
+		%endif
+		<div class="hidden">
+			<%slide:slide input_value="その他イベント">
+			${self.eventBanners(event_banners=groups.hidden)}
+			</%slide:slide>
+		</div>
+	</div>
+	
+	<style>
+		#offerwall {
+			display : block;
+			width : 280px;
+			margin : 8px auto;
+			padding-bottom : 1px;
+			padding-top : 10px;
+		}
+		#offerwallR18 {
+			display : block;
+			width : 280px;
+			margin : 8px auto;
+			padding-bottom : 1px;
+			padding-top : 10px;
+		}
+	</style>
+</% def>
+
+<%def name="eventBanners(event_banners)">
+	%if event_banners:
+		% for event_banner in event_banners:
+			<div class="bunnerwrap">
+				${self.eventBanner(eventbanner = event_banner)}
+			</div>
+		% endfor
+	% endif
+</% def>
+
+<%def name="eventBanner(eventbanner,comment=True)">
+	%if eventbanner['is_external_link']:
+		<a href="javascript:void(0);" onclick="jumpTuOutSidePage('${eventbanner['jumpto'] | h}', '${eventbanner['external_comment'] | h}'); return false;"><img src="${eventbanner['imageurl']}" width="240px" height="auto" />
+		</a>
+		% if comment and eventbanner.get('comment'):
+			<br />
+			└<a  href="javascript:void(0);" onclick="jumpTuOutSidePage('${eventbanner['jumpto'] | h}', '${eventbanner['external_comment'] | h}'); return false;">${eventbanner['comment'] | h}</a>┘
+		% endif
+	%else:
+		<a href="${eventbanner['jumpto']}"><img src="${eventbanner['imageurl']}" width="240px" height="auto" /></a>
+		% if comment and eventbanner.get('comment'):
+			<br />└<a href="${eventbanner['jumpto']}">${eventbanner['comment'] | h}</a>┘
+		% endif
+	%endif
+</% def>
+
+<%doc>DMMクロスプロモバナー</%doc>
+<%def name="dmmCrossPromotionBanner(is_pc, is_dev, app_id)">
+	%if not is_pc:
+		%if is_local:
+			<div id="dxp">
+				<img style="width:100%" src="${url_static_img}common/ad.jpg" id='dxp_img' />
+			</div>
+		%else:
+			<div id="dxp"></div>
+			%if is_dev:
+			  <input type="hidden" id="dxp_app_id" value="${app_id}" />
+        <script>!function(d,i){if(!d.getElementById(i)){var j=d.createElement("script");j.id=i;j.src="https://sbx-dxp.dmm.com/js/dxp_import.js";d.body.appendChild(j);}}(document,"dxp-import-js");</script>
+			%else:
+			  <input type="hidden" id="dxp_app_id" value="${app_id}" />
+        <script>!function(d,i){if(!d.getElementById(i)){var j=d.createElement("script");j.id=i;j.src="https://dxp.dmm.com/js/dxp_import.js?v20160217";d.body.appendChild(j);}}(document,"dxp-import-js");</script>
+			%endif
+		%endif
+		<style>
+			#dxp {
+				display : block;
+				width : 280px;
+				margin : 8px auto;
+        padding-bottom : 1px;
+			}
+		</style>
+	%endif
+</%def>

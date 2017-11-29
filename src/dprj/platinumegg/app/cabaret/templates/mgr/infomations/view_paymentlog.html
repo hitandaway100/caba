@@ -1,0 +1,84 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>
+			課金履歴
+		</h1>
+	</div>
+	<div class="well">
+		<form action="${url_view_paymentlog}" method="post">
+			<select name="_serchtype">
+				%if _serchtype == 'uid':
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid" selected="selected">アプリ内ユーザIDから</option>
+				%else:
+					<option value="dmmid">DMMIDから</option>
+					<option value="uid">アプリ内ユーザIDから</option>
+				%endif
+			</select>
+			<p>
+				<input type="text" name="_value" value="${_value or ''}" />
+			</p>
+			<p>
+				ログ種別:<br />
+				<select name="_logtype">
+					<%
+						table = (
+							('gacha', 'ガチャ'),
+							('shop', 'ショップ'),
+						)
+					%>
+					%for val,name in table:
+						%if _logtype == val:
+							<option value="${val}" selected="selected">${name | h}</option>
+						%else:
+							<option value="${val}">${name | h}</option>
+						%endif
+					%endfor
+				</select>
+			</p>
+			<p>
+				ステータス:<br />
+				<select name="_is_complete">
+					%if _is_complete:
+						<option value="0">未完了</option>
+						<option value="1" selected="selected">完了済</option>
+					%else:
+						<option value="0" selected="selected">未完了</option>
+						<option value="1">完了済</option>
+					%endif
+				</select>
+			</p>
+			<p>
+				日付[yyyy/mm/dd HH:MM:SS]:(オプション)<br />
+				<input type="text" name="_stime" value="${_stime or ''}" />から<br />
+				<input type="text" name="_etime" value="${_etime or ''}" />まで
+			</p>
+			<input type="submit" class="btn btn-primary" value="表示" />
+		</form>
+	</div>
+	% if paymentlist:
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<th>日付</th>
+					<th>商品名</th>
+					<th>数量</th>
+					<th>価格</th>
+				</tr>
+			</thead>
+			<tbody>
+				% for payment in paymentlist:
+					<tr>
+						<td>${payment['ctime'] | h}</td>
+						<td>${payment['name'] | h}</td>
+						<td>${payment['num']}</td>
+						<td>${payment['num'] * payment['unitPrice']}</td>
+					</tr>
+				% endfor
+			</tbody>
+		</table>
+	%endif
+</%def>

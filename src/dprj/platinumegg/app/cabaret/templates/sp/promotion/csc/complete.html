@@ -1,0 +1,54 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+	<script type="text/javascript">
+		function onClickBanner(){
+			to_top("${get_html_param('url_promotion_app', '')}");
+		}
+	</script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">報酬受け取り完了</p>
+	</div>
+	<div style="padding:8px 0;">
+		<div class="orange" style="margin:0 1em;text-align:center;">
+			%for idx,prize in enumerate(promotioninfo_data['prizelist']):
+				${prize['name'] | h}${prize['numtext'] | h}
+				%if idx < (len(promotioninfo_data['prizelist']) - 1):
+					<br />
+				%endif
+			%endfor
+			を獲得しました！
+		</div>
+		<div style="text-align:center;padding: 8px 0;">
+			<img src="${promotioninfo_data['prizelist'][0]['thumbUrlMiddle']}" width="110" alt="報酬画像" /><br />
+			<span class="yellow" style="font-size:12;">報酬はプレゼントボックスに届いています</span>
+		</div>
+	</div>
+	
+	<div style="padding: 8px 0;text-align:center;">
+		%if is_allend:
+			<span style="font-size:12;">報酬は全て獲得しました</span><br />
+		%else:
+			<span style="font-size:12;">報酬を獲得!残りの報酬も全てゲットしよう!</span><br />
+		%endif
+		<div style="display:inline-block;">
+			<a class="btnlong" href="${get_html_param('url_promotion_top', 'sp/promotion/csc/top.html')}" style="margin:0;">クロスプロモTOP</a>
+		</div>
+	</div>
+	
+	<div style="text-align:center; padding: 8px 0px;">
+		<a href="javascript:void(0);" onclick="onClickBanner()">
+			<img src="${url_static_img}event/crosspromo/02/bunner01.png" width="240" height="auto"/>
+		</a>
+		<div class="yellow" style="line-height:1.2;">
+			↑↑【クリムゾンセクシャルコロシアム】に↑↑<br />
+			さっそく遊びにいこう!
+		</div>
+	</div>
+	
+</%def>

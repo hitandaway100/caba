@@ -1,0 +1,50 @@
+#coding:utf-8
+<%inherit file="../sp/base.html" />
+
+<%def name="header()"></%def>
+<%def name="footer()"></%def>
+
+<%def name="contents()">
+	<div>
+		<div class="titlebar">
+			<p>HTML5演出のテスト</p>
+		</div>
+		
+		%for html5info in html5list:
+			%if html5info.get('form'):
+				<div style="text-align:center;margin-top:4px;margin-bottom:8px;">
+					<form action="${html5info['url']}" method="post">
+						%for formdata in html5info['form']:
+							%if formdata.get('choice'):
+								<select name="${formdata.get('name')}">
+									%for v in formdata['choice']:
+										%if v == formdata.get('value'):
+											<option value="${v}" selected="selected">${v}</option>
+										%else:
+											<option value="${v}">${v}</option>
+										%endif
+									%endfor
+								</select><!--
+								%if formdata.get('br'):
+									--><br /><!--
+								%endif
+								-->
+							%else:
+								<input type="${formdata.get('type') or 'text'}" name="${formdata.get('name')}" value="${formdata.get('value')}" style="width: 48px;" /><!--
+								%if formdata.get('br'):
+									--><br /><!--
+								%endif
+								-->
+							%endif
+						%endfor
+						<input type="submit" style="display:table-cell;margin:0;" class="btnlong" value="${html5info['name']}" />
+					</form>
+				</div>
+			%else:
+				<div style="margin-top:4px;margin-bottom:8px;">
+					<a class="btnlong" href="${html5info['url']}">${html5info['name'] | h}</a>
+				</div>
+			%endif
+		%endfor
+	</div>
+</%def>

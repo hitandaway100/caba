@@ -1,0 +1,92 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	%if player:
+		<div class="page-header">
+			<h1>
+				${player['person']['nickname'] | h}のパネルミッション
+			</h1>
+		</div>
+		
+		%if panellist:
+			%for panel in panellist:
+				<div>
+					<h2>
+						${panel['name'] | h}(開始時間:${panel['stime'].strftime("%Y-%m-%d %H:%M:%S") if panel['stime'] else '----'})
+						%if panel['current']:
+							<span class="label label-blue">挑戦中</span>
+						%endif
+					</h2>
+					<div class="row">
+						<div class="span10">
+							<table class="table table-bordered table-striped">
+								<thead>
+									<th>パネル</th>
+									<th>No.</th>
+									<th>ミッション</th>
+									<th>カウンタ</th>
+									<th>達成</th>
+									<th>報酬</th>
+								</thead>
+								<tbody>
+									%for idx,mission in enumerate(panel['missionlist']):
+										<tr>
+											%if idx == 0:
+												<td rowspan="${len(panel['missionlist'])}" width="256"><!--
+													%for i,m in enumerate(panel['missionlist']):
+														%if m['data'].get('etime') and m['data'].get('etime') <= now:
+															--><img src="${m['img_post']}" width="80" height="80" alt="${m['number']}済" /><!--
+														%else:
+															--><img src="${m['img_pre']}" width="80" height="80" alt="${m['number']}未" /><!--
+														%endif
+														%if i%3 == 2:
+														--><br /><!--
+														%endif
+													%endfor
+												--></td>
+											%endif
+											<td width="32">
+												${mission['number']}
+											</td>
+											<td width="120">
+												${mission['name'] | h}
+											</td>
+											<td width="32">
+												${mission['data'].get('cnt', 0)}
+											</td>
+											<td width="180">
+												%if mission['data'].get('etime') and mission['data'].get('etime') <= now:
+													<span class="label label-blue">済</span>
+													(${mission['data'].get('etime').strftime("%Y-%m-%d %H:%M:%S")})
+												%else:
+													<span class="label label-red">未</span>
+												%endif
+												%if mission['cleared']:
+													<span class="label label-blue">済</span>
+												%else:
+													<span class="label label-red">未</span>
+												%endif
+											</td>
+											<td width="180">
+												%if mission['data'].get('rtime') and mission['data'].get('rtime') <= now:
+													<span class="label label-blue">済</span>
+													(${mission['data'].get('rtime').strftime("%Y-%m-%d %H:%M:%S")})
+												%else:
+													<span class="label label-red">未</span>
+												%endif
+											</td>
+										</tr>
+									%endfor
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			%endfor
+		%else:
+			未挑戦です
+		%endif
+	%endif
+	
+</%def>

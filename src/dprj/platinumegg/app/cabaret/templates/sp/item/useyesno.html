@@ -1,0 +1,60 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p class="caption">持ち物</p>
+	</div>
+	
+	<div class="wrapper">
+		${item['master']['name'] | h}を使用しますか?
+	</div>
+	
+	<div class="icon_l">
+		<img src="${item['master']['thumbUrl']}" width="90" height="90" />
+	</div>
+	
+	<div class="wrapper">
+		<span  class="orange">所持数:</span>${item['num']}${item['master']['unit'] | h}⇒<span  class="red">${item['num']-use_num}</span>${item['master']['unit'] | h}<br/>
+	</div>
+	
+	%if is_not_enough:
+		<div style="text-align: center;">
+			所持数が足りません
+		</div>
+	%elif is_overlimit:
+		<div style="text-align: center;">
+			これ以上使用出来ません
+		</div>
+	%elif is_fever:
+		<div style="text-align: center;">
+			フィーバー中の為、使用できません
+		</div>
+	%elif is_noevent:
+		<div style="text-align: center;">
+			イベント未開催の為、使用できません
+		</div>
+	%elif not item['master']['useable']:
+		<div style="text-align: center;">
+			このアイテムは使用出来ません
+		</div>
+	%else:
+		<div>
+			<a class="btnpink" href="${get_html_param('url_use', 'sp/item/usecomplete.html')}"><p class="caption">使用する</p></a>
+		</div>
+	%endif
+	
+	%if url_scoutevent_scouttop:
+		<div style="text-align: center;">
+			<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_scoutevent_scouttop', 'sp/scoutevent/meikyu/scout.html')}">イベントスカウトヘ</a>
+		</div>
+	%endif
+	
+	${self.drawBackPageLink('sp/battle/battle.html', btn_class='btnlong', btn_style='margin-top:10px;')}
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_itemlist', 'sp/item/itemlist.html')}"><span style="margin-left:14px;">アイテムTOPへ</span></a>
+	</div>
+
+</%def>

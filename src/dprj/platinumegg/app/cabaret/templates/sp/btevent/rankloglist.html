@@ -1,0 +1,40 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<div style="padding-top:10px; padding-bottom:10px;">
+		%if battleevent_rank_list:
+			%for ranklog in battleevent_rank_list:
+				<section class="basicinfo">
+					<div class="basictop_s">
+					</div>
+					<div class="basicBack" style="height:80px;">
+						<div style="background-color:rgba(20,20,200,0.6); text-align:center; width:260px; height:auto; vertical-align: middle; border-radius: 6px; font-size:13px; margin:auto;">
+							${ranklog['cdate'] | h}結果
+						</div>
+						<ul class="link_arrow">
+							<li>
+								<a href="${get_html_param('url_detail', 'sp/btevent/ranklog.html', ranklog)}">
+									所属ランク：${ranklog['name'] | h}<br />
+									%if 0 < ranklog['grouprankingdata']['vscore']:
+										順位：${ranklog['grouprankingdata']['rank']}位(${ranklog['rankuptext'] | h})<br />
+									%else:
+										順位：${ranklog['grouprankingdata']['rank']}位(${ranklog['rankuptext_zero'] | h})<br />
+									%endif
+									獲得バトルPT：${ranklog['grouprankingdata']['vscore']}
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="basicbtm">
+					</div>
+				</section>
+			%endfor
+		%else:
+			<div class="list_not_found red">
+				履歴はありません
+			</div>
+		%endif
+	</div>
+	
+	${self.eventfooter()}
+</%def>

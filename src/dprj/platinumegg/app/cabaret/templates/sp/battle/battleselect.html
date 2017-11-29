@@ -1,0 +1,206 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="drawBattleSelectBody()">
+	<%
+		rankinfo = battleplayer['rank']
+	%>
+	<div class="wrapper">
+		%if max_rank <= rankinfo['id']:
+			対戦相手
+		%elif (rankinfo['times'] - battleplayer['times']) == 0:
+			ランクアップ戦
+		%else:
+			${battleplayer['win']+1}回戦目
+		%endif
+	</div>
+
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+	
+	<!--対戦相手デッキ-->
+	<div>
+		<table style="width:300px; margin:auto;">
+			<td rowspan="${Defines.BATTLE_OPPONENTDECK_ROW_NUM}">
+				<img src="${o_player['leader']['master']['thumbnail']['middle']}" width="70" height="88" />
+			</td>
+			<td>
+				<div style="padding-left:8px; font-size: 13px; line-height: 16px;">
+					${o_player['person']['nickname'] | h}&nbsp; Lv&nbsp; :&nbsp; ${o_player['level']}<br />
+					NO.1キャスト&nbsp; :&nbsp; ${o_player['leader']['master']['name'] | h}<br />
+					Lv&nbsp; :&nbsp; ${o_player['leader']['level']}
+				</div>
+			</td>
+		</table>
+		
+		<%
+			_membernum = len(o_player['deckmember'])
+			rownum = int((_membernum + Defines.BATTLE_OPPONENTDECK_COL_NUM - 1) / Defines.BATTLE_OPPONENTDECK_COL_NUM)
+		%>
+		%for row in xrange(rownum):
+			<table class="battle_ob">
+				<tr>
+					<%
+						_offset = row * Defines.BATTLE_OPPONENTDECK_COL_NUM
+						_cardnum = min(max(_membernum - _offset, 0), Defines.BATTLE_OPPONENTDECK_COL_NUM)
+						_spacenum = Defines.BATTLE_OPPONENTDECK_COL_NUM - _cardnum
+					%>
+					%for col in xrange(_cardnum):
+						<td>
+							<img src="${o_player['deckmember'][_offset+col]['master']['thumbnail']['small']}" width="60px" height="75px" />
+						</td>
+					%endfor
+				</tr>
+			</table>
+		%endfor
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/ >
+		
+		<div>
+			%if is_pc:
+				<a class="button" style="margin:10 auto 20 auto;" href="${get_html_param('url_battle_do', 'sp/battle/battle_swf.html')}" onclick="window.parent.reserveGetStatus();return true;"><div>挑む</div></a>
+			%else:
+				<a class="button" style="margin:10 auto 20 auto;" href="${get_html_param('url_battle_do', 'sp/battle/battle_swf.html')}"><div>挑む</div></a>
+			%endif
+		</div>
+	</div>
+	
+	
+	%if 0 < opponent_change_restnum:
+
+		<div>
+			<a class="btnlong" href="${get_html_param('url_battle_oppselect', 'sp/battle/battleselect.html')}"><div>対戦相手を更新&nbsp; あと${opponent_change_restnum}回</div></a>
+		</div>
+	%else:
+		<div class="wrapper red">
+			これ以上変更できません
+		</div>
+	%endif
+	
+		<div style="padding-bottom:20px;">
+		</div>
+	</div>
+</%def>
+
+<%def name="contents()">
+	<%
+		rankinfo = battleplayer['rank']
+	%>
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">キャバ王への道</p>
+		</div>
+		
+		<div style="margin-bottom:12px;">
+			<div class="battle_st" >
+				%if max_rank <= rankinfo['id']:
+					<div class="battle_long">
+						ランク&nbsp; :&nbsp; MAX[${rankinfo['region'] | h}&nbsp; ${rankinfo['town'] | h}]
+					</div>
+					<table class="battlebox" align="center">
+						<tr height="100%">
+							<td class="battleset1">
+								勝利条件
+							</td>
+							<td class="battleset2">
+								----<br />
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3">
+								消費気力
+							</td>
+							<td class="battleset4">
+								${rankinfo['bpcost']}<br />
+							</td>
+						</tr>
+						<tr height="100%">
+							<td class="battleset1" colspan="2" style="line-height: 2.2; font-size:10px;" >
+								ランクアップまで残クリア数
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								----
+							</td>
+						</tr>
+						<tr height="100%" style="line-height: 1.6;">
+							<td class="battleset1">
+								気力
+							</td>
+							<td class="battleset2">
+								${player['bp']}/${player['bpmax']}
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								<div class="st_frame" style="height:16px;">
+									<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+								</div>
+							</div>
+							</td>
+						</tr>
+					</table>
+				%else:
+					<div class="battle_long">
+						ランク&nbsp; :&nbsp; ${rankinfo['id']}[${rankinfo['region'] | h}&nbsp; ${rankinfo['town'] | h}]
+					</div>
+					<table class="battlebox" align="center">
+						<tr height="100%">
+							<td class="battleset1">
+								勝利条件
+							</td>
+							<td class="battleset2">
+								${rankinfo['win']}連勝<br />
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3">
+								消費気力
+							</td>
+							<td class="battleset4">
+								${rankinfo['bpcost']}<br />
+							</td>
+						</tr>
+						<tr height="100%">
+							<td class="battleset1" colspan="2" style="line-height: 2.2; font-size:10px;" >
+								ランクアップまで残クリア数
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								${rankinfo['times'] - battleplayer['times']}
+							</td>
+						</tr>
+						<tr height="100%" style="line-height: 1.6;">
+							<td class="battleset1">
+								気力
+							</td>
+							<td class="battleset2">
+								${player['bp']}/${player['bpmax']}
+							</td>
+							<td class="battle_st_space">
+							</td>
+							<td class="battleset3" colspan="2" style="text-align:left; ">
+								<div class="st_frame" style="height:16px;">
+									<div class="st_gauge02" style="width:${int(120 * player['bp'] / player['bpmax'])}">
+								</div>
+							</div>
+							</td>
+						</tr>
+					</table>
+				%endif
+			</div>
+		</div>
+		
+		<div class="titlesub">
+			<span class="titlesubtx">ライバル店選択</span>
+		</div>
+		
+		${self.drawBattleSelectBody()}
+	</div>
+
+</%def>

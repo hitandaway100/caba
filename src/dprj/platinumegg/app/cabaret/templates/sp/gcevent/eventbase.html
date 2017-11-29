@@ -1,0 +1,29 @@
+#coding:utf-8
+<%inherit file="../btevent/eventbase.html" />
+
+<%def name="head_extend()">
+</%def>
+
+<%def name="topheader()">
+<img src="${url_static_img}banner/event/gcevent/${battleevent['codename']}/${battleevent['codename']}_header.png" width="320" height="auto" style="margin-bottom:10px;"/>
+</%def>
+
+
+<%def name="eventtopic3(bar=True)">
+	%if bar:
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:8px;"/>
+	%endif
+	<div align="center" style="background-color: #8D35B8; width:310px;border-radius: 3px; line-height:2; margin-left:5px;">
+		<%doc>
+		${self.drawEventtopic(current_prize!='point', get_html_param('url_prizes_point', 'sp/gcevent/successbonus.html'), '名声PT報酬')}
+		|
+		</%doc>
+		${self.drawEventtopic(current_prize!='group_ranking', get_html_param('url_prizes_group_ranking', 'sp/gcevent/daily_groupbonus.html'), 'グループ内ランキング')}
+		|
+		${self.drawEventtopic(current_prize!='ranking', get_html_param('url_prizes_ranking', 'sp/gcevent/rankbonus.html'), 'ランキング報酬')}
+		<br />
+		${self.drawEventtopic(current_prize!='ranking_beginer', get_html_param('url_prizes_ranking_beginer', 'sp/btevent/rankbonus.html'), '新店舗ランキング報酬')}
+		|
+		${self.drawEventtopic(current_prize!='battlepoint', get_html_param('url_prizes_battlepoint', 'sp/gcevent/bpsuccessbonus.html'), '好感度PT達成報酬')}
+	</div>
+</%def>

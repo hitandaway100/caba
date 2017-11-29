@@ -1,0 +1,28 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.Player",
+        "fields": {
+            "dmmid": 8350420,
+            "preregist": 0
+        }
+    },
+    {
+        "pk": 2,
+        "model": "cabaret.player",
+        "fields": {
+            "dmmid": "8350421",
+            "itime": "2015-12-07T15:08:27+09:00",
+            "preregist": false
+        }
+    },
+    {
+        "pk": 3,
+        "model": "cabaret.player",
+        "fields": {
+            "dmmid": "8350422",
+            "itime": "2015-12-07T15:12:21+09:00",
+            "preregist": false
+        }
+    }
+]

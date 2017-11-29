@@ -1,0 +1,35 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="session_script()">
+	<script type="text/javascript">
+		if($("#body_main").css("display") == "none"){
+			$("#body_main").css("display", "");
+		}
+	</script>
+</%def>
+
+<%def name="checkFlashPlayer()"></%def>
+
+<%def name="header()">
+</%def>
+
+<%def name="execReservedGetStatus()"></%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p>非対応です</p>
+	</div>
+	<div style="margin:10px 1em 0px 1em;">
+		ご利用のブラウザは本作品非対応となっております。<br />
+		◆対応端末<br />
+		・InternetExproler 11以降<br />
+		・Firefox ver.29以降<br />
+		・Chrome ver.35以降<br />
+		・Safari 6.1.2以降
+	</div>
+</%def>
+
+
+<%def name="footer()">
+</%def>

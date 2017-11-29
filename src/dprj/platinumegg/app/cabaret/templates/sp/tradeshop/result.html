@@ -1,0 +1,30 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+  <div class="titlebar">
+    <p class="caption">Pt交換完了</p>
+  </div>
+
+  <div class="icon_l">
+    <img src="${item['thumbUrl']}" width="90" height="90"/>
+  </div>
+  
+  <div class="wrapper">
+    ${self.traderesult_text(item)}
+    <div>
+      <a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_tradeshop', 'sp/tradeshop/top.html')}"><div>Pt交換所へ</div></a>
+    </div>
+    <div class="link_arrow_re">
+      <a class="btnfoot" href="${get_html_param('url_gacha', 'sp/tradeshop/top.html')}"><span style="margin-left:14px;">ガチャトップへ</span></a>
+    </div>
+  </div>
+</%def>
+
+<%def name="traderesult_text(item)">
+  %if 1 < item['itemnum']:
+    <span class="red">交換Ptを${item['name']} x${item['itemnum']}に交換しました!</span>
+  %else:
+    <span class="red">交換Ptを${item['name']}に交換しました!</span>
+  %endif
+</%def>

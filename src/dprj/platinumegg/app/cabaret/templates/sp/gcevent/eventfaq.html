@@ -1,0 +1,98 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}help.js"></script>
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	${self.topheader()}
+	
+	<div> 
+		${self.eventtopic()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+	</div>
+
+	<div style="padding-top:10px;">
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="No.1キャバ王決定戦とは?" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+					<br>
+					・毎日LVが近いユーザー同士でグループを組み、グループ内でその日の獲得好感度PTを競います<br>
+					<HR>
+					・1日の獲得好感度PTでグループ内順位が決まりその順位により翌日のランクが変動します<br>
+					また、１日の好感度PTのグループランキングに応じて、毎日報酬を獲得する事ができます<br>
+					<HR>
+					・獲得した好感度PT数に応じてイベント全体のランキングが決定します<br>
+					<br>
+				</div>
+		</div>	
+			
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="好感度PTとは?" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+					<br>
+					・イベントページのイベントバトルから他ユーザーとバトルをすることで獲得できます<br>
+　					※イベントバトル以外で獲得することはできません<br>
+					<HR>
+					・バトル勝利時には100PTを獲得できます<br>
+					・バトル敗北時には10PTを獲得できます<br>
+					・他ユーザーから挑まれたバトルに勝利すると50PTを獲得できます<br>
+					<HR>
+					・自分よりLvの高い相手に勝利すると好感度PTの獲得量が増えます<br>
+					<br>
+				</div>
+		</div>	
+		
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="ランクを上げるには？" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+					<br>
+					・毎日各ランクの順位によって翌日のランクが決まります<br>
+　					※ランクは上がるだけではなく順位によっては下がることもあります<br>
+					<HR>
+					・各ランクによってグループの参加人数が変動します<br>
+					<HR>
+					・グループ内ランキングの集計は毎日25:00が締切です<br>
+					・グループ作成後のAM4時から当日分の集計が始まります<br>
+					<HR>
+					・イベント初日は全ユーザーが「無名の店」からスタートします<br>
+　					※翌日以降のイベント新規参加ユーザーは「普通の店」からのスタートになります<br>
+					<HR>
+					・キャバ王ランクのユーザーには毎日イベントに参加する度にレア以上チケットと10000CGが配布されます<br>
+					<HR>
+					ランク詳細<br>
+					　高　　キャバ王<br>
+					　↑　　超人気店<br>
+					　　　　有名店<br>
+					　　　　普通の店<br>
+					　低　　無名の店<br>
+					<br>
+				</div>
+		</div>
+		
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="属性ボーナスとは？" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+					<br>
+					・イベントバトル限定で特定の属性に接客力ボーナスが付きます<br>
+					<HR>
+					・ボーナスの倍率はレア度とハメ管理Lvによって変わります<br>
+					<br>
+				</div>
+		</div>
+
+	</div>
+	
+	${self.eventfooter()}
+
+</%def>

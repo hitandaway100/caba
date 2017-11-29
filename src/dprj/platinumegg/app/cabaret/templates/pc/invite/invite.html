@@ -1,0 +1,40 @@
+#coding:utf-8
+<%inherit file="../../sp/invite/invite.html" />
+<%def name="head()">
+	${self.invite_script()}
+</%def>
+
+<%def name="invite_url()">javascript:inviteFriends()</%def>
+
+<%doc>PC用招待スクリプト</%doc>
+<%def name="invite_script()">
+	<script type="text/javascript">
+		function inviteFriends() {
+			// parent.document: for Opera compatibility
+			var target = (parent.parent.postMessage ?
+					parent.parent : (parent.parent.document.postMessage ? parent.parent.document : undefined));
+			if (typeof target != 'undefined') {
+				var json = '{"type":"invite"}';
+				target.postMessage(json, '*');
+				console.log("post message from invite");
+			}
+		}
+
+		window.addEventListener(
+			"message",
+			function(e) {
+				console.log("message received");
+				console.log(e.origin);
+				if(e.origin == 'http://${web_global_host}') {
+					console.log(e.data);
+					var item = JSON.parse(e.data);
+					var url = item["finish_page_url"];
+					if(typeof url != 'undefined') {
+						location.href = url;
+					}
+				}
+			},
+			false
+		);
+	</script>
+</%def>

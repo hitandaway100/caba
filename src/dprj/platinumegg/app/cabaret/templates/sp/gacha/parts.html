@@ -1,0 +1,29 @@
+<%def name="drawFooterText(texts)">
+  <section class="basicinfo" style="padding-bottom:10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+    </div>
+
+    <div class="basicBack">
+      <ul>
+        <li>
+          <div>
+            %for text in texts:
+              <div class="fottertextline">
+                ・${caller.body(text)}
+              </div>
+            %endfor
+          </div>
+        </li>
+      </ul>
+
+      <div style="font-size:0px;">
+        &nbsp;
+      </div>
+    </div>
+
+    <div class="basicbtm">&nbsp;
+    </div>
+  </section>
+</%def>

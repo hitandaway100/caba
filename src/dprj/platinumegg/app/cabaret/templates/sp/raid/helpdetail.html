@@ -1,0 +1,82 @@
+#coding:utf-8
+<%inherit file="../happening/bossappear.html" />
+
+<%def name="happeningtop()">
+	<div class="scouttop" style="height:242px;">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		<%doc>残り時間表示に満足度を足して表示する</%doc>
+		<div class="scoutflame">
+			<span class="wrapper">超太客来店中</span>
+		</div>
+		${self.happeningsatisfaction()}
+		${self.happeningtime()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		
+		<div class="boss_coment">
+			<div class="coment_text">
+				${happening['raid']['commentappear'] | h}
+			</div>
+			%if damagerecordlist:
+				<div class="caution" style="margin-top:-2px;">
+					${len(damagerecordlist)}人接客中!!
+				</div>
+			%endif
+		</div>
+	</div>
+</%def>
+
+<%def name="playerstatus()"></%def>
+<%def name="areastatus()"></%def>
+<%def name="prizelist()"></%def>
+
+<%def name="happeningFooter()">
+	
+	${self.drawTreasureInfo()}
+	
+	%if damagerecordlist:
+		<div class="titlesub2">
+			<div class="wrapper">
+				接客履歴
+			</div>
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		
+		<!--接客履歴-->
+		<div>
+			<%
+				_bar = ''
+			%>
+			%for damagerecord in damagerecordlist:
+				${_bar}
+				<table style="margin-left:8px;">
+					<td>
+						<img src="${damagerecord['thumbUrl']}" width="60" height="60"  class="itemimg"/>
+					</td>
+					<td>
+						<div style="font-size:14px;">
+							%if damagerecord['id'] == player['id']:
+								${damagerecord['nickname'] | h}[指名]<br />
+							%else:
+								${damagerecord['nickname'] | h}[ヘルプ]<br />
+							%endif
+							<span  class="orange">レベル:</span>${damagerecord['level']}<br />
+							<span  class="orange">満足度</span>を${damagerecord['damage']}上げた
+						</div>
+					</td>
+				</table>
+				<%
+					_bar = '<img src="'+url_static_img+'common/kyoutsu_bar_06.png" width="320" height="5" />'
+				%>
+			%endfor
+		</div>
+	%endif
+	<!--接客履歴ここまで-->
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="javascript:history.back()"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>

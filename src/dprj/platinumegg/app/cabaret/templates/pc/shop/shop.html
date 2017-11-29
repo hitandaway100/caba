@@ -1,0 +1,86 @@
+#coding:utf-8
+<%inherit file="../../sp/shop/shop.html" />
+
+<%def name="shopitem_payment_form(shopitem, index)">
+	<form name="form_name${index}" action="#" onSubmit="return doShopPayment('form_name${index}')">
+		<input type="hidden" name="_sku_id" value="${shopitem['id']}" />
+		<input type="hidden" name="_price" value="${shopitem['price']}" />
+		<input type="hidden" name="_name" value="${shopitem['name']}" />
+		<input type="hidden" name="_description" value="${shopitem['text']}" />
+		<input type="hidden" name="_image_url" value="${shopitem['thumbUrl']}" />
+		<input type="hidden" name="_finish_page_url" value="${get_html_param('url_result', 'sp/shop/buyresult.html', shopitem)}" />
+		<table class="pullmenuset" style="margin-left:120px;">
+			<tr>
+				<%
+					buyable_num = 10
+					if 0 < shopitem['stock']:
+						buyable_num = min(10, shopitem.get('rest', 0))
+				%>
+				%if buyable_num == 1:
+					<td width="88px">
+						<input type="hidden" name="${num_key}" value="1" />
+					</td>
+				%else:
+					<td class="pullmenu3">
+						<select class="select_type" name="${num_key}" style="width: 80px; height: 31px; left:106px; margin-left: -106px;">
+							%for i in xrange(buyable_num):
+								<option value="${i+1}">${i+1}${shopitem['unit'] | h}</option>
+							%endfor
+						</select>
+						<div id="pull1"></div>
+					</td>
+				%endif
+				<td style="width:98px;"><input type="submit" value="ポイントで購入" class="buttonshop" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/></td>
+			</tr>
+		</table>
+	</form>
+</%def>
+
+<%doc>PC用課金スクリプト</%doc>
+<%def name="payment_script_pc()">
+	<script type="text/javascript">
+		function doShopPayment(form_name) {
+			// parent.document: for Opera compatibility
+			var target = (parent.parent.postMessage ?
+					parent.parent : (parent.parent.document.postMessage ? parent.parent.document : undefined));
+			if (typeof target != 'undefined') {
+				var count;
+				if(document.forms[form_name]._num.tagName == "SELECT"){
+					count = document.forms[form_name]._num.options[document.forms[form_name]._num.selectedIndex].value;
+				}
+				else{
+					count = document.forms[form_name]._num.value;
+				}
+				var json = '{"type":"payment_shop",';
+				json += '"sku_id":"' + document.forms[form_name]._sku_id.value + '",';
+				json += '"price":"' + document.forms[form_name]._price.value + '",';
+				json += '"count":"' + count + '",';
+				json += '"name":"' + document.forms[form_name]._name.value + '",';
+				json += '"description":"' + document.forms[form_name]._description.value + '",';
+				json += '"image_url":"' + document.forms[form_name]._image_url.value + '",';
+				json += '"finish_page_url":"' + document.forms[form_name]._finish_page_url.value + '"}';
+				target.postMessage(json, '*');
+				console.log("post message from shop");
+			}
+			// always return false.
+			return false;
+		}
+
+		window.addEventListener(
+			"message",
+			function(e) {
+				console.log("message received");
+				console.log(e.origin);
+				if(e.origin == 'http://${web_global_host}') {
+					console.log(e.data);
+					var item = JSON.parse(e.data);
+					var url = item["finish_page_url"];
+					if(typeof url != 'undefined') {
+						location.href = url + "&paymentId=" + item["payment_id"];
+					}
+				}
+			},
+			false
+		);
+	</script>
+</%def>

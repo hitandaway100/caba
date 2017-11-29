@@ -1,0 +1,22 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+<div style="background-color:rgba(0,0,0,0.4); width:320;">
+	<div class="titlebar">
+		<p class="caption">バトル - 実行アニメーション</p>
+	</div>
+	
+	%if flag_template_test:
+		<div class="btnwin">
+			<a href="${get_html_param('', 'sp/battle/battlewin.html')}">バトル(勝ち)</a>
+		</div>
+		<div class="btnlose">
+			<a href="${get_html_param('', 'sp/battle/battlelose.html')}">バトル(負け)</a>
+		</div>
+	%else:
+		1秒後に次のページへ移動します。
+		<meta http-equiv="refresh" content="1;url=${url_next}">
+	%endif
+</div>
+</%def>

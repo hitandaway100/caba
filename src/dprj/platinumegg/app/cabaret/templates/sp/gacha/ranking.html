@@ -1,0 +1,109 @@
+#coding:utf-8
+<%inherit file="rankinggachabase.html" />
+
+<%def name="contents()">
+	<%
+		if not rankinggacha['is_support_totalranking']:
+			pointname = '獲得同伴Pt'
+			rankingname = 'ランキング'
+		elif is_single:
+			pointname = '獲得同伴Pt'
+			rankingname = '単発ランキング'
+		else:
+			pointname = '獲得総同伴Pt'
+			rankingname = '累計ランキング'
+	%>
+	<div class="titlebar">
+		<p>${rankingname}</p>
+	</div>
+	
+	${self.rankinggachaslide()}
+	
+	<div style="margin: 16px 0px;">
+		%if rankinggacha['is_support_totalranking']:
+			%if is_single:
+				<a class="btnlong" href="${get_html_param('url_ranking_total', 'sp/gacha/ranking.html')}">累計ランキングを見る</a>
+			%else:
+				<a class="btnlong" href="${get_html_param('url_ranking_single', 'sp/gacha/ranking.html')}">単発ランキングを見る</a>
+			%endif
+		%endif
+		<a class="btnlong" href="${get_html_param('url_prize', 'sp/gacha/rankingprize.html')}">報酬を確認する</a>
+	</div>
+	
+	%if same_rankingmaster_linklist and 1 < len(same_rankingmaster_linklist):
+		<div style="margin: 4px 0px;">
+			<div align="center" style="background-color: #8D35B8; width:310px; border-radius: 3px; line-height:2; margin-top:0px; margin-left:5px;"><!--
+				%if same_rankingmaster_linklist:
+					%for idx,data in enumerate(same_rankingmaster_linklist):
+						%if 0 < idx:
+							%if idx % 2 == 0:
+								--><br /><!--
+							%else:
+								-->|<!--
+							%endif
+						%endif
+						%if not is_whole and data['boxid'] == rankinggacha['boxid']:
+							-->${data['name'] | h}ランキング<!--
+						%else:
+							--><a href="${get_html_param('url', 'sp/gacha/ranking.html', data)}" style="color: #FFff00;">${data['name'] | h}ランキング</a><!--
+						%endif
+					%endfor
+				%endif
+			--></div>
+		</div>
+	%endif
+	
+	<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-top:0px; margin-left:5px;">
+		%if is_view_myrank:
+			<a href="${get_html_param('url_ranking_all', 'sp/gacha/ranking.html')}" style="	color: #FFff00;">上位ランキング</a>
+			|
+			あなたの順位
+		%else:
+			上位ランキング
+			|
+			<a href="${get_html_param('url_ranking_myrank', 'sp/gacha/ranking.html')}" style="color: #FFff00;">あなたの順位</a>
+		%endif
+	</div>
+	
+	%if playerlist:
+		<div style="margin-bottom:16px;">
+			%if not is_view_myrank:
+				${self.pagenation()}
+			%endif
+			%for idx,player in enumerate(playerlist):
+				%if 0 < idx:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+				%endif
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td style="width:60px;">
+						<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td style="width:240px;">
+						<div class="itemtext">
+							${player['event_rank']}位<br />
+							%if player.get('is_me'):
+								<span class="yellow">あなた(Lv${player['level']})</span><br />
+							%else:
+								<span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span><br />
+							%endif
+							${pointname}：<span class="yellow">${player['event_score']}</span>Pt
+						</div>
+					</td>
+				</table>
+			%endfor
+			%if not is_view_myrank:
+				${self.pagenation()}
+			%endif
+		</div>
+	%else:
+		%if is_view_myrank:
+			<div class="list_not_found caution">
+				ランキングデータがありません
+			</div>
+		%else:
+			<div class="list_not_found caution">
+				まだありません
+			</div>
+		%endif
+	%endif
+</%def>

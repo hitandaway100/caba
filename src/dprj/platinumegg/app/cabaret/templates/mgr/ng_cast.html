@@ -1,0 +1,67 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="content()">
+    <div class="page-header">
+        <h1>NGキャストの管理</h1>
+    </div>
+
+    <div class="well">
+        <p><strong>キャストを追加</strong></p>
+        <form action="${url_add}" method="post" onsubmit="return window.confirm('アクセス禁止に登録します。');">
+            <p>
+                キャスト名:<br />
+                <input type="text" name="_name" value="" />
+            </p>
+            <input type="submit" class="btn" value="追加" />
+        </form>
+    </div>
+
+    <div class="well">
+        <form action="${url_edit}" method="post" onsubmit="return window.confirm('本当に保存しますか？')">
+            <p>NGキャストのチェックを無効: <input type="checkbox" name="ngcast_check" /></p>
+            <div class="btn-group"><input type="submit" class="btn btn-primary" value="変更を保存する" /></div>
+        </form>
+    </div>
+
+    <p><strong>NGキャスト一覧</strong></p>
+    <div class="well">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        キャスト名
+                    </th>
+                    <th>
+                        キャストID
+                    </th>
+                    <th>
+                        NGキャストのチェックを無効
+                    </th>
+                </tr>
+            </thead>
+            
+            %if ngcasts_each_album:
+                <tbody>
+                    %for ngcasts in ngcasts_each_album.values():
+                        <tr>
+                            <td>
+                                ${ngcasts[0]["name"]}
+                            </td>
+                            <td>
+                                ${[x["id"] for x in ngcasts]}
+                            </td>
+                            <td>
+                                %if ngcasts[0]["flag"]:
+									<span class="label label-blue">◯</span>
+								%else:
+									<span class="label label-red">Ｘ</span>
+								%endif
+                            </td>
+                        </tr>
+                    %endfor
+                </tbody>
+            %endif
+        </table>
+    </div>
+</%def>

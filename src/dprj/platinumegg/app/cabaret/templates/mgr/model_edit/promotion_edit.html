@@ -1,0 +1,25 @@
+#coding:utf-8
+<%inherit file="base_index.html" />
+
+<%def name="additionalJS()">
+	<script type="text/javascript">
+		function onChangeApps(app_select_tag){
+			var option = app_select_tag.options[app_select_tag.options.selectedIndex];
+			location.href = location.pathname + '?appname=' + option.value;
+		}
+	</script>
+</%def>
+
+<%def name="contents_top()">
+	<div>
+		<select onchange="onChangeApps(this);">
+			%for appname in promotion_apps:
+				%if promotion_appname == appname:
+					<option value="${appname}" selected="selected">${appname | h}</option>
+				%else:
+					<option value="${appname}">${appname | h}</option>
+				%endif
+			%endfor
+		</select>
+	</div>
+</%def>

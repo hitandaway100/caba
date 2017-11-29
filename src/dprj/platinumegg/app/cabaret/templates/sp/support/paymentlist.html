@@ -1,0 +1,95 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p class="caption">課金履歴</p>
+	</div>
+	
+	<form action="${url_support_paymentlist}" method="post" style="width:320px;text-align: center;">
+		<table class="pullmenuset">
+			<tr>
+				<td class="pullmenu1">
+					<select class="select_type" name="_kind" style="width: 116px;; height: 31px;">
+						%if kind == "shop":
+							<option value="gacha">ガチャ</option>
+							<option value="shop" selected="selected">ショップ</option>
+						%else:
+							<option value="gacha" selected="selected">ガチャ</option>
+							<option value="shop">ショップ</option>
+						%endif
+					</select>
+					<div id="pull1">
+					</div>
+				</td>
+				<td class="pullmenu2">
+					<select class="select_type" name="_comp" style="width: 173px; height: 31px; left:130;">
+						%if is_complete:
+							<option value="0">未完了</option>
+							<option value="1" selected="selected">完了済</option>
+						%else:
+							<option value="0" selected="selected">未完了</option>
+							<option value="1">完了済</option>
+						%endif
+					</select>
+					<div id="pull2">
+					</div>
+				</td>
+			</tr>
+		</table>
+		<input type="submit" class="button" value="更 新" style="margin: auto;" />
+	</form>
+	
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="3" />
+		% if paymentlist:
+			% for idx, payment in enumerate(paymentlist):
+				%if idx != 0:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+				%endif
+				<div style="padding: 8 0 8 16;">
+					%if is_complete:
+						日付　:&nbsp;${payment['ctime'] | h}[<span class="pink">済</span>]<br />
+					%else:
+						日付　:&nbsp;${payment['ctime'] | h}[<span class="red">未</span>]<br />
+					%endif:
+					商品名:&nbsp;${payment['name'] | h}<br />
+					数量　:&nbsp;${payment['num']}<br />
+					価格　:&nbsp;${payment['num'] * payment['unitPrice']}ポイント
+					%if not is_complete:
+						<div style="text-align: right;">
+							<a href="${payment['url_continue']}">購入を続ける&gt;&gt;</a>
+						</div>
+					%endif:
+				</div>
+			% endfor
+		%else:
+			<div class="list_not_found">
+				課金履歴はありません
+			</div>
+		%endif
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="3" />
+	</div>
+	
+	<table align="center" width="320" height="18px" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td width="68px">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px">　</div>
+				%endif
+			</td>
+			<td width="84px">
+			</td>
+			<td width="68px">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+</%def>

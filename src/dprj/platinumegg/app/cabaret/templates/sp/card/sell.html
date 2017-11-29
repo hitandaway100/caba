@@ -1,0 +1,71 @@
+#coding:utf-8
+<%inherit file="cardlistbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<script type="text/javascript" src="${url_static_js}sell.js?v=0"></script>
+</%def>
+
+<%def name="tabs()">
+	<div class="selltab">
+		<ul class="tabs clearFix" id="tabs" style="width: 320px; margin:4 0 4 12;">
+			<li id="tab1">
+				<a href="${get_html_param('url_cardbox', 'sp/card/cardbox.html')}">一 &nbsp; 覧</a>
+			</li>
+			<li id="tab2">
+				<a onclick="return false;">退 &nbsp; 店</a>
+			</li>
+			<li id="tab3">
+				<a href="${get_html_param('url_transfer', 'sp/card/transfer.html')}">異 &nbsp; 動</a>
+			</li>
+		</ul>
+		<script type="text/javascript">
+			topics(2); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+</%def>
+
+<%def name="select_card()">
+	<%
+		ckindlist = (
+			Defines.CardKind.ListFilterType.CAST_ONLY,
+			Defines.CardKind.ListFilterType.ACCESSORIES_ONLY,
+			Defines.CardKind.ListFilterType.RING_ONLY,
+			Defines.CardKind.ListFilterType.ALL_KIND,
+		)
+	%>
+	<%include file="../includes/select_card.html" args="Defines=Defines, url_post=url_self, ctype=ctype, sortby=sortby, rare=maxrare, ckind=ckind_type, ckindlist=ckindlist" />
+</%def>
+
+<%def name="confirm_text()">
+	<div>
+		<a class="btnlong" onclick="onClickAllCheckButton('#cardsell_form'); return false;"><div>すべてチェック</div></a>
+	</div>
+	<div style="text-align:center; margin:8 0 8 0px;">
+		<input type="button" value="一括退店させる" class="sell_on btnsell_on" style="display:none;" onclick="$('#cardsell_form')[0].submit()"/>
+		<input type="button" value="一括退店させる" disabled="true" class="sell_off btnsell_off" / >
+	</div>
+</%def>
+
+<%def name="draw_cardlist()">
+		%if cardlist:
+			<form id="cardsell_form" action="${get_html_param('url_sellyesno', 'sp/card/sellyesno.html')}" method="post">
+				%for i in xrange(len(cardlist)):
+					<%
+						card = cardlist[i]
+						checkboxname = '%s%s' % (Defines.URLQUERY_CARD, i)
+					%>
+					<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='sell', get_html_param=get_html_param, test_skill=True, checkboxname=checkboxname, Defines=Defines"/>
+				%endfor
+				<div style="text-align:center; margin-top:8px;">
+					<input type="submit" value="一括退店させる" class="sell_on btnsell_on" style="display:none;"/>
+					<input type="submit" value="一括退店させる" disabled="true" class="sell_off btnsell_off"/ >
+				</div>
+			</form>
+		%else:
+			<div class="list_not_found">
+				選択できるキャストがいません
+			</div>
+		%endif
+</%def>
+

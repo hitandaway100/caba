@@ -1,0 +1,54 @@
+#coding:utf-8
+<%inherit file="scoutresultbase.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="scouttop">
+			${self.drawChampagneCallHostImg()}
+			
+			<div class="scoutpic" style="position: relative; z-index:1;">
+				<img src="${boss['thumbUrl']}" style="width:320px;height:180px;"/>
+			</div>
+			
+			<div class="scoutpic" style="position: absolute; z-index:0; top:0;">
+				<img src="${scout['thumbUrl']}" style="width:320px;height:180px;"/>
+			</div>
+			
+			<div class="scoutflame">
+				%if happening['raid']:
+					<span class="wrapper">${happening['raid']['name'] | h}Lv${happening['raid']['level']}来店</span>
+				%else:
+					<span class="wrapper">超太客来店</span>
+				%endif
+			</div>
+			<div class="scouttime">
+				<%
+					_hours = happening['timelimit']['hours']
+					_minutes = happening['timelimit']['minutes']
+					_seconds = happening['timelimit']['seconds']
+				%>
+				%if _hours:
+					残り時間:${_hours}時間${'%02d' % _minutes}分${'%02d' % _seconds}秒
+				%else:
+					残り時間:${_minutes}分${'%02d' % _seconds}秒
+				%endif
+			</div>
+		</div>
+		
+		${self.drawScoutResultInfo(line=False)}
+		
+		<div style="padding-top:4px;">
+			%if happening['raid']['combobonus']:
+				<a class="btnpinkbig" href="${get_html_param('url_happening', 'sp/happening/happening.html')}"><p class="caption" style="font-size:20px;">イベント太客を接客</p></a>
+			%else:
+				<a class="btnpinkbig" href="${get_html_param('url_happening', 'sp/happening/happening.html')}"><p class="caption">超太客を接客する</p></a>
+			%endif
+		</div>
+		
+		<div style="margin-top:30px;">
+			<a class="btnpink" href="${get_html_param('url_scoutdo', 'sp/happening/happening.html')}"><p class="caption">スカウトを続ける</p></a>
+		</div>
+		<div style="padding-bottom:20px;">
+		</div>
+	</div>
+</%def>

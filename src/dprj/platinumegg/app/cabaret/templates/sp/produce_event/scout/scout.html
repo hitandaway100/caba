@@ -1,0 +1,185 @@
+#coding:utf-8
+<%inherit file="../eventbase.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	${self.putScoutButtonScript()}
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="scouttop" style=" width : 320px;">
+			<div class="scoutpic" style="position:relative;">
+				<img src="${scout['thumbUrl']}" style="width:320px;height:180px;"/>
+			</div>
+			%if areaboss:
+			<div class="scoutpic2">
+				<img src="${areaboss['thumbUrl']}" width="320" height="180"/>
+			</div>
+			<div class="scoutflame">
+				<span class="wrapper">${scout['areaname'] | h}でスカウト</span>
+			</div>
+			<div class="boss_coment">
+				<div class="coment_text">
+					${areaboss['commentappear'] | h}
+				</div>
+			</div>
+			%else:
+				<div class="scoutflame">
+					<span class="wrapper">${scout['areaname'] | h}でスカウト</span>
+				</div>
+			%endif
+		</div>
+
+		%if areaboss:
+			<div class="btn_ontext">
+				<a href = "${get_html_param('url_bossbattle', 'sp/boss/bosspre.html')}"><img src="${url_static_img}01/id_01_20/btn_boss.png" style="width:232px;height:49px;"/></a>
+			</div>
+		%endif
+		</div>
+
+		<div class="scoutstatus">
+			<table class="setbox">
+				<tr>
+					<td class="scset1">
+						体力
+					</td>
+					<td class="scset2">
+						${player['ap']}/${player['apmax']}
+					</td>
+					<td class="scset3">
+						経験値
+					</td>
+					<td class="scset4">
+						${player['exp'] - player['exp_prev']}/${player['exp_next'] - player['exp_prev']}
+					</td>
+				</tr>
+				<tr>
+					<td class="scset1" colspan="2">
+						<div class="st_frame" style="height:16px; margin-left:-4px;">
+							<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}"><%doc>バーは仮</%doc></div>
+						</div>
+					</td>
+					<td class="scset3" colspan="2">
+						<div class="st_frame" style="height:16px; margin-left:-4px;">
+							<%
+								exp_diff = player['exp_next'] - player['exp_prev']
+								exp_percent = 100
+								if 0 < exp_diff:
+									cur_exp = max(0, player['exp'] - player['exp_prev'])
+									exp_percent = min(100, 100 * cur_exp / exp_diff)
+							%>
+							<div class="st_gauge02" style="width:${int(exp_percent * 120 / 100)};"><%doc>バーは仮</%doc></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table class="setbox">
+				<tr>
+					<td class="scset5">
+						${gold_name | h}
+					</td>
+					<td class="scset6">
+						${player['gold']}CG
+					</td>
+				</tr>
+			</table>
+		</div>
+
+		<div>
+			% if overlimit_treasure:
+				<div class="caution">
+					% for treasure_type in overlimit_treasure:
+						${Defines.TreasureType.NAMES[treasure_type] | h}が最大数に達しています<br>
+					% endfor
+				</div>
+			% endif
+		</div>
+
+		<div style="padding: 8px 0px;">
+			<table>
+				<tr>
+					<td style="width:290px;">
+						<span style="font-size:12px;">スカウト演出をスキップする場合は<br />チェックボックスにチェックを入れてください。</span>
+					</td>
+					<td style="width:30px;">
+						<div class="precheck">
+							%if flag_skip:
+								<input id="scoutskip" type="checkbox" checked="checked" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+							%else:
+								<input id="scoutskip" type="checkbox" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+							%endif
+						</div>
+					</td>
+				</tr>
+                <tr>
+					<td style="width:290px;">
+						<span style="font-size:12px;">全力探索を行う場合は<br />チェックボックスにチェックを入れてください。</span>
+					</td>
+					<td style="width:30px;">
+						<div class="precheck">
+							%if flag_search:
+								<input id="scoutsearch" type="checkbox" checked="checked" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+							%else:
+								<input id="scoutsearch" type="checkbox" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+							%endif
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+
+        <div class="areastatus">
+			<span class="wrapper">${scout['name'] | h}</span>
+			<table class="areabox">
+				<tr>
+					<td class="areaset1" style="width:60px;">
+						達成度
+					</td>
+					<td class="areaset1" style="width:40px;">
+						${scout['percent']}%
+					</td>
+					<td class="areaset1" style="width:184px; margin-left:-10px;">
+						<div class="st_frame_big">
+							<div class="st_gauge04" style="width:${int(scout['percent'] * 155 / 100)}px"></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table class="areabox2">
+				<tr>
+					<td class="areaset1">
+						体力
+					</td>
+					<td class="areaset2"  style="color:#FF0000;">
+						-${scout['apcost']}
+					</td>
+				</tr>
+				<tr>
+					<td class="areaset1">
+						経験値
+					</td>
+					<td class="areaset2">
+						${scout['exp']}
+					</td>
+				</tr>
+				<tr>
+					<td class="areaset1">
+						CG
+					</td>
+					<td class="areaset2">
+						＋${scout['goldmin']}〜${scout['goldmax']}
+					</td>
+				</tr>
+			</table>
+
+			<!--スカウトボタン-->
+			% if scout['url_exec'] is not None:
+				<div class="scoutbtn">
+					<a onclick="onClickScout('${get_html_param('url_exec', 'sp/scoutevent/scoutdo_swf.html', scout)}');" href="javascript:void(0);"><img src="${url_static_img}common/btn_sukauto.png" width="104px" height="104px"></a>
+				</div>
+			%endif
+		</div>
+	</div>
+	${self.eventfooter()}
+</%def>

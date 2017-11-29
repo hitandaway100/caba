@@ -1,0 +1,120 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="head()">
+<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">いい女発見</p>
+	</div>
+	
+	% if silhouette == u"gold":
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="caution" style="font-size:18px; color:#40E0D0;">※限定キャスト獲得のチャンス※</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<img src="${url_static_img}event/scevent/common/gold.png" width="320px" height="400px" />
+	% elif silhouette == u"silver":
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="caution" style="font-size:18px; color:#40E0D0;">※限定キャスト獲得のチャンス※</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<img src="${url_static_img}event/scevent/common/silver.png" width="320px" height="400px" />
+	% elif silhouette == u"bronze":
+	<img src="${url_static_img}event/scevent/common/bronze.png" width="320px" height="400px" />
+	% else:
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px">
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" />
+	% endif
+	
+	<div>
+		<a class="btn_big_text" href="${get_html_param('url_exec', 'sp/scout/cardgetresult_success.html')}"><div style="width:232; height:49;">(成功率??%)</div></a>
+	</div>
+	
+	%if item_list:
+		%for item in item_list:
+			<div class="itembox">
+				% if index > 0:
+					<!-- ↓のラインは最下段には不要-->
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" style="position:relative; right:10px;" />
+				% endif
+				<table style="310px;">
+				<tr>
+					<td>
+						<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg" style="margin-top:8px;"/>
+					</td>
+					<td class="itemtext" style="margin-top:8px;">
+						${item['master']['name'] | h}<br />
+						${item['master']['text'] | h}<br />
+						<span class="orange">所持数:</span>
+						<span class="yellow">${item['num']}</span>${item['master']['unit'] | h}<br />
+					</td>
+				</tr>
+				</table>
+				
+				<div>
+					%if item.get('usenums'):
+						<form action="${get_html_param('url_use', 'sp/item/useyesno.html', item)}" method="post">
+							<table class="pullmenuset" style="margin-left:120px;">
+								<tr>
+									<td class="pullmenu3">
+										<select class="select_type" name="${num_key}" style="width: 80px;height: 31px;">
+											%for usenum in item['usenums']:
+												<option value="${usenum}">${usenum}${item['master']['unit'] | h}</option>
+											%endfor
+										</select>
+										<div id="pull1"></div>
+									</td>
+									<td style="width:98px;">
+										<input type="submit" value="使用する" class="" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/>
+									</td>
+								</tr>
+							</table>
+						</form>
+					%else:
+						<form action="${url_shop}" method="post">
+							<table style="margin-left:212px;">
+								<tr>
+									<td style="width:98px;">
+										<input type="submit" value="購入する" class="" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/>
+									</td>
+								</tr>
+							</table>
+						</form>
+					%endif
+				</div>
+			</div>
+		%endfor
+	%elif not is_tutorial:
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		<div class="itembox wrapper red">
+			使用出来るアイテムがありません
+		</div>
+		
+		<div class="topcap" style="font-size:15px;">
+			名刺を使って成功率をUPしよう!!<br />
+			イベント中に超太客の接客成功で名刺をGET!<br />
+		</div>
+		
+		<div class="wrapper orange" style="padding-top:8px;">
+			▼▼SHOPでも上質名刺を販売中▼▼
+		</div>
+		
+		<div>
+			<a class="btnlong" href="${get_html_param('url_shop', 'sp/shop/shop.html')}" style="padding-bottom:10px;">SHOPへ行く</a>
+		</div>
+
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+	</div>
+</%def>

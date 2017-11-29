@@ -1,0 +1,57 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	${self.happeningtop()}
+	${self.discoverer()}
+	
+	%if destroy_time:
+		<div style="background-color:#a426df ; width:320; height:28; color:#ffffff; text-align:center; line-height:1;"  >
+			接客成功日時&nbsp;:&nbsp;${destroy_time.strftime("%Y/%m/%d&nbsp;%H:%M")}
+		</div>
+	%endif
+	
+	${self.eventbonus()}
+	${self.mvpuser()}
+	${self.helpuser()}
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_raidloglist', 'sp/raidevent/loglist.html')}" ><div style="margin-left:14px;">超太客履歴へ</div></a>
+	</div>
+	<div class="link_arrow_re">
+		<a class="btnfoot" style="margin-top:0;" href="${get_html_param('url_raidevent_top', 'sp/raidevent/top.html')}" ><div style="margin-left:14px;">イベントトップへ</div></a>
+	</div>
+</%def>
+
+<%def name="happeningtop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position: relative;">
+			<img src="${happening['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+		</div>
+		${self.eventsatisfaction()}
+		<div class="boss_coment" style="margin-bottom:8;">
+			<div class="coment_text">
+				%if happening['raid']['hp'] == 0:
+					${happening['raid']['commentwin'] | h}
+				%else:
+					${happening['raid']['commentlose'] | h}
+				%endif
+				<div class="caution" style="margin-top:-2px;">
+					%if damagerecordnum:
+						${damagerecordnum}人接客しました
+					%else:
+						だれも接客しませんでした
+					%endif
+				</div>
+			</div>
+		</div>
+	</div>
+</%def>
+
+<%def name="eventsatisfaction()">
+	<div class="scouttime" style="margin-top:-21px;">
+		${happening['raid']['name'] | h}Lv${happening['raid']['level']}
+	</div>
+</%def>

@@ -1,0 +1,122 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.LIMITED_RESET_BOX)}
+</%def>
+
+<%def name="drawGachaList()">
+	%for gacha in gachadata.values():
+		%if gacha['consumetype'] == Defines.GachaConsumeType.LIMITED_RESET_BOX and gacha['tabengname'] == current_tab:
+			${self.drawGachaListSub(gacha['unique_name'])}
+		%endif
+	%endfor
+</%def>
+
+<%def name="drawGachaListSub(unique_name)">
+	%if gachadata.has_key(unique_name):
+		${self.drawSchedule(unique_name)}
+		${self.drawSlide(unique_name)}
+		
+		${self.reaSetsumei()}
+		${self.drawGachaMiniBox(unique_name, 1)}
+		<div style="margin: 8px 0;">
+			<%doc>1月は低価格ガチャなので手動で出してる
+			${self.drawGachaBanner(unique_name)}
+			</%doc>
+			${self.drawRuleImage(unique_name)}
+		</div>
+		
+		${self.drawBoxGroupList(unique_name, do_draw_info=False)}
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">期間限定BOXガチャ</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		
+		${self.drawGachaMiniBoxSchedule(unique_name)}
+		
+		<div style="font-size:11px; text-align:left; padding:0px 30px 0 35px;">
+			通常より少ないDMMポイントで引く事ができます<br />
+			<%doc>本ガチャで獲得できるキャストは通常BOXの内容と同じです<br /></%doc>
+			BOX内に入っているキャストの中からランダムで<br />
+			獲得できるキャストが選ばれます
+		</div>
+		
+		<%doc>レアキャスト雇用速報</%doc>
+		${self.drawCastGetListByUniqueName(unique_name)}
+		
+		
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[unique_name])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin:8px 0px;"/>
+	%endif
+</%def>
+
+<%doc>BOXと同じように表記する
+<%def name="drawBoxGroupList(unique_name)">
+	%if gachadata.get(unique_name):
+		<%
+			gacha = gachadata[unique_name]
+			boxraremap = gacha.get('boxraremap') or {}
+		%>
+		<div class="minibox">
+			%if boxraremap.get(Defines.Rarity.SUPERRARE):
+				<span class="box_sr1">${boxraremap[Defines.Rarity.SUPERRARE]['restnum']}</span>
+				<span class="box_sr2">${boxraremap[Defines.Rarity.SUPERRARE]['totalnum']}</span>
+			%else:
+				<span class="box_sr1">0</span>
+				<span class="box_sr2">0</span>
+			%endif
+			
+			%if boxraremap.get(Defines.Rarity.HIGH_RARE):
+				<span class="box_hr1">${boxraremap[Defines.Rarity.HIGH_RARE]['restnum']}</span>
+				<span class="box_hr2">${boxraremap[Defines.Rarity.HIGH_RARE]['totalnum']}</span>
+			%else:
+				<span class="box_hr1">0</span>
+				<span class="box_hr2">0</span>
+			%endif
+			
+			%if boxraremap.get(Defines.Rarity.RARE):
+				<span class="box_r1">${boxraremap[Defines.Rarity.RARE]['restnum']}</span>
+				<span class="box_r2">${boxraremap[Defines.Rarity.RARE]['totalnum']}</span>
+			%else:
+				<span class="box_r1">0</span>
+				<span class="box_r2">0</span>
+			%endif
+		</div>
+		<div class="topcap">
+			このBOXはリセット出来ません
+		</div>
+	%endif
+</%def>
+</%doc>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextLimitedResetBox()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

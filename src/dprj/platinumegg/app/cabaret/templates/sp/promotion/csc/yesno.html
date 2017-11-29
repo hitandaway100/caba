@@ -1,0 +1,53 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+	<script type="text/javascript">
+		function onClickBanner(){
+			to_top("${get_html_param('url_promotion_app', '')}");
+		}
+	</script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">報酬受け取り確認</p>
+	</div>
+	<div style="text-align:center;">
+		<div style="padding: 8px 0;">
+			<span class="orange">${promotioninfo_data['requirement'] | h}</span>
+		</div>
+		<span class="yellow">★報酬獲得★</span><br />
+		<div>
+			<img src="${promotioninfo_data['prizelist'][0]['thumbUrlMiddle']}" width="110" alt="報酬画像" /><br />
+			%for prize in promotioninfo_data['prizelist']:
+				${prize['name'] | h}${prize['numtext'] | h}<br />
+			%endfor
+		</div>
+	</div>
+	<div style="text-align:center;">
+		%if promotioninfo_data['status'] == Defines.PromotionStatus.NONE:
+			<span class="red">未達成です</span>
+		%elif promotioninfo_data['status'] == Defines.PromotionStatus.ACHIEVED:
+			<a class="btnpink" href="${get_html_param('url_promotion_do', 'sp/promotion/csc/complete.html')}"><p>報酬を受け取る!</p></a>
+		%elif promotioninfo_data['status'] == Defines.PromotionStatus.RECEIVED:
+			<span class="red">受取済みです</span>
+		%endif
+	</div>
+	<div style="padding: 8px 0;text-align:center;">
+		<div style="display:inline-block;">
+			<a class="btnlong" href="${get_html_param('url_promotion_prizelist', 'sp/promotion/csc/prizelist.html')}" style="margin:0;">報酬確認へ</a>
+		</div>
+	</div>
+	
+	<div class="wrapper" style="margin-bottom: 8px;">
+		<a href="javascript:void(0);" onclick="onClickBanner()">
+			<img src="${url_static_img}event/crosspromo/02/bunner01.png" width="240" height="auto"/>
+		</a>
+		<div class="yellow" style="line-height:1.2;">
+			↑↑【クリムゾンセクシャルコロシアム】に↑↑<br />
+			さっそく遊びにいこう!
+		</div>
+	</div>
+</%def>

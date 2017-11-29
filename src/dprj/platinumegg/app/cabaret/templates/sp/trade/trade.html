@@ -1,0 +1,491 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}castdata/flicklib.js" charset=utf-8></script>
+	%if is_pc:
+	<script type="text/javascript" src="${url_static_js_pc}castdata/main.js" charset=utf-8></script>
+	%else:
+	<script type="text/javascript" src="${url_static_js}castdata/flicklib.js" charset=utf-8></script>
+	<script type="text/javascript" src="${url_static_js}castdata/main.js" charset=utf-8></script>
+	%endif
+	<style>
+		#castdata {
+			border: 0px;
+			overflow: hidden;
+			width:320px;
+			margin-bottom: 5px;
+			margin-left: 0px;
+		}
+		#castdata ul {
+			list-style: none;
+			height: 208px;
+			margin : 0;
+			padding : 0;
+			position : relative;
+		}
+		#castdata ul li {
+			float: left;
+			width: 320px;
+			height: 208px;
+			margin : 0;
+			padding : 0;
+			list-style-position:outside;
+			position : absolute;
+		}
+		
+		#castdata_once {
+			border: 0px;
+			overflow: hidden;
+			width:320px;
+			margin-bottom: 5px;
+			margin-left: 0px;
+		}
+		#castdata_once ul {
+			list-style: none;
+			height: 208px;
+			margin : 0;
+			padding : 0;
+			position : relative;
+		}
+		#castdata_once ul li {
+			float: left;
+			width: 320px;
+			height: 208px;
+			margin : 0;
+			padding : 0;
+			list-style-position:outside;
+			position : absolute;
+		}
+		
+		#castdata_icon {
+			display: inline-block;;
+		}
+		#castdata_icon div.active {
+			display: table-cell;
+			width:12px;
+			height:12px;
+			background-image: url(${url_static_img}common/bnr_scroll_02.png);
+			background-size:12px 12px;
+			background-repeat: no-repeat;
+		}
+		#castdata_icon div.disactive {
+			display: table-cell;
+			width:12px;
+			height:12px;
+			background-image: url(${url_static_img}common/bnr_scroll_01.png);
+			background-size:12px 12px;
+			background-repeat: no-repeat;
+		}
+	.slide_flame{
+		position: absolute;
+		z-index: 0;
+	}
+	.slide_card{
+		display: table-cell;
+		position: relative;
+		left:2px;
+		z-index: 2;
+	}
+	
+	.slide_capture{
+		display: table-cell;
+		position: relative;
+		left:4px;
+		z-index: 2;
+	}
+	.slide_name{
+		display:inline-table;
+		position: relative;
+		overflow:hidden;
+		width:99px;
+		height:24px;
+		left:27px;
+		z-index: 2;
+		text-align : left;
+		font-size: 14;
+		color:#ffd700;
+		font-family:'ＭＳ Ｐ明朝', 'MS P Mincho','ヒラギノ 明朝 ProN W3','Hiragino Mincho ProN','HGS明朝E','serif';
+		text-decoration:none;
+		font-weight: bold;
+		text-shadow: 0px -1px 0px #260b34,
+	               2px  0px 0px #260b34,
+	               0px  2px 0px #260b34,
+	              -1px  0px 0px #260b34;
+	}
+	
+	.slide_rare{
+		display:inline-table;
+		position: relative;
+		width:39px;
+		top:4px;
+		left:20px;
+		z-index: 2;
+		text-align : right;
+	}
+	.slide_power{
+		font-size:12px;
+		display:inline-table;
+		position: relative;
+		font-weight:normal;
+		width:39px;
+		left:74px;
+		z-index: 2;
+		text-align : right;
+	}
+	
+	.slide_cost{
+		font-size:12px;
+		display:inline-block;
+		position: relative;
+		font-weight:normal;
+		width:22px;
+		left:100px;
+		z-index: 2;
+		text-align : right;
+	}
+	
+	.slide_service{
+		font-size:10px;
+		display:inline-block;
+		position: absolute;
+		font-weight:normal;
+		top:6px;
+		width:120px;
+		color:yellow;
+		left:46px;
+		z-index: 2;
+		text-align : left;
+	}
+	
+	.slide_servicetext{
+		font-size:10px;
+		display:inline-block;
+		position: absolute;
+		font-weight:normal;
+		color:#ffffff;
+		top:6px;
+		left:170px;
+		z-index: 2;
+		text-align : left;
+	}
+	</style>
+	<script type="text/javascript">
+		$(function(){
+			var blink_target = $('.blink');
+			if(0 < blink_target.length){
+				setInterval(function(){
+					blink_target.fadeOut(1200, function(){$(this).fadeIn(200)});
+				}, 1400);
+			}
+		});
+	</script>
+</%def>
+
+<%def name="tradedata_body(tradedata, index)">
+	<%
+		div_class = ''
+		need_bar = False
+		if index % 2 == 1:
+			div_class = 'class="back_black"'
+			need_bar = True
+	%>
+	
+	<div ${div_class}>
+		%if need_bar:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		%endif
+		<div class="itembox">
+			<table style="310px;">
+				<td>
+					<img src="${tradedata['thumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext"><!--
+					%if tradedata['item']['iconUrl']:
+						--><img src="${tradedata['item']['iconUrl']}" width="20" height="20" /><!--
+					%endif
+					-->${tradedata['item']['name'] | h}
+					%if tradedata['item']['rareData']:
+						(<span style="color:${tradedata['item']['rareData']['color']}">${tradedata['item']['rareData']['text'] | h}</span>)
+					%endif
+					<br />
+					%if tradedata['item']['statusText']:
+						${tradedata['item']['statusText'] | h}<br />
+					%endif
+					%if tradedata['is_used_platinum_piece']:
+						${platinum_piece_name}：${tradedata['rate_cabaretking']}<br />
+					%elif tradedata['is_used_battle_ticket']:
+						バトルチケット：${tradedata['rate_cabaretking']}<br />
+					%elif tradedata['is_used_crystal_piece']:
+						${crystal_piece_name}：${tradedata['rate_cabaretking']}<br />
+				  	%else:
+						キャバ王の秘宝：${tradedata['rate_cabaretking']}<br />
+					%endif
+				</td>
+			</table>
+			<div style="clear:both;"></div>
+			
+			%if 0 < tradedata['stock']:
+			<div class="wrapper">
+				交換可能回数残り：${max(0, tradedata['stock'] - tradedata['trade_cnt'])}回
+			</div>
+			%endif
+			
+			%if tradedata['stock'] < 1 or tradedata['trade_cnt'] < tradedata['stock']:
+				% if tradedata['err_mess']:
+					<div class="caution">
+						${tradedata['err_mess'] | h}
+					</div>
+				% else:
+					<form action="${get_html_param('url_tradeyesno', 'sp/trade/tradeyesno.html', tradedata)}" method="post">
+						<table class="pullmenuset" style="margin-left:120px;">
+							<tr>
+								<td class="pullmenu3">
+									<select class="select_type" name="${Defines.URLQUERY_NUMBER}" style="width: 80px; height: 31px;">
+										<%
+											trade_max = tradedata['trade_max']
+											do_draw_all = True
+											if trade_max in Defines.TradeNumChoices.TABLE:
+												do_draw_all = False
+											elif Defines.ItemType.TRADE_NUM_MAX.get(tradedata['itype'], trade_max+1) <= trade_max:
+												do_draw_all = False
+										%>
+										%if trade_max == 1:
+											<option value="1">1${tradedata['unit'] | h}</option>
+										%else:
+											%for num in Defines.TradeNumChoices.TABLE:
+												%if num <= trade_max:
+													<option value="${num}">${num}${tradedata['unit'] | h}</option>
+												%endif
+											%endfor
+											%if do_draw_all:
+												<option value="${Defines.TradeNumChoices.ALL}">全て</option>
+											%endif
+										%endif
+									</select>
+									<div id="pull1"></div>
+								</td>
+								<td style="width:98px;"><input type="submit" value="交換する" class="buttonshop" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/></td>
+							</tr>
+						</table>
+					</form>
+				% endif
+			% endif
+		</div>
+		%if need_bar:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		%endif
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		%if is_battle_ticket_page:
+			<p class="caption">バトルチケット交換</p>
+		%else:
+			<p class="caption">秘宝アイテム交換</p>
+		%endif
+	</div>
+	
+	%if headerlist:
+		<div>
+			<img src="${headerlist[0]}" width="320" />
+		</div>
+	%endif
+	
+	${self.drawSlide()}
+	
+	<div>
+		%if raidevent and raideventscore and not is_battle_ticket_page:
+			<div class="itembox">
+				<table style="310px;">
+					<td>
+						<img src="${raidevent['pointThumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${raidevent['pointname'] | h}<br />
+						${raideventscore['point']}個
+					</td>
+				</table>
+				<div style="clear:both;"></div>
+			</div>
+			%if not raidevent['is_opened'] and raidevent['is_ticket_opened']:
+				<div class="caution blink" style="font-size:12px;" id="blink">
+					<%
+						etime = raidevent['ticket_etime']
+					%>
+					裏社会の秘宝の交換期限は${etime.month}/${etime.day}　${etime.strftime("%H:%M")}まで!!<br />
+					期限を過ぎると裏社会の秘宝は消滅します!<br />
+					次のイベントまで持つ越す事は出来ません!
+				</div>
+			%endif
+		%endif
+		
+		<div class="itembox">
+			%if is_battle_ticket_page:
+				<table style="310px;">
+				  <td>
+					  <img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByDBString(Defines.GachaConsumeType.GachaTicketType.THUMBNAIL[Defines.GachaConsumeType.GachaTicketType.BATTLE_TICKET])}" width="60" height="60" class="itemimg" />
+				  </td>
+				  <td class="itemtext">
+					  ${battle_ticket_name}<br />
+					  ${battle_ticket_num}個
+				  </td>
+				</table>
+				<div style="clear:both;">
+				</div>
+			%else:
+				<table style="310px;">
+					<td>
+						<img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByType(Defines.ItemType.CABARETKING_TREASURE)}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						キャバ王の秘宝<br />
+						${player['cabaretking']}個
+					</td>
+				</table>
+				<table style="310px;">
+					<td>
+						<img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByType(Defines.ItemType.PLATINUM_PIECE)}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${platinum_piece_name}<br />
+						${platinum_piece_num}個
+					</td>
+				</table>
+				<table style="310px;">
+					<td>
+						<img src="${url_static_img + ItemUtil.makeThumbnailUrlSmallByType(Defines.ItemType.CRYSTAL_PIECE)}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						${crystal_piece_name}<br />
+						${crystal_piece_num}個
+					</td>
+				</table>
+			%endif
+		</div>
+	</div>
+	
+	<div class="titlesub" style="margin-top:16px;">
+		<div class="wrapper">
+			交換アイテム
+		</div>
+	</div>
+	<%
+		offset = 0
+	%>
+	%if raidevent and raideventscore and not is_battle_ticket_page:
+		<div class="itembox">
+			<table style="310px;">
+				<td>
+					<img src="${raidevent['ticketThumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td class="itemtext">
+					<b>${raidevent['ticketname'] | h}</b><br />
+					${raidevent['pointname']}&nbsp;:&nbsp;${raidevent['pointratio']}<br />
+				</td>
+			</table>
+			<div style="clear:both;"></div>
+			% if raideventscore['point'] < raidevent['pointratio']:
+				<div class="caution">
+					${raidevent['pointname']}が${raidevent['pointratio'] - raideventscore['point']}個足りません
+				</div>
+			% else:
+				<div>
+					<a class="button" href="${get_html_param('url_tradeyesno', 'sp/trade/tradeyesno.html', raidevent)}"><div>交換する</div></a>
+				</div>
+			% endif
+		</div>
+		<%
+			offset = 1
+		%>
+	%endif
+
+  <% count = offset %>
+	%for i, tradelist in enumerate(tradelists):
+    <% j = 0 %>
+		%for j, tradedata in enumerate(tradelist, 1):
+			${self.tradedata_body(tradedata, count + j-1)}
+		%endfor
+		<% count += j %>
+	%endfor
+	
+	${self.drawFootBackPageLink('sp/battle/battle.html', btn_class='btnfoot', btn_style='')}
+</%def>
+
+<%def name="drawSlide()">
+	%if slidelist:
+		%if 1 < len(slidelist):
+		<div style="height:234px;">
+			<div id="castdata">
+		%else:
+		<div style="height:213px;">
+			<div id="castdata_once">
+		%endif
+				<ul style="width:${len(slidelist)*320}px;">
+					%for idx,carddata in enumerate(slidelist):
+						<%
+							cardmaster, url_capture = carddata
+						%>
+						%if idx == 0:
+						<li style="margin-left:0px;">
+						%else:
+						<li style="margin-left:320px;">
+						%endif
+							<%
+								ctype = cardmaster['type']
+								if ctype == Defines.CharacterType.TYPE_001:
+									framename = 'koakuma'
+								elif ctype == Defines.CharacterType.TYPE_002:
+									framename = 'titeki'
+								elif ctype == Defines.CharacterType.TYPE_003:
+									framename = 'iyashi'
+								else:
+									framename = ''
+							%>
+							<div class="slide_flame"><%doc>各属性の枠(アイコン属性も入ってる)</%doc>
+								<img src="${url_static_img}gacha/slide/st_card_scroll_${framename}_640_408.png" width="320px" height="204px" />
+							</div>
+							<div width="320px" border="thin solid">
+								<div class="slide_name">
+									${cardmaster['name'] | h}
+								</div>
+								<div class="slide_rare" width="39px"><%doc>レアリティ表示の画像</%doc>
+									<img src="${url_static_img}gacha/slide/${cardmaster['rare_str'].lower()}.png" width="auto" height="19px" />
+								</div>
+								<div class="slide_power" width="37px">
+									${cardmaster['maxpower']}
+								</div>
+								<div class="slide_cost" width="22px">
+									${cardmaster['cost']}
+								</div>
+							</div>
+							<div style="position:relative;height:150px;width:320px;padding:0 1px;">
+								<img src="${cardmaster['thumbnail']['large']}" width="120px" height="150px" style="padding: 0 1px;" /><!--
+								--><img src="${url_capture}" width="194px" height="150px" style="padding: 0 1px;" />
+							</div>
+							%if cardmaster.get('skill'):
+							<div style="position:relative;height:20px;">
+								<span class="slide_service">${cardmaster['skill']['name'] | h}</span>
+								<span class="slide_servicetext">${cardmaster['skill']['text'] | h}</span>
+							</div>
+							%endif
+						</li>
+					%endfor
+				</ul>
+			</div>
+			%if 1 < len(slidelist):
+			<div style="text-align: center;width:320px;">
+				<div id="castdata_icon">
+					%for idx in xrange(len(slidelist)):
+						%if idx == 0:
+							<div class="active">　</div>
+						%else:
+							<div class="disactive">　</div>
+						%endif
+					%endfor
+				</div>
+			</div>
+			%endif
+		</div>
+	%endif
+</%def>

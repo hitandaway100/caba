@@ -1,0 +1,26 @@
+<%def name="status(cardnum, limit_level, limit_item)">
+  <div class="gacyha_st">
+    <table class="gacyha_st_area" align="center" border="0" cellpadding="0" cellspacing="0" style="padding: 4 0 4 0;">
+      <tr height="100%">
+        <td class="gacyha_st1">
+          引抜PT
+        </td>
+        <td class="gacyha_st2">
+          <div>
+            ${player['gachapt'] | h}
+          </div>
+        </td>
+        <td class="gacyha_st_space">
+        </td>
+        <td class="gacyha_st3">
+          キャスト
+        </td>
+        <td class="gacyha_st4">
+          <div>
+            ${cardnum}/${limit_level + limit_item | h}
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</%def>

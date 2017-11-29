@@ -1,0 +1,13 @@
+<%def name="list(tabs)">
+  <%def name="make_tab(idx, url_key, htmlname, text)">
+    <li id="tab${idx}">
+      <a href="${get_html_param(url_key, htmlname)}">${text | h}</a>
+    </li>
+  </%def>
+
+  <ul class="tabs clearFix" id="tabs">
+    % for idx, (url_key, htmlname, text) in enumerate(tabs, 1):
+      ${make_tab(idx, url_key, htmlname, text)}
+    %endfor
+  </ul>
+</%def>

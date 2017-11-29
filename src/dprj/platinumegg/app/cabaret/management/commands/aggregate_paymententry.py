@@ -1,0 +1,111 @@
+# -*- coding: utf-8 -*-
+from django.core.management.base import BaseCommand
+import settings
+import datetime
+from platinumegg.app.cabaret.util.datetime_util import DateTimeUtil
+import os
+from platinumegg.app.cabaret.models.PaymentEntry import ShopPaymentEntry,\
+    GachaPaymentEntry
+from platinumegg.lib.platform.api.objects import PaymentData
+from platinumegg.lib import timezone
+from platinumegg.lib.strutil import StrUtil
+from platinumegg.lib.opensocial.util import OSAUtil
+
+backup_db = getattr(settings, 'DB_BACKUP', settings.DB_READONLY)
+
+class Command(BaseCommand):
+    """課金情報を集計.
+    """
+    class Writer():
+        def __init__(self, path, keep_maxlength=50000):
+            self._path = path
+            self._size = 0
+            self._data = []
+            self._keep_maxlength = keep_maxlength
+            self.output(overwrite=True)
+        
+        def add(self, text):
+            print text
+            self._data.append(text)
+            self._size += len(text)     # 厳密には違うけど..
+            if self._keep_maxlength <= self._size:
+                self.output(overwrite=False)
+                self._data = []
+                self._size = 0
+        
+        def output(self, overwrite=False):
+            if self._data:
+                self._data.append('\n')
+            data_str = StrUtil.to_s('\n'.join(self._data), 'shift-jis')
+            if overwrite:
+                mode = 'w'
+            else:
+                mode = 'a'
+            f = None
+            try:
+                f = open(self._path, mode)
+                f.write(data_str)
+                f.close()
+            except:
+                if f:
+                    f.close()
+                raise
+    
+    def handle(self, *args, **options):
+        
+        print '================================'
+        print 'aggregate_paymententry'
+        print '================================'
+        
+        # 対象の日付(月).
+        str_date = args[0]
+        if str_date == 'auto':
+            first = DateTimeUtil.strToDateTime(OSAUtil.get_now().strftime("%Y%m"), "%Y%m")
+            str_date = (first - datetime.timedelta(days=1)).strftime("%Y%m")
+        target_date = DateTimeUtil.strToDateTime(str_date, "%Y%m")
+        print target_date
+        
+        # 出力先.
+        output_dir = args[1]
+        path = os.path.join(output_dir, target_date.strftime("paymententry_%Y%m.csv"))
+        
+        # 書き込むデータをここに溜め込む.
+        writer = Command.Writer(path)
+        writer.add(','.join([u'ペイメントID', u'単価', u'購入個数', u'合計ポイント']))
+        
+        self.aggregate(writer, GachaPaymentEntry, target_date)
+        self.aggregate(writer, ShopPaymentEntry, target_date)
+        
+        writer.output(overwrite=False)
+        
+        print '================================'
+        print 'all done..'
+    
+    def aggregate(self, writer, model_cls, target_date):
+        
+        s_date = target_date
+        tmp = target_date + datetime.timedelta(days=32)
+        
+        e_date = datetime.datetime(tmp.year, tmp.month, 1)
+        if e_date.tzinfo is None:
+            e_date = e_date.replace(tzinfo=timezone.TZ_DEFAULT)
+        
+        filters = {
+            'state' : PaymentData.Status.COMPLETED,
+            'ctime__gte' : s_date,
+            'ctime__lt' : e_date,
+        }
+        
+        LIMIT = 500
+        offset = 0
+        
+        while True:
+            modellist = model_cls.fetchValues(filters=filters, limit=LIMIT, offset=offset, order_by='ctime', using=backup_db)
+            for model in modellist:
+                writer.add(','.join([model.id, str(model.price), str(model.inum), str(model.price*model.inum)]))
+            
+            offset += LIMIT
+            
+            if len(modellist) < LIMIT:
+                break
+    

@@ -1,0 +1,41 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+
+	<link href="${url_static_css}flexslider.css" rel="stylesheet" type="text/css"/>
+	<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	<script type="text/javascript" src="${url_static_js}jquery.flexslider.js"></script>
+	<script type="text/javascript" src="${url_static_js}slider.js"></script>
+
+</%def>
+
+<%def name="contents()">
+
+
+<div class="flexslider">
+	<ul class="slides">
+		<li>
+			<img src="${url_static_img}00/id_00_01/bnr_dammy1.png" width="240px" height="60px"/>
+		</li>
+		<li>
+			<img src="${url_static_img}00/id_00_01/bnr_dammy2.png" width="240px" height="60px"/>
+		</li>
+		<li>
+			<img src="${url_static_img}00/id_00_01/bnr_dammy3.png" width="240px" height="60px"/>
+		</li>
+	</ul>
+</div>
+
+			<div class="bunnerwrap">
+				<a href=""><img src="${url_static_img}00/id_00_01/bnr_dammy.png" width="240px" height="60px"/></a><br />
+				└<a href="">コメント</a>┘
+			</div>
+
+
+
+
+
+
+
+</%def>

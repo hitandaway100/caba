@@ -1,0 +1,121 @@
+#coding:utf-8
+<%doc>キャスト詳細画面</%doc>
+<%!
+	from defines import Defines
+%>
+<%page args="card=None, url_static_img='', **kwargs">
+	<%
+		bg_size = {
+			'common/card_st_back_02.png' : (320, 190),
+			'common/card_st_back.png' : (320, 145),
+		}
+		if not card:
+			card = {'master':{'skill':kwargs.get('test_skill')}}	# スキルのテスト用
+		framename = ''
+		
+		skill = card['master'].get('skill')
+		if skill:
+			if skill['eskill'] == Defines.SkillEffect.CABACLUB:
+				framename='common/card_st_back_02_skill.png'
+			else:
+				framename='common/card_st_back_02.png'
+			bg_w, bg_h = 320, 190
+		else:
+			framename='common/card_st_back.png'
+			bg_w, bg_h = 320, 145
+		
+	%>
+	<div style="background: url(${url_static_img}${framename}) no-repeat; position: relative; width:${bg_w}px; height:${bg_h}px; margin: auto; background-size:cover; -moz-background-size:cover; min-height: 145px;">
+		<div>
+			<div class="cardstset">
+				${card['master'].get('text', '')}
+			</div>
+			<table>
+				<td>
+					<table class="cdset1">
+						<tr>
+							<td class="cdst1">レベル
+							</td>
+							<td class="cdst2">${card.get('level', 1)}/${card['master'].get('maxlevel')}<!--
+								%if kwargs.get('level_add'):
+									--><span class="yellow">(+${kwargs.get('level_add')})</span><!--
+								%endif
+							--></td>
+						</tr>
+						<tr>
+							<td class="cdst1">接客力
+							</td>
+							<td class="cdst2" style="font-size:11px; font-stretch: ultra-condensed;">${card.get('power', 0)}<!--
+								%if kwargs.get('power_add'):
+									--><span class="yellow">(+${kwargs.get('power_add')})</span><!--
+								%endif
+							--></td>
+						</tr>
+						<tr>
+							<td class="cdst1">人件費
+							</td >
+							<td class="cdst2" colspan="2">${card['master'].get('cost', 0)}
+							</td>
+						</tr>
+					</table>
+					</td>
+					<td>
+					<table class="cdset2">	
+						<tr>
+							<td class="cdst1" style="color:#f470cf;">経験値
+							</td>
+							<td class="cdst2">
+								<%
+									exp_prev = card.get('exp_prev', 0)
+									exp_next = card.get('exp_next', 0)
+									exp = card.get('exp', 0)
+									exp_per = 100
+									if exp_prev < exp_next:
+										exp_per = min(100, 100 * (exp - exp_prev) / (exp_next - exp_prev))
+								%>
+								<div class="st_frame_small" style="height:16px;">
+									<div class="st_gauge05" style="width:${exp_per * 82 / 100}"><%doc>バーは仮</%doc></div>
+								</div>
+							</td>
+						</tr>
+					</table>
+					<table class="cdset2">
+						<tr>
+							<td class="cdst3" style="color:#f470cf; left:-4px; position: relative;">ハメ管理度
+							</td>
+							<td class="cdst4">
+								<div>
+									% for _ in xrange(card['master'].get('hklevel', 1) - 1):
+										<img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+									% endfor
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</table>
+		%if card['master'].get('skill'):
+			<table class="cdset4">
+				<tr>
+					<td class="cdst5">サービス
+					</td>
+					<td class="cdst6"><b>${card['master']['skill'].get('name', '') | h}:</b>LV${card['skilllevel']}
+						%if kwargs.get('skilllevel_add'):
+							<span class="yellow">(+${kwargs.get('skilllevel_add')})</span>
+						%endif
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class="cdst7">${card['master']['skill'].get('text', '') | h}
+					</td>
+				</tr>
+				<tr>
+					<td style="font-size:0px; opacity:0;">　</td>
+				</tr>
+			</table>
+		%endif
+		</div>
+	</div>
+</%page>
+
+

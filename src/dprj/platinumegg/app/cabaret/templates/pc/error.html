@@ -1,0 +1,35 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="session_script()">
+	<script type="text/javascript">
+		
+		var message = "エラーが発生しました。\n";
+		%if error_message is not UNDEFINED:
+			message += "${error_message.replace('"', '\\"')}";
+		%endif
+		window.alert(message);
+		top.location.href="${url_dmm_top}";
+	</script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">エラー</p>
+	</div>
+	
+	<div class="wrapper" style="margin-top:10px;">
+		エラーが発生しました。<br />
+		% if error_message is not UNDEFINED:
+			<pre>${error_message}</pre>
+		%endif
+	</div>
+	
+	<div>
+		<p class="caption">
+			<a class="btnpink" href="${url_dmm_top}" target="_top">トップページへ</a>
+		</p>
+	</div>
+</%def>
+<%def name="header()"></%def>
+<%def name="footer()"></%def>

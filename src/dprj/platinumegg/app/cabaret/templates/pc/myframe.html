@@ -1,0 +1,677 @@
+#coding:utf-8
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<title>${apptitle}</title>
+	<meta http-equiv="pragma" content="no-cache" />
+	<meta http-equiv="cache-control" content="no-cache" />
+	<meta http-equiv="expires" content="-1" />
+	<meta name="format-detection" content="telephone=no" />
+
+<!--[if iE]>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<script src="./html5shiv.js"></script>
+<![endif]-->
+
+	<style type="text/css">
+		body {
+			overflow: hidden;
+		}
+		#contents_frame {
+			position : relative;
+			top : 66px;
+			left : 46px;
+			width: 334px;
+			height: 494px;
+			-ms-transform: scale(1.269);
+			-moz-transform: scale(1.269);
+			-o-transform: scale(1.269);
+			-webkit-transform:scale(1.269);
+		}
+		#contents_scroll {
+			width: 424px;
+			height: 628px;
+		}
+	</style>
+	<link href="${url_static_css_pc}base.css?v=0000" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css_pc}myframe.css?v=0016" rel="stylesheet" type="text/css" />
+	%if not is_local:
+		%if is_dev:
+			<script type="text/javascript" src="http://sbx-osapi.dmm.com/gadgets/js/sbx-sppf-cojp.js"></script>
+		%else:
+			<script type="text/javascript" src="http://osapi.dmm.com/gadgets/js/sppf-cojp.js?v=0"></script>
+		%endif
+	%endif
+	<script type="text/javascript" src="${url_static_js_pc}jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}jquery-mousewheel.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}jquery-jscrollpane.min.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}common.js"></script>
+	<script type="text/javascript" src="${url_static_js}ajust.js"></script>
+	
+	${self.status_script()}
+	${self.message_script()}
+	${self.video_script()}
+	${self.popup_script()}
+	${self.session_script()}
+	<script>
+		% if is_dev:
+		function trace(msg){
+			var dbg_console_area = $("#dbg_console_area")[0];
+			if(dbg_console_area){
+				dbg_console_area.value = msg + "\n" + dbg_console_area.value;
+			}
+			//console.log(msg);
+		}
+		%else:
+		function trace(msg){}
+		%endif
+		function jumpTuOutSidePage(url, comment){
+			if(window.confirm(comment+"\n遷移先="+url)){
+				window.open(url);
+			}
+		}
+	</script>
+
+</head>
+<body>
+
+%if is_tutorial:
+<div id="myPageFrame" class="clearfix" style="background-image: none;">
+%else:
+<div id="myPageFrame" class="clearfix">
+%endif
+	<div class="leftMenu">
+	%if not is_tutorial:
+		${self.block_menu()}
+	%endif
+	</div>
+	<div class="gameView">
+		${self.contents()}
+		<iframe style="height:0px;width:0px;visibility:hidden" src="about:blank">
+			this frame prevents back forward cache
+		</iframe>
+	</div>
+	<div class="rightMenu">
+	%if not is_tutorial:
+		${self.status()}
+		${self.updates()}
+	%endif
+	</div>
+	<%include file="includes/popup.html" />
+</div>
+
+<div>
+	${self.footer()}
+	<%doc>
+	% if is_dev:
+		<style type="text/css">
+			.debugbutton {
+				display: block;
+				border-style: solid;
+				border-width: 1px;
+				border-color: #e040d0#501040#501040#e040d0;
+				padding: 0.3em 0px;
+				background: -webkit-gradient(linear, left top, left bottom, from(#e040d0), to(#501040));
+				text-decoration: none;
+				width: 318px;
+				text-align: left;
+				color: #f0f0f0;
+			}
+		</style>
+		% if dbg_print_log is not UNDEFINED:
+			<a class="debugbutton" href="${url_template_test}">&gt;テンプレートテストTop</a>
+			<a class="debugbutton" href="${url_html5_test}">&gt;html5test</a>
+			<a class="debugbutton" href="${url_apitest}">&gt;apitest</a>
+			<a class="debugbutton" href="${url_cookie_test}">&gt;cookietest</a>
+			<a class="debugbutton" href="${url_support_paymentlist}">&gt;課金履歴</a>
+			<a class="debugbutton" href="${get_html_param('', 'test/shiga_test/mypage.html')}">&gt;色々調査用</a>
+			<div>
+				Javascript Log:<br />
+				<textarea id="dbg_console_area" style="width: 100%;" rows="6"></textarea>
+			</div>
+			<div>
+				ServerLog:<br />
+				%if is_local:
+					<div>
+						${dbg_print_log}
+					</div>
+				%else:
+					<textarea style="width: 100%;" rows="6">${dbg_print_log}</textarea>
+				%endif
+			</div>
+		%endif
+	%endif
+	</%doc>
+</div>
+
+</body>
+</html>
+
+<%def name="head()"></%def>
+
+<%def name="header_wrapp()">
+	<header>
+		%if is_dev and not is_staging and not is_local:
+			<div style="background-color:#ffdd00; text-align: center; color: #202020;">
+				△▼△開発環境△▼△
+			</div>
+		%endif
+		${self.header()}
+	</header>
+</%def>
+<%def name="header_extention()"></%def>
+
+<%def name="header()">
+	${self.header_extention()}
+</%def>
+
+<%def name="contents()">
+	<!-- <iframe style="height:628px;width:424px;" id="contents_frame" name="contents_frame" src="${url_contents}"></iframe> -->
+	<div id="contents_scroll">
+		<iframe id="contents_frame" name="contents_frame" src="${url_contents}"></iframe>
+	</div>
+	<div id="menu_frame" style="position:fixed; width:100%; height:100%; left:0px; top:0px; display:none; z-index:3">
+		<div id="menu_background" style="position:fixed; width:100%; height:100%; background-color: black; opacity:0.7;"></div>
+		<div id="menu_body" style="width:364px; left: 240px; top: 130px; position: absolute;"></div>
+	</div>
+	<div id="video_frame" style="position:fixed; width:100%; height:100%; left:0px; top:0px; display:none; z-index:3">
+		<div id="video_background" style="position:fixed; width:100%; height:100%; background-color: black; opacity:0.7;"></div>
+		<div id="video_container" style="position:relative; width:853px; height:480px; left:0px; top:0px; background-color: transparent;">
+			<div id="video_content"></div>
+		</div>
+	</div>
+</%def>
+
+<%def name="status()">
+	<div class="status">
+		<p class="userName" id="nickname">
+			%if player:
+				${player['person']['nickname']}
+			%else:
+				nickname
+			%endif
+		</p>
+		<!-- 体力 -->
+		<p class="power paramFld" id="ap">
+			%if player:
+				${player['ap']}/${player['apmax']}
+			%else:
+				0
+			%endif
+		</p>
+		<div class="gaugeWrap">
+			%if player:
+				<p class="powGauge" id="gauge_ap" style="width:${player['ap'] / player['apmax'] * 100}%;"></p>
+			%else:
+				<p class="powGauge" id="gauge_ap" style="width:100%;"></p>
+			%endif
+		</div>
+		<!-- 気力 -->
+		<p class="mental paramFld" id="bp">
+			%if player:
+				${player['bp']}/${player['bpmax']}
+			%else:
+				0
+			%endif
+		</p>
+		<div class="gaugeWrap">
+			%if player:
+				<p class="menGauge" id="gauge_bp" style="width:${player['bp'] / player['bpmax'] * 100}%;"></p>
+			%else:
+				<p class="menGauge" id="gauge_bp" style="width:100%;"></p>
+			%endif
+		</div>
+		<!-- キャバ王Lv -->
+		<p class="level paramFld" id="level">
+			%if player:
+				${player['level']}
+			%else:
+				0
+			%endif
+		</p>
+		<div class="gaugeWrap">
+			%if player:
+				<%
+					exp_diff = player['exp_next'] - player['exp_prev']
+					exp_percent = 100
+					if 0 < exp_diff:
+						cur_exp = max(0, player['exp'] - player['exp_prev'])
+						exp_percent = min(100, 100 * cur_exp / exp_diff)
+				%>
+				<p class="lvGauge" id="gauge_exp" style="width:${int(exp_percent)}%"></p>
+			%else:
+				<p class="lvGauge" id="gauge_exp" style="width:100%"></p>
+			%endif
+		</div>
+
+		<!-- 人件費 -->
+		<p class="jinken paramFld" id="deckcapacity">
+			%if player:
+				${player['deckcapacity']}
+			%else:
+				0
+			%endif
+		</p>
+		<!-- 接客力 -->
+		<p class="sekkyaku paramFld" id="power_total">
+			%if player:
+				${power_total}
+			%else:
+				0
+			%endif
+		</p>
+		<!-- フレンド -->
+		<p class="friend paramFld" id="friend_num">
+			%if player and friend_num:
+				${friend_num}/${player['friendlimit']}
+			%else:
+				0/0
+			%endif			
+		</p>
+		<!-- キャバ嬢カード -->
+		<p class="card paramFld" id="card_num">
+			%if card_num:
+				${card_num}
+			%else:
+				0
+			%endif
+		</p>
+		<!-- キャバゴールド -->
+		<p class="gold paramFld" id="gold">
+			%if player:
+				${player['gold']}
+			%else:
+				0
+			%endif
+		</p>
+		<!-- 引抜ガチャPt -->
+		<p class="gachaPoint paramFld" id="gachapt">
+			%if player:
+				${player['gachapt']}
+			%else:
+				0
+			%endif
+		</p>
+	</div>
+</%def>
+
+<%def name="updates()">
+	<div class="updates">
+		<ul>
+		%if infomations:
+			%for infomation in infomations:
+			<li class="link">
+				<a class="infomation_wrapper" href="${get_html_param('url_detail', 'sp/infomation.html', infomation)}" onclick="loadContents(this);return false;">
+					%if infomation['is_new']:
+					%endif
+					${infomation['title'].replace('\r','').replace('\n','').replace('<br>','').replace('<br/>','').replace('<br />','')}
+				</a>
+			</li>
+			%endfor
+			<script>
+				adjustBlockText(".infomation_wrapper", 2);
+			</script>
+		%endif:
+		</ul>
+		<a href="${get_html_param('url_infomation', 'sp/infomation.html')}" class="more" onclick="loadContents(this);return false;"></a>
+	</div>
+</%def>
+
+<%def name="footer()">
+	<p style="clear:right;" />
+	<div style="font-size:11px; text-align:center; background-color:#000000; padding-bottom:0px">
+		(C) DMM GAMES&nbsp; /&nbsp; (C)AV GAMES
+	</div>
+</%def>
+
+<%def name="block_menu()">
+	<div class="control">
+		<ul class="myMenu">
+			<li><a href="${get_html_param('url_mypage', 'sp/mypage.html')}" onclick="loadContents(this);return false;" class="mypage"></a></li>
+			<li><a href="${get_html_param('url_scout', 'sp/scout/scout.html')}" onclick="loadContents(this);return false;" class="scout"></a></li>
+			<li><a href="${get_html_param('url_battle', 'sp/battle/battle.html')}" onclick="loadContents(this);return false;" class="cabado"></a></li>
+			<li><a href="${get_html_param('url_composition', 'sp/composition/baseselect.html')}" onclick="loadContents(this);return false;" class="education"></a></li>
+			<li><a href="${get_html_param('url_evolution', 'sp/evolution/baseselect.html')}" onclick="loadContents(this);return false;" class="kanri"></a></li>
+			<li><a href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}" onclick="loadContents(this);return false;" class="gacha"></a></li>
+			<li><a href="#" onclick="openMenu();return false;" class="menu"></a></li>
+		</ul>
+		
+	</div>
+	<div class="cpnwrapp">
+		<div class="cpn">
+			%if eventbanners:
+				<script>
+					function onloadBannerImage(img_obj){
+						$(img_obj).parent().css("height", $(img_obj).height());
+					}
+				</script>
+				% for eventbanner in eventbanners:
+					<div class="content">
+						%if eventbanner['is_external_link']:
+							<a href="javascript:void(0);" onclick="jumpTuOutSidePage('${eventbanner['jumpto'] | h}', '${eventbanner['external_comment'] | h}'); return false;"><img src="${eventbanner['imageurl']}" width="180px" onload="onloadBannerImage(this);" /></a><br />
+							% if eventbanner.get('comment'):
+							└<a  href="javascript:void(0);" onclick="jumpTuOutSidePage('${eventbanner['jumpto'] | h}', '${eventbanner['external_comment'] | h}'); return false;">${eventbanner['comment'] | h}</a>┘<br />
+							% endif
+						%elif eventbanner['jumpto']:
+							<a href="${eventbanner['jumpto']}" onclick="loadContents(this);return false;"><img src="${eventbanner['imageurl']}" width="180px" onload="onloadBannerImage(this);"/></a><br />
+							% if eventbanner['comment']:
+								└<a href="${eventbanner['jumpto']}" onclick="loadContents(this);return false;">${eventbanner['comment'] | h}</a>┘<br />
+							% endif
+						%else:
+							<img src="${eventbanner['imageurl']}" width="180px"/><br />
+							% if eventbanner['comment']:
+								└${eventbanner['comment'] | h}┘<br />
+							% endif
+						%endif
+					</div>
+				% endfor
+				<div class="content" style="height: 48px;">
+				</div>
+			% endif
+		</div>
+	</div>
+</%def>
+
+<%doc>ポップアップメニュー用HTMLのテキスト</%doc>
+<%def name="popup_menu_html()">
+' \
+<table> \
+<td> \
+<div id="popMenu"> \
+	<ul> \
+		<li><a href="${get_html_param('url_cardbox', 'sp/card/cardbox.html')}" onclick="closeMenu();loadContents(this);return false;" class="castList"></a></li> \
+		<li><a href="${get_html_param('url_album', 'sp/album/album.html')}" onclick="closeMenu();loadContents(this);return false;" class="cast"></a></li> \
+		<li><a href="${get_html_param('url_transfer', 'sp/card/transfer.html')}" onclick="closeMenu();loadContents(this);return false;" class="transfer"></a></li> \
+		<li><a href="${get_html_param('url_shop', 'sp/shop/shop.html')}" onclick="closeMenu();loadContents(this);return false;" class="shop"></a></li> \
+		<li><a href="${get_html_param('url_present', 'sp/prevent.html')}" onclick="closeMenu();loadContents(this);return false;" class="present"></a></li> \
+		<li><a href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}" onclick="closeMenu();loadContents(this);return false;" class="friend"></a></li> \
+		<li><a href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}" onclick="closeMenu();loadContents(this);return false;" class="cabaclub"></a></li> \
+		<li><a href="${get_html_param('url_config', 'sp/config.html')}" onclick="closeMenu();loadContents(this);return false;" class="config"></a></li> \
+		<li><a href="#" onclick="closeMenu();return false;" class="closeMenu"></a></li> \
+	</ul> \
+</div> \
+</td> \
+<td> \
+<div id="popMenu"> \
+	<ul> \
+		<li><a href="${get_html_param('url_deck', 'sp/deck/deck.html')}" onclick="closeMenu();loadContents(this);return false;" class="castSet"></a></li> \
+		<li><a href="${get_html_param('url_sell', 'sp/card/sell.html')}" onclick="closeMenu();loadContents(this);return false;" class="taiten"></a></li> \
+		<li><a href="${get_html_param('url_itemlist', 'sp/item/itemlist.html')}" onclick="closeMenu();loadContents(this);return false;" class="item"></a></li> \
+		<li><a href="${get_html_param('url_treasurelist', 'sp/treasure/list.html')}" onclick="closeMenu();loadContents(this);return false;" class="takarabako"></a></li> \
+		<li><a href="${get_html_param('url_trade', 'sp/trade/trade.html')}" onclick="closeMenu();loadContents(this);return false;" class="hihou"></a></li> \
+		<li><a href="${get_html_param('url_happening', 'sp/happening/happening.html')}" onclick="closeMenu();loadContents(this);return false;" class="futokyaku"></a></li> \
+		<li><a href="${get_html_param('url_help', 'sp/help.html')}" onclick="closeMenu();loadContents(this);return false;" class="help"></a></li> \
+		<li><a href="${get_html_param('url_top', 'sp/top/top.html')}" onclick="closeMenu();" class="topPage"></a></li> \
+		<li><a class="noButton"></a></li> \
+	</ul> \
+</div> \
+</td> \
+</table> \
+'
+</%def>
+
+<%doc>セッションチェック用のjavascript</%doc>
+<%def name="session_script()">
+	<script type="text/javascript" src="${url_static_js}session.js?v=4"></script>
+	<script type="text/javascript">
+		var flag = true;
+		
+		%if is_local or (is_admin_access and is_dbg_user):
+			
+		%elif not is_pc:
+			if(!checkSession("${cur_session}")){
+				$(function(){
+					postSessionRequest("${url_dmm_top}", "${url_session_set}", "${url_session_callback}", "${url_session_error}", ${"true" if is_pc else "false"});
+				});
+				flag = false;
+			}
+		%endif
+		if(flag){
+			if($("#body_main").css("display") == "none"){
+				$("#body_main").css("display", "");
+			}
+			%if not (is_local or is_dbg_user):
+				$(function(){
+					if ( window.parent && window.self ){
+						if ( window.parent.location == window.self.location ){
+							window.parent.location.href = "${url_dmm_top}";
+						}
+					}
+				});
+			%endif
+		}
+	</script>
+</%def>
+
+<%doc>message受け渡し用のjavascript</%doc>
+<%def name="message_script()">
+	<script type="text/javascript">
+		window.addEventListener(
+			"message",
+			function(e) {
+				//console.log("message received from " + e.origin);
+				if(e.origin == 'http://${osapi_global_host}') {
+					var target = document.getElementById("contents_frame").contentWindow;
+					if (typeof target != 'undefined' && target != null) {
+						target.postMessage(e.data, '*');
+						//console.log("post message to contents_frame");
+					}
+				}
+			},
+			false
+		);
+
+		function closeMenu() {
+			$("#menu_frame").fadeOut(0, function() {
+				$("#menu_body").html("");
+			});
+		}
+
+		function openMenu() {
+			$("#menu_background").click(function() {
+				$("#menu_frame").fadeOut(0, function() {
+					$("#menu_body").html("");
+				});
+			});
+			$("#menu_body").css({left: $(document).width()/2-210, top: $(window).scrollTop() +140});
+			$("#menu_body").html(${self.popup_menu_html()});
+			$("#menu_frame").fadeIn("fast", function() {});
+		};
+	</script>
+</%def>
+
+<%doc>動画再生用のjavascript</%doc>
+<%def name="video_script()">
+	<%doc>flowplayer
+	</%doc>
+	<script type="text/javascript" src="${url_static_flowplayer}/flowplayer-3.2.13.min.js"></script>
+	<script type="text/javascript">
+		function playVideo(path) {
+			$("#video_content").css({width: "853px", height: "480px"});
+			$("#video_container").css({top: ($(window).height()/2-240) + "px", left:($(window).width()/2-426) + "px"});
+			$("#video_background").click(function() {
+				flowplayer("video_content").stop();
+				$("#video_frame").fadeOut("fast", function() {
+				});
+			});
+			var clip_url = path.substring(path.indexOf('mp4'));
+			var net_connection_url = path.substring(0,path.indexOf('/mp4'));
+			//console.log(net_connection_url);
+			console.dir(path);
+			%if wowza_player_key:
+				var wowza_player_key = '${wowza_player_key}';
+				var swfname = "flowplayer.commercial-3.2.18.swf";
+			%else:
+				var wowza_player_key = null;
+				var swfname = "flowplayer-3.2.18.swf";
+			%endif:
+			flowplayer("video_content", "${url_static_flowplayer}/"+swfname,
+				{
+					key : wowza_player_key,
+					clip: {
+						url: clip_url,
+						provider: 'rtmp',
+						connectionProvider: 'secure'
+					},
+					plugins: {
+						rtmp: {
+							url: '${url_static_flowplayer}/flowplayer.rtmp-3.2.13.swf',
+							proxyType: 'best',
+							netConnectionUrl: net_connection_url
+						},
+						secure: {
+							url: '${url_static_flowplayer}/flowplayer.securestreaming.swf'
+						}
+					}
+				});
+			$("#video_frame").fadeIn("normal", function() {});
+		}
+	</script>
+
+	<%doc>JWPlayer
+	<script type="text/javascript" src="${url_static_js_pc}jwplayer/jwplayer.js"></script>
+	<script type="text/javascript">jwplayer.key="rRkgO10IQGfSRuqDseP7CIEj1lTozeGm0RIQxg==";</script>
+
+	<script type="text/javascript">
+		var video_initialized = false;
+		function playVideo(path) {
+			$("#video_container").css({top: ($(window).height()/2-240) + "px", left:($(window).width()/2-426) + "px"});
+			$("#video_background").click(function() {
+				jwplayer("video_content").stop();
+				$("#video_frame").fadeOut("fast", function() {
+					//jwplayer("video_content").remove();
+				});
+			});
+			if(video_initialized) {
+				jwplayer("video_content").load([{ file: path }]);
+			} else {
+				jwplayer("video_content").setup({
+					file: path,
+					width: 853,
+					height: 480
+				});
+				jwplayer("video_content").onReady(function() {
+					jwplayer("video_content").play();
+				});
+				video_initialized = true;
+			}
+			$("#video_frame").fadeIn("normal", function() {});
+		}
+	</script>
+	</%doc>
+</%def>
+
+<%doc>ポップアップ閲覧のjavascript</%doc>
+<%def name="popup_script()">
+	<link href="${url_static_css}popup.css?v=0" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static}effect/sp/v2/common/js/httprequest.js"></script>
+	<script type="text/javascript" src="${url_static_js}popup.js?v=0"></script>
+	<script type="text/javascript">
+		function showPopup(popupurl_list){
+			setupPopupBanner(popupurl_list);
+		}
+	</script>
+</%def>
+
+<%doc>ステータス更新用のjavascript</%doc>
+<%def name="status_script()">
+	<script type="text/javascript">
+		function makeHTTPRequest(){
+			var httpRequest = null;
+			if(window.XMLHttpRequest){
+				httpRequest = new XMLHttpRequest();
+			} else if(window.ActiveXObject){
+				try {
+					httpRequest = new ActiveXObject('Msxml2.XMLHTTP');
+				}
+				catch (e) {
+					httpRequest = new ActiveXObject('Microsoft.XMLHTTP');
+				}
+			}
+			return httpRequest;
+		}
+		var getStatus = (function(){
+			var xhr = null;
+			return function() {
+				if(xhr != null){
+					return;
+				}
+				xhr = makeHTTPRequest();
+				xhr.open('GET', '${url_getstatus}&tmstmp='+(new Date().getTime()));
+				xhr.onreadystatechange = function() {
+					if(xhr.readyState === 4 && xhr.status === 200) {
+						var data = JSON.parse(xhr.responseText);
+						setPlayer(data['player'], data['power_total'], data['friend_num'], data['card_num'])
+						xhr = null;
+					}
+				};
+				xhr.send(null);
+			};
+		})();
+		var reserveGetStatus=null, execReservedGetStatus=null;
+		(function(){
+			var flag_reserve_get_status = false;
+			reserveGetStatus = function (){
+				flag_reserve_get_status = true;
+				//console.log("reserve!!");
+			}
+			execReservedGetStatus = function (){
+				if(!flag_reserve_get_status){
+					return;
+				}
+				flag_reserve_get_status = false;
+				getStatus();
+			}
+		})();
+
+		var timer = null;
+
+		function setPlayer(player, power_total, friend_num, card_num)
+		{
+			$('#nickname').text(player['person']['nickname']);
+			$('#ap').text(player['ap'] + "/" + player['apmax']);
+			$('#bp').text(player['bp'] + "/" + player['bpmax']);
+			$('#level').text(player['level']);
+			$('#deckcapacity').text(player['deckcapacity']);
+			$('#power_total').text(power_total);
+			$('#friend_num').text(friend_num + "/" + player['friendlimit']);
+			$('#card_num').text(card_num);
+			$('#gold').text(player['gold']);
+			$('#gachapt').text(player['gachapt']);
+
+			$('#gauge_ap').css({width: player['ap'] * 100 / player['apmax'] + "%"});
+			$('#gauge_bp').css({width: player['bp'] * 100 / player['bpmax'] + "%"});
+
+			var exp_diff = player['exp_next'] - player['exp_prev']
+			var exp_percent = 100
+			if(0 < exp_diff) {
+				var cur_exp = Math.max(0, player['exp'] - player['exp_prev'])
+				exp_percent = Math.min(100, 100 * cur_exp / exp_diff)
+			}
+
+			$('#gauge_exp').css({width: Math.floor(exp_percent) + "%"});
+
+			if(timer != null) {
+				clearTimeout(timer);
+				timer = null;
+			}
+
+			if(player['bp'] < player['bpmax']) {
+				timer = setTimeout('getStatus()', 60000);
+			} else if(player['ap'] < player['apmax']) {
+				timer = setTimeout('getStatus()', 180000);
+			}
+		}
+
+		function loadContents(obj) {
+			var now = new Date();
+			var target = document.getElementById("contents_frame");
+			if(target){
+				target.contentWindow.postMessage("unload_contents_frame", '*');
+			}
+			$(target).attr('src', obj.href + "&_time="+now.getTime());
+		}
+
+		window.onload = getStatus;
+	</script>
+</%def>

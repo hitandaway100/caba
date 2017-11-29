@@ -1,0 +1,79 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawGachaList()">
+	%for gacha in gachadata.values():
+		%if gacha['consumetype'] == Defines.GachaConsumeType.CONTINUITY_20 and gacha['tabengname'] == current_tab:
+			${self.drawGachaListSub(gacha['unique_name'])}
+		%endif
+	%endfor
+</%def>
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.CONTINUITY_20)}
+</%def>
+
+<%def name="drawGachaListSub(unique_name)">
+	
+	%if banner:
+		${self.drawBoxBanner(unique_name)}
+	%endif
+	%if header:
+		${self.drawHeader(unique_name)}
+	%endif
+	
+	%if slide:
+		${self.drawSlide(unique_name)}
+	%endif
+	
+	%if gachadata.has_key(unique_name):
+		${self.reaSetsumei()}
+	%endif
+	
+	${self.drawGachaContinuity20(unique_name, True)}
+	
+	%if gachadata.has_key(unique_name):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[unique_name])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endif
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(unique_name, do_render_time=True)}
+	
+	${self.drawGachaContinuity20(unique_name, True)}
+	
+	%if gachadata.has_key(unique_name):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[unique_name])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endif
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextContinuity20()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

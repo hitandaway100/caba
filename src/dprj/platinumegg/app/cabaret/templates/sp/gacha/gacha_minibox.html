@@ -1,0 +1,148 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.MINI_BOX)}
+</%def>
+
+<%def name="drawGachaList()">
+  <%
+  gachabox_dict = {}
+  for gacha in gachadata.values():
+    if gacha['consumetype'] != Defines.GachaConsumeType.MINI_BOX or gacha['tabengname'] != current_tab:
+      continue
+    boxid = gacha['boxid']
+    gachabox_dict[boxid] = gachabox_dict.get(boxid) or []
+    gachabox_dict[boxid].append(gacha)
+  %>
+  %for arr in gachabox_dict.values():
+    <%
+    names = {}
+    for gacha in arr:
+      names[gacha['continuity']] = gacha['unique_name']
+    print names
+    name1 = names.get(1)
+    name10 = names.get(10)
+    slidename = name1 or name10
+    %>
+    ${self.drawGachaListSub(name1, name10)}
+  %endfor
+</%def>
+
+<%def name="drawGachaListSub(name1, name10)">
+  <%
+    if gachadata[name1].has_key("total_group_totalnum"):
+      total_group_totalnum = gachadata[name1]["total_group_totalnum"]
+    else:
+      total_group_totalnum = -1
+  %>
+	
+	%if gachadata.has_key(name1):
+		
+		${self.drawSchedule(name1)}
+		${self.drawSlide(name1)}
+		${self.reaSetsumei()}
+		%if total_group_totalnum >= 10:
+			${self.drawGachaMiniBox(name10, 10, is_values_list=True)}
+		%endif
+			${self.drawGachaMiniBox(name1, 1, is_values_list=True)}
+		<div style="margin: 8px 0;">
+			<%doc>1月は低価格ガチャなので手動で出してる
+			${self.drawGachaBanner(unique_name)}
+			</%doc>
+			${self.drawRuleImage(name1)}
+		</div>
+		
+		${self.drawBoxGroupList(name1, do_draw_info=False)}
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">期間限定BOXガチャ</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		
+		${self.drawGachaMiniBoxSchedule(name1)}
+		
+		<div style="font-size:11px; text-align:left; padding:0px 30px 0 35px;">
+			通常より少ないDMMポイントで引く事ができます<br />
+			<%doc>本ガチャで獲得できるキャストは通常BOXの内容と同じです<br /></%doc>
+			BOX内に入っているキャストの中からランダムで<br />
+			獲得できるキャストが選ばれます
+		</div>
+		
+		<%doc>レアキャスト雇用速報</%doc>
+		${self.drawCastGetListByUniqueName(name1)}
+		
+		
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[name1])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin:8px 0px;"/>
+	%endif
+</%def>
+
+<%doc>BOXと同じように表記する
+<%def name="drawBoxGroupList(unique_name)">
+	%if gachadata.get(unique_name):
+		<%
+			gacha = gachadata[unique_name]
+			boxraremap = gacha.get('boxraremap') or {}
+		%>
+		<div class="minibox">
+			%if boxraremap.get(Defines.Rarity.SUPERRARE):
+				<span class="box_sr1">${boxraremap[Defines.Rarity.SUPERRARE]['restnum']}</span>
+				<span class="box_sr2">${boxraremap[Defines.Rarity.SUPERRARE]['totalnum']}</span>
+			%else:
+				<span class="box_sr1">0</span>
+				<span class="box_sr2">0</span>
+			%endif
+			
+			%if boxraremap.get(Defines.Rarity.HIGH_RARE):
+				<span class="box_hr1">${boxraremap[Defines.Rarity.HIGH_RARE]['restnum']}</span>
+				<span class="box_hr2">${boxraremap[Defines.Rarity.HIGH_RARE]['totalnum']}</span>
+			%else:
+				<span class="box_hr1">0</span>
+				<span class="box_hr2">0</span>
+			%endif
+			
+			%if boxraremap.get(Defines.Rarity.RARE):
+				<span class="box_r1">${boxraremap[Defines.Rarity.RARE]['restnum']}</span>
+				<span class="box_r2">${boxraremap[Defines.Rarity.RARE]['totalnum']}</span>
+			%else:
+				<span class="box_r1">0</span>
+				<span class="box_r2">0</span>
+			%endif
+		</div>
+		<div class="topcap">
+			このBOXはリセット出来ません
+		</div>
+	%endif
+</%def>
+</%doc>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextMiniBox()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

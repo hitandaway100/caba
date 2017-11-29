@@ -1,0 +1,20 @@
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+<div class="back_black">
+	<div class="titlebar">
+		<p class="caption">スカウト完了</p>
+	</div>
+
+	<div class="btncom">
+		<a href="${get_html_param('', 'sp/scout/scout.html')}">スカウトTOP</a>
+	</div>
+		<div class="btncom">
+		<a href="${get_html_param('', 'sp/boss/bosspre.html')}">ボス戦TOP</a>
+	</div>
+</div>
+</%def>

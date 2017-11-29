@@ -1,0 +1,49 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">${use_item_name}アイテム交換</p>
+	</div>
+	
+	<div class="wrapper">
+		%if 1 < trade_num:
+			${use_item_name}を${tradedata['name']}x${trade_num}${tradedata['unit'] | h}と交換しますか?
+		%else:
+			${use_item_name}を${tradedata['name']}と交換しますか?
+		%endif
+	</div>
+	
+	<div class="icon_l">
+		<img src="${tradedata['thumbUrl']}" width="90" height="90" />
+	</div>
+	
+	<div class="wrapper">
+		%if 0 < trade_num:
+			各${use_item_name}消費量：${trade_point}<br />
+		%else:
+			各${use_item_name}消費量：${tradedata['rate_cabaretking']}<br />
+		%endif
+		%if 0 < tradedata['stock']:
+			交換可能回数残り：${max(0, tradedata['stock'] - tradedata['trade_cnt'])}回
+		%endif
+	</div>
+	
+	<div>
+		%if err_mess:
+			<div class="caution">
+				${err_mess | h}
+			</div>
+		%else:
+			<a class="btnpink" href="${get_html_param('url_tradedo', 'sp/trade/tradecomplete.html', tradedata)}"><p class="caption">交換する</p></a>
+		%endif
+	</div>
+	
+	<div>
+		%if url_battleticket_trade:
+			<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_battleticket_trade')}"><div>バトルチケット交換TOPへ</div></a>
+		%else:
+			<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><div>秘宝アイテム交換TOPへ</div></a>
+		%endif
+	</div>
+</%def>

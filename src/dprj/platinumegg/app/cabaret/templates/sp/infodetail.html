@@ -1,0 +1,31 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">更新情報</p>
+	</div>
+	
+	<section class="basicinfo">
+		<div class="basictop" style="font-size:0px;">
+			 &nbsp;
+		</div>
+		<div class="basicBack">
+			<ul>
+				<li>
+					% if infomation is not UNDEFINED:
+						${infomation['body']}
+					% endif
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				 &nbsp; 
+			</div>
+		</div>
+		<div class="basicbtm">
+		</div>	
+	</section>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_infomation', 'sp/infomation.html')}" ><div style="margin-left:14px;">更新情報一覧へ</div></a>
+	</div>
+</%def>

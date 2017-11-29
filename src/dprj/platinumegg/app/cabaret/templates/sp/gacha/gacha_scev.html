@@ -1,0 +1,92 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="contents()">
+	<div style="background-color:rgba(0,0,0,0.4); width:320;">
+		<div class="titlebar">
+			<p>限定引抜ガチャ</p>
+		</div>
+	</div>
+	
+	<%doc>画面上部の情報表示</%doc>
+	${self.drawGachaTopInfo()}
+	
+	<%doc>レイドイベント用シートガチャバナー</%doc>
+	${self.drawRaidEventSheetGachaBanner()}
+	
+	${self.drawGachaListWithFooter()}
+	
+</%def>
+
+<%def name="drawGachaTopInfo()">
+</%def>
+
+<%def name="drawGachaList()">
+	%for gacha in gachadata.values():
+		%if gacha['consumetype'] == Defines.GachaConsumeType.SCOUTEVENT:
+			${self.drawGachaListSub(gacha['unique_name'])}
+		%endif
+	%endfor
+	<%doc>キャスト雇用履歴</%doc>
+	${self.drawCastGetListByTopic(Defines.GachaConsumeType.GachaTopTopic.SCOUTEVENT)}
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(2); //タブボックス用の関数の呼び出し
+	</script>
+</%def>
+
+<%def name="drawGachaListSub(name)">
+	
+	${self.drawBoxBanner(name)}
+	${self.drawHeader(name)}
+	${self.drawSlide(name)}
+	
+	%if gachadata.has_key(name):
+		${self.reaSetsumei()}
+	%endif
+	
+	${self.drawGacha(name, 1, True)}
+	
+	%if gachadata.has_key(name):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[name])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endif
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(name1)}
+	
+	${self.drawGacha(name, 1, True)}
+	
+	%if gachadata.has_key(name):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[name])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endif
+	
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextTicket()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+

@@ -1,0 +1,57 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>ランク情報変更</strong>　現在のランク・ノルマ達成回数・連勝数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_battlerank" />
+        <p>
+          User:<select name="_uid">
+          <option value="">------</option>
+          %for player in players:
+          <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+          %endfor
+          </select>
+        </p>
+        <p>
+          Rank:<select name="_rank">
+          <option value="">------</option>
+          %for battlerank in battleranklist:
+          <option value="${battlerank.id}">${battlerank.region | h}_${battlerank.town | h}(ID:${battlerank.id})</option>
+          %endfor
+          </select>
+        </p>
+        <p>
+          連勝:<input type="text" name="_win" value="0" />
+        </p>
+        <p>
+          ﾉﾙﾏ&nbsp;:<input type="text" name="_times" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>対戦相手変更回数変更</strong>　対戦相手を変更した回数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_battleopponent_change_count" />
+        <p>
+          User:<select name="_uid">
+          <option value="">------</option>
+          %for player in players:
+          <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+          %endfor
+          </select>
+        </p>
+        <p>
+          回数:<input type="text" name="_cnt" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

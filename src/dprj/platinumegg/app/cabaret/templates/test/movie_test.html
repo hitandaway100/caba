@@ -1,0 +1,71 @@
+<html>
+	<head>
+		<title>${apptitle}</title>
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="width=320, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+		<script src="http://www.apple.com/library/quicktime/scripts/ac_quicktime.js" language="JavaScript" type="text/javascript"></script>
+		<script src="http://www.apple.com/library/quicktime/scripts/qtp_library.js" language="JavaScript" type="text/javascript"></script>
+		<link href="http://www.apple.com/library/quicktime/stylesheets/qtp_library.css" rel="StyleSheet" type="text/css" />
+		<link href="${url_static_css}style.css" rel="stylesheet" type="text/css" />
+		<%include file="../sp/includes/style.html" />
+		<%include file="../sp/style/menu_style.html" />
+	</head>
+	
+	<body>
+		<div>
+			<div class="titlebar">
+				<p>動画再生テスト</p>
+			</div>
+			<video width="320" height="196" autoplay="autoplay" onclick="this.play();">
+				<source src="${url_media}01.SOE-372mm.m3u8" />
+			</video>
+			<video width="320" height="196" autoplay="autoplay" onclick="this.play();">
+				<source src="${url_cgi}/mediatest?opensocial_app_id=119733&opensocial_owner_id=8350420" />
+			</video>
+			<!--
+			<object classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/mp4" codebase="http://www.apple.com/qtactivex/qtplugin.cab" width="320" height="196">
+				<param name="src" value="http://192.168.1.33:8080/media/dummy.mov" />
+				<param name="href" value="rtsp://192.168.1.33:554/sample_100kbit.mp4" />
+				<param name='scale' value='aspect' />
+				<param name='autohref' value='true' />
+				<param name="autoplay" value="false" />
+				<param name="controller" value="true" />
+				<param name="bgcolor" value="#000000" />
+				<param name="KIOSKMODE" value="TRUE" />
+				<param name="QTSRCDONTUSEBROWSER" value="TRUE" />
+				<param name="CACHE" value="FALSE" />
+				<param name="target" value="myself" />
+				<embed 
+					src="http://192.168.1.33:8080/media/dummy.mov" 
+					href="rtsp://192.168.1.33:554/sample_100kbit.mp4"
+					type="video/mp4"
+					autohref="true" 
+					autoplay="false" 
+					controller="true" 
+					KIOSKMODE="TRUE"
+					QTSRCDONTUSEBROWSER="TRUE"
+					bgcolor="#000000" 
+					width="320" height="196" 
+					ENABLEJAVASCRIPT="TRUE"
+					CACHE="FALSE"
+					TARGET="myself"
+					pluginspage="http://www.apple.com/quicktime/">
+				</embed>
+			</object>
+		-->
+			
+			<div class="btnlong" style="margin-top:4px;margin-bottom:8px;">
+				<a href="rtsp://127.0.0.1:7070/test.mpeg4.hint.mp4" target="_self">画面遷移で再生</a>
+			</div>
+			<div class="btnlong" style="margin-top:4px;margin-bottom:8px;">
+				<a href="rtsp://127.0.0.1:7070/sample_100kbit.mp4" target="_self">画面遷移で再生(変換前)</a>
+			</div>
+			<div class="btnlong" style="margin-top:4px;margin-bottom:8px;">
+				<a href="http://127.0.0.1:8080/media/nhksample.mp4" target="_self">ダウンロード</a>
+			</div>
+		</div>
+	</body>
+</hrml>

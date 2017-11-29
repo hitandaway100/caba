@@ -1,0 +1,319 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<style type="text/css">
+	.cardspace{
+		position: relative;
+		left: 2px;
+	}
+	
+	.nominate_set2{
+		position: relative;
+		width: 184px;
+		top:-2px;
+		left:4px;
+		font-size: 12px;
+		line-height: 16px;
+	}
+	
+	.nominate_st1{
+		width:74px;
+		height:20px;
+		text-align: center;
+	}
+	
+	.nominate_st2{
+		width: 110px;
+		height: 20px;
+		text-align:left;
+	}
+	
+	.nominate_big{
+		width:184px;
+		height:40px;
+		text-align: right;
+	}
+	
+	
+	.nominate_st_s{
+		width: 108px;
+		height: 20px;
+		text-align:center;
+		font-size: 11px;
+		letter-spacing: -1px;
+	}
+	.nominate_set3{
+		position: relative;
+		width: 300px;
+		top:-2px;
+		left:4px;
+		margin: auto;
+		font-size: 12px;
+		line-height: 8px;
+	}
+	
+	.nominate_st3{
+		width: 72px;
+		height: 20px;
+		text-align:center;
+		
+	}
+	.nominate_st4{
+		width: 220px;
+		height: 20px;
+		text-align:left;
+		font-size: 14px;
+	}
+	
+	.nominate_st4 b{
+		color: #FF9900;
+	}
+	.nominate_st5{
+		width: 300px;
+		height: 20px;
+		font-size: 14px;
+		text-align:left;
+	}
+	</style>
+	<script>
+		function selectSpecial(a, name){
+			var body = $("#special_body");
+			body.children().css("display", "none");
+			$(a).parent().css("display", "none");
+			$("#special_"+name).css("display", "");
+			$("#special_tag_"+name).css("display", "");
+		}
+	</script>
+	<%
+		int_flag_skill = True
+	%>
+	${self.topheader()}
+	
+	<%doc>タブ</%doc>
+	<div> 
+		${self.eventtopic()}
+		<script type="text/javascript">
+			topics(2); //タブボックス用の関数の呼び出し
+		</script>
+	</div>
+	<%doc>
+	<img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_gacha_info.png" width="320" height="auto"/>
+	</%doc>
+	
+	%if (battleevent['specialtype_long'] and specialtypedict) or specialcardlist:
+		%if battleevent['specialtype_long'] and specialtypedict:
+			<div class="wrapper">
+				<span style="color:${battleevent['specialtype_color']}">${battleevent['specialtype_long'] | h}属性のキャスト</span>をデッキに入れると<br />
+				接客力に<span class="orange">属性ボーナス</span>がつくぞ！<br />
+			</div>
+		%endif
+		%if specialcardlist:
+			<div class="wrapper">
+				さらに、<span class="yellow">特効キャスト</span>を入れていると<br />
+				接客力に<span class="orange">特効ボーナス</span>もつく！
+			</div>
+		%endif
+		
+		<div>
+			<%doc>属性ボーナスについてのブロック</%doc>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					<%
+						arr = []
+						if specialcardlist:
+							arr.append('特効ボーナス')
+						if battleevent['specialtype_long'] and specialtypedict:
+							arr.append('属性ボーナス')
+					%>
+					${'と'.join(arr)}について
+				</div>
+			</div>
+		</div>
+		
+		%if battleevent['specialtype_long'] and specialtypedict and specialcardlist:
+			<div align="center" style="background-color: #8D35B8; width:308px; border-radius: 3px; margin:4 6 4 6px; padding: 2 0;">
+				<div id="special_tag_cast">
+					特効ボーナス｜<a href="javascript:void(0);" onclick="selectSpecial(this, 'type');" class="yellow">属性ボーナス</a>
+				</div>
+				<div id="special_tag_type" style="display:none;">
+					<a href="javascript:void(0);" onclick="selectSpecial(this, 'cast');" class="yellow">特効ボーナス</a>｜属性ボーナス
+				</div>
+			</div>
+		%endif
+		
+		<div class="back_black">
+			<div id="special_body">
+				%if specialcardlist:
+					<div id="special_cast">
+						%for specialcard in specialcardlist:
+							<%
+								skillname = None
+								skilltext = None
+								if specialcard['skill']:
+									skillname = specialcard['skill']['name']
+									skilltext = specialcard['skill']['text']
+							%>
+							${self.drawNominateCard(specialcard['thumbnail']['middle'],specialcard['iconUrl'],specialcard['name'],specialcard['maxpower'],specialcard['cost'],specialcard['hklevel'],specialcard['specialpowup'],skillname,skilltext,specialcard.get('battleticket_rateup'))}
+						%endfor
+					</div>
+				%endif
+				
+				%if battleevent['specialtype_long'] and specialtypedict:
+					%if specialcardlist:
+					<div id="special_type" style="display:none;">
+					%else:
+					<div id="special_type">
+					%endif
+						<%doc>属性ボーナス一覧のブロック</%doc>
+						%for rare in Defines.Rarity.LIST[::-1]:
+							<div>
+								<%
+									arr = specialtypedict.get(rare) or ([100]*Defines.HKLEVEL_MAX)
+									if rare in Defines.Rarity.EVOLUTION_ABLES:
+										arr = arr[:Defines.HKLEVEL_MAX]
+									else:
+										arr = arr[:1]
+								%>
+								${self.drawBonusInfo(Defines.Rarity.NAMES[rare], enumerate(arr))}
+							</div>
+						%endfor
+					</div>
+				%endif
+			</div>
+		<div class="topcap">
+			※同名の特効キャストの効果は<br>
+			重複してかかりません
+		</div>
+			${self.eventfooter()}
+		</div>
+	%else:
+		${self.eventfooter()}
+	%endif
+</%def>
+
+<%def name="drawBonusInfo(rare, bonuslist)">
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			${rare}
+		</div>
+	</div>
+	<table width="90%" border="2" bordercolor="#905090" style="font-size:12px;margin: 0 auto 0 auto;text-align: center;" cellpadding="0" cellspacing="0">
+		<tr class="orange" style="font-size:14px;background-color:#400040;">
+			<th>
+				ハメ管理度
+			</th>
+			<th>
+				属性ボーナス
+			</th>
+		</tr>
+		%for heartnum, powup in bonuslist:
+			<tr>
+				<td width="50%">
+					${self.drawHeart(heartnum)}
+				</td>
+				<td width="50%">
+					${powup}％
+				</td>
+			</tr>
+		%endfor
+	</table>
+</%def>
+
+<%def name="drawHeart(num)">
+	<div style="padding: 0 4px 0 4px"><!--
+	%for _ in xrange(num):
+		--><img src="${url_static_img}common/heart.png" width="14px" height="14px" /><!--
+	%endfor
+	--></div>
+</%def>
+
+<%def name="drawNominateCard(thumbUrl, iconUrl, name, power, cost, hklevel, powerup, skillname, skilltext, battleticket_rateup=None)">
+	%if skillname:
+	<div style="background: url(${url_static_img}common/card_frame_07.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:201; background-size:310px 201px;">
+	%else:
+	<div style="background: url(${url_static_img}common/card_frame_08.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:153; background-size:310px 153px;">
+	%endif
+		<table>
+			<td>
+				<div class="cardspace">
+					<img src="${thumbUrl}" width="110px" height="138px" />
+				</div>
+			</td>
+			<td>
+				<table class="nominate_name">
+					<tr>
+						<td class="name_st1l"><img src="${iconUrl}" width="28px" height="28px" /></td>
+						<td class="name_st2l">${name | h}</td>
+					</tr>
+				</table>
+				<table class="nominate_set2">
+					<tr>
+						<td class="nominate_st1">
+							最大接客力
+						</td>
+						<td class="nominate_st2">
+							${power}
+						</td>
+					</tr>
+					<tr>
+						<td class="nominate_st1">
+							人件費
+						</td>
+						<td class="nominate_st2">
+							${cost}
+						</td>
+					</tr>
+					<tr>
+						<td class="nominate_st1">
+							ハメ管理度
+						</td>
+						<td class="nominate_st2">
+							% for _ in xrange(hklevel - 1):
+								<img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+							% endfor
+						</td>
+					</tr>
+				</table>
+				<table cellpadding="0" cellspacing="0" style="margin-top:-16px;height: 58px;">
+					<tr>
+						<td class="nominate_big">
+							<div style="font-size:10px; height: 15px;">
+								接客力 <span class="yellow" style="font-size:14px;">${powerup[0]}</span> ％
+							</div>
+							%if 1 < len(powerup):
+								<div style="font-size:10px; height: 15px;">
+									バトルPT <span class="yellow" style="font-size:14px;">${powerup[1]+100}</span> ％
+								</div>
+							%endif
+              %if battleticket_rateup:
+							  <div style="font-size:10px; height: 15px;">
+								  チケット <span class="yellow" style="font-size:14px;">${battleticket_rateup+100}</span> ％
+							  </div>
+              %endif
+						</td>
+					</tr>
+				</table>
+			</td>
+		</table>
+		%if skillname:
+			<table class="nominate_set3">
+				<tr>
+					<td class="nominate_st3">
+						サービス
+					</td>
+					<td class="nominate_st4">
+						<b>&nbsp; ${skillname | h}</b>
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class="nominate_st5">
+						%if skilltext:
+							${skilltext | h}
+						%endif
+					</td>
+				</tr>
+			</table>
+		%endif
+	</div>
+</%def>

@@ -1,0 +1,44 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="head()">
+<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+</%def>
+
+<%def name="contents()">
+
+		<div class="titlebar">
+			<p class="caption">キャストリスト</p>
+		</div>
+		
+		<div class="confirm" style="margin-top:20px";>
+			キャスト${_card_num}人を<!--
+			%if _gold_add:
+				-->${Defines.ItemType.NAMES[Defines.ItemType.GOLD] | h}${_gold_add}${gold_unit}<!--
+			%endif
+			%if _ckt:
+				%if _gold_add:
+					-->と<br /><!--
+				%endif
+				-->${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}${_ckt}${Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE] | h}<!--
+			%endif
+			-->で退店させました。<br />
+			%if _gold_add:
+				${gold_name | h}：${_gold_pre}⇒<span class="red">${_gold}</span><br />
+			%endif
+			%if _ckt:
+				${Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE] | h}：${_cktpre}⇒<span class="red">${min(_cktpre + _ckt, Defines.VALUE_MAX)}</span><br />
+			%endif
+		</div>
+		
+		<div>
+			<a class="btnlong" style="margin-top:20px"; href="${get_html_param('url_composition', 'sp/composition/baseselect.html')}"><div>キャストを教育する</div></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" style="margin-bottom:10px;" href="${get_html_param('url_sell', 'sp/card/sell.html')}"><div>退店を続ける</div></a>
+		</div>
+		
+		<div>
+			<a class="btnlong" style="margin-bottom:30px;" href="${get_html_param('url_cardbox', 'sp/card/cardbox.html')}"><div>キャスト一覧へ</div></a>
+		</div>
+</%def>

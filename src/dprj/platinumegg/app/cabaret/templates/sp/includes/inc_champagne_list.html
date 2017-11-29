@@ -1,0 +1,37 @@
+#coding:utf-8
+<%doc>シャンパンリスト</%doc>
+<%page args="champagne_num, champagne_num_max, is_fever, codename, url_static_img">
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		<table style="margin: auto;">
+			<%doc>champagne_codenameはしばらくrdev_16で固定っぽい。ホントはcodenameと同じ</%doc>
+			<%
+				_row_num = max(1, min(int(champagne_num_max / 2), 5))
+				_line_num = int((champagne_num_max + _row_num - 1) / _row_num)
+				champagne_num = min(champagne_num, champagne_num_max)
+				if is_fever:
+					champagne_num = champagne_num_max
+				champagne_codename = 'rdev_16' or codename
+			%>
+			%for _line in xrange(_line_num):
+				<tr>
+					<td>
+						%for _row in xrange(_row_num):
+							<%
+								_idx = _row + _line * _row_num
+							%>
+							%if _idx < champagne_num_max:
+								%if _idx < champagne_num:
+									<img src="${url_static_img}item/rdevent/${champagne_codename}/${champagne_codename}_Champagne_s.png" width="58px" height="58px" />
+								%else:
+									<img src="${url_static_img}item/rdevent/${champagne_codename}/${champagne_codename}_Champagne_empty_s.png" width="58px" height="58px" />
+								%endif
+							%endif
+						%endfor
+					</td>
+				</tr>
+			%endfor
+		</table>	
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+	</div>
+</%page>

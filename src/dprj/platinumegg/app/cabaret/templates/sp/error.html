@@ -1,0 +1,23 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">エラー</p>
+	</div>
+	
+	<div class="wrapper" style="margin-top:10px;">
+		エラーが発生しました。<br />
+		% if error_message is not UNDEFINED:
+			<pre>${error_message}</pre>
+		%endif
+	</div>
+	
+	<div>
+		<p class="caption">
+			<a class="btnpink" href="${get_html_param('url_top', 'sp/top/top.html')}">トップページへ</a>
+		</p>
+	</div>
+</%def>
+<%def name="header()"></%def>
+<%def name="footer()"></%def>

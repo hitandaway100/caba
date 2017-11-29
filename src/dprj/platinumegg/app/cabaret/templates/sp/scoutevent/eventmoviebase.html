@@ -1,0 +1,41 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="movielist()">
+	<%doc>イベント動画一覧</%doc>
+	<div>
+		<div class="cardalbum">
+			思い出アルバム
+		</div>
+		<div align="center">
+			%for movie in eventmovielist:
+				<div style="padding:6px 0px;">
+					<div class="titlesub">
+						<div class="wrapper">
+							${movie['title'] | h}
+						</div>
+					</div>
+					% if movie['is_open']:
+						<div class="mvlook" onclick="location.href='${get_html_param('url', 'sp/scoutevent/scev_07/moviedetail.html', movie)}';">
+							<div class="mvthumb">
+								<img src="${movie['thumbUrl']}" width="151px" height="88px" />
+							</div>
+							<div class="mvframe">
+								<img src="${url_static_img}06/curtain_open.png" width="151px" height="88px" />
+							</div>
+							%if movie['is_new']:
+								<div class="mvnew">
+									<img src="${url_static_img}06/new.png" width="62" height="22" />
+								</div>
+							%endif
+						</div>
+					%else:
+						<div class="mvframe_close">
+							<img src="${url_static_img}06/curtain_close.png" width="151px" height="88px" />
+						</div>
+					%endif
+				</div>
+			%endfor
+		</div>
+	</div>
+</%def>

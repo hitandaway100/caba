@@ -1,0 +1,17 @@
+[
+    {
+        "pk": 4294967296,
+        "model": "cabaret.card",
+        "fields": {
+            "uid": 1,
+            "mid": 10001,
+            "exp": 0,
+            "level": 1,
+            "skilllevel": 1,
+            "takeover": 0,
+            "protection": false,
+            "ctime": "2015-12-07T15:06:09+09:00",
+            "way": 1
+        }
+    }
+]

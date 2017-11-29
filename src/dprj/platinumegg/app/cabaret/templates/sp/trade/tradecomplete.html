@@ -1,0 +1,37 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">${trade_item_name_short}アイテム交換</p>
+	</div>
+	
+	<div class="wrapper">
+		%if 1 < trade_num:
+			${trade_item_name_short}を${tradedata['name']}x${trade_num}${tradedata['unit'] | h}と交換しました
+		%else:
+			${trade_item_name_short}を${tradedata['name']}と交換しました
+		%endif
+	</div>
+	
+	<div class="icon_l">
+		<img src="${tradedata['thumbUrl']}" width="90" height="90"/>
+	</div>
+	
+	<div class="wrapper">
+		%if item_num is not None:
+		<span class="red">所持数&nbsp; :&nbsp; </span>${item_num - tradedata['itemnum']*trade_num}${tradedata['unit'] | h}⇒<span class="red">${item_num}</span>${tradedata['unit'] | h}<br/>
+		%endif
+		${trade_item_name_long}&nbsp; :&nbsp; ${item_num_before}⇒${item_num_after}<br />
+	</div>
+	
+	%if obj_lead:
+		<div>
+			<a class="btnpink" href="${get_html_param('url', 'sp/gacha/gacha_ticket.html', obj_lead)}"><p class="caption">${obj_lead['text'] | h}</p></a>
+		</div>
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>

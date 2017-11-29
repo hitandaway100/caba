@@ -1,0 +1,234 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head_additional()">
+	<script>
+		
+		function onClickButton(btn){
+			var form = document.createElement("form");
+			form.action = "${url_view_battleevent_group}";
+			
+			function appendPostValue(name, value){
+				if(!value){
+					return;
+				}
+				var obj = document.createElement("input");
+				obj.type = "hidden";
+				obj.name = name;
+				obj.value = value;
+				form.appendChild(obj);
+				return obj;
+			}
+			function search(parent){
+				var children = $(parent).children();
+				for(var i=0; i<children.length; i++){
+					var obj = children[i];
+					
+					switch(obj.tagName){
+					case "INPUT":
+						{
+							appendPostValue(obj.name, obj.value);
+						}
+						break;
+					case "SELECT":
+						{
+							var options = obj.options;
+							var opt = options[options.selectedIndex];
+							appendPostValue(obj.name, opt.value);
+						}
+						break;
+					default:
+						{
+							search(obj);
+						}
+						break;
+					}
+				}
+			}
+			search($(btn).parent())
+			
+			{
+				var tag_eventid = document.getElementById("_event");
+				var options = tag_eventid.options;
+				var opt = options[options.selectedIndex];
+				appendPostValue(tag_eventid.name, opt.value);
+			}
+			
+			form.submit();
+		}
+		%if grouplist:
+			$(function(){
+				location.hash = "RESULTLIST";
+			});
+		%endif
+	</script>
+</%def>
+
+<%def name="drawFormValue(flag, v)">${v or '' if flag else ''}</%def>
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>バトルイベントグループ情報</h1>
+	</div>
+	
+	<div>
+		<h3>対象のイベント</h3>
+		<select id="_event" name="_eventid">
+			%for battleevent in battleeventlist:
+				%if battleevent.id == eventid:
+					<option value="${battleevent.id}" selected="selected">${battleevent.name | h}(ID:${battleevent.id})</option>
+				%else:
+					<option value="${battleevent.id}">${battleevent.name | h}(ID:${battleevent.id})</option>
+				%endif
+			%endfor
+		</select>
+		
+		<div>
+			<div class="well">
+				<h3>ユーザで絞り込み</h3>
+				<div id="from_user">
+					<select name="_serchtype">
+						%if serchtype == 'uid':
+							<option value="dmmid">DMMIDから</option>
+							<option value="uid" selected="selected">アプリ内ユーザIDから</option>
+						%else:
+							<option value="dmmid">DMMIDから</option>
+							<option value="uid">アプリ内ユーザIDから</option>
+						%endif
+					</select>
+					<div>
+						ID:<br />
+						<input type="text" name="_value" value="${self.drawFormValue(serchtype in ('uid', 'dmmid'), value)}" />
+					</div>
+					<input type="button" class="btn btn-primary" value="検索" onclick="onClickButton(this);" />
+				</div>
+			</div>
+			
+			<div class="well">
+				<h3>ランクで絞り込み</h3>
+				<div id="from_rank">
+					<input type="hidden" name="_serchtype" value="rank" />
+					<div>
+						ランク:<br />
+						<input type="text" name="_value" value="${self.drawFormValue(serchtype == 'rank', value)}" />
+					</div>
+					<div>
+						日付:<br />
+						<input type="date" name="_cdate" value="${cdate or ''}" />
+					</div>
+					<input type="button" class="btn btn-primary" value="検索" onclick="onClickButton(this);" />
+				</div>
+			</div>
+			
+			<div class="well">
+				<h3>グループ番号で絞り込み</h3>
+				<div id="from_group">
+					<input type="hidden" name="_serchtype" value="groupid" />
+					<div>
+						ID:<br />
+						<input type="text" name="_value" value="${self.drawFormValue(serchtype == 'groupid', value)}" />
+					</div>
+					<input type="button" class="btn btn-primary" value="検索" onclick="onClickButton(this);" />
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	%if grouplist:
+		<a id="RESULTLIST" name="RESULTLIST"><!----></a>
+		<%include file='../../inc_pagination.html' />
+		
+		<div class="well">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<th>
+							アクティブ
+						</th>
+						<th>
+							日付
+						</th>
+						<th>
+							ID
+						</th>
+						<th>
+							ランク
+						</th>
+						<th>
+							人数
+						</th>
+						%if target_uid:
+							<th>
+								順位
+							</th>
+							<th>
+								獲得名声PT
+							</th>
+							<th>
+								ランク増減
+							</th>
+							<th>
+								当日獲得バトルPT
+							</th>
+						%endif
+						<th>
+							詳細
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					%for group in grouplist:
+						<tr>
+							<td>
+								%if group['is_end']:
+									<span class="label label-red">×</span>
+								%else:
+									<span class="label label-blue">◯</span>
+								%endif
+							</td>
+							<td>
+								${group['cdate'] | h}
+							</td>
+							<td>
+								${group['id']}
+							</td>
+							<td>
+								${group['rankname'] | h}(ID:${group['rankid']})
+							</td>
+							<td>
+								${group['usernum']}
+							</td>
+							%if target_uid:
+								%if group['userdata']:
+									<td>
+										${group['userdata']['grouprank']}
+									</td>
+									<td>
+										${group['userdata']['fame']}
+									</td>
+									<td>
+										${group['userdata']['rankup']}
+									</td>
+									<td>
+										${group['userdata']['point']}
+									</td>
+								%else:
+									<td colspan="4">詳細で確認できます</td>
+								%endif
+							%endif
+							<td>
+								%if group['url']:
+									<a href="${group['url']}">⇛詳細</a>
+								%else:
+									⇛閲覧できません
+								%endif
+							</td>
+						</tr>
+					%endfor
+				</tbody>
+			</table>
+		</div>
+		
+		<%include file='../../inc_pagination.html' />
+	%endif
+</%def>

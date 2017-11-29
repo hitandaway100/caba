@@ -1,0 +1,737 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head()">
+<script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar" style="margin-bottom:16px;">
+		<p class="caption">ヘルプ</p>
+	</div>
+	
+	<div style="margin-bottom:8px;">	
+		<div class="help_slide">
+			<input type="submit" value="パラメータについて" class="help_btn"/>	
+		</div>
+			
+		<div id="help_text" style="display: none;">
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼キャバ王Lv▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						プレイヤーの進行度や強さを数値で表した物です。<br />
+						スカウトなどで経験値を貯める事で、キャバ王Lvがアップします。<br />
+						キャバ王Lvがアップすると最大体力と総人件費が上昇します。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼体力▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						スカウト時に使用します、体力は３分に１回復します。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼気力▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						バトルで戦う際や太客バトルで使用します、気力は１分に１回復します。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼経験値▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						一定量貯まるとキャバ王Lvがアップします。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼キャバゴールド▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						スカウトや宝箱などから獲得できるゲーム内通貨です。<br />
+						教育＆ハメ管理合成等で使用します。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼総人件費▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						キャスト編成で出勤キャストを設定する際に使用します。<br />
+						キャスト編成時、各キャストの人件費の合計を総人件費以内に納める必要があります。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼引抜Pt▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						無料ガチャの引抜Ptガチャで使用します。<br />
+						フレンドにあいさつする事などで上昇します。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px;" />
+		</div>
+	</div>	
+	
+			
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="キャストについて" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼レアリティ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						レアリティが高いほど最大能力値が上昇し、希少なキャストとなります。<br />
+						N→HN→R→HR→SR→SSRの6種類となります。<br />
+						HR以上のキャストをハメ管理するとハメムービーが見られるようになります。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼レベル▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						キャストの強さを表す物です。<br />
+						教育やバトルで接客に参加することによりレベルが上昇し、各パラメーターが変化します。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼ハメ管理度▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						ハメ管理が成功すると、ハメ管理したキャストのステータスを一部引き継いでレベルが１に戻ります。<br />
+						さらに写真やハメムービーが開放されます。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼接客力▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						接客力が高いほどボス戦やバトルなどで有利になります。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼サービスについて▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						バトルなどで一定の確率で発動し、味方や敵のパラメータに影響を与え、接客を有利にする事ができます。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼人件費▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						キャスト編成で出勤キャストを設定する際に使用します。<br />
+						キャスト編成時、各キャストの人件費の合計を総人件費以内に納める必要があります。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="キャスト編成について" class="help_btn"/>
+		</div>
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼キャスト編成▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						出勤するキャストを設定する事で、バトルなどで接客するキャスト決めます。<br />
+						「キャスト編成を最適化」ボタンを押すと、接客力の高いキャストから編成されます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼編成の制限▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						総人件費以内に設定キャスト全員の人件費を納める必要があります。<br />
+						また出勤キャストとして設定できるキャストの総数は１０人までです。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼NO1キャスト▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						所属キャストのなかでNO1を設定する事ができます。<br />
+						NO１キャストはフレンドの超太客攻略で使用されます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="キャスト一覧＆キャスト名鑑について" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼キャスト一覧▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						現在所属しているキャストの一覧を確認できます。<br />
+						ここではキャストを退店させることもできます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼キャスト名鑑▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						1度でも所属した事のあるキャストが登録されます。<br />
+						ハメ管理で開放された写真やハメムービーなどを鑑賞する事ができます
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="ハメ管理について" class="help_btn"/>	
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼ハメ管理▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						同じ種類のキャストを合わせる事により、進化させる事ができます。<br />
+						ハメ管理できるのはレアリティがR以上のキャストになります。<br />
+						またキャストのレアリティが高いほどハメ管理に費用がかかります。<br />
+						ハメ管理すると接客力を一部引き継ぎ、キャストのレベルは1に戻ります。<br />
+						<span class="red">2014/08/08改修前</span><br />
+						ベースキャスト、素材キャストの現在接客力の一部を引き継いでいたため、ベースキャストと素材キャストのレベル、ハメ管理度が共に最大でなくては最大ステータスに達しませんでした。<br />
+						<span class="red">2014/08/08機能改修後</span><br />
+						素材のステータスは合成に影響をもたらさないように改修されました。<br />
+						常にベースカードと同じ現在接客力のキャストを素材としたものとして計算されます。<br />
+						そのため、素材となるキャストのレベル、ハメ管理度は最低値であろうと最大値であろうと、進化後のステータスは同じになります。<br />
+						進化アイテム(各種指輪)は改修前、改修後も変わらず、ベースカードの現在接客力と同じキャストを合成した計算となっております。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼アイテムの使用▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						ハメ管理の素材としてアイテムカードの使用も可能です。ハメ管理用アイテムカードとしては「ルビーの指輪」「サファイアの指輪」「ダイヤの指輪」「プラチナの指輪」などがあります。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="教育について" class="help_btn"/>	
+		</div>
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼教育▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						ベースキャストに他のキャストを合わせる事でベースキャストのレベルを上げる事ができます。<br />
+						キャストのレアリティが高いほど教育に費用がかかります。
+					</div>
+
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						サービスLvの上げ方▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						同一名のサービス、効果量を持つキャスト同士を教育する事でサービスLvを上げる事ができます。<br />
+						同一名のサービスであっても、効果量が違う場合はLvを上げる事はできません。<br>
+						例:微笑み[小]のLvを上げる場合<br>
+						<div style="font-size: 12px;">
+							<span class="yellow">微笑み[小]Lv1</span>＋<span class="yellow">微笑み[小]Lv1</span>=<span class="red">微笑み[小]Lv2</span><br>
+							<span class="yellow">微笑み[小]Lv1</span>＋<span class="blue">微笑み[特大]Lv1</span>=<span class="yellow">微笑み[小]Lv1</span>(Lvに変化なし)
+						</div>
+					</div>
+
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼教育大成功▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						一定の確率で教育の効果が増大する事があります。<br />
+						通常より多く経験値が獲得できます。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼アイテムの使用▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						教育の素材としてアイテムカードを使用する<br/>
+						ことも可能です。<br />
+						教育カードとしては「ネックレス」「鞄」<br />
+						「ドレス」「琥珀のかんざし」「花魁のかん<br />ざし」
+						「ティアラ」などがあります。<br>
+						「琥珀のかんざし」「花魁のかんざし」<br />
+						「ティアラ」は使用することで<br />
+						キャストのサービスLvを<br />
+						1上げる事ができます。<br />
+						「琥珀のかんざし」はSRまで　<br />
+						「花魁のかんざし」はSSRまで　<br />
+						「ティアラ」はLCまで　<br />
+						上げることが可能です。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="スカウトについて" class="help_btn"/>	
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼スカウト▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						街に出てキャストをスカウトします。<br />
+						スカウトをすると体力を消費して経験値を得たり、アイテムの獲得、宝箱の獲得、太客、超太客などのイベントが発生します。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼太客▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						スカウトを進めることで太客が登場します。<br />
+						太客の接客に成功すると新エリアに進む事ができます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="超太客について" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			<div style="width:290px; margin:auto; line-height:1.4;">
+				お店にドンドンお金を落としてくれる、超優良太客が来店します。<br />
+				上手に接客する事で秘宝をGet!!
+			</div>
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼超太客攻略▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						超太客接客時にフレンドのNO1キャストを借りて接客が可能です。<br />
+						成功すると秘宝を獲得できますが残り時間内に満足させられなかった場合は、超太客は帰ってしまいます。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼通常接客▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						気力を２０消費して所属キャストで接客します。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼超接客▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						気力を５０消費すると、所属キャストの接客値が３倍になります。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼ヘルプ依頼▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						超太客接客に失敗した際にヘルプ依頼をフレンドに出す事ができます。<br />
+						依頼を受け取ったフレンドは指名者の超太客に接客が可能になり、協力して超太客を接客できます。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼超太客を諦める▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						超太客の接客を諦めて帰らせる事ができます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼キャバ王の秘宝▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						超太客攻略時に超太客を発見者がもらえる秘宝です。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼秘宝交換▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						秘宝を集めると各種アイテムなどと交換できます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="バトルについて" class="help_btn"/>	
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			<div style="width:290px; margin:auto; line-height:1.4;">
+				キャバ王を目指すため、ライバルを倒しながら様々な土地に出店して行こう！！<br />
+				ライバルに勝つと各種宝箱のカギがGetできます。
+			</div>
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼ランク▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						プレイヤーは全員ランク１からスタートします。<br />
+						ランクに応じた出店ノルマが決まっており、その回数勝ち抜くことでランクが上がり、新しい土地に出店できます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼対戦者選択▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						対戦者は５回まで変更できます。<br />
+						対戦相手が強いと思ったときなどに使いましょう。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼バトル▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						プレイヤー双方の接客力により勝敗が決まります。<br />
+						判定は全て自動で行われます。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼勝利条件▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						連続して勝利しなければいけない回数。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼残クリア数▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						次のランクに上がる為に必要な連勝ノルマをクリアしなければいけない回数。
+					</div>
+				
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼宝箱のカギ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						バトルに勝利すると各種宝箱のカギを獲得できる場合があります
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="フレンドについて" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼フレンド▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						ゲーム内で他のプレイヤーとの繋がりを持つ事です。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼フレンド申請▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						フレンド申請を行い相手のユーザーが承認すると双方にフレンドが登録されます。<br />
+						フレンドが登録されると超太客攻略などでフレンドのNO1キャストを借りて攻略する事ができます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼フレンドボーナス▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						１人フレンドが増えるとフレンドボーナスとして最大体力が＋１上昇します。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼フレンドを外す▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						フレンドから外すと最大体力が－１されます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼あいさつ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						フレンドにあいさつする事で引抜ptを獲得できます。<br />
+						１人のフレンドに対して２時間に１回あいさつを送る事ができます。<br>
+						また、挨拶は自由にコメントを入力する事ができます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="宝箱について" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼宝箱▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						スカウト中に獲得できるアイテムです。<br />
+						宝箱には金・銀・銅の宝箱があり、開けるためにはカギをバトルで獲得する必要があります。<br />
+						銅の宝箱は鍵がなくても開けることができます。<br />
+						また、それぞれの宝箱には制限時間があり、それを過ぎると消滅してしまいます。 
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="ガチャについて" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼引抜BOXガチャ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						ガチャをする度に、BOX内のキャストが獲得できます。<br />
+						BOX内のキャストの枚数が決まっている為、引く度にレアリティの高いキャストを獲得できる確率がアップします。<br />
+						全てのキャストを引き終わると自動的にBOXの情報が初期化されます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼レア以上確定引抜ガチャ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						レア以上チケットを１枚消費してガチャをします。<br />
+						R以上のキャストが獲得できます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼運試し引抜ガチャ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						運試しチケットを１枚消費してガチャをします。<br />
+						たまにR以上のキャストを獲得できます。
+					</div>
+					
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼引抜Ptガチャ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						引抜チケット又は引抜Ptを消費してガチャをします。<br />
+						ときどきレアなキャストを獲得できます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼属性別チケットガチャ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						属性別チケット(魔・知・癒)を1枚消費してガチャをします。<br />
+						属性別チケットガチャは毎月、月初めに設置を予定してます。<br />
+						属性別チケット(魔・知・癒)は、自動的に所持して貯まっている状態となっています。<br />
+						属性別チケットガチャをガチャ台設置中に使用出来なかった場合には、次回属性ガチャ公開時に引く事が可能です。<br />
+						必ず属性チケットに応じた(魔・知・癒)属性のキャストを獲得出来ます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="ショップについて" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼ショップ▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						ポイントを消費して回復アイテムなどを購入する事ができます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+	
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="異動について" class="help_btn"/>
+		</div>
+		
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+			
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼異動▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						「異動」とは所持しているキャストをキャスト名鑑に保存する機能です。<br />
+						一度異動したキャストは、キャスト名鑑の詳細画像から呼び戻す事ができます。<br />
+						<div class="caution" >※※注意※※</div>
+						出勤キャストに編成されているキャストは異動する事ができません。<br />
+						一度異動させたキャストの「ハメ管理度」「レベル」「サービスレベル」は初期状態にリセットされます。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+
+	<div style="margin-bottom:8px;">
+		<div class="help_slide">
+			<input type="submit" value="バトルチケットについて" class="help_btn"/>
+		</div>
+
+		<div>
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+					<div class="wrapper">
+						▼バトルチケット▼
+					</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+					<div style="width:290px; margin:auto; line-height:1.4;">
+						「バトルチケット」は、<br />
+						 イベント「争奪戦」において、バトルを<br />
+						 挑むと取得することが出来ます。<br />
+						「バトルチケット交換所」にて任意の<br />
+						 アイテムと交換することが出来ます。<br />
+						「バトルチケット」には使用期限があり、<br />
+						 イベント間の持ち越しは出来ません。<br />
+						 使用期限は「バトルチケット交換所」<br />
+						 または、「お知らせ」のページを <br />
+						 ご確認ください。
+					</div>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" style="margin-top:8px; margin-bottom:8px;" />
+		</div>
+	</div>
+</%def>

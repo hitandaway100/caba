@@ -1,0 +1,49 @@
+#coding:utf-8
+<%doc>PC版課金スクリプト</%doc>
+<%page args="web_global_host, is_dev">
+	<script type="text/javascript">
+		(function(){
+			function receivePaymentMessage(e) {
+				%if is_dev:
+					console.log("message received");
+					console.log(e.origin);
+				%endif
+				if(e.data == "unload_contents_frame"){
+					resetPaymentHiddenFrame();
+					return;
+				}
+				if(e.origin == 'http://${web_global_host}') {
+					%if is_dev:
+						console.log(e.data);
+					%endif
+					var item = JSON.parse(e.data);
+					var url = item["finish_page_url"];
+					if(typeof url != 'undefined') {
+						resetPaymentHiddenFrame();
+						location.href = url + "&paymentId=" + item["payment_id"];
+					}
+				}
+			}
+			window.addEventListener("message", receivePaymentMessage, false);
+			
+			function resetPaymentHiddenFrame(){
+				var payment_hidden_frame = document.getElementById("payment_hidden_frame");
+				if(payment_hidden_frame){
+					payment_hidden_frame.src = "about:blank";
+				}
+				%if is_dev:
+				console.log("resetPaymentHiddenFrame");
+				%endif
+			}
+			$(function(){
+				$("a").click(resetPaymentHiddenFrame);
+			});
+			
+			window.onunload = function(){};
+			function onPageShow(e) {
+				history.forward();
+			}
+			window.addEventListener("pageshow", onPageShow);
+		})();
+	</script>
+</%page>

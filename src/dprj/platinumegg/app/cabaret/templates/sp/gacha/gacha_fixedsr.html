@@ -1,0 +1,66 @@
+#coding:utf-8
+<%inherit file="gacha_probability.html" />
+
+<%def name="drawPremiumTabs()">
+  ${self.drawProbabilityTab(Defines.GachaConsumeType.FIXEDSR)}
+</%def>
+
+<%def name="drawGachaList()">
+  <%
+    fixedsr_gachadata = [x for x in gachadata.values() if x["consumetype"] == Defines.GachaConsumeType.FIXEDSR]
+    fixedsr_gachadata = sorted(fixedsr_gachadata, key=lambda gacha:gacha["continuity"], reverse=True)
+    names = [x["unique_name"] for x in fixedsr_gachadata]
+
+    self.drawGachaListSub(names)
+  %>
+</%def>
+
+<%def name="drawGachaListSub(names)">
+  <%
+    unique_name = self.getUniqName(Defines.GachaConsumeType.FIXEDSR)
+  %>
+  %if unique_name:
+    ${self.drawSchedule(unique_name)}
+    ${self.drawBoxBanner(unique_name)}
+    ${self.drawHeader(unique_name)}
+    ${self.drawSlide(unique_name)}
+    ${self.reaSetsumei()}
+  %endif
+
+  %for name in names:
+    ${self.drawGachaProbabilityOne(name, continuityformat="SR以上のキャストを確実ゲット！")}
+  % endfor
+
+  %if unique_name:
+    ${self.create_castlist(unique_name)}
+    ${self.create_castlist(unique_name, subbox=1)}
+
+    <%doc>レアキャスト雇用速報</%doc>
+    ${self.drawCastGetListByUniqueName(unique_name, do_render_time=False)}
+  %endif
+</%def>
+
+<%def name="drawFooterText()">
+  <%
+    uniq_name = self.getUniqName(Defines.GachaConsumeType.FIXEDSR)
+  %>
+  <section class="basicinfo" style="padding-bottom:10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+    </div>
+
+    <div class="basicBack">
+      <ul>
+        <li>
+           ${self.drawExplainTextFixedSR1()}
+        </li>
+      </ul>
+      <div style="font-size:0px;">
+        .
+      </div>
+    </div>
+    <div class="basicbtm">.
+    </div>
+  </section>
+</%def> 

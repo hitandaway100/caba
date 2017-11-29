@@ -1,0 +1,24 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%doc>テキストはいるなら
+<%def name="tutorialtext()">
+	<div class="back_black">
+	<div class="tutorial_ms">
+		@@@@@@@@@@@@@@
+	</div>
+<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+</div>
+</%def>
+</%doc>
+
+
+<%def name="contents()">
+	<div class="tutorial_bn">
+		<img src="${url_static_img}11/tuto_treasure.jpg" style="width:320px; height:841px;">
+	</div>
+	
+	<div>
+		<a class="btnlong_p" style="margin:30px auto 30px auto;" href="${get_html_param('url_battle', 'sp/battle/battle.html')}">キャバ王への道へ</a>
+	</div>
+</%def>

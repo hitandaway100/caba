@@ -1,0 +1,119 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="getUniqName(gachatype)">
+  <%
+    for uniq in gachadata.iterkeys():
+      if gachadata[uniq]['consumetype'] == gachatype:
+        return uniq
+  %>
+</%def>
+
+<%def name="drawPremiumTabs()">
+  ${self.drawPremiumTabSub(Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM)}
+</%def>
+
+<%def name="drawGachaList()">
+	<%
+		gachabox_dict = {}
+		for gacha in gachadata.values():
+			if gacha['consumetype'] != Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM:
+				continue
+			boxid = gacha['boxid']
+			gachabox_dict[boxid] = gachabox_dict.get(boxid) or []
+			gachabox_dict[boxid].append(gacha)
+	%>
+	%for arr in gachabox_dict.values():
+		<%
+			names = {}
+			for gacha in arr:
+				names[gacha['continuity']] = gacha['unique_name']
+			name1 = names.get(1)
+			name6 = names.get(6)
+			name12 = names.get(12)
+			slidename = name1 or name6 or name12
+		%>
+		${self.drawGachaListSub(name12, name6, name1, slidename, slidename, slidename)}
+	%endfor
+</%def>
+
+<%def name="drawGachaListSub(name12, name6, name1, banner, header, slide)">
+  <%
+    uniq_name = self.getUniqName(Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM)
+  %>
+
+  ${self.drawSchedule(uniq_name)}
+	%if banner:
+		${self.drawBoxBanner(banner)}
+	%endif
+	%if header:
+		${self.drawHeader(header)}
+	%endif
+
+  <%doc>
+	  %if banner:
+		  <div style="font-size: 16px; text-align: center; margin-bottom: 15px;">4/19 16:00~<span class="red">新SSR水野朝陽</span>追加!!</div>
+	  %endif
+  </%doc>
+
+	%if slide:
+		${self.drawSlide(slide)}
+	%endif
+	
+	%if gachadata.has_key(uniq_name):
+		${self.reaSetsumei()}
+	%endif
+
+  ${self.drawGachaProbability(name12, name6, name1, continuityformat="", is_values_list=True)}
+
+
+  ${self.drawRuleImage(uniq_name)}
+	${self.create_castlist(uniq_name)}
+
+	<%doc>レアキャスト雇用速報</%doc>
+  <%
+    for uniq in gachadata.iterkeys():
+        if gachadata[uniq]['consumetype'] == Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM:
+            uniqname = uniq
+            break
+  %>
+	${self.drawCastGetListByUniqueName(uniqname, do_render_time=False)}
+	
+</%def>
+
+<%def name="drawFooterText()">
+  <%
+    uniq_name = self.getUniqName(Defines.GachaConsumeType.NEWSTORE_SUPPORT_PREMIUM)
+  %>
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+        <li>
+				   ${self.drawExplainTextNewStoreSupport()}
+        </li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def> 
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>
+
+<%def name="create_castlist(name, subbox=0)">
+	<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+		&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[name])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+	</div>
+</%def>

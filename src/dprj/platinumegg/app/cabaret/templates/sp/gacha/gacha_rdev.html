@@ -1,0 +1,54 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawGachaList()">
+	<%doc>イベント限定チケット</%doc>
+	${self.drawSchedule(event_gacha_unique_name)}
+	${self.drawHeader(event_gacha_unique_name)}
+	<img src="${url_static_img}gacha/common/sr_undameshi_gacha_640_220.png" width="320" height="110" />
+	${self.drawSlide(event_gacha_unique_name)}
+	${self.reaSetsumei()}
+	${self.drawGachaTicket(event_gacha_unique_name, raideventscore['ticket'], True, etime=event_gacha_etime, continuityformat='チケットの期限は@@/@@　@@:@@まで!!<br />使用期限を過ぎると消滅します!<br />次のイベントまで持ち越すことはできません!')}
+	<div align="right" style="width:310px; height:30px; font-size:13;">
+		<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gacha)}" class="orange">獲得可能キャスト一覧</a>
+	</div>
+
+	<%doc>裏社会ガチャ説明画像</%doc>
+	<img src="${url_static_img}event/raidevent/rdev_08/rdev_08_gachapage_rule.png" width="280" height="auto" style="margin-left: 20px;";/>
+	
+	${self.drawGachaTicket(event_gacha_unique_name, raideventscore['ticket'], True, etime=event_gacha_etime, continuityformat='チケットの期限は@@/@@　@@:@@まで!!<br />使用期限を過ぎると消滅します!<br />次のイベントまで持ち越すことはできません!')}
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(2); //タブボックス用の関数の呼び出し
+	</script>
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li style="width:;">
+					<font color ="ff0000">◎注意事項</font><br />
+					■裏社会ガチャの設置期間を過ぎると、裏社会<br/>
+					&nbsp; ガチャチケット、裏社会秘宝は消滅します。<br />
+					&nbsp; ご了承ください。<br/>
+					■ガチャからはHN以上のキャストが出現します。<br/>
+					■出現するキャストは重複する場合があります。<br/>
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+

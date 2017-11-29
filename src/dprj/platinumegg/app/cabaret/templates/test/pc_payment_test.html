@@ -1,0 +1,162 @@
+#coding:utf-8
+<html>
+<head>
+	<title>${apptitle}</title>
+	<script>
+		window.addEventListener(
+			"message",
+			function(e) {
+				console.log("message received");
+				console.log(e.origin);
+				if(e.origin == 'http://sbx-osapi.dmm.com') {
+					console.log(e.data);
+					var item = JSON.parse(e.data);
+					var url = item["finish_page_url"];
+					if(typeof url != 'undefined') {
+						location.href = url;
+					}
+				}
+			},
+			false
+		);
+
+		function form_on_click() {
+			// parent.document: for Opera compatibility
+			var target = (parent.postMessage ? parent : (parent.document.postMessage ? parent.document : undefined));
+			if (typeof target != 'undefined') {
+				var json = '{"type":"' + document.payment_form._type.value + '",';
+				json += '"sku_id":"' + document.payment_form._sku_id.value + '",';
+				json += '"price":"' + document.payment_form._price.value + '",';
+				json += '"count":"' + document.payment_form._count.value + '",';
+				json += '"name":"' + document.payment_form._name.value + '",';
+				json += '"description":"' + document.payment_form._description.value + '",';
+				json += '"image_url":"' + document.payment_form._image_url.value + '",';
+				json += '"finish_page_url":"' + document.payment_form._finish_page_url.value + '"}';
+				target.postMessage(json, '*');
+				console.log("post message from iframe");
+			}
+		}
+		function invite_on_click() {
+			// parent.document: for Opera compatibility
+			var target = (parent.postMessage ? parent : (parent.document.postMessage ? parent.document : undefined));
+			if (typeof target != 'undefined') {
+				var json = '{"type":"invite"}';
+				target.postMessage(json, '*');
+				console.log("post message from iframe");
+			}
+		}
+	</script>
+	<script>
+		% if is_dev:
+		function trace(msg){
+			var dbg_console_area = $("#dbg_console_area")[0];
+			if(dbg_console_area){
+				dbg_console_area.value = msg + "\n" + dbg_console_area.value;
+			}
+			console.log(msg);
+		}
+		%else:
+		function trace(msg){}
+		%endif
+	</script>
+</head>
+<body>
+	<!-- Payment -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			Payment Handler - Shop
+		</div>
+		%if is_local:
+		<form name="payment_form" action="/pc/payment_handler?opensocial_app_id=402286&opensocial_owner_id=8350420" method="POST">
+		%else:
+		<form name="payment_form">
+		%endif
+			<input type="hidden" name="_type" value="payment_shop"/>
+			<p>
+				sku_id:<input type="text" name="_sku_id" value="1" />
+			</p>
+			<p>
+				price:<input type="text" name="_price" value="100" />
+			</p>
+			<p>
+				count:<input type="text" name="_count" value="1" />
+			</p>
+			<p>
+				name:<input type="text" name="_name" value="名前(最大64バイト)" />
+			</p>
+			<p>
+				description:<input type="text" name="_description" value="説明(最大512バイト)" />
+			</p>
+			<p>
+				image_url:<input type="text" name="_image_url" value="${url_static_img}item/cabagold_1000/Item_thumb_90_90.png" />
+			</p>
+			<p>
+				finish_page_url:<input type="text" name="_finish_page_url" value="/pc/shopresult/1" />
+			</p>
+			<p>
+			%if is_local:
+				<input type="submit" value="決済テスト"/>
+			%else:
+				<input type="button" value="決済テスト" onClick="form_on_click()"/>
+			%endif
+			</p>
+		</form>
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			Payment Handler - Gacha
+		</div>
+		%if is_local:
+		<form name="payment_form" action="/pc/payment_handler?opensocial_app_id=402286&opensocial_owner_id=8350420" method="POST">
+		%else:
+		<form name="payment_form">
+		%endif
+			<input type="hidden" name="_type" value="payment_gacha"/>
+			<p>
+				sku_id:<input type="text" name="_sku_id" value="2" />
+			</p>
+			<p>
+				price:<input type="text" name="_price" value="100" />
+			</p>
+			<p>
+				count:<input type="text" name="_count" value="1" />
+			</p>
+			<p>
+				name:<input type="text" name="_name" value="名前(最大64バイト)" />
+			</p>
+			<p>
+				description:<input type="text" name="_description" value="説明(最大512バイト)" />
+			</p>
+			<p>
+				image_url:<input type="text" name="_image_url" value="${url_static_img}banner/gacha/box_1_gacha.png" />
+			</p>
+			<p>
+				finish_page_url:<input type="text" name="_finish_page_url" value="/pc/gachaanim/2" />
+			</p>
+			<p>
+			%if is_local:
+				<input type="submit" value="決済テスト"/>
+			%else:
+				<input type="button" value="決済テスト" onClick="form_on_click()"/>
+			%endif
+			</p>
+		</form>
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			Invite
+		</div>
+		<div>
+			<input type="button" value="友達招待テスト" onClick="invite_on_click()"/>
+		</div>
+	</div>
+	<div>
+		Javascript Log:<br />
+		<div>
+			<textarea id="dbg_console_area" style="width: 100%;" rows="6"></textarea>
+		</div>
+		ServerLog:<br />
+		% if dbg_print_log is not UNDEFINED:
+			<div>
+				${dbg_print_log}
+			</div>
+		%endif
+	</div>
+</body>
+</html>

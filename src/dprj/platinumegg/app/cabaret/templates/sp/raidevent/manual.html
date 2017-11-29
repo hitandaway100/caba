@@ -1,0 +1,196 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	${self.eventslide()}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		${self.event_schedule()}
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	${self.eventtopic()}
+	
+	<img src="${url_static_img}event/raidevent/${raidevent['codename']}/${raidevent['codename']}_rule.png" width="320" height="auto" style="padding-bottom:10px;"/>
+	
+	<div style="padding-top:10px; padding-bottom:20px;">
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="${raidevent['pointname']}とは?" class="help_btn"/>
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				期間中イベント限定エリアが開放されます。<br />
+				そのエリアでスカウトを進めると、イベント太客が来店することがあります。<br />
+				来店したイベント太客の接客に成功することで裏社会の秘宝を獲得することができます。 <br />
+				<br />
+				限定エリアでは開放されているエリアを全てクリアしたあと、最後のエリアを繰り返し実行できます。 <br />
+				過去のエリアに戻って遊ぶことはできません。 
+				<br />
+			</div>
+		</div>
+
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="タイムボーナスについて" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+					<br />
+					イベント期間中、特定の時間にタイムボーナスが発生します。<br />
+					タイムボーナスが発生すると、イベント限定エリアで特定のイベント太客の遭遇率が上がります。
+ 					<br />
+				</div>
+		</div>
+
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="大ボスとは?" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+					<br />
+					有名キャスト来店の演出とともに現れる新しい太客です。<br />
+					今まで登場していたキャストよりも遥かに難しい太客ですが、接客に成功する事でより多くの秘宝を手に入れる事ができます。<br />
+					また、通常とは別に接客成功回数に応じた報酬を手に入れる事ができるので、積極的に接客をしていきましょう。<br />
+ 					<br />
+				</div>
+		</div>			
+		
+		%if 100 != raidevent['feverchancepowup'] and 0 < raidevent['feverchancetime']:
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="フィーバーチャンスとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				イベント太客に対して超接客を行うと発生し、一度接客を行ったイベント太客に対して、${int(raidevent['feverchancetime'] / 60)}分以内の接客満足度が${int(raidevent['feverchancepowup'] / 100)}倍になります。<br />
+				フィーバーは対象のイベント太客の接客を終えると終了します。<br />
+				フィーバーは他のイベント太客には適用されません。<br />
+				<br />
+			</div>
+		</div>
+		%endif
+		
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="コンボボーナスとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				他のユーザーが発生させたイベント太客へのヘルプに参加することで、参加したユーザー数に応じて満足度にボーナスがつきます。<br />
+				・コンボは5分以内に他ユーザーが接客することで成功します。<br />
+				<br />
+			</div>
+		</div>
+		
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="属性ボーナスとは？" class="help_btn"/>	
+			</div>
+				<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+					<br />
+					来店するイベント太客にはそれぞれ「魔」「知」「癒」の属性があります。<br />
+					それぞれに有利な属性と苦手な属性があり、有利な属性で接客した場合、接客力にボーナスが付きます。<br />
+					※イベントごとに登場するイベント太客の属性に偏りがある場合があります。
+					<hr />
+					属性相性<br />
+					「知的」は「癒」に強く「魔」に弱い<br />
+					「癒」は「魔」に強く「知」に弱い<br />
+					「魔」は「知」に強く「癒」に弱い<br />
+					<hr />
+					接客力補正<br />
+					超太客と同属性&gt;接客力90%発揮<br />
+					超太客の苦手属性&gt;接客力120%発揮<br />
+					超太客の有利属性&gt;接客力70%発揮<br />
+					<br />
+				</div>
+		</div>
+
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="交換所について" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				スカウト中に出現する特定の超太客を接客することで、「贈り物」を入手することができます。<br />
+				交換所にはその「贈り物」で交換出来るアイテムが並んでいます。<br />
+				<br />
+			</div>
+		</div>
+		
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="SHOWTIMEについて" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				特定のイベント太客から獲得したシャンパンが10個たまるとSHOWTIME状態となり、獲得出来る贈り物の数が増加します。<br />
+				<br />
+			</div>
+		</div>
+
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="裏社会ガチャチケットとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				手に入れた裏社会の秘宝と交換することで手に入るイベント限定ガチャチケットです。秘宝交換ページから交換することができます。<br />
+				秘宝を交換しても手に入れた秘宝の総数が減るわけではないのでどんどん秘宝を手に入れてチケットに交換していきましょう。<br />
+				<br />
+			</div>
+		</div>
+		
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="裏社会チケットガチャとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				秘宝交換で手に入る裏社会チケットで回せるイベント限定ガチャです。1回のガチャで1チケットを消費します。<br />
+				登場するキャストにはこのガチャでのみ登場する限定キャストがいます。どんどんガチャを引いて限定キャストの獲得を目指しましょう。<br />
+				<br />
+			</div>
+		</div>
+		
+		<div>	
+			<div class="help_slide">
+				<input type="submit" value="特効キャストとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+				<br />
+				イベントで出現するイベント太客への接客で、満足度を大幅に上げることができ、イベント太客の接客成功をした際に獲得できる裏社会の秘宝数にもボーナスが発生します。<br />
+        効果の倍率はハメ管理度で変化し、ハメ管理度が高いほど倍率が高くなります。<br />
+				特効キャストは期間限定のシートガチャで獲得可能です。<br />
+        <span class="red">※裏社会の秘宝の個数はヘルプを行なった際にも特効ボーナスが反映されます。</span><br />
+        <span class="red">※今後、バランスの調整を行う場合がございます。</span>
+        <br />
+			</div>
+		</div>
+	</div>
+	
+	<div style="text-align: center; padding-bottom:10px;"><%doc>裏社会チケットガチャバナー</%doc>
+		<a href="${get_html_param('url_gacha_event', 'sp/gacha/gacha_ticket.html')}">
+			<img src="${url_static_img}banner/event/raidevent/${raidevent['codename']}/${raidevent['codename']}_gacha_banner.png" width="240" height="auto"/>
+		</a>
+	</div>
+	
+	%if is_gacha_opened:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				期間限定ガチャ
+			</div>
+		</div>
+		<div class="topcap">
+			新たに追加の特効キャストをゲット!!
+		</div>
+		<div style="text-align: center; padding-bottom:10px;">
+			<a href="${get_html_param('url_gacha_seat', 'sp/gacha/gacha_seat.html')}&_gtab=effectseat"><!--
+				--><img src="${url_static_img}banner/gacha/${raidevent['codename']}/${raidevent['codename']}_sheetgacha_banner.png" width="240" height="auto"/><!--
+			--></a>
+		</div>
+	%endif
+	
+	${self.eventfooter()}
+
+</%def>

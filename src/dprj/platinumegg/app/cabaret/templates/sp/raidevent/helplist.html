@@ -1,0 +1,42 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+<%def name="contents()">
+	<div>
+	%if raidhelplist:
+		%for raidhelp in raidhelplist:
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td>
+					<img src="${raidhelp['iconUrl']}" width="60" height="60" class="itemimg" style="margin-top:-18px;"/>
+				</td>
+				<td>
+					<div class="itemtext">
+						${raidhelp['o_nickname'] | h}<br />
+						${raidhelp['name'] | h}(Lv${raidhelp['level']})&nbsp;<span  class="orange">${raidhelp['hpmax'] - raidhelp['hp']}</span>/${raidhelp['hpmax']}<br />
+						残り：<span  class="orange">${self.drawTimeLimitText(raidhelp['timelimit'])}</span><br />
+						<span  class="orange">${raidhelp['member_num']}</span>人参加中
+					</div>
+					<div>
+						<a class="btnlong" style="margin-top:4px;" href="${get_html_param('url_helpdetail', 'sp/raidevent/bossappear.html', raidhelp)}">
+							<div>ヘルプする</div>
+						</a>
+					</div>
+				</td>
+			</table>
+		%endfor
+	%else:
+		<div class="list_not_found">
+			%if from_mypage:
+				他のオーナーがヘルプを行いました
+			%else:
+				ヘルプ依頼はありません
+			%endif
+		</div>
+	%endif
+	</div>
+	
+	<%doc>ライン、最下段はなし</%doc>
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+
+	${self.pagenation()}
+	${self.eventfooter()}
+</%def>

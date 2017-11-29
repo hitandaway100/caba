@@ -1,0 +1,183 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head_additional()">
+  <style type="text/css">
+    .debug-tree {list-style:none;}
+  </style>
+</%def>
+
+<%def name="content()">
+
+  <script type="text/javascript">
+    var cookie_opt = {path: '/',}
+
+    function makeCookieKey(name){
+      return "debug_tree:" + name;
+    }
+    function onClickCategory(target){
+      var name = target.name;
+      var targ = $(target).parent().children('ul');
+      var cookie_key = makeCookieKey(name);
+      if (targ.css("display") == 'none'){
+        $.cookie(cookie_key, 'open', cookie_opt);
+        targ.slideDown();
+      } else {
+        $.cookie(cookie_key, 'close', cookie_opt);
+        targ.slideUp();
+      }
+    }
+
+    function onChangeCardAcquisition(target){
+      var input_level = $("#_level", target.form);
+      if(target.value == "1"){
+        input_level.parent().css("display","");
+      }
+      else{
+        input_level.parent().css("display","none");
+      }
+    }
+
+    $(function() {
+      var TREE_SELECTER = '.debug_category'
+      var trees = $(TREE_SELECTER)
+      for(var i=0; i<trees.length; i++){
+        var item = trees[i];
+        if($.cookie(makeCookieKey(item.name)) != 'open'){
+          $(item).parent().children('ul').css("display","none");
+        }
+      }
+      $(TREE_SELECTER).click(function(){
+        onClickCategory(this);
+      });
+    });
+  </script>
+  <div class="page-header">
+    <h1>デバッグ機能一覧　<small>開発用..本番環境では使えない.</small></h1>
+  </div>
+
+  %if not is_dev:
+    <div class="alert alert-warning">
+      本番環境でこのページの機能は使えません・・・。
+    </div>
+  %else:
+    <div>
+      <a href="javascript:;" class="debug_category" name="account"><div class="page-header"><h3>アカウント操作</h3></div></a>
+      <%include file="debug_tools/account.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="parameter"><div class="page-header"><h3>プレイヤー</h3></div></a>
+      <%include file="debug_tools/player.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="friend"><div class="page-header"><h3>フレンド</h3></div></a>
+      <%include file="debug_tools/friend.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="card"><div class="page-header"><h3>カード・アルバム</h3></div></a>
+      <%include file="debug_tools/card.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="gacha"><div class="page-header"><h3>ガチャ</h3></div></a>
+      <%include file="debug_tools/gacha.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="present"><div class="page-header"><h3>プレゼント</h3></div></a>
+      <%include file="debug_tools/present.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="item"><div class="page-header"><h3>アイテム</h3></div></a>
+      <%include file="debug_tools/item.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="treasure"><div class="page-header"><h3>宝箱・秘宝</h3></div></a>
+      <%include file="debug_tools/treasure.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="scout"><div class="page-header"><h3>スカウト・ハプニング</h3></div></a>
+      <%include file="debug_tools/scout.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="pvp"><div class="page-header"><h3>キャバ王への道</h3></div></a>
+      <%include file="debug_tools/pvp.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="raidevent"><div class="page-header"><h3>レイドイベント</h3></div></a>
+      <%namespace name='raidevent' file='debug_tools/raidevent.html' />
+      ${raidevent.list()}
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="scoutevent"><div class="page-header"><h3>スカウトイベント</h3></div></a>
+      <%namespace name='scoutevent' file='debug_tools/scoutevent.html' />
+      ${scoutevent.list()}
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="battleevent"><div class="page-header"><h3>バトルイベント</h3></div></a>
+      <%namespace name='battleevent' file='debug_tools/battleevent.html' />
+      ${battleevent.list()}
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="serial"><div class="page-header"><h3>シリアルコード</h3></div></a>
+      <%include file="debug_tools/serial.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="panelmission"><div class="page-header"><h3>パネルミッション</h3></div></a>
+      <%include file="debug_tools/panelmission.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="tradeshop"><div class="page-header"><h3>交換所</h3></div></a>
+      <%include file="debug_tools/tradeshop.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="cabaclub"><div class="page-header"><h3>キャバクラ</h3></div></a>
+      <%include file="debug_tools/cabaclub.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="cabaclub"><div class="page-header"><h3>キャバクラランキングイベント</h3></div></a>
+      <%include file="debug_tools/cabaclub_rankevent.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="cabaclub"><div class="page-header"><h3>プロデュースイベント</h3></div></a>
+      <%include file="debug_tools/produce_event.html" />
+    </div>
+
+    <div>
+      <a href="javascript:;" class="debug_category" name="etcetera"><div class="page-header"><h3>その他</h3></div></a>
+      <%include file="debug_tools/etcetera.html" />
+    </div>
+
+    %if is_local:
+      <div>
+        <a href="javascript:;" class="debug_category" name="local"><div class="page-header"><h3>LOCAL限定</h3></div></a>
+        <ul class="debug-tree">
+          <li>
+            <div class="well">
+              <p><strong>ダミーデータCSVを作成</strong></p>
+              <form action="" method="post">
+                <input type="hidden" name="method" value="create_dummydata" />
+                <input class="btn" type="submit" value="作成" />
+              </form>
+            </div>
+          </li>
+        </ul>
+      </div>
+    %endif:
+  %endif
+</%def>

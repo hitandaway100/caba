@@ -1,0 +1,43 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css_pc}base.css?v=0001" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css_pc}top.css?v=0003" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js_pc}jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}jquery-mousewheel.js"></script>
+	<script type="text/javascript" src="${url_static_js_pc}jquery.jscrollpane.min.js?v=0"></script>
+	<script type="text/javascript" src="${url_static_js_pc}common.js"></script>
+	${self.top_redirect()}
+</%def>
+
+<%def name="execReservedGetStatus()"></%def>
+
+<%def name="contents()">
+<div id="mainTitle">
+	<h1 class="textHidden">キャバ王</h1>
+	<div id="news" class="clearFix">
+		<h2 class="textHidden">新着情報</h2>
+		<div class="newsListWrap scrollContents">
+			<dl>
+% if infomations:
+	%for infomation in infomations:	
+				<dt>${infomation['date']}</dt>
+				<dd><a href="${url_myframe}&contents=${get_html_param('url_detail', 'sp/infomation.html', infomation) | u}">${infomation['title']}</a></dd>
+	%endfor
+% endif
+			</dl>
+		</div>
+	</div>
+	<a href="${url_myframe}&contents=${url_enter | u}" id="gameStart" class="textHidden">ゲーム開始</a>
+</div>
+</%def>
+
+<%doc>iframe対策</%doc>
+<%def name="top_redirect()">
+	<script type="text/javascript">
+		if(parent.document.getElementById('contents_frame')) {
+			parent.location.href = "${get_html_param('url_top', 'sp/top/top.html')}";
+		}
+	</script>
+</%def>

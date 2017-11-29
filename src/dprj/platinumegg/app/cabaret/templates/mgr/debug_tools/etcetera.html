@@ -1,0 +1,40 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>ポップアップの最終閲覧時間を削除</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="delete_popuovtime" />
+        <input class="btn" type="submit" value="削除" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>システムの再起動</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="touch_wsgi" />
+        <input class="btn" type="submit" value="実行" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>サーバ時間の変更</strong></p>
+      <p>
+        現在時刻　:${datetime_now}<br />
+        サーバ時刻:${now}<br />
+      </p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_servertime" />
+        <p>
+          <input type="text" name="_date" value="${now}" />
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_servertime" />
+        <input class="btn" type="submit" value="現在時刻に戻す" />
+      </form>
+    </div>
+  </li>
+</ul>

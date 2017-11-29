@@ -1,0 +1,17 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+<div style="background-color:rgba(0,0,0,0.4); width:320;">
+	<div class="titlebar">
+		<p class="caption">イベントバトル - 実行アニメーション</p>
+	</div>
+	
+	<div class="btnwin">
+		<a href="${get_html_param('', 'sp/btevent/battlewin.html')}">バトル(勝ち)</a>
+	</div>
+	<div class="btnlose">
+		<a href="${get_html_param('', 'sp/btevent/battlelose.html')}">バトル(負け)</a>
+	</div>
+</div>
+</%def>

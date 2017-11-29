@@ -1,0 +1,48 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">報酬獲得</p>
+		</div>
+		
+		<div class="titlesub2">
+			<div class="topcap">
+				報酬を手に入れた!!
+			</div>
+		</div>
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		
+		<%include file="../includes/prize_info.html" args="prize=raidprize, url_static_img=url_static_img" />
+		
+		<%doc>
+		↓ハプニングでスカウトをやるってなったらこれを表示する
+		%if happening['prize']:
+			<div class="titlesub2">
+				<div class="topcap">
+					これまでにGETしたもの
+				</div>
+			</div>
+			<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+			
+			<%include file="../includes/prize_info.html" args="prize=happening['prize'], url_static_img=url_static_img" />
+		%endif
+		</%doc>
+		
+		%if scoutevent:
+			<div>
+				<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_scoutevent_scouttop', 'sp/scoutevent/scevent04/scout.html')}"><div>イベントスカウトへ</div></a>
+			</div>
+			<div>
+				<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><div>スカウトへ</div></a>
+			</div>
+		%else:
+			<div>
+				<a class="btnpink" style="margin-top:10px;"href="${get_html_param('url_scout', 'sp/scout/scout.html')}"><p class="caption">スカウトを続ける</p></a>
+			</div>
+		%endif
+	<div style="padding-bottom:20px;">
+	</div>
+
+</%def>

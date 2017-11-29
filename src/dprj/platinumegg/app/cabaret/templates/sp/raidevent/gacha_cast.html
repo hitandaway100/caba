@@ -1,0 +1,118 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+<style type="text/css">
+.event_set2{
+	position: relative;
+	width: 184px;
+	top:-4px;
+	left:-2px;
+	font-size: 12px;
+	line-height: 16px;
+}
+
+.event_st1{
+	width:74px;
+	height:20px;
+	text-align: center;
+}
+
+.event_st2{
+	width: 110px;
+	height: 20px;
+	text-align:left;
+}
+
+</style>
+</%def>
+
+<%def name="contents()">
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		裏社会チケットガチャ限定キャスト
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<%doc>drawEventCard('画像のパス', '属性画像', '名前', 接客力, 人件費, 'スキル名', 'スキルの説明')</%doc>
+	${self.drawEventCard('yui_2/H1', 'zokusei_2.png', '結夜', 9500, 10, '神秘的な微笑み [小]', '味方知力の接客力を小Up')}
+	${self.drawEventCard('yabe_hisae_2/H1', 'zokusei_3.png', '矢部寿恵', 5313, 9,  '可憐な微笑み [小]', '味方癒しの接客力を小Up')}
+	
+	<div>
+		<a class="btnlong" style="margin-top:10px;" href="${get_html_param('url_tryluck_ticket', 'sp/gacha/gacha_ticket.html')}"><div>戻る</div></a>
+	</div>
+
+</%def>
+
+<%def name="drawEventCard(imgPath, zokusei, name, power, cost, skillname, skilltext)">
+	%if skillname:
+	<div style="background: url(${url_static_img}common/card_frame_07.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:201; background-size:310px 201px;">
+	%else:
+	<div style="background: url(${url_static_img}common/card_frame_08.png) no-repeat; margin-left:auto; margin-right:auto; width:310; height:153; background-size:310px 153px;">
+	%endif
+		<table>
+			<tr>
+				<td>
+					<div class="cardspace">
+						<img src="${url_static_img}card/${imgPath}/Card_thumb_110_138.png" width="110px" height="138px" />
+					</div>
+				</td>
+				<td>
+					<table class="kyaba_name">
+						<tr>
+							<td class="name_st1l"><img src="${url_static_img}common/${zokusei}" width="28px" height="28px" /></td>
+							<td class="name_st2l">${name | h}</td>
+						</tr>
+					</table>
+					<table class="event_set2">
+						<tr>
+							<td class="event_st1">最大接客力</td>
+							<td class="event_st2">${power}</td>
+						</tr>
+						<tr>
+							<td class="event_st1">人件費</td>
+							<td class="event_st2">${cost}</td>
+						</tr>
+							
+						<tr>
+							<td class="kyaba_st1">　</td>
+							<td class="kyaba_st2">　</td>
+						</tr>
+							
+						<tr>
+							<td class="kyaba_st1" style="color:#f470cf;">　</td>
+							<td class="kyaba_st2">
+								<div>
+								</div>
+							</td>
+						</tr>
+							
+						<tr>
+							<td class="kyaba_st_s">　</td>
+							<td class="kyaba_st2">　</td>
+						</tr>
+					</table>
+				</td>
+			%if skillname:
+				<table class="kyaba_set3">
+					<tr>
+						<td class="kyaba_st3">
+							サービス
+						</td>
+						<td class="kyaba_st4">
+							<b>&nbsp; ${skillname | h}</b>
+						</td>
+					</tr>
+					<tr>
+						<td colspan=2 class="kyaba_st5">
+							%if skilltext:
+								${skilltext | h}
+							%endif
+						</td>
+					</tr>
+				</table>
+			%endif
+			</tr>
+		</table>
+	</div>	
+</%def>

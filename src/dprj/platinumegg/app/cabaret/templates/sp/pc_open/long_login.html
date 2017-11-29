@@ -1,0 +1,63 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<img alt="ヘッダー" src="${url_static_img}banner/campaign/pc_open/event_pc_campaign_hdr_640_240.png" width="320px" height="120px" style="padding-bottom:8px;"/>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">PC版リリース記念特別ログインボーナス</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	%if not longloginbonus['is_open']:
+		<div class="topcap red">
+			終了しました
+		</div>
+	%endif
+	
+	<div>
+		<div style="display:inline-block;width:60px; height:60px; margin-left:5px;">
+			<img src="${url_static_img}card/sakura_kokomi/H1/Card_thumb_52_52.png"  width="52" height="52" style="vertical-align: middle;"/>
+		</div>
+		<div style="text-align:left; line-height:1.2; display:inline-block; width:250px; font-size:11px;">
+			PC版リリース記念特別ログインボーナス♪<br />
+			<span class="yellow">ログインするだけで限定HRキャスト</span>が貰えるよ!
+		</div>
+	</div>
+
+	<div class="wrapper">
+		累計<span class="orange">${longloginbonus['cur_day']}日</span>ログイン達成!<br />
+	</div>
+	
+	%if longloginbonus_daydata:
+		<div class="wrapper orange">
+			${longloginbonus_daydata['day']}日目報酬
+		</div>
+		<div style="margin: 0px 30px 14px 30px; padding: 10px; border: double #ffff00; text-align:center;">
+			%for itemname in longloginbonus_daydata['itemlist']:
+				${itemname | h}<br />
+			%endfor
+		</div>
+	%endif
+	
+	%if longloginbonus_daydata_next:
+		<div class="wrapper orange">
+			%if longloginbonus_daydata_next['rest'] == 1:
+				次は明日!
+			%else:
+				次は${longloginbonus_daydata_next['rest']}日後!
+			%endif
+		</div>
+		<div style="margin: 0px 30px 14px 30px; padding: 10px; border: double #ffff00; text-align:center;">
+			%for itemname in longloginbonus_daydata_next['itemlist']:
+				${itemname | h}<br />
+			%endfor
+		</div>
+	%endif
+	
+	<a class="btnpink" href="${get_html_param('url_present', 'sp/present.html')}" style="margin-bottom:8px;"><p style="line-height:2.8; font-size:16px;">プレゼントボックスへ</p></a>
+	
+	<img alt="説明" src="${url_static_img}banner/campaign/pc_open/event_setumei_640_780.png" width="320px" height="380px"/>
+	
+	<a class="btnpink" href="${get_html_param('url_present', 'sp/present.html')}"><p style="line-height:2.8; font-size:16px;">プレゼントボックスへ</p></a>
+	
+</%def>

@@ -1,0 +1,109 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawGachaList()">
+	<%
+		gachabox_dict = {}
+		for gacha in gachadata.values():
+			if gacha['consumetype'] != Defines.GachaConsumeType.FUKUBUKURO2016 or gacha['tabengname'] != current_tab:
+				continue
+			boxid = gacha['boxid']
+			gachabox_dict[boxid] = gachabox_dict.get(boxid) or []
+			gachabox_dict[boxid].append(gacha)
+	%>
+	%for arr in gachabox_dict.values():
+		<%
+			names = {}
+			for gacha in arr:
+				names[gacha['continuity']] = gacha['unique_name']
+			name5 = names.get(5)
+			name10 = names.get(10)
+			name15 = names.get(15)
+			name30 = names.get(30)
+			slidename = name10 or name15 or name30 or name5
+		%>
+		${self.drawGachaListSub(name30, name15, name10, name5, slidename, slidename, slidename)}
+	%endfor
+</%def>
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.FUKUBUKURO2016)}
+</%def>
+
+<%def name="drawRaidEventSheetGachaBanner()"></%def>
+
+<%def name="drawGachaListSub(name30, name15, name10, name5, banner, header, slide)">
+	
+	${self.drawSchedule(banner)}
+	
+	%if banner:
+		${self.drawBoxBanner(banner)}
+	%endif
+	%if header:
+		${self.drawHeader(header)}
+	%endif
+	
+	%if slide:
+		${self.drawSlide(slide)}
+	%endif
+	
+	%if gachadata.has_key(name1):
+		${self.reaSetsumei()}
+	%endif
+	
+	${self.drawGachaFukubukuro(name30, 30, True, is_values_list=True)}
+	${self.drawGachaFukubukuro(name15, 15, True, is_values_list=True)}
+	${self.drawGachaFukubukuro(name10, 10, True, is_values_list=True)}
+	${self.drawGachaFukubukuro(name5, 5, True, is_values_list=True)}
+	
+	%if gachadata.has_key(banner):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[banner])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+		%if omakeurls.has_key(banner):
+			<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+				&nbsp;<a href="${get_html_param(banner, 'sp/gacha/omakelist.html', omakeurls)}" class="orange">福袋内容一覧</a>&nbsp;
+			</div>
+		%endif
+	%endif
+	
+	<%doc>ルール画像</%doc>
+	${self.drawRuleImage(banner)}
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(banner)}
+	
+	${self.drawGachaFukubukuro(name30, 30, True, is_values_list=True)}
+	${self.drawGachaFukubukuro(name15, 15, True, is_values_list=True)}
+	${self.drawGachaFukubukuro(name10, 10, True, is_values_list=True)}
+	${self.drawGachaFukubukuro(name5, 5, True, is_values_list=True)}
+	
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					${self.drawExplainTextFukubukuro()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

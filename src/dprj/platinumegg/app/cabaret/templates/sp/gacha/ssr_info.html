@@ -1,0 +1,20 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p>SSRキャストとは?</p>
+	</div>
+	
+	<div style="text-align:center;">
+	<img src="${url_static_img}banner/gacha/Mar/Mar_gacha_banner01.png" width="240" height="60" />
+	</div>
+	
+	<img src="${url_static_img}07/ssr_setumei_640_1060.png" width="320" height="530" />
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_gacha', 'sp/gacha/gacha_payment.html')}"><span style="margin-left:14px;">引抜TOPへ戻る</span></a>
+	</div>
+</%def>
+

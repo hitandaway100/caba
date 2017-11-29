@@ -1,0 +1,207 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head_opt()">
+	<link href="${url_static_css}gacha.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	${self.eventhdr()}
+	%if scoutevent['is_opened']:
+		${self.scoutevent_feverinfo()}
+		${self.scoutevent_lovetimeinfo()}
+		
+		<div class="wrapper" style="line-height:1.4;">
+			【${scouteventstage['areaname'] | h}-${scouteventstage['name'] | h}をスカウト】
+		</div>
+		
+		<div>
+			<a class="btnpinkbig" href="${get_html_param('url_scoutevent_scouttop', 'sp/scout/scout.html')}"><p style="font-size:20px;">イベントスカウトへ</p></a>
+		</div>
+		
+		%if scoutevent['is_produce_open']:
+			<div>
+				<a class="btnpink" href="${get_html_param('url_scoutevent_produce', 'sp/scoutevent/present.html')}"><p style="font-size:14px; line-height:3.4;" >${scoutevent['point_name']}をプレゼントする</p></a>
+			</div>
+		%endif
+		
+		<div>
+			${self.eventtopic()}
+			<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+		</div>
+		
+		${self.drawStarList()}
+		%if scoutevent_tanzaku_list:
+			${self.drawTanzakuList()}
+			<div class="topcap">
+				<div>
+					<a class="btnlong" href="${get_html_param('url_scoutevent_castnomination', 'sp/scoutevent/tanzaku_castnomination.html')}"><div>キャストを指名</div></a>
+				</div>
+			</div>
+			${self.drawTip()}
+			<div class="topcap">
+				<div>
+					<a class="btnlong" href="${get_html_param('url_scoutevent_tiptrade', 'sp/scoutevent/tip_trade.html')}"><div>${scoutevent['tanzaku_name'] | h}を交換</div></a>
+				</div>
+			</div>
+		%endif
+		
+		<div>
+			${self.eventgacha()}
+		</div>
+		
+		${self.show_gacha_banner()}
+		<div class="topcap">
+			※同名の特効キャストの効果は<br>
+			重複してかかりません
+		</div>
+			
+		<div style="text-align: center; padding-bottom:10px;">
+			<a href="${get_html_param('url_shop', 'sp/shop/shop.html')}">
+				<img src="${url_static_img}banner/campaign/discount/discount02.png" width="240" height="60"/>
+			</a>
+		</div>
+	%elif scoutevent.get('is_produce_open'):
+		<div>
+			${self.eventgacha()}
+		</div>
+		
+		%if scoutevent['produce_etime']:
+			<%
+				etime = scoutevent['produce_etime']
+			%>
+			<div class="caution blink" style="font-size:12px;" id="blink">
+				${scoutevent['point_name']}プレゼントの期限は${etime.month}/${etime.day}&nbsp;${etime.strftime("%H:%M")}まで!!<br />
+			</div>
+		%endif
+		<div>
+			<a class="btnpink" href="${get_html_param('url_scoutevent_produce', 'sp/scoutevent/pdev_01/present.html')}"><p style="font-size:14px; line-height:3.4;" >${scoutevent['point_name']}をプレゼントする</p></a>
+		</div>
+	%else:
+		<div>
+			${self.eventgacha()}
+		</div>
+	%endif
+	
+	%if scoutevent_tanzaku_rankingdata and scoutevent_tanzaku_list:
+		<div class="titlesub">
+			<div class="wrapper">
+				キャスト業績ランキング
+			</div>
+		</div>
+		<%
+			arr = list(scoutevent_tanzaku_rankingdata.items())
+			arr.sort(key=lambda x:x[1]['rank'])
+			scoutevent_tanzaku_dict = dict([(obj_tanzaku['number'], obj_tanzaku) for obj_tanzaku in scoutevent_tanzaku_list])
+		%>
+		%for idx,data in enumerate(arr):
+			<%
+				tanzaku_number, rankdata = data
+				obj_tanzaku = scoutevent_tanzaku_dict[tanzaku_number]
+			%>
+			%if 0 < idx:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+			%endif
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td  width="70">
+					<img src="${obj_tanzaku['castthumb_small']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td>
+					<div class="itemtext" style="margin-top:0px; line-height: 30px; vertical-align: bottom;">
+						%if rankdata['rank'] == 1:
+							<span class="yellow" style="font-size: 18px;">第${rankdata['rank']}位</span>&nbsp;${obj_tanzaku['castname'] | h}<br />
+						%else:
+							第${rankdata['rank']}位${obj_tanzaku['castname'] | h}<br />
+						%endif
+						<div style="text-align: right;margin-right: 1em;">
+							${rankdata['tip']}${obj_tanzaku['tanzakuunit']}
+						</div>
+					</div>
+				</td>
+			</table>
+		%endfor
+	%endif
+	
+	${self.eventdata()}
+	${self.eventslide()}
+	
+	<div class="caution" style="padding: 4px 12px; font-size: 12px;">
+		※新店舗ランキングはイベント開催から30日前以内に登録したユーザーが対象となります。
+	</div>
+	
+	<a id="ranking" name="ranking"></a>
+	<div style="padding-top: 8px;text-align:center;">
+		<div class="${'btn_kira' if not is_view_beginer else 'btn_kira_off'}" style="margin-bottom:-2px;">
+			<a href="${get_html_param('url_scoutevent_myrank' if is_view_myrank else 'url_scoutevent_ranking', 'sp/scoutevent/top.html') if is_view_beginer else 'javascript:void(0);'}"><div>全&nbsp;体</div></a>
+		</div>　
+		<div class="${'btn_kira' if is_view_beginer else 'btn_kira_off'}" style="margin-bottom:-2px;">
+			<a href="${get_html_param('url_scoutevent_myrank_beginer' if is_view_myrank else 'url_scoutevent_ranking_beginer', 'sp/scoutevent/top.html') if not is_view_beginer else 'javascript:void(0);'}"><div>新店舗</div></a>
+		</div>
+	</div>
+	
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			%if is_view_beginer:
+				新店舗ランキング
+			%else:
+				${scoutevent['point_name']}獲得ランキング
+			%endif
+		</div>
+	</div>
+	
+	%if not is_view_beginer or is_beginer:
+		<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-left:5px;"><!--
+			%if is_view_myrank:
+				--><a href="${get_html_param('url_scoutevent_ranking_beginer' if is_view_beginer else 'url_scoutevent_ranking', 'sp/scoutevent/ranking.html')}" class="yellow">上位ランキング</a>
+				|
+				あなたの順位
+			%else:
+				-->上位ランキング
+				|
+				<a href="${get_html_param('url_scoutevent_myrank_beginer' if is_view_beginer else 'url_scoutevent_myrank', 'sp/scoutevent/ranking.html')}" class="yellow">あなたの順位</a>
+			%endif
+		</div>
+	%endif
+	
+	%if ranking_playerlist:
+		${self.pagenation()}
+		%for idx,player in enumerate(ranking_playerlist):
+			%if 0 < idx:
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+			%endif
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td style="width:60px;">
+					<img src="${player['leader']['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+				</td>
+				<td style="width:240px;">
+					<div class="itemtext" style="text-align:left;">
+						${player['event_rank']}位<br />
+						<span class="yellow">${player['person']['nickname'] | h}さん(Lv${player['level']})</span><br />
+						獲得数：<span class="yellow">${player['event_score']}</span>個
+					</div>
+				</td>
+			</table>
+		%endfor
+		${self.pagenation()}
+	%else:
+		%if is_view_myrank:
+			<div style="margin-bottom:24px;">
+				<div class="caution">
+					ランキングデータがありません
+				</div>
+				%if scoutevent['is_opened']:
+					<div class="wrapper">
+						スカウトして${scoutevent['point_name']}を集めよう!!
+					</div>
+					<div>
+						<a class="btnlong" style="margin-top:8px;" href="${get_html_param('url_scoutevent_scouttop', 'sp/scoutevent/scout.html')}"><div>イベントスカウトへ</div></a>
+					</div>
+				%endif
+			</div>
+		%else:
+			<div class="list_not_found caution">
+				まだありません
+			</div>
+		%endif
+	%endif
+</%def>

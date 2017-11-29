@@ -1,0 +1,72 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	%if Defines.Rarity.RARE <= basecard_post['master']['rare']:
+		<script type="text/javascript" src="${url_static_js}kiracard/util.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/anim.js"></script>
+		<script type="text/javascript" src="${url_static_js}kiracard/main.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				kiraCardEffect("${basecard_post['master']['thumbnail']['large']}", "${url_static_img}");
+			});
+		</script>
+	%endif
+</%def>
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms">
+			教育に成功してレベルが上がった!<br />
+			客が満足しない時はキャストのレベルを上げて<br />
+			接客力を上昇させよう。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="topcap">
+		教育完了
+	</div>
+	
+	<div class="cardname">
+		<div class="type">
+			<img src="${basecard_post['master']['iconUrl']}" width="28px" height="28px" />
+		</div>
+		<span class="wrapper">
+			${basecard_post['master']['name'] | h}
+		</span>
+	</div>
+	
+	%if Defines.Rarity.RARE <= basecard_post['master']['rare']:
+		<canvas id="kiraCardCanvas" width="320" height="400">
+		</canvas>
+	%else:
+		<img src="${basecard_post['master']['thumbnail']['large']}" width="320px" height="400px" />
+	%endif
+	
+	<%include file="../includes/carddetail.html" args="card=basecard_post, url_static_img=url_static_img, test_skill=True, level_add=level_add, power_add=power_add, skilllevel_add=skilllevel_add"/>
+	
+	%if is_tutorial:
+		<div class="btn_ontext">
+			<a href="${get_html_param('url_next', 'sp/boss/bosspre.html')}"><img src="${url_static_img}11/btn_tl_01.png" width="232px" height="49px" /></a>
+		</div>
+	%else:
+		%if basecard_post['is_can_composition']:
+			<div>
+				<a class="btnpink" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', basecard_post)}"><p class="caption">続けて教育する</p></a>
+			</div>
+		%endif
+		
+		<div style="margin-top:10px;">
+			<a class="btnlong" href="${get_html_param('url_composition', 'sp/composition/baseselect.html')}"><div>教育するキャストを変更</div></a>
+		</div>
+		
+		%if not basecard_post['deckmember']:
+			<div>
+				<a class="btnlong" href="${get_html_param('url_deck', 'sp/deck/deck.html', basecard_post)}"><div>キャスト編成へ</div></a>
+			</div>
+		%endif
+	%endif
+</%def>

@@ -1,0 +1,119 @@
+#coding:utf-8
+<%inherit file="../sp/greetingcomp.html" />
+
+<%def name="head()">
+	${self.inspection_script()}
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">あいさつ</p>
+	</div>	
+	
+	<div class="wrapper">
+		${person['nickname'] | h}さんにあいさつしました<br />
+		${gachapt_name | h}:${gacha_pt_pre}⇒<span style="color:#ff0000;">${gacha_pt_post}</span><br /><!-- 引き抜きポイント-->
+	</div>
+		
+	% if is_duplicate:
+		<div class="btmcap1">
+			2時間以内のあいさつでは${gachapt_name | h}を獲得できません<br/>
+		</div>
+	% endif
+	
+	<form name="comment_form" action="#" onSubmit="return postInspection()" method="post" style="width:320px;">
+		<input type="hidden" name="finish_page_url" value="${url_self}">
+		<input type="hidden" name="logid" value="${logid}">
+		<div style="text-align: center;">
+			<input type="textbox" name="comment" value="${text_comment}">
+			% if is_errtext:
+				<div class="btmcap1">
+					コメントは全角${comment_max | h}文字以内で正しく入力して下さい
+				</div>
+			% endif
+		</div>
+		<input type="submit" class="button" style="margin-left:111px; margin-top:12px;" value="書き込み" />
+	</form>
+	
+	<div>
+		<a class="btnlong" style="margin:10px auto 20px auto;" href="${get_html_param('url_friendlist', 'sp/friend/friend.html')}"><div>続けてあいさつする</div></a>
+	</div>
+	
+	<div class="btmcap2">
+		あいさつをすると5${gachapt_name | h}獲得出来ます。フレンドへのあいさつではさらに5${gachapt_name | h}を獲得出来ます。<br/>
+		※あいさつできる回数は1日300回までです。同じ人にして${gachapt_name | h}がもらえるのは2時間に1回です。<br/>
+		※コメントは全角文字で${comment_max | h}文字までです。${comment_max | h}文字以内で入力して下さい。
+	</div>
+</%def>
+
+<%doc>PC用自由文入力スクリプト</%doc>
+<%def name="inspection_script()">
+	<script type="text/javascript">
+		function postInspection() {
+			// parent.document: for Opera compatibility
+			var target = (parent.parent.postMessage ?
+					parent.parent : (parent.parent.document.postMessage ? parent.parent.document : undefined));
+			if (typeof target != 'undefined') {
+				var json = '{"type":"inspection",';
+				json += '"comment":"' + document.forms["comment_form"].comment.value + '",';
+				json += '"logid":"' + document.forms["comment_form"].logid.value + '",';
+				json += '"finish_page_url":"' + document.forms["comment_form"].finish_page_url.value + '"}';
+				target.postMessage(json, '*');
+				console.log("post message from greetingcomp");
+			}
+			// always return false.
+			return false;
+		}
+
+		/*
+		function encodeHTMLForm(data) {
+			var params = [];
+			for(var name in data) {
+				var value = data[name];
+				var param = encodeURIComponent(name).replace(/%20/g,'+')
+					+ '=' + encodeURIComponent(value).replace(/%20/g,'+');
+				params.push( param );
+			}
+			return params.join( '&' );
+		}
+		*/
+
+		window.addEventListener(
+			"message",
+			function(e) {
+				console.log("message received");
+				console.log(e.origin);
+				if(e.origin == 'http://${web_global_host}') {
+					console.log(e.data);
+					var item = JSON.parse(e.data);
+					var url = item["finish_page_url"];
+					if(typeof url != 'undefined') {
+						/*
+						var xhr = parent.makeHTTPRequest();
+						xhr.onreadystatechange = function() {}
+						xhr.open('POST', url);
+						xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+						xhr.send(encodeHTMLForm(item));
+						*/
+						var form = document.createElement('form');
+						document.body.appendChild(form);
+						var input_textid = document.createElement('input');
+						input_textid.setAttribute('type','hidden');
+						input_textid.setAttribute('name','textid');
+						input_textid.setAttribute('value',item['textid']);
+						var input_comment = document.createElement('input');
+						input_comment.setAttribute('type','hidden');
+						input_comment.setAttribute('name','comment');
+						input_comment.setAttribute('value',item['comment']);
+						form.appendChild(input_textid);
+						form.appendChild(input_comment);
+						form.setAttribute('action',url);
+						form.setAttribute('method','post');
+						form.submit();
+					}
+				}
+			},
+			false
+		);
+	</script>
+</%def>

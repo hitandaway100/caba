@@ -1,0 +1,21 @@
+#coding:utf-8
+<%inherit file="battleresultbase.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+</%def>
+
+<%def name="drawResultTop()">
+	<img src="${url_static_img}02/id_02_03/win_move.png" width="320" height="100" />
+	%if resultdata['rankup']:
+		<h1>ランクアップしました!!</h1>
+	%elif resultdata['norma_comp']:
+		<h1>目標達成!!</h1>
+	%elif 1 < resultdata['win']:
+		<h1>${resultdata['win']}連勝中</h1>
+	%else:
+		<h1>勝利!!</h1>
+	%endif
+</%def>
+

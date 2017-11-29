@@ -1,0 +1,67 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+</%def>
+
+<%def name="select_card()">
+	<%include file="../includes/select_card.html" args="Defines=Defines, url_post=url_self, ctype=ctype, sortby=sortby" />
+</%def>
+
+<%def name="pagenation()">
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="count" style="font-size:12px; white-space: nowrap; font-weight: bold;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+</%def>
+
+<%def name="tabs()"></%def>
+
+<%def name="confirm_text()"></%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">キャストリスト</p>
+		</div>
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		
+		${self.tabs()}
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:6px;"/>
+		
+		<!--セレクトボックス-->
+		${self.select_card()}
+		
+		${self.confirm_text()}
+		
+		<div class="line">
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		</div>
+	</div>
+	
+	${self.pagenation()}
+	
+	${self.draw_cardlist()}
+	
+	${self.pagenation()}
+</%def>

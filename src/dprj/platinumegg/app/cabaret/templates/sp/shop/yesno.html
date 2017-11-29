@@ -1,0 +1,48 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p class="caption">ショップ</p>
+	</div>
+	
+	<div class="wrapper">
+		${shopitem['name'] | h}を<br />
+		${Defines.ShopConsumeType.NAMES[shopitem['consumetype']] | h}で購入しますか？
+	</div>
+	
+	<div class="icon_l">
+		<img src="${shopitem['thumbUrl']}" width="90" height="90" />
+	</div>
+	
+	<%
+		price = buy_num * shopitem['price']
+		if shopitem['consumetype'] == Defines.ShopConsumeType.GOLD:
+			money = player['gold']
+		elif shopitem['consumetype'] == Defines.ShopConsumeType.CABAKING:
+			money = player['cabaretking']
+		else:
+			money = None
+	%>
+	<div class="wrapper">
+		<span class="orange">所持数:</span>${shopitem['num']}${shopitem['unit'] | h}⇒<span  class="red">${shopitem['num'] + buy_num * shopitem['inum0']}</span>${shopitem['unit'] | h}<br />
+		%if money is not None:
+			<span class="orange">${Defines.ShopConsumeType.NAMES[shopitem['consumetype']] | h}:</span>${money}⇒<span class="red">${money - price}</span>
+		%endif
+	</div>
+	
+	%if money is not None and money < price:
+		<div class="red wrapper">
+			${Defines.ShopConsumeType.NAMES[shopitem['consumetype']] | h}が足りません
+		</div>
+	%else:
+		<div>
+			<a class="btnpink" href="${get_html_param('url_buy', 'sp/shop/buyresult.html')}"><p class="caption">購入する</p></a>
+		</div>
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_shop', 'sp/shop/shop.html')}"><span style="margin-left:14px;">ショップTOPへ戻る</span></a>
+	</div>
+</%def>

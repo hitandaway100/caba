@@ -1,0 +1,18 @@
+[
+  {
+      "pk": 4294967296,
+      "model": "cabaret.carddeleted",
+      "fields": {
+          "uid": 1,
+          "protection": false,
+          "level": 1,
+          "way": 1,
+          "dtime": "2016-01-07T14:07:00+09:00",
+          "skilllevel": 1,
+          "mid": 10001,
+          "takeover": 0,
+          "exp": 0,
+          "ctime": "2016-01-02T11:00:19+09:00"
+      }
+  }
+]

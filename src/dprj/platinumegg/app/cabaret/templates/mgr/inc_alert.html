@@ -1,0 +1,11 @@
+%if alert:
+	<script type="text/javascript">
+		$(function() {
+			$(".alert").alert()
+		});
+	</script>
+	<div class="alert alert-${alert['code_name']}">
+		<a class="close" data-dismiss="alert">×</a>
+		<p>${alert['message']}</p>
+	</div>
+%endif

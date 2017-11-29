@@ -1,0 +1,39 @@
+<div class="pagination">
+	<ul>
+		%if pagination.get('first_page'):
+			<li><a href="${pagination['first_page']['url']}">«</a></li>
+		%else:
+			<li class="disabled"><a href="javascript:;">«</a></li>
+		%endif
+		%if pagination['has_prev']:
+			<li><a href="${pagination['prev_page']['url']}">Prev</a></li>
+		%else:
+			<li class="disabled"><a href="javascript:;">Prev</a></li>
+		%endif
+		%if pagination.get('prev_block'):
+			<li><a href="${pagination['prev_block']['url']}">…</a></li>
+		%endif
+		%for page in pagination['page_list']:
+			%if page['num'] == pagination['now_page']['num']:
+				<li class="active">
+			%else:
+				<li>
+			%endif
+				<a href="${page['url']}">${page['num']}</a>
+			</li>
+		%endfor
+		%if pagination.get('next_block'):
+			<li><a href="${pagination['next_block']['url']}">…</a></li>
+		%endif
+		%if pagination['has_next']:
+			<li><a href="${pagination['next_page']['url']}">Next</a></li>
+		%else:
+			<li class="disabled"><a href="javascript:;">Next</a></li>
+		%endif
+		%if pagination.get('last_page'):
+			<li><a href="${pagination['last_page']['url']}">»</a></li>
+		%else:
+			<li class="disabled"><a href="javascript:;">»</a></li>
+		%endif
+	</ul>
+</div>

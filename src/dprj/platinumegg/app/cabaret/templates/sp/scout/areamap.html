@@ -1,0 +1,58 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<%
+		cur_scout = area_scout_dict[area['id']]
+	%>	
+	<div class="scouttop">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${area['thumbUrl']}" style="width:320px;height:180px;"/>
+		</div>
+		<div class="scoutflame" style="position:absolute;">
+			<span class="wrapper">エリアマップ</span>
+		</div>
+	</div>
+	
+	
+	<div class="titlesub">
+		<span class="wrapper">現在地:${area['name'] | h}&nbsp;${cur_scout['name'] | h}</span>
+	</div>
+	
+	%for listarea in arealist:
+	<%
+		scout = area_scout_dict[listarea['id']]
+	%>
+	<section class="basicinfo" style="padding-top:20px;">
+		<div class="basictop">
+			<div style="background: url(${url_static_img}01/id_01_60/bg_ereaname.png) no-repeat; position:relative; left:3; top:4; line-height:2.2; background-size:297px 30px; margin:auto;">
+				${listarea['name'] | h}
+			</div>
+		</div>
+		<div class="basicBack">
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="280px" height="5px" style="margin-left:12;" />
+			%if area['id'] == listarea['id']:
+				<div>
+					<a class="btnlong_p" style="margin-top:8px;" href="${get_html_param('url_scout', 'sp/scout/scout.html', listarea)}"><div>${scout['name'] | h}</div></a>
+				</div>
+			%else:
+				<div>
+					<a class="btnlong_p" style="margin-top: 8px;" href="${get_html_param('url_scout', 'sp/scout/scout.html', listarea)}"><div>${scout['name'] | h}</div></a>
+				</div>
+			%endif	
+				
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+	%endfor
+	
+	${self.pagenation()}
+</%def>

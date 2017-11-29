@@ -1,0 +1,82 @@
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}castdata/flicklib.js" charset=utf-8></script>
+	%if is_pc:
+	<script type="text/javascript" src="${url_static_js_pc}castdata/main.js" charset=utf-8></script>
+	%else:
+	<script type="text/javascript" src="${url_static_js}castdata/flicklib.js" charset=utf-8></script>
+	<script type="text/javascript" src="${url_static_js}castdata/main.js" charset=utf-8></script>
+	%endif
+	<style>
+   .titlesub > .tradeshop {
+       margin: 0 auto;
+       display: inline-block;
+   }
+   .titlesub > .tradeshop > .type {
+       margin-right: 4px;
+       width: 28px;
+       height: 28px;
+       position: relative;
+       float: left;
+   }
+   .titlesub > .tradeshop > .wrapper {
+       float: left;
+   }
+   .tablecenter {
+       margin: 0 auto;
+   }
+   td.itemimg {
+       width: 90px;
+   }
+   td.itemtext {
+       padding-right: 30px;
+   }
+   td a.button {
+       margin: 0 20px;
+   }
+   .cardthumb {
+       width:110px;
+       height:138px;
+       margin: auto;
+   }
+	</style>
+</%def>
+
+<%def name="topheader()">
+	<img src="${url_static_img | h}${banner | h}" width="320" />
+</%def>
+
+<%def name="itemtitle(item)">
+<div class="titlesub" style="margin-top:16px;">
+  <div class="tradeshop">
+    ${self.type_icon(item['iconUrl'], item['kind'])}
+    <div class="wrapper">
+        ${item['name'] | h}
+        %if item['rare']:
+          ${self.rare_str(item['rare']) | h}
+        %endif
+    </div>
+  </div>
+</div>
+</%def>
+
+<%def name="type_icon(icon, kind)">
+%if icon:
+  %if kind == Defines.CardKind.NORMAL:
+  <div class="type">
+    <img src="${icon | h}" width="28px" height="28px" />
+  </div>
+  %endif
+%endif
+</%def>
+
+<%def name="rare_str(rare)">
+(<span style="color:${rare['color'] | h}">${rare['str'] | h}</span>)
+</%def>
+
+<%def name="itemnum(num=None)">
+  %if 1 < num:
+    x${num}
+  %endif
+</%def>

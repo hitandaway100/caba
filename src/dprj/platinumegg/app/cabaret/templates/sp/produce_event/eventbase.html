@@ -1,0 +1,381 @@
+#coding:utf-8
+<%inherit file="/sp/base.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+  <link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+  <link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+  <link href="${url_static_css}ev_slider.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+  <script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+  <script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+  <script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+  <script type="text/javascript" src="${url_static_js}help.js"></script>
+  <script type="text/javascript">
+    $(function(){
+      setInterval(function(){
+        $('.blink').fadeOut(1200, function(){$(this).fadeIn(200)});
+      }, 1400);
+    });
+  </script>
+</%def>
+
+<%def name="topheader(produceevent_id)">
+  <!-- temporary header. CHANGE IT LATER -->
+  <% id_s = "{0:0>2}".format(produceevent_id) %>
+  <img src="${url_static_img}banner/event/produce/${id_s}/produce_${id_s}_header.png" width="320" style="margin-bottom:20px;"/>
+</%def>
+
+<%def name="shop_banner(produceevent_id, shop_url)">
+  <div style="text-align:center; margin:10px 0px;">
+    <a href="${shop_url}">
+      <img src="${url_static_img}banner/event/produce/${"{0:0>2}".format(produceevent_id)}/produce_shop${"{0:0>2}".format(produceevent_id)}.png" height="60" width="240">
+    </a>
+  </div>
+</%def>
+
+<%def name="eventtopic()">
+    <div style="text-align:center;">
+        <div class="btn_pink_s" style="background-size: 117px 34px;width: 117px;">
+            <a href="${url_produceevent_explain_detail}"><div>ルール</div></a>
+        </div>
+        <div class="btn_pink_s" style="background-size: 117px 34px;width: 117px;">
+            <a href="${url_produceevent_explain_prizes}"><div>報酬一覧</div></a>
+        </div>
+
+        <div class="btn_pink_s" style="background-size: 117px 34px;width: 117px;">
+            <a href="${url_produceevent_explain_ranking}"><div>ランキング</div></a>
+        </div>
+        <div class="btn_pink_s" style="background-size: 117px 34px;width: 117px;">
+            <a href="${url_produceevent_explain_nominatecast}"><div>特効キャスト</div></a>
+        </div>
+    </div>
+</%def>
+
+<%def name="eventperiod(start_datatime=0, end_datatime=0, is_open=0)">
+  <div style="text-align:center;padding-top:10px;padding-bottom:10px;">
+    開催期間：${start_datatime.strftime("%-m/%-d %-H:%M")} 〜 ${end_datatime.strftime("%-m/%-d %-H:%M")}
+  </div>
+</%def>
+
+<%def name="eventdata()">
+  <div class="titlesub">
+    <div class="wrapper">
+      イベントデータ
+    </div>
+  </div>
+  <div style="width:300px; margin:10px;">
+    太客成功回数：<span class="yellow">${produce_eventscore["destroy"]}</span>回<br />
+    超太客成功回数:<span class="yellow">${produce_eventscore["destroy_big"]}</span>回<br />
+    獲得PP：<span class="yellow">${produce_eventscore["point"]}</span><br />
+    %if produce_rank:
+      ランキング：<span class="yellow">${produce_rank}</span>位<br>
+    %else:
+      ランキング：<span class="yellow">--</span>位<br>
+    %endif
+  </div>
+</%def>
+
+<%def name="happeningtop()">
+  % if produce_happening_result['is_perfect_win']:
+    <img src="${url_static_img}/event/produce/common/produce_perfect.png" width="320">
+  % else:
+    <img src="${url_static_img}event/produce/common/produce_good.png" width="320">
+  % endif
+  <div class="scouttop">
+    <div class="scoutpic" style="position: absolute; z-index:0; top:0;">
+      <img src="${happening['thumbUrl']}" width="320px" height="180px" />
+    </div>
+    <div class="scoutpic" style="position: relative; z-index:1;">
+      <img src="${happening['raid']['thumbUrl']}" width="320" height="180" />
+    </div>
+    <div class="scoutflame">
+      <span class="wrapper">${happening['raid']['name'] | h}来店</span>
+    </div>
+    <div class="boss_coment" style="margin-bottom:8;">
+      <div class="coment_text">
+        % if produce_happening_result['is_perfect_win']:
+          ${happening['raid']['commentwin_full'] | h}
+        % else:
+          ${happening['raid']['commentwin'] | h}
+        % endif
+      </div>
+    </div>
+    ${self.show_result()}
+    ${self.show_card()}
+    <div class="boss_coment" style="margin-bottom:8;">
+      <div class="coment_text">
+        %if produce_happening_result["is_perfect_win"]:
+          ${produce_cast_master["produce_cast_talk_perfect"]}
+        %else:
+          ${produce_cast_master["produce_cast_talk_good"]}
+        %endif
+      </div>
+    </div>
+  </div>
+</%def>
+
+<%def name="eventsatisfaction()">
+  <div class="scouttime" style="margin-top:-21px;">
+    満足度:${happening['raid']['hpmax'] - happening['raid']['hp']}/${happening['raid']['hpmax']}
+  </div>
+</%def>
+
+<%def name="eventfooter()">
+  <div class="link_arrow_re">
+    <a class="btnfoot" href="${get_html_param('url_produceevent_top', 'sp/produce_event/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+  </div>
+</%def>
+
+<%def name="drawEventtopic(flag, url, text)">
+  %if flag:
+    <a href="${url}" class="yellow">${text | h}</a>
+  %else:
+    ${text | h}
+  %endif
+</%def>
+
+<%def name="eventtopic3()">
+  <div align="center" style="background-color: #8D35B8; width:310px; border-radius: 3px; line-height:2; margin-left:5px;">
+    ${self.drawEventtopic(current_prize!='point', get_html_param('url_point_prizes'), 'ポイント達成報酬')}
+    |
+    ${self.drawEventtopic(current_prize!='ranking', get_html_param('url_ranking_prizes'), 'ランキング報酬')}
+    <br/>
+    %for i, url_level_prize in enumerate(url_level_prizes):
+      <% link_flag = not((current_prize=='level' and current_kind==str(url_level_prize["rare"]))) %>
+      <% rare_s = Defines.Rarity.NAMES[url_level_prize["rare"]]%>
+      ${self.drawEventtopic(link_flag, url_level_prize["url"], rare_s+'達成報酬')}
+
+      %if (i+1) % 3 == 0:
+        <br>
+      %elif i+1 != len(url_level_prizes):
+        |
+      %endif
+    %endfor
+  </div>
+</%def>
+
+<%def name="eventbonus()">
+  %if destroypoint_info or happening.get('prize') or champagne_num_add or material:
+    <!--報酬-->
+    <div class="titlesub">
+      <div class="wrapper">
+        報酬
+      </div>
+    </div>
+    <div>
+      <%
+        bar = False
+        champagne_codename = 'rdev_16' or raidevent['codename']
+      %>
+      <%doc>エイプリル仕様</%doc>
+      %if champagne_num_add:
+        <table align="center" style="padding-top:10; padding-bottom:10px;">
+          <td width="80px">
+            <img src="${url_static_img}item/rdevent/${champagne_codename}/${champagne_codename}_Champagne_s.png" width="60" height="60" class="itemimg"/>
+          </td>
+          <td width="216px">
+            <div class="itemtext">
+              シャンパンを<span class="yellow">${champagne_num_add}</span>個獲得<br />
+              所持数：${champagne_num_pre}⇒<span class="yellow">${champagne_num_post}</span><br />
+            </div>
+          </td>
+        </table>
+        <%
+          bar = True
+        %>
+      %endif
+
+      <%doc>エイプリル仕様</%doc>
+      %if material:
+        %if bar:
+          <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+        %endif
+        <table align="center" style="padding-top:10; padding-bottom:10px;">
+          <td width="80px">
+            <img src="${material['thumbUrl']}" width="60" height="60" class="itemimg"/>
+          </td>
+          <td width="216px">
+            <div class="itemtext">
+              ${material['name'] | h}を<span class="yellow">${material['num_add']}</span>${material['unit'] | h}獲得<br />
+              所持数：${material['num'] - material['num_add']}⇒<span class="yellow">${material['num']}</span><br />
+            </div>
+          </td>
+        </table>
+        <%
+          bar = True
+        %>
+      %endif
+
+      %if destroypoint_info:
+        %if bar:
+          <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+        %endif
+        <table align="center" style="padding-top:10; padding-bottom:10px;">
+          <td width="80px">
+            <img src="${raidevent['pointThumbUrl']}" width="60" height="60" class="itemimg"/>
+          </td>
+          <td width="216px">
+            <div class="itemtext">
+              ${raidevent['pointname'] | h}を<span class="yellow">${destroypoint_info['total'] + destroypoint_info['bonusscore']}</span>個獲得<br />
+              %if destroypoint_info['owner']:
+                (発見者報酬<span class="yellow">${destroypoint_info['owner']}</span>個)<br />
+              %endif
+              %if destroypoint_info['help']:
+                (ヘルプ報酬<span class="yellow">${destroypoint_info['help']}</span>個)<br />
+              %endif
+              %if destroypoint_info['mvp']:
+                (MVP報酬<span class="yellow">${destroypoint_info['mvp']}</span>個)<br />
+              %endif
+              %if destroypoint_info['bonusscore']:
+                (特効報酬<span class="yellow">${destroypoint_info['bonusscore']}</span>個)<br />
+              %endif
+              %if raideventscore:
+                所持数&nbsp;:&nbsp;<br />${raideventscore['point'] - (destroypoint_info['total'] + destroypoint_info['bonusscore'])}⇒<span class="yellow">${raideventscore['point']}</span><br />
+              %endif
+            </div>
+          </td>
+        </table>
+        <%
+          bar = True
+        %>
+      %endif
+      %if happening.get('prize'):
+        <%
+          prize = happening['prize']
+        %>
+        %if prize['listitem_list']:
+          %if bar:
+            <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+          %endif
+          %for idx,prizeitem in enumerate(prize['listitem_list']):
+            %if 0 < idx:
+              <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+            %endif
+            <table align="center" style="padding-top:10; padding-bottom:10px;">
+              <td width="80px">
+                <img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+              </td>
+              <td width="216px">
+                <div class="itemtext">
+                  ${prizeitem['name'] | h}<br />
+                  %if prizeitem['sep']:
+                    <span style="color:#ff9900;">獲得数:</span><span style="color:#fff000;">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+                  %else:
+                    ${prizeitem['num']}${prizeitem['unit'] | h}
+                  %endif
+                </div>
+              </td>
+            </table>
+          %endfor
+        %endif
+      %endif
+    </div>
+  %endif
+</%def>
+
+<%def name="specialcard()">
+  %if specialcardinfo:
+    <div class="titlesub">
+      <div class="wrapper">
+        使用する特効キャスト
+      </div>
+    </div>
+    <table align="center">
+      <tr>
+        <%
+          specialcard_num = len(specialcardinfo['cardlist'])
+          cardimg_width = 70 * 4 / max(4, specialcard_num)
+          cardimg_height = 88 * 4 / max(4, specialcard_num)
+        %>
+        %for sc_info in specialcardinfo['cardlist']:
+          <td>
+            %if sc_info['deck']:
+              <img src="${sc_info['master']['thumbnail']['small']}" width="${cardimg_width}px" height="${cardimg_height}px" />
+            %else:
+              <img src="${url_static_img}06/card_albam_frame_look.png" width="${cardimg_width}px" height="${cardimg_height}px" />
+            %endif
+          </td>
+        %endfor
+      </tr>
+    </table>
+
+    <div style="width:320; color:#ffffff; text-align:center; line-height:1.8;"  >
+      <span class="yellow">特効キャスト</span>でイベント太客の<span class="yellow">満足度大アップ</span><br />
+      %if specialcardinfo['need_edit']:
+        デッキに入っていない特効キャストがいます<br />
+        <a href="${get_html_param('url_deck_raid', '')}" class="red">デッキに入れる</a>
+      %endif
+    </div>
+    <%doc>イベントガチャバナー
+    <div style="margin:8 0 4 0px;">
+      <div class="topcap">
+        期間限定ガチャで特効キャストをゲットしよう!!
+      </div>
+      <div style="text-align: center; padding-bottom:10px;">
+        <a href="${get_html_param('url_gacha_seat', 'sp/gacha/gacha_seat.html')}">
+          <img src="${url_static_img}banner/gacha/${raidevent['codename']}/${raidevent['codename']}_sheetgacha_banner.png" width="240" height="60"/>
+        </a>
+      </div>
+    </div>
+    </%doc>
+  %endif
+</%def>
+
+<%def name="show_result()">
+  <div class="itemtext" style="text-align: center; margin-top: 20px; margin-bottom:20px;">
+    接客結果<br>
+    <br>
+    <span class="yellow">${produce_happening_result["event_point"]}</span>ポイント獲得<br>
+    %if produce_happening_result["education_point"]:
+      教育獲得ポイント +<span class="yellow">${produce_happening_result["education_point"]}</span><br>
+    %endif
+    %if produce_happening_result["before_level"] != produce_happening_result["after_level"]:
+      教育Lv${produce_happening_result["before_level"]} -> <span class="yellow">Lv${produce_happening_result["after_level"]}</span><br>
+    %endif
+    %if produce_happening_result["order"] > 0:
+      キャストのレア度が上昇<br>
+    %endif
+    %if produce_happening_result["is_send_prize"]:
+      報酬を獲得<br>
+    %endif
+  </div>
+</%def>
+
+<%def name="show_card()">
+    <img src="${produce_card['thumbnail']['large']}" width="320px" height="400px" />
+    <div style="background: url(${url_static_img}event/produce/common/produce_gauge.png) no-repeat; margin-left:auto; margin-right:auto; width:320; height:31; background-size:320px 31px; padding-top: 5px; padding-left: 20px">
+      <div style="width: 78px;top: 5px;left: 20px;float: left;">
+        教育レベル
+      </div>
+      <div style="width: 50px; float: left; text-align: center">
+        ${produce_card['level']}/${produce_card['max_level']}
+      </div>
+      <div style="width: 130px; float: left; margin-left: 22px; margin-top: 5px; padding-left: 9px;">
+        %for i in range(0, produce_card["heart"]):
+          <img src="${url_static_img}event/produce/common/produce_heart.png" style="width: 17px; height: 16px; float: left; margin-right: 7.5px;" />
+        %endfor
+      </div>
+    </div>
+</%def>
+
+<%def name="eventslide()">
+  %if produceevent['appeal']:
+    <div class="flexslider" style="padding-bottom: 4px;">
+      <ul class="slides">
+        %for img in produceevent['appeal']:
+          <li>
+            <img src="${img}" width="320" height="380">
+          </li>
+        %endfor
+      </ul>
+    </div>
+  %endif
+</%def>
+
+<%def name="show_gacha_banner()">
+  <div style="text-align: center; padding-bottom:10px;">
+    <a href="${get_html_param('url_sp_gacha')}">
+      <img src="${url_static_img}banner/gacha/produce/${produceevent['codename']}/produce_stepup_${produceevent['codename']}_gacha_banner.png" width="240" />
+    </a>
+  </div>
+</%def>

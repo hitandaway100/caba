@@ -1,0 +1,12 @@
+#coding:utf-8
+<%inherit file="../sp/presentrecieve.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<script type="text/javascript" src="${url_static_js}check_btn.js"></script>
+	<link href="${url_static_css}present.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	
+	<script type="text/javascript">
+		parent.getStatus();
+	</script>
+</%def>

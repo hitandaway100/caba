@@ -1,0 +1,240 @@
+#coding:utf-8
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<meta name="robots" content="noindex">
+		<title>${apptitle}管理</title>
+		<link href="${url_static}css/admin/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<link href="${url_static}css/admin/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
+		<link href="${url_static}css/admin/app.css" rel="stylesheet" type="text/css" />
+		
+		<script src="${url_static}js/admin/jquery.min.js" type="text/javascript"></script>
+		
+		<script src="${url_static}js/admin/jquery.cookie.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/jquery.tablesorter.min.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/jquery.formset_custum.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/jquery.validate.min.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/jquery.activity-indicator.min.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/bootstrap.min.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/bootstrap-alert.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/bootstrap-tab.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/bootstrap-popover.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/bootstrap-tooltip.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/app.js" type="text/javascript"></script>
+		
+		<link href="${url_static}js/admin/treeview/jquery.treeview.css" rel="stylesheet" type="text/css" />
+		<script src="${url_static}js/admin/treeview/jquery.treeview.js" type="text/javascript"></script>
+		<script src="${url_static}js/admin/jquery.gpfloat-1.0.min.js" type="text/javascript"></script>
+		
+		<link rel="shortcut icon" href="${url_static}img/admin/favicon.ico">
+		<script type="text/javascript">
+			$(function(){
+				// 開閉するメニュー.
+				var TREE_SELECTER = '.tree .folder'
+				var cookie_opt = {path: '/',}
+				
+				function forEachElements(selector, func){
+					var elements = $(selector);
+					for(var i=0; i<elements.length; i++){
+						func(elements[i]);
+					}
+				}
+				var uls = $(TREE_SELECTER).parent().children('ul');
+				forEachElements(uls, function(ul){
+					var cookie_key = 'menu_status:' + ul.id;
+					if($.cookie(cookie_key) == 'close'){
+						$(ul).css("display","none");
+					}
+				});
+				
+				$(TREE_SELECTER).click(function(){
+					forEachElements($(this).parent().children('ul'), function(ul){
+						var cookie_key = 'menu_status:' + ul.id;
+						var targ = $(ul);
+						if (targ.css("display") == 'none'){
+							$.cookie(cookie_key, 'open', cookie_opt);
+							targ.slideDown();
+						} else {
+							$.cookie(cookie_key, 'close', cookie_opt);
+							targ.slideUp();
+						}
+					});
+				});
+				// 横方向のみスクロールさせる.
+				$('.sidebar-bgbox, .shadow, .shadow-cover').gpFloatX();
+			})
+		</script>
+		${self.head_additional()}
+	</head>
+	${self.body_wrap()}
+</html>
+
+<%def name="head_additional()"></%def>
+<%def name="drawContents(name, text, url)">
+	<li>
+		%if content_name == name:
+			<a href="${url}" class="selected">${text | h}</a>
+		%else:
+			<a href="${url}">${text | h}</a>
+		%endif
+	</li>
+</%def>
+<%def name="drawAccordionContents(name, text, contents)">
+	<li>
+		<a href="javascript:;" class="folder">${text | h}</a>
+		<ul id="${name}">
+			%for content in contents['contents']:
+				<li>
+					%if contents['content_name'] == content['name']:
+						<a href="${content['url']}" class="selected">${content['label'] | h}</a>
+					%else:
+						<a href="${content['url']}">${content['label'] | h}</a>
+					%endif
+				</li>
+			%endfor
+		</ul>
+	</li>
+</%def>
+
+<%def name="body_wrap()">
+	%if is_staging:
+		<body class="staging">
+	%elif is_dev:
+		<body>
+	%else:
+		<body class="release">
+	%endif
+		<div class="container-fluid">
+			<div class="sidebar-bgbox"></div>
+			<div class="sidebar">
+				<div class="sidebarbox">
+					<a href="${url_admin}" class="brand">${apptitle}管理</a>
+					<ul class="tree" id="sidemenu">
+						${self.drawAccordionContents('model_edit', 'マスターデータ閲覧・編集', model_edit)}
+						${self.drawAccordionContents('infomations', '各種情報', infomations)}
+						${self.drawAccordionContents('kpi_contents', 'KPI', kpi_contents)}
+						${self.drawContents('manage_menu', '管理機能一覧', url_manage_menu)}
+						${self.drawContents('master_data', 'マスターデータ管理', url_master_data)}
+						${self.drawContents('ban_edit', 'アクセス禁止管理', url_ban_edit)}
+						${self.drawContents('movie', '動画', url_movie)}
+						${self.drawContents('voice', '音声', url_voice)}
+						${self.drawAccordionContents('simulator_contents', 'シミュレータ', simulator_contents)}
+						${self.drawContents('battle_simulator', 'バトルシミュレータ', url_battle_simulator)}
+						${self.drawContents('battle_simulator', 'バトルパネルシミュレータ', url_battle_panel_simulator)}
+						${self.drawContents('scout_silhouette_simulator', 'スカウトシルエットシミュレータ', url_scout_silhouette_simulator)}
+						${self.drawContents('raidevent_simulator', 'レイドイベントシミュレータ', url_raidevent_simulator)}
+						${self.drawContents('raidboss_drop_simulator', 'レイドボスのドロップシミュレータ', url_raidboss_drop_simulator)}
+						${self.drawContents('view_images', '画像確認', url_view_images)}
+						% if is_dev or is_staging:
+							${self.drawContents('debug_tool', 'デバッグ機能', url_debug_tool)}
+						% endif
+						${self.drawContents('ng_cast', 'NGキャスト管理', url_ng_cast)}
+					</ul>
+				</div>
+				<div style="padding:20px;">
+					<a href="${url_logout}" class="btn btn-danger"><i class="icon-remove icon-white"></i>ログアウト</a>
+				</div>
+				<p style="margin-left:20px;color:#fff;">${host}：${pid}</p>
+			</div>
+			<div class="shadow"></div>
+			<div class="shadow-cover"></div>
+			<div class="content">
+				<%doc>現在時刻</%doc>
+				<script type="text/javascript">
+					$(function() {
+						function toLoginDate(date_obj){
+							var tmp_date_obj = new Date(date_obj.getTime() - ${Defines.DATE_CHANGE_TIME} * 3600000);
+							return new Date(tmp_date_obj.getFullYear(), tmp_date_obj.getMonth(), tmp_date_obj.getDate(), ${Defines.DATE_CHANGE_TIME});
+						}
+						function toWeekStartDate(date_obj){
+							var base = toLoginDate(date_obj);
+							// 月曜日を基準に.
+							var weekday = (base.getDay() + 6) % 7;
+							return new Date(base.getTime() - weekday * 86400000);
+						}
+						function dayOfYear(date_obj){
+							var firstdate_of_year = new Date(date_obj.getFullYear(), 0, 1);
+							var diff = date_obj - firstdate_of_year;
+							return Math.ceil(diff / 86400000.0);
+						}
+						function weekOfYear(date_obj){
+							var week_start_date = toWeekStartDate(date_obj);
+							var day_of_year = dayOfYear(week_start_date);
+							var firstdate_of_year = new Date(week_start_date.getFullYear(), 0, 1);
+							var firstdate_weekday = (firstdate_of_year.getDay() + 6) % 7;
+							var days = day_of_year - (7 - firstdate_weekday) % 7;
+							return Math.ceil(days / 7);
+						}
+						// 時計.
+						var div_server_time = document.getElementById("server_time");
+						$("#server_time_space").css("height", "" + ($("#server_time").height() - 18) + "px");
+						var req_server_time = new Date("${server_nowtime.strftime("%a %b %d %Y %H:%M:%S GMT+0900")}");
+						var diff_millisec = req_server_time - (new Date());
+						setInterval(function(){
+							var time = (new Date()).getTime() + diff_millisec;
+							var server_time = new Date(time);
+							var datetime_string = server_time.toLocaleDateString("ja-JP") + " " + server_time.toLocaleTimeString("ja-JP");
+							var week_start_date = toWeekStartDate(server_time);
+							div_server_time.innerHTML = datetime_string + "<br />" + week_start_date.getFullYear() + "年" + weekOfYear(server_time) + "週目";
+							div_server_time.style.left = "" + (window.innerWidth - ($(div_server_time).width() + 8)) + "px";
+							div_server_time.style.display = "block";
+						}, 500);
+						// アラート.
+						var alert_obj = $(".alert");
+						if(0 < alert_obj.length){
+							alert_obj.alert();
+						}
+					});
+				</script>
+				<div id="server_time" style="position:fixed;display:none;text-align:right;">
+					${server_nowtime.strftime("%Y年%m月%d日 %H:%M:%S")}<br />
+					${datetime_weekly.strftime("%Y年%W週目")}
+				</div>
+				<div id="server_time_space">
+				</div>
+				%if is_before_publication:
+					<div class="alert alert-warn">
+						<a class="close" data-dismiss="alert alert-warn">×</a>
+						<p><strong>只今事前登録期間中です！</strong></p>
+					</div>
+				%endif
+				%if is_maintenance:
+					<div class="alert alert-warn">
+						<a class="close" data-dismiss="alert">×</a>
+						<p><strong>只今メンテナンスモード中です！</strong></p>
+					</div>
+				%endif
+				%if is_bench:
+					<div class="alert alert-warn">
+						<a class="close" href="#">×</a>
+						<p>負荷テストモード中です！</p>
+					</div>
+				%endif
+				<%include file='inc_alert.html' />
+				
+				${self.content()}
+				% if dbg_print_log is not UNDEFINED:
+					<div class="well">
+						ServerLog:
+						%if is_local:
+							<div>
+								${dbg_print_log}
+							</div>
+						%else:
+							<div style="font-size: x-small;">
+								${dbg_print_log.replace('\n','<br />').replace('\r','<br />')}
+							</div>
+						%endif
+					</div>
+				%endif
+				
+				<footer>
+					&copy; <a href="http://www.platinum-egg.com/" target="_blank">株式会社プラチナエッグ</a>
+				</footer>
+			</div>
+		</div>
+	</body>
+</%def>
+
+<%def name="content()"></%def>

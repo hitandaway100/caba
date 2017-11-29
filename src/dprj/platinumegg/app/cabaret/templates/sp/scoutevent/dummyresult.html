@@ -1,0 +1,14 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	%for text in resulttexts:
+		<div>
+			${text | h}
+		</div>
+	%endfor
+	<div>
+		<a class="btnlong" style="margin-top:10px;" href="${backUrl}">次へ</a>
+	</div>
+</%def>
+

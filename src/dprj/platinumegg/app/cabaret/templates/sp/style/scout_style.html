@@ -1,0 +1,275 @@
+#coding:utf-8
+<style type="text/css">
+
+/* ---スカウトページタイトル枠---*/
+.scouttop{
+	position: relative;
+	width:320px;
+	top:0px;
+}
+
+.scouttop
+.scoutpic{
+	position:relative;
+	width : 320px;
+	top:0px;
+	z-index: 0;
+}
+
+.scouttop
+.scoutflame{
+	background: url(${url_static_img}01/scout_bar.png) no-repeat;
+	position:absolute;
+	width : 320px;
+	height : 36px;
+	top:0px;
+	text-align: center;
+	margin:auto;
+	z-index: 1;	
+}
+
+.scouttop
+.scouttime{
+	background-color:#000000;
+	position:absolute;
+	text-align:center;
+	width:320px;
+	top:146px;
+	z-index: 2;
+}
+
+/* --- スカウトプレーヤーステータス-- */
+.scoutstatus{
+	background: url(${url_static_img}01/st_scout.png)no-repeat;
+	position: relative;
+	margin: auto;
+	width:320px;
+	height:101;
+	top:-9;
+}
+
+.scoutstatus
+.setbox{
+	position: relative;
+	width: 286px;
+	top:22px;
+	left:18px;
+	font-size: 12px; 
+	line-height: 14px;
+}
+
+.scoutstatus
+.setbox
+.scset1{
+	position: relative;
+	width:66px;
+	height: 18px;
+	text-align: center;
+}
+
+.scoutstatus
+.setbox
+.scset2{
+	position: relative;
+	width: 74px;
+	height: 18px;
+	text-align:left;
+}
+
+.scoutstatus
+.setbox
+.scset3{
+	position: relative;
+	width:66px;
+	height: 18px;
+	left:4px;
+	text-align: center;
+}
+
+.scoutstatus
+.setbox
+.scset4{
+	position: relative;
+	width: 74px;
+	height: 18px;
+	left:6px;
+	text-align:left;
+}
+
+.scoutstatus
+.setbox
+.scset5{
+	position: relative;
+	width: 94px;
+	height: 18px;
+	text-align: center;
+}
+
+.scoutstatus
+.setbox
+.scset6{
+	position: relative;
+	width: 192px;
+	height: 18px;
+	left:6px;
+	text-align:left;
+}
+
+/* --- エリアステータス-- */
+.areastatus{
+	background: url(${url_static_img}01/area_st.png)no-repeat;
+	position: relative;
+	margin: auto;
+	margin-top:5px;
+	width:306px;
+	height:187px;
+}
+
+.areastatus
+.areabox{
+	position: relative;
+	width: 290px;
+	top:2px;
+	left:16px;
+	font-size: 12px; 
+	line-height: 14px;
+}
+
+.areabox2{
+	position: relative;
+	width: 160px;
+	top:1px;
+	left:10px;
+	font-size: 12px; 
+	line-height: 14px;
+}
+
+.areastatus
+.areaset1{
+	position: relative;
+	width:66px;
+	height: 18px;
+	text-align: center;
+}
+
+.areastatus
+.areaset2{
+	position: relative;
+	width: 90px;
+	height: 18px;
+	text-align:left;
+}
+
+.area_deck{
+	display:block;
+	position:absolute;
+	left:3;
+	width: 52px;
+	height: 52px;
+}
+
+.area_deck
+.deck_photo{
+	position:absolute;
+	top:3px;
+	left:3;
+	width: 50px;
+	height: 50px;
+	
+	
+}
+
+.scoutbtn{
+	position: absolute;
+	top: 68px;
+	left: 190px;
+	width:104px;
+	height:104px;
+}
+
+/* --- ボスセリフ背景-- */
+.scouttop
+.boss_coment{
+	background:url(${url_static_img}01/id_01_20/boss_coment.png)no-repeat;
+	position:relative;
+	width:320px;
+	height:69px;
+	margin: auto;
+	margin-top: -8px;
+}
+.boss_coment{
+	background:url(${url_static_img}01/id_01_20/boss_coment.png)no-repeat;
+	position: relative;
+	width:320px;
+	height:69px;
+	margin: auto;
+
+}
+
+.coment_text{
+	text-align: center;
+	padding-top: 20px;
+}
+
+.scoutresult{
+	position: relative;
+	width: 320;
+	height: 400;
+	z-index: 2;	
+}
+
+/* --- エリアステータス(ハプニング)-- */
+.areasmall{
+	background: url(${url_static_img}01/st_scout3.png)no-repeat;
+	position: relative;
+	margin: auto;
+	margin-top:5px;
+	width:306px;
+	height:76px;
+}
+
+.areasmall
+.areabox{
+	position: relative;
+	width: 290px;
+	top:2px;
+	left:16px;
+	font-size: 12px; 
+	line-height: 14px;
+}
+
+.areasmall
+.areabox2{
+	position: relative;
+	width: 290px;
+	top:1px;
+	left:10px;
+	font-size: 12px; 
+	line-height: 14px;
+}
+
+.areasmall
+.areaset1{
+	position: relative;
+	width:66px;
+	height: 18px;
+	text-align: center;
+}
+
+.areasmall
+.areaset2{
+	position: relative;
+	width: 90px;
+	height: 18px;
+	text-align:left;
+}
+
+.areasmall
+.areaset3{
+	position: relative;
+	width: 90px;
+	height: 18px;
+	text-align:left;
+}
+
+</style>

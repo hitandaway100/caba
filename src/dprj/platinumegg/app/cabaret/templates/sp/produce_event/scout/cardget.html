@@ -1,0 +1,43 @@
+#coding:utf-8
+<%inherit file="../eventbase.html" />
+<%def name="head()">
+<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">いい女発見</p>
+	</div>
+
+	% if silhouette == u"gold":
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="caution" style="font-size:18px; color:#40E0D0;">※限定キャスト獲得のチャンス※</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+
+	<img src="${url_static_img}event/scevent/common/gold.png" width="320px" height="400px" />
+	% elif silhouette == u"silver":
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="caution" style="font-size:18px; color:#40E0D0;">※限定キャスト獲得のチャンス※</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+
+	<img src="${url_static_img}event/scevent/common/silver.png" width="320px" height="400px" />
+	% elif silhouette == u"bronze":
+	<img src="${url_static_img}event/scevent/common/bronze.png" width="320px" height="400px" />
+	% else:
+	<div class="cardname">
+		<div class="type">
+			<img src="${card['master']['iconUrl']}" width="28px" height="28px">
+		</div>
+		<span class="wrapper">
+			${card['master']['name'] | h}
+		</span>
+	</div>
+	<img src="${card['master']['thumbnail']['large']}" width="320px" height="400px" />
+	% endif
+
+	<div>
+		<a class="btn_big_text" href="${get_html_param('url_exec', 'sp/scout/cardgetresult_success.html')}"><div style="width:232; height:49;">(成功率??%)</div></a>
+	</div>
+
+	${self.eventfooter()}
+</%def>

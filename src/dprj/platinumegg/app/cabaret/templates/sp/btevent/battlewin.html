@@ -1,0 +1,42 @@
+#coding:utf-8
+<%inherit file="battleresultbase.html" />
+
+<%def name="head()">
+${parent.head()}
+</%def>
+
+<%def name="drawResultTop()">
+<img src="${url_static_img}02/id_02_03/win_move.png" width="320" height="100" />
+<h1>勝利!!</h1>
+
+%if piece_dropiteminfo:
+	<%doc>ピースコンプ後の報酬</%doc>
+	<div class="wrapper red">
+		[${piece_dropiteminfo['cardmaster']['rare_str']}]${piece_dropiteminfo['cardmaster']['name'] | h}のコンプリート後報酬です。
+	</div>
+	<%include file="../includes/prize_info.html" args="prize=piece_dropiteminfo['prize'], url_static_img=url_static_img" />
+
+%elif dropcast and dropcast['is_drop']:
+<div class="getitem">
+  <table>
+    <tbody>
+      <tr>
+        <td class="image">
+          <img src="${url_static_img}event/btevent/${battleevent['codename']}/${dropcast['dirname']}/piece_${dropcast['number']}.png" class="piece_image"/>
+        </td>
+        <td>
+          <div class="text">
+              「${dropcast['castname']}」の<br />
+              ピースを獲得!!<br>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+%else:
+%endif
+
+<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+
+</%def>

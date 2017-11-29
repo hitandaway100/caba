@@ -1,0 +1,66 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>所持交換ポイントの変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_playertradeshop_point" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          累計Pt:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>交換所アイテムの交換回数のリセット</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_tradeshopplayerdata" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="リセット" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>復刻チケット交換所の交換回数のリセット</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_reprintticket_tradeshopplayerdata" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="リセット" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

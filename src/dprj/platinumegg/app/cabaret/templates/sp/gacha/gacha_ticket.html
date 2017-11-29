@@ -1,0 +1,73 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawGachaList()">
+	
+	%if raideventscore and event_gacha_unique_name and gachadata.get(event_gacha_unique_name):
+		<%doc>イベント限定チケット</%doc>
+		${self.drawBoxBanner(event_gacha_unique_name)}
+		${self.drawScheduleByTime(event_gacha_stime, event_gacha_etime)}
+		${self.drawSlide(event_gacha_unique_name)}
+		${self.reaSetsumei()}
+		${self.drawGachaTicket(event_gacha_unique_name, raideventscore['ticket'], True, listlinktext='取得可能キャスト≫', listlinkurl=get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[event_gacha_unique_name]), etime=event_gacha_etime, is_event_ticket=True)}
+		<%doc>裏社会ガチャ説明画像</%doc>
+		<img src="${url_static_img}event/raidevent/${event_gacha_unique_name}/${event_gacha_unique_name}_gachapage_rule.png" width="280" height="auto" style="margin-left: 20px;";/>
+		${self.drawBoxGroupList(event_gacha_unique_name, is_raidticket=True)}
+	%else:
+		<img src="${url_static_img}gacha/common/sr_undameshi_gacha_640_220.png" width="320" height="110" />
+		${self.reaSetsumei()}
+	%endif:
+	
+	<%doc>レア以上確定チケット</%doc>
+	${self.drawGachaTicket('rareoverticket', player['rareoverticket'], True, continuityformat='レア以上のキャストを獲得できるチャンス')}
+	
+	<%doc>思い出チケット</%doc>
+	${self.drawGachaTicket('memoriesticket', player['memoriesticket'], True)}
+	
+	<%doc>追加チケット</%doc>
+	<%
+		tmp_arr = list(gachadata.items())
+		tmp_arr.sort(key=lambda x:(x[1]['id'] << 32) + x[1]['consumetype'])
+	%>
+	%for k,v in tmp_arr:
+		%if Defines.GachaConsumeType.ADDITIONAL_TICKETS.has_key(v['consumetype']):
+		${self.drawGachaTicket(k, gacha_ticket_nums.get(Defines.GachaConsumeType.ADDITIONAL_TICKETS[v['consumetype']], 0), True)}
+		%endif
+	%endfor
+	
+	<%doc>キャスト雇用履歴</%doc>
+	${self.drawCastGetListByTopic(Defines.GachaConsumeType.GachaTopTopic.TICKET)}
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(3); //タブボックス用の関数の呼び出し
+	</script>
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					%if raideventscore and event_gacha_unique_name:
+				    <%doc>${self.drawExplainTextEventTicket()}</%doc>
+            ${self.drawExplainTextEventTicketBox()}
+						&nbsp;<br />
+					%endif
+					${self.drawExplainTextTicket()}
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>

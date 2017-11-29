@@ -1,0 +1,256 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head_extend()">
+</%def>
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+	<link href="${url_static_css}ev_slider.css?v=${self.css_version}" rel="stylesheet" type="text/css"/>
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+	<script type="text/javascript" src="${url_static_js}jquery.flexslider.js?v=${self.js_version}"></script>
+	<script type="text/javascript" src="${url_static_js}slider.js?v=${self.js_version}"></script>
+	<script type="text/javascript">
+		$(function(){
+			var blink_target = $('.blink');
+			if(0 < blink_target.length){
+				setInterval(function(){
+					blink_target.fadeOut(1200, function(){$(this).fadeIn(200)});
+				}, 1400);
+			}
+		});
+	</script>
+	
+	<style type="text/css">
+	.btevent_flame{
+		background-size:320px 140px;
+		position:absolute;
+		width : 320px;
+		height : 140px;
+		top:0px;
+		text-align: center;
+		margin:auto;
+		z-index: 1;	
+	}
+	
+	
+	.btevent_cast{
+		position:absolute;
+		top:0px;
+		z-index: 0;	
+	}
+	
+	.btevent_title{
+		position:absolute;
+		top:18px;
+		left:100px;
+		text-align: center;
+		z-index: 0;	
+	}
+	
+		.cardspace{
+		position: relative;
+		left: 2px;
+	}
+	
+	.nominate_set2{
+		position: relative;
+		width: 184px;
+		top:-2px;
+		left:4px;
+		font-size: 12px;
+		line-height: 16px;
+	}
+	
+	.nominate_st1{
+		width:74px;
+		height:20px;
+		text-align: center;
+	}
+	
+	.nominate_st2{
+		width: 110px;
+		height: 20px;
+		text-align:left;
+	}
+	
+	.nominate_big{
+		width:184px;
+		height:40px;
+		text-align: center;
+	}
+	
+	
+	.nominate_st_s{
+		width: 108px;
+		height: 20px;
+		text-align:center;
+		font-size: 11px;
+		letter-spacing: -1px;
+	}
+	.nominate_set3{
+		position: relative;
+		width: 300px;
+		top:-2px;
+		left:4px;
+		margin: auto;
+		font-size: 12px;
+		line-height: 8px;
+	}
+	
+	.nominate_st3{
+		width: 72px;
+		height: 20px;
+		text-align:center;
+		
+	}
+	.nominate_st4{
+		width: 220px;
+		height: 20px;
+		text-align:left;
+		font-size: 14px;
+	}
+	
+	.nominate_st4 b{
+		color: #FF9900;
+	}
+	.nominate_st5{
+		width: 300px;
+		height: 20px;
+		font-size: 14px;
+		text-align:left;
+	}
+	</style>
+	${self.head_extend()}
+</%def>
+
+<%def name="topheader()">
+<img src="${url_static_img}banner/event/btevent/${battleevent['codename']}/${battleevent['codename']}_header.png" width="320" height="auto" style="margin-bottom:10px;"/>
+</%def>
+
+<%def name="eventtopic()">
+	<div style="padding: 8px 0px;text-align:center;">
+		<div class="btn_pink_s">
+			<a href="${get_html_param('url_explain_detail', 'sp/btevent/manual.html')}"><div>ルール</div></a>
+		</div>
+		<div class="btn_pink_s">
+			<a href="${get_html_param('url_explain_prizes', 'sp/btevent/successbonus.html')}"><div>報酬一覧</div></a>
+		</div>
+		<div class="btn_pink_s">
+			<a href="${get_html_param('url_explain_nomination', 'sp/btevent/nominatecast.html')}" style="font-size:13px; 	line-height: 2.7;"><div>特効キャスト</div></a>
+		</div>
+	</div>
+</%def>
+
+<%def name="drawEventtopic(flag, url, text)">
+	%if flag:
+		<a href="${url}" class="yellow">${text | h}</a>
+	%else:
+		${text | h}
+	%endif
+</%def>
+
+<%def name="eventtopic2()">
+	<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-top:-8px; margin-left:5px;">
+		${self.drawEventtopic(current_topic!='detail', get_html_param('url_explain_detail', 'sp/btevent/manual.html'), 'イベント概要')}
+		|
+		${self.drawEventtopic(current_topic!='prizes', get_html_param('url_explain_prizes', 'sp/btevent/successbonus.html'), '報酬')}
+		%if battleevent['is_opened']:
+			|
+			${self.drawEventtopic(current_topic!='nomination', get_html_param('url_explain_nomination', 'sp/btevent/nominatecast.html'), '指名')}
+		%endif
+		|
+		${self.drawEventtopic(current_topic!='faq', get_html_param('url_explain_faq', 'sp/btevent/eventfaq.html'), 'FAQ')}
+	</div>
+</%def>
+
+<%def name="eventtopic3(bar=True)">
+	%if bar:
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="margin-top:8px;"/>
+	%endif
+	<div align="center" style="background-color: #8D35B8; width:310px; height:56px; border-radius: 3px; line-height:2; margin-left:5px;">
+		<%doc>
+		${self.drawEventtopic(current_prize!='point', get_html_param('url_prizes_point', 'sp/btevent/successbonus.html'), '名声PT報酬')}
+		|
+		</%doc>
+		${self.drawEventtopic(current_prize!='group_ranking', get_html_param('url_prizes_group_ranking', 'sp/btevent/daily_groupbonus.html'), 'グループ内ランキング')}
+		|
+		${self.drawEventtopic(current_prize!='ranking', get_html_param('url_prizes_ranking', 'sp/btevent/rankbonus.html'), 'ランキング報酬')}<br />
+		${self.drawEventtopic(current_prize!='ranking_beginer', get_html_param('url_prizes_ranking_beginer', 'sp/btevent/rankbonus.html'), '新店舗ランキング報酬')}
+	</div>
+</%def>
+
+<%def name="eventfooter()">
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_battleevent_top', 'sp/btevent/top.html')}" ><div style="margin-left:14px;">イベントトップへ</div></a>
+	</div>
+</%def>
+
+<%def name="feverinfo()">
+	<%doc>フィーバー中に表示</%doc>
+	%if battleevent_score and battleevent_score.get('fever'):
+		<%
+			feverinfo = battleevent_score['fever']
+		%>
+			<%
+				_hours = feverinfo['timelimit']['hours']
+				_minutes = feverinfo['timelimit']['minutes']
+				_seconds = feverinfo['timelimit']['seconds']
+			%>
+			<div style="background-color:#ffff00 ; opacity: 0.70; width:320; height:28; color:#000000; text-align:center; line-height:2;"  >
+				%if _hours:
+					フィーバー中!!：残り${_hours}時間${'%02d' % _minutes}分
+				%else:
+					フィーバー中!!：残り${_minutes}分${'%02d' % _seconds}秒
+				%endif
+			</div>
+	%endif
+</%def>
+
+<%def name="event_schedule()"><!--
+	<%
+		event_stime = battleevent['starttime']
+		event_etime = battleevent['endtime']
+	%>
+	%if event_stime and event_etime:
+-->開催期間：${event_stime.month}/${event_stime.day} ${event_stime.hour}:${'%02d' % event_stime.minute}〜${event_etime.month}/${event_etime.day} ${event_etime.hour}:${'%02d' % event_etime.minute}<!--
+	%elif event_etime:
+-->開催期間：${event_etime.month}/${event_etime.day} ${event_etime.hour}:${'%02d' % event_etime.minute}まで<!--
+	%endif
+--></%def>
+
+<%def name="eventslide()">
+	%if battleevent['appeal']:
+	<div class="flexslider" style="padding-bottom: 4px;">
+		<ul class="slides">
+			%for img in battleevent['appeal']:
+			<li>
+				<img src="${img}" width="320" height="380" />
+			</li>
+			%endfor
+		</ul>
+	</div>
+	%endif
+</%def>
+
+<%def name="drawIntervalText()"><!--
+	<%
+		sec = Defines.BATTLEEVENT_BATTLE_INTERVAL_SAME_OPPONENT.total_seconds()
+		arr = []
+		h = int(sec / 3600)
+		if 0 < h:
+			arr.append("{}時間".format(h))
+		m = int((sec % 3600) / 60)
+		if 0 < m:
+			arr.append("{}分".format(m))
+		s = sec % 60
+		if 0 < s:
+			arr.append("{}秒".format(s))
+	%>
+	-->※${"".join(arr)}以内は仕掛けられません</span><!--
+--></%def>

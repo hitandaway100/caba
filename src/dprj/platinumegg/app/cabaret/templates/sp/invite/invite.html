@@ -1,0 +1,101 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="contents()">
+	<%doc>画像入るスペース</%doc>
+	<div style="text-align: center;">
+		<img src="${url_static_img}banner/invite/03/Friend_invitation_03_header.png" width="320" height="120"/>
+	</div>	
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		招待キャンペーン第3弾
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div class="wrapper" style="line-height:1.3;">
+		キャンペーン期間中に友達招待1人成功毎に<br />
+			<span class="yellow">レア確定チケット×1枚(10人招待まで)</span><br />
+			を獲得できます。<br />
+			<div class="pink" style="margin:4px;">
+				なんと9人目の招待報酬には<br/>「SR以上確定ガチャチケット」を入手できる！
+			</div>
+			<span class="orange" style="font-size:12px;">※10人目以降の招待は1人につき</span><br />
+			<span class="orange" style="font-size:12px;">赤ハブドリンク[大]×１個</span><br />
+			
+		<div style="margin-top:4px;">	
+			さらに、招待成功数が一定数を超えると<br />
+			<span class="yellow">限定キャスト</span>をGET出来ちゃう♪
+		</div>
+	</div>
+	
+	<div>
+		<a class="btnlong_p" style="margin-top: 8px;" href="${self.invite_url()}">
+			<div>
+				招待報酬をGET
+			</div>
+		</a>
+	</div>
+	
+	<div class="wrapper">
+		現在の招待成功数：<span class="orange">${invitecnt | h}</span>人
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">
+			友達招待で限定キャストをGETしよう
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px"/>
+	
+	${self.drawCard('asakura_yuu_6/H1', 'zokusei_2.png', '麻倉憂', 'SR', 7500, 17250, 8, '可憐な微笑み [小]', '味方癒しの接客力を小Up')}
+	
+	<div class="wrapper" style="line-height:1.2; color:orange;">
+		※5人、8人、10人招待成功で<br />
+		同一キャストをGETできます。
+	</div>
+
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">
+			ハメ管理してHな動画をGETしよう
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div class="wrapper" style="line-height:1.2;">
+		集めたキャストをハメ管理して<br />
+		Hな動画をGETしよう♪
+	</div>
+	
+	<div align="center" style="padding-bottom:20px">
+		<img src="${url_static_img}invite/shoutai_03_movie_284_212.png" width="284px" height="212px"/>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+
+
+</%def>
+
+<%def name="drawCard(imgPath, zokusei, name, type, power, maxpower, cost, skillname, skilltext)">
+	<div class="wrapper" style="line-height:1.2;">
+		2人招待成功で<br />
+		${name | h}(${type | h})をプレゼント<br />
+	</div>
+	
+	<div align="center">
+		<img src="${url_static_img}card/${imgPath}/Card_thumb_320_400.png" width="240px" height="300px" />
+	</div>
+	
+	<div class="wrapper" style="line-height:1.2; text-align:left; width:260px; margin:auto;"><%doc>文字数増える時はwidth注意</%doc>
+		接客力：${power | h}(MAX${maxpower | h})<br />
+		人件費：${cost | h}<br />
+		%if skillname:
+			サービス：${skillname | h}<br />
+			%if skilltext:
+			効果：${skilltext | h}<br />
+			%endif
+		%endif
+	</div>
+	
+</%def>
+
+<%def name="invite_url()">${get_html_param('url_dmm_invite', 'sp/invite/invite.html')}</%def>

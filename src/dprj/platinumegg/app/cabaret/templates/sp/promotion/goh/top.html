@@ -1,0 +1,121 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+</%def>
+
+<%def name="contents()">
+  <%doc>ページヘッダー</%doc>
+  <img src="${url_static_img}event/crosspromo/03/cross_promo_03_header.png" width="320px" height="132px" />
+  <div style="text-align:center;margin-top:20px;margin-bottom:10px;">3/18〜3/25 12:00まで</div>
+
+  <div class="wrapper" style="margin-bottom:8px;">
+    <a href="${get_html_param('url_goh')}">
+      <img src="${url_static_img}event/crosspromo/03/cross_promo_03_banner.png" width="240px" height="100px" />
+    </a>
+    <div style="line-height:1.2;">
+      <span class="yellow" style="font-size:13px;">↑ギャングオブヘブンへはこちらから</span>
+    </div>
+  </div>
+
+  <div class="back_black">
+    <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="2px" />
+    <div style="padding:8px 0px;text-align:center;line-height:1;">
+      <div style="display:inline-block;width:144px;">
+        <img src="${url_static_img}event/crosspromo/03/cross_promo_03_price02.png" width="140px" height="140px" />
+      </div>
+      <div style="display:inline-block;width:144px;">
+        <img src="${url_static_img}event/crosspromo/03/cross_promo_03_price01.png" width="140px" height="140px" />
+      </div>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div class="yellow" style="font-size:13px;margin-top:10px;">
+      各ゲームで貰える報酬をチェックしよう!
+    </div>
+  </div>
+
+  <%doc>ボタン</%doc>
+  <table align="center" width="256px" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+    <tr>
+      <td width="96px" style="text-align:center;">
+        <div id="tab_caba" class="btn_pink_s">
+          <a href="javascript:void(0);">キャバ王</a>
+        </div>
+      </td>
+      <td width="96px" style="text-align: center;">
+        <div id="tab_goh" class="btn_pink_s">
+          <a href="javascript:void(0);">ギャング</a>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <%doc>報酬一覧</%doc>
+  <%
+  missions = [
+  {'name': 'チュートリアル突破', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'akahabu_l', 'item_name': '赤ハブドリンクx3'}, {'thumb_dirname': 'kiryoku_l', 'item_name': '気力回復薬x3'}, {'thumb_dirname': 'ticket_rare', 'item_name': 'R以上確定引き抜きガチャチケットx1'}]},
+  {'name': '5日間ログイン', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'ticket_srssr20', 'item_name': '新SSR以上20%ガチャチケットx1'}]},
+  {'name': 'えっちシーン開放', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'ticket_rare', 'item_name': 'R以上確定引き抜きガチャチケットx3'}]},
+  {'name': '頭領ランク10', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'cabagold_1000', 'item_name': 'キャバゴールドx10000'}]},
+  {'name': 'レイドボスを1体撃破', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'akahabu_l', 'item_name': '赤ハブドリンクx3'}, {'thumb_dirname': 'cb_money', 'item_name': '経営マネーx100000'}]},
+  {'name': '交換所で交換', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'ring_sapphire', 'item_name': 'サファイアの指輪x1'}, {'thumb_dirname': 'signboard', 'item_name': '満員看板x1'}]},
+  {'name': '「摩天楼」で10F到達', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'akahabu_l', 'item_name': '赤ハブドリンクx1'}, {'thumb_dirname': 'kiryoku_l', 'item_name': '気力回復薬x3'}]},
+  {'name': '「摩天楼」で20F到達', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'akahabu_l', 'item_name': '赤ハブドリンクx3'}]},
+  {'name': '「摩天楼」で30F到達', 'jump_to': 'url_goh', 'rewards': [{'thumb_dirname': 'ticket_srover', 'item_name': 'SR以上確定ガチャチケットx1'}]},
+  ]
+  %>
+
+  ${print_missions(missions)}
+
+  <%doc>注意</%doc>
+  <section class="basicinfo" style="padding-bottom:10px">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}/common/kyoutsu_bar_07.png" width="282px" height="3px">
+    </div>
+    <div class="basicBack">
+      <ul>
+        <div style="margin:0px 20px 0px;">
+          <li>3/18(金)12:00〜3/25(金)12:00までの期間に達成された場合報酬が配布されます。</li>
+          <li>また、プロモーション開始以前にミッションを達成されている場合も後日報酬を配布いたします。</li>
+          <li>報酬配布はイベント終了後となり、今月中を予定しております。</li>
+        </div>
+      </ul>
+      <div style="font-size:0px;">
+        &nbsp;
+      </div>
+    </div>
+    <div class="basicbtm"></div>
+  </section>
+</%def>
+
+<%def name="print_missions(missions)">
+  % for mission in missions:
+    <div class="back_black">
+      <img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+      <div>
+        % for i, reward in enumerate(mission['rewards'], 1):
+          <table width="310px" style="margin:0 auto;">
+            <td width="64px">
+              <img src="${url_static_img}item/${reward['thumb_dirname']}/Item_thumb_60_60.png" width="60px" height="60px" alt="報酬画像" />
+            </td>
+            <td style="font-size:12px; vertical-align: middle;">
+              ${reward['item_name']}
+            </td>
+          </table>
+          % if i is not len(mission['rewards']):
+            <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="2" />
+          % endif
+        % endfor
+      </div>
+    </div>
+    %if not mission['jump_to']:
+      <span class="btnlong" style="margin-top:10px;">${mission['name']}</span>
+    %else:
+      <a class="btnlong" style="margin-top:10px;" href="${get_html_param(mission['jump_to'])}">${mission['name']}</a>
+    %endif
+  % endfor
+</%def>

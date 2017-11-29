@@ -1,0 +1,53 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+		${self.eventslide()}
+	<div>
+		${self.eventtopic()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+	</div>
+	${self.eventtopic3()}
+	%for areaprize in areaprizelist:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				${areaprize['areaname'] | h}達成で…
+			</div>
+		</div>
+		%if areaprize['prizeinfo']['listitem_list']:
+			%for idx,prizeitem in enumerate(areaprize['prizeinfo']['listitem_list']):
+				%if 0 < idx:
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+				%endif
+				<table style="margin-left:8px; width:300px; height:90px;">
+					<td  width="70">
+						<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td>
+						<div class="itemtext" style="margin-top:-24px;">
+							%if areaprize['received']:
+								<span class="yellow">[達成済み]</span><br />
+							%else:
+								[未達成]<br />
+							%endif
+							
+							%if prizeitem['icon']:
+								<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+							%else:
+								<span><!--
+							%endif
+							-->${prizeitem['name'] | h}<!--
+							%if prizeitem['rare'] is not None:
+								-->(<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>)<!--
+							%endif
+							-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+						</div>
+					</td>
+				</table>
+			%endfor
+		%endif
+	%endfor
+		
+	${self.eventfooter()}
+
+</%def>

@@ -1,0 +1,57 @@
+#coding:utf-8
+<%inherit file="scoutresultbase.html" />
+
+<%def name="scouttop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${scout['thumbUrl']}" style="width:320px;height:180px;"/>
+		</div>
+		
+		${self.drawChampagneCallHostImg()}
+		%if boss:
+			<div class="scoutpic2">
+				<img src="${boss['thumbUrl']}" width="320" height="180"/>
+			</div>
+			<div class="boss_coment">
+				<div class="coment_text">
+					${boss['commentappear'] | h}
+				</div>
+			</div>
+		%endif
+		
+		<div class="scoutflame" style="position:absolute;">
+			<span class="wrapper">${scout['name'] | h}</span>
+		</div>
+		${self.scouttime()}
+	</div>
+</%def>
+
+<%def name="resultbodywrapp()">
+	
+	${self.drawScoutResultInfo(line=False)}
+	
+	%if boss:
+		<%doc>スカウトクリアでボスが出現した時</%doc>
+		<div style="padding: 2px 0px;">
+			<div class="btn_ontext">
+				<a href = "${get_html_param('url_bossbattle', 'sp/boss/bosspre.html')}"><img src="${url_static_img}01/id_01_20/btn_boss.png" style="width:232px;height:49px;"/></a>
+			</div>
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_scoutdo', 'sp/scout/scoutdo_swf.html')}');" class="btnlong"><div>同じ場所でスカウトする</div></a>
+		</div>
+	%elif next_scout:
+		<%doc>スカウトクリアでボスが出現しなくて次のステージを遊べる時</%doc>
+		<div style="padding: 2px 0px;">
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_exec', 'sp/scout/scoutdo_swf.html', next_scout)}');" class="btnpink"><p>${next_scout['name'] | h}へ進む</p></a>
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_scoutdo', 'sp/scout/scoutdo_swf.html')}');" class="btnlong"><div>同じ場所でスカウトする</div></a>
+		</div>
+	%else:
+		<%doc>基本的に来ないけど一応設定しておく</%doc>
+		<div class="btn_ontext">
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_scoutdo', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01//btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+		</div>
+	%endif
+	
+	${self.playerstatus()}
+	
+	${self.resultbody()}
+</%def>

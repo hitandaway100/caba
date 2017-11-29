@@ -1,0 +1,140 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>ガチャシミュレータ</h1>
+	</div>
+	<div class="well">
+		<div>
+			<form action="" method="post">
+				<p>
+					一覧から:<br />
+					<select name="_mid">
+						<option value="">--------</option>
+						%for gachamaster in gachamaster_list:
+							%if cur_gachamaster and cur_gachamaster.id == gachamaster.id:
+								<option value="${gachamaster.id}" selected="selected">${gachamaster.name | h}(ID:${gachamaster.id}, BOX:${gachamaster.boxid})</option>
+							%else:
+								<option value="${gachamaster.id}">${gachamaster.name | h}(ID:${gachamaster.id}, BOX:${gachamaster.boxid})</option>
+							%endif
+						%endfor
+					</select>
+				</p>
+				<p>
+					IDから:<br />
+					<input type="text" name="_strmid" value="${cur_gachamaster.id if cur_gachamaster else 0}" />
+				</p>
+				<p>
+					実行回数:<br />
+					<input type="text" name="_cnt" value="${cnt if cnt else 0}" />
+				</p>
+				<input type="submit" value="実行" class="btn" />
+			</form>
+		</div>
+	</div>
+	%if cur_gachamaster:
+		<a href="#rate_group">結果(グループ別)</a>/<a href="#rate">結果(個別)</a>
+		<div>
+			
+			<div class="well">
+				<a id="rate_group" name="rate_group"></a>
+				<h3>結果(BOXグループ別)</h3>
+				<table id="input_table" class="table">
+					<thead>
+						<th>ID</th>
+						<th>グループ名</th>
+						<th>出現回数</th>
+						<th>確率[％]</th>
+						<th>設定値[％]</th>
+					</thead>
+					<tbody>
+						<%
+							arr = group_distribution_dict.items()
+							arr.sort(key=lambda x:x[1], reverse=True)
+						%>
+						%for groupid, group_num in arr:
+							<%
+								group = group_dict[groupid]
+								group_rate = group_num * 100.0 / cnt
+								group_rate_s = group_rate_dict.get(groupid, 0) * 100.0 / group_rate_total
+							%>
+							<tr>
+								<td>
+									${groupid}
+								</td>
+								<td>
+									${group.name | h}
+								</td>
+								<td>
+									${group_num}
+								</td>
+								<td>
+									${'%.2f' % group_rate}
+								</td>
+								<td>
+									${'%.2f' % group_rate_s}
+								</td>
+							</tr>
+						%endfor
+					</tbody>
+				</table>
+			</div>
+			
+			<div class="well">
+				<a id="rate" name="rate"></a>
+				<h3>結果(個別)</h3>
+				<table id="input_table" class="table">
+					<thead>
+						<th>ID</th>
+						<th>カード名</th>
+						<th>レア度</th>
+						<th>出現回数</th>
+						<th>確率[％]</th>
+						<th>設定値[％]</th>
+					</thead>
+					<tbody>
+						<%
+							arr = distribution_dict.items()
+							arr.sort(key=lambda x:x[1], reverse=True)
+						%>
+						%for cardid, card_num in arr:
+							<%
+								master = cardmaster_dict[cardid]
+								card_rate = card_num * 100.0 / cnt
+								card_rate_s = 0
+								groupidlist = cardgroup_dict.get(cardid)
+								if groupidlist:
+									for groupid in groupidlist:
+										dic = cardrate_dict.get(groupid) or {}
+										if dic:
+											card_rate_s += dic.get(cardid, 0) * group_rate_dict.get(groupid, 0) * 100.0 / (sum(dic.values()) * group_rate_total)
+							%>
+							<tr>
+								<td>
+									${cardid}
+								</td>
+								<td>
+									${master.name | h}
+								</td>
+								<td>
+									${Defines.Rarity.NAMES[master.rare] | h}
+								</td>
+								<td>
+									${card_num}
+								</td>
+								<td>
+									${'%.2f' % card_rate}
+								</td>
+								<td>
+									${'%.2f' % card_rate_s}
+								</td>
+							</tr>
+						%endfor
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<a href="#rate_group">結果(グループ別)</a>/<a href="#rate">結果(個別)</a>
+	%endif
+</%def>

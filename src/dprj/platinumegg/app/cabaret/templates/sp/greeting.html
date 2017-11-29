@@ -1,0 +1,53 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">あいさつ履歴</p>
+	</div>
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+	
+	% for greetlog in greetlog_list:
+		<div class="noflame" style="width:300px; margin:auto; height:60px; background-color:rgba(255,255,255,0.1);">
+			<a href="${greetlog['params']['url']}" style="text-decoration:none; color: #fff;">
+			<img src="${greetlog['params']['thumbUrl']}" width="60" height="60" align="left" />
+			${greetlog['ctime']}<br />
+			${greetlog['params']['username'] | h}さんから<br />
+			あいさつがありました。<br />
+		</div>
+			% if greetlog['params'].get('comment'):
+			<div style="text-align:left; width:300px; margin:auto; background-color:rgba(255,255,255,0.1); word-wrap:break-word; overflow:auto;" class="noflame">
+				コメント ${greetlog['params']['comment'] | h}<br />
+			</div>
+			% else:
+				<br />
+			% endif
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+	% endfor
+	
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_prev is not UNDEFINED:
+					<a href="${url_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="count" style="font-size:12px; white-space: nowrap;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_next is not UNDEFINED:
+					<a href="${url_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+</%def>

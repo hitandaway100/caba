@@ -1,0 +1,45 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%namespace file="storecommon.html", name="storecommon" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">キャストを配属する</p>
+	</div>
+	
+	%if current_card:
+		<div class="topcap">
+			選択中のキャスト
+		</div>
+		${storecommon.drawCabaClubCardInfo(current_card, btn_type='remove')}
+	%endif
+	
+	<div class="titlesub">
+		<div class="wrapper">
+			変更するキャスト
+		</div>
+	</div>
+	<%include file="../includes/select_card.html" args="Defines=Defines, url_post=url_self, ctype=ctype, sortby=sortby" />
+	
+	<div class="wrapper">
+		キャスト編成や他の店舗に配属されていない<br />
+		キャストのみ表示されています
+	</div>
+	
+	%if cardlist:
+		%for card in cardlist:
+			${storecommon.drawCabaClubCardInfo(card, btn_type='select')}
+		%endfor
+	%else:
+		<div class="list_not_found">
+			選択できるキャストがいません
+		</div>
+	%endif
+	
+	${self.pagenation()}
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_store', 'sp/cabaclub/store_closed.html')}"><span style="margin-left:14px;">店舗へ戻る</span></a>
+	</div>
+	
+</%def>

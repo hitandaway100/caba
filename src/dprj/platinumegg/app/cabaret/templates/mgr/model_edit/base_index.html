@@ -1,0 +1,388 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="drawFilter(key='', value='')">
+	<%
+		filter_options = (
+			("", "="),
+			("__gt", ">"),
+			("__gte", ">="),
+			("__lt", "<"),
+			("__lte", "<=")
+		)
+		tmp = key.split("__", 1)
+		cname = tmp[0]
+		if 1 < len(tmp):
+			opt = "__"+tmp[1]
+		else:
+			opt = ""
+	%>
+	<select class="filter_name">
+		%for column in columns:
+			%if column['name'] == cname:
+				<option value="${column['name']}" selected="selected">${column['label'] | h}</option>
+			%else:
+				<option value="${column['name']}">${column['label'] | h}</option>
+			%endif
+		%endfor
+	</select>
+	<select class="filter_option">
+		%for k,v in filter_options:
+			%if k == opt:
+				<option value="${k}" selected="selected">${v | h}</option>
+			%else:
+				<option value="${k}">${v | h}</option>
+			%endif
+		%endfor
+	</select>
+	<input type="text" class="filter_value" value="${value | h}" />
+	<a href="javascript:void(0);" onclick="removeFilter(event);">削除</a>
+</%def>
+
+<%def name="content()">
+	<script type="text/javascript">
+		$(function(){
+			// ソート.
+			$("table#infos").tablesorter({
+				sortList: [[0,0]],
+			});
+			// ソートに使う値を更新.
+			var updateSortValue = function(this_obj) {
+				changed_value = $(this_obj).val();
+				$(this_obj).closest('div').children('.sort_value').text(changed_value)
+			}
+			/*
+			 * 変更したセルの色を変える.
+			 */
+			var checkAndChange = function(this_obj) {
+				
+				changed_value = $(this_obj).attr('value');
+				
+				if (this_obj.tagName == 'INPUT' && $(this_obj).attr('type') == 'checkbox'){
+					changed_value = this_obj.checked;
+					default_value = this_obj.defaultChecked;
+				}
+				else if (this_obj.tagName == 'INPUT' || this_obj.tagName == 'TEXTAREA'){
+					default_value = $(this_obj).context.defaultValue;
+				}
+				else if (this_obj.tagName == 'SELECT'){
+					// select要素はdefaultValue持ってないのでoption要素から取得.
+					var option = $(this_obj).context.options;
+					default_value = 0;
+					for(var i=0; i<option.length; i++){
+						if(option[i].defaultSelected){
+							default_value = option[i].value;
+							break;
+						}
+					}
+				}
+				//console.log("default_value:" + default_value);
+				//console.log("changed_value:" + changed_value);
+				if (changed_value == default_value){
+					$(this_obj).closest('td').removeClass("changed");
+				} else {
+					$(this_obj).closest('td').addClass("changed");
+				}
+			}
+			/*
+			 * 削除フラグが立ってる行はグレーアウト.
+			 */
+			var checkPublishStatus = function(){
+				//console.log("init!");
+				$.each($("select[id$='pub_status']"), function() {
+					value = $(this).attr('value');
+					//console.log("aaaaaa:" + value);
+					if (value == 0){
+						// 公開.
+						$(this).closest('tr').removeClass('deleted_row');
+					} else if (value == 1){
+						// 非公開.
+						$(this).closest('tr').removeClass('pub_dev_row');
+						$(this).closest('tr').addClass('deleted_row');
+					} else if (value == 2){
+						// 開発環境のみ公開.
+						$(this).closest('tr').removeClass('deleted_row');
+						$(this).closest('tr').addClass('pub_dev_row');
+					}
+				});
+			}
+			checkPublishStatus();
+			
+			$.each($( 'input, select, textarea' ), function() {
+				checkAndChange(this);
+			});
+			$( 'input, select, textarea' ).change( function() {
+				checkAndChange(this);
+				checkPublishStatus();
+				updateSortValue(this);
+				$("table#infos").trigger("update");
+			});
+			
+			// 行の追加・削除.
+			$('table#infos tbody tr').formset({
+				added : function(row){
+					// 追加したら呼ばれる.
+					row.addClass('added_row');
+					row.children(':last').children('.delete-row').show();
+					checkPublishStatus();
+				},
+				formTemplate : $('.formset-custom-template'),
+			})
+			
+			/*
+			 * 入力チェック.
+			 */
+			$.validator.addMethod("updateConfirm", function(value, element, params) {
+				console.log(value) 
+				return this.optional(element) || value == "updatemasterdata"; 
+			}, $.format("入力値が合ってません"));
+			
+			$("#uploadform").validate({
+				rules:{
+					update_confirm:{
+						required:true,
+						updateConfirm:true,
+					},
+				},
+				messages:{
+					update_confirm:{
+						required:"※入力して下さい",
+					},
+				}
+			});
+		});
+		
+		function addFilter(){
+			var format = document.getElementById("filter_format");
+			var new_filter = document.createElement("div");
+			var parent = document.getElementById("filters");
+			new_filter.innerHTML = format.innerHTML;
+			parent.appendChild(new_filter);
+		}
+		function removeFilter(event){
+			var parent = document.getElementById("filters");
+			var remove_target = $(event.target).parent();
+			parent.removeChild(remove_target[0]);
+		}
+		function sendFilterRequest(){
+			var filters = $(document.getElementById("filters")).children();
+			if(filters.length < 1){
+				return;
+			}
+			var filterstrings = [];
+			for(var i=0; i<filters.length; i++){
+				var filter = $(filters[i]);
+				var obj_filter_name = filter.children(".filter_name")[0];
+				var obj_filter_option = filter.children(".filter_option")[0];
+				var filter_value = filter.children(".filter_value")[0].value;
+				var filter_name = obj_filter_name.options[obj_filter_name.selectedIndex].value;
+				var filter_option = obj_filter_option.options[obj_filter_option.selectedIndex].value;
+				
+				filterstrings.push(filter_name+filter_option+"="+filter_value);
+			}
+			var filterstring = encodeURIComponent(filterstrings.join("&"));
+			var url = "${url_self}"+"?filters="+filterstring;
+			new_version = "${new_version}";
+			if(new_version == 'False')
+				url += "&version=old";
+
+			location.href = url;
+		}
+	</script>
+	${self.additionalJS()}
+	
+	<div class="page-header">
+		<h1>${MODEL_LABEL}の管理　<small>${MODEL_LABEL}の登録・編集・削除ができます</small></h1>
+	</div>
+	${self.contents_top()}
+	
+	<p><i class="icon-time"></i>最終更新：${last_update}</p>
+	<button class="btn btn-info" onclick='window.location.href="${url_self_switch}"'>${switch_text}</button>
+	%if is_editable:
+		<div class="well">
+			<form enctype="multipart/form-data" action="${url_load_csv}" method="POST" id="uploadform" onsubmit="return confirm('本当に保存しますか？')">
+				<fieldset>
+					%if is_local:
+						<div class="alert-message block-message error">
+							<p>ローカル環境の場合はファイルのアップロードがうまく機能しないため「<strong>${local_datafileurl}</strong>」を読みにいきます.</p>
+						</div>
+					%else:
+						<div class="alert-message block-message error">
+							<p>${valid_csv_name | h}というファイル名のみアップロードできます</p>
+						</div>
+					%endif
+					%for field in uploadform:
+						<p>${field}</p>
+						%for error in field.errors:
+							<span class="help-inline">${error}</span>
+						%endfor
+					%endfor
+
+          %if CHECK_CSV_FORM:
+            <p>CSV で上書きする: <input type="checkbox" name="csv_check" /></p>
+          %endif
+
+					%if not is_dev:
+						<div id="release_confirm">
+							<p><input type="text" name="update_confirm" /><span class="help-inline"><strong>updatemasterdata</strong> と入力</span></p>
+						</div>
+					%endif
+					<div class="actions" style="padding-left:0;padding-bottom:0;">
+						<input type="submit" class="btn btn-primary" value="CSV読み込み" />
+					</div>
+				</fieldset>
+				
+			</form>
+		</div>
+	%endif
+	
+	<div class="well">
+		<div style="display:none;">
+			<div id="filter_format">
+				${self.drawFilter()}
+			</div>
+		</div>
+		絞り込み<button class="btn" onclick="addFilter();">追加</button><br />
+		<div id="filters">
+			%if model_filters:
+			%for k,v in model_filters.items():
+			<div>
+				${self.drawFilter(key=k,value=v)}
+			</div>
+			%endfor
+			%endif
+		</div>
+		<button class="btn btn-info" onclick="sendFilterRequest();">更新</button>
+	</div>
+	
+	<form action="${url_model_edit_list}" method="post" name="frm" onsubmit="return confirm('本当に保存しますか？')">
+		${formset.management_form}
+
+		<%include file='../inc_pagination.html' />
+		
+		<div class="well">
+			%if is_dev:
+				<div class="btn-group"><input type="submit" class="btn btn-primary" value="変更を保存する" /></div>
+				<div class="btn-group"><a href="${url_csv}" class="btn"><i class="icon-th-large icon-download-alt"></i>CSV</a></div>
+			%else:
+				<div class="btn-group"><a href="javascript:void(0);" class="btn btn-primary disabled">変更を保存する</a></div>
+				<div class="btn-group"><a href="${url_csv}" class="btn"><i class="icon-th-large icon-download-alt"></i>CSV</a></div>
+			%endif
+		</div>
+	
+		<p>マウスカーソルをカラム名の上に置くと、実際にアプリ内で使われているカラム名を確認できます。</p>
+	
+		
+		${self.renderInfos()}
+		
+		%if not is_singleton:
+			<a class="add-row table_bottom_bar" href="javascript:void(0)">行を追加</a>
+		%endif
+		
+		<%include file='../inc_pagination.html' />
+		
+		<div class="well">
+			%if is_dev:
+				<div class="btn-group"><input type="submit" class="btn btn-primary" value="変更を保存する" /></div>
+				<div class="btn-group"><a href="${url_csv}" class="btn"><i class="icon-th-large icon-download-alt"></i>CSV</a></div>
+			%else:
+				<a href="javascript:void(0);" class="btn btn-primary disabled">変更を保存する</a> <span class="help-inline">本番環境では編集できません</span>
+			%endif
+		</div>
+	</form>
+	
+	<%doc>▼行を追加するときはこれの複製を作る▼</%doc>
+	<table style="display:none;">
+	<tr class="formset-custom-template">
+		${self.renderAdditionalForm(default_form)}
+		<td>
+			<a class="btn btn-info add-row" href="javascript:void(0)">複製</a>
+			<a class="btn btn-danger delete-row" href="javascript:void(0)" style="display:none;"><span style="font-weight:bold;">×</span></a>
+		</td>
+	</tr>
+	</table>
+</%def>
+
+<%def name="additionalJS()"></%def>
+
+<%def name="contents_top()"></%def>
+
+<%def name="renderInfosFooter()"></%def>
+
+<%def name="renderInfos()">
+	<table id="infos" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				${self.renderFormColumns(columns)}
+				<th>
+					操作
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			%for info in infos:
+				<tr ${info['tr_class']}>
+					${self.renderFormFields(info['form'])}
+					<td>
+						%if is_singleton:
+							----
+						%else:
+							<a class="btn btn-info add-row" href="javascript:void(0)">複製</a>
+							<a class="btn btn-danger delete-row" href="javascript:void(0)" style="display:none;"><span style="font-weight:bold;">×</span></a>
+						%endif
+					</td>
+				</tr>
+			%endfor
+		</tbody>
+	</table>
+	${self.renderInfosFooter()}
+</%def>
+
+<%def name="renderFormColumns(columns)">
+	%for column in columns:
+		<th>
+			<span title="${column['name']}:${column['db_type']}">${column['label']}</span>
+			%if column['help_text']:
+				<a href="#" rel="popover" data-content="${column['help_text'].replace('"', '\"')}" data-original-title="${column['label']}について"><i class="icon-question-sign"></i></a>
+			%endif
+		</th>
+	%endfor
+</%def>
+
+<%def name="renderFormFields(form)">
+	%for field in form:
+
+		%if field.field.widget.is_hidden:
+			${field}
+		%else:
+			%if field.errors:
+				<td style="background-color:#F4C8C5;">
+			%else:
+				<td>
+			%endif
+				<div>
+					%if new_version:
+						${field.value()}
+					%else:
+						<span class="sort_value" style="display:none;">${field.value}</span>
+						${field}
+						%for error in field.errors:
+							<span class="help-inline red">${error}</span>
+						%endfor
+					%endif
+				</div>
+			</td>
+		%endif
+	%endfor
+</%def>
+
+<%def name="renderAdditionalForm(form)">
+	%for field in form:
+		<td>
+			<div>
+				<span class="sort_value" style="display:none;">${field.value}</span>
+				${field}
+			</div>
+		</td>
+	%endfor
+</%def>

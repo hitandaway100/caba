@@ -1,0 +1,338 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript">
+		var flag_clicked = false;
+		function onClickScout(url){
+			if(flag_clicked){
+				return;
+			}
+			var chkbox = $("#scoutskip");
+			if(0 < chkbox.length){
+				chkbox = chkbox[0];
+				var v;
+				if(chkbox.checked){
+					v = 1;
+				}
+				else{
+					v = 0;
+				}
+				if(url.indexOf("?") == -1){
+					url = url + "?${Defines.URLQUERY_SKIP}=" + v;
+				}
+				else{
+					url = url + "&${Defines.URLQUERY_SKIP}=" + v;
+				}
+			}
+			location.href=url;
+			flag_clicked = true;
+		}
+		$(function(){
+			setInterval(function(){
+				$('.s_blink').fadeTo('500',0.5, function(){$(this).fadeTo('500',1)});
+			}, 1000);
+			
+			var blink_target = $('.blink');
+			if(0 < blink_target.length){
+				setInterval(function(){
+					blink_target.fadeOut(1200, function(){$(this).fadeIn(200)});
+				}, 1400);
+			}
+		});
+	</script>
+	${self.drawChampagneCallHostCss()}
+	${self.drawChampagneCallHostScript()}
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="scouttop" style=" width : 320px;">
+			<div class="scoutpic" style="position:relative;">
+				<img src="${area['thumbUrl']}" style="width:320px;height:180px;"/>
+			</div>
+			%if boss:
+				<div class="scoutpic2">
+					<img src="${boss['thumbUrl']}" width="320" height="180"/>
+				</div>
+				${self.drawChampagneCallHostImg()}
+				<div class="scoutflame">
+					<span class="wrapper">${area['name'] | h}でスカウト</span>
+				</div>
+				<div class="boss_coment">
+					<div class="coment_text">
+						${boss['commentappear'] | h}
+					</div>
+				</div>
+			%else:
+				%if is_tutorial:
+					<div class="scoutpic2" style="z-index:1">
+						<div class="back_black" style="width:320px;height:180px;">
+							<div class="tutorial_ms" style="padding-top: 48px;">
+								さて、次はキャストをスカウトしなきゃな。<br />
+								スカウト中はキャストに会うだけじゃなく<br />
+								太客(レイドボス)に会ったりと様々な<br />
+								イベントがあるんだ。
+							</div>
+						</div>
+					</div>
+				%else:
+					${self.drawChampagneCallHostImg()}
+				%endif
+				<div class="scoutflame">
+					<span class="wrapper">${area['name'] | h}でスカウト</span>
+				</div>
+			%endif
+		</div>
+		
+		%if boss:
+			<div class="btn_ontext">
+				<a href = "${get_html_param('url_bossbattle', 'sp/boss/bosspre.html')}"><img src="${url_static_img}01/id_01_20/btn_boss.png" style="width:232px;height:49px;"/></a>
+			</div>
+		%endif
+		
+		%if produceevent and url_produceevent_scouttop:
+			<%doc>プロデュースイベント期間中の通常スカウトTOPはこのバナーを表示</%doc>
+			<div style="text-align: center; padding-bottom:10px;">
+				<div>
+					<a href="${get_html_param('url_produceevent_scouttop', 'sp/produce_event/scout/scout.html')}">
+						<img src="${url_static_img}banner/event/produce/${"{0:0>2}".format(produceevent["id"])}/produce_${"{0:0>2}".format(produceevent["id"])}_event_scout.png" width="300" height="auto"/>
+					</a>
+				</div>
+
+				<div class="caution blink"  style="line-height: 1;">└イベント開催中!┘<br />
+					バナーをタップしてイベントを進めよう!
+				</div>
+			</div>
+		%endif
+
+		%if raidevent and url_raidevent_scouttop:
+			<%doc>イベント期間中の通常スカウトTOPはこのバナーを表示</%doc>
+			<div style="text-align: center; padding-bottom:10px;">
+				<div>
+					<a href="${get_html_param('url_raidevent_scouttop', 'sp/raidevent/scout/scout.html')}">
+						<img src="${url_static_img}banner/event/raidevent/${raidevent['codename']}/${raidevent['codename']}_event_scout.png" width="300" height="auto"/>
+					</a>
+				</div>
+				<div class="caution blink"  style="line-height: 1;">└イベント開催中!┘<br />
+					バナーをタップしてイベントを進めよう!
+				</div>
+			</div>
+			
+		%endif
+		
+		%if scoutevent:
+			<%doc>イベント期間中の通常スカウトTOPはこのバナーを表示</%doc>
+			<div style="text-align: center; padding-bottom:10px;">
+				<div>
+					<a href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}">
+						<img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_event_scout.png" width="300" height="auto"/>
+					</a>
+				</div>
+				<div class="caution blink"  style="line-height: 1;">└イベント開催中!┘<br />
+					バナーをタップしてイベントを進めよう!
+				</div>
+			</div>
+			
+		%endif
+		
+		<div class="scoutstatus">
+			<table class="setbox">
+				<tr>
+					<td class="scset1">
+						体力
+					</td>
+					<td class="scset2">
+						${player['ap']}/${player['apmax']}
+					</td>
+					<td class="scset3">
+						経験値
+					</td>
+					<td class="scset4">
+						${player['exp'] - player['exp_prev']}/${player['exp_next'] - player['exp_prev']}
+					</td>
+				</tr>
+				<tr>
+					<td class="scset1" colspan="2">
+						<div class="st_frame" style="height:16px; margin-left:-4px;">
+							<div class="st_gauge01" style="width:${player['ap'] * 120 / player['apmax']}"><%doc>バーは仮</%doc></div>
+						</div>
+					</td>
+					<td class="scset3" colspan="2">
+						<div class="st_frame" style="height:16px; margin-left:-4px;">
+							<%
+								exp_diff = player['exp_next'] - player['exp_prev']
+								exp_percent = 100
+								if 0 < exp_diff:
+									cur_exp = max(0, player['exp'] - player['exp_prev'])
+									exp_percent = min(100, 100 * cur_exp / exp_diff)
+							%>
+							<div class="st_gauge02" style="width:${int(exp_percent * 120 / 100)};"><%doc>バーは仮</%doc></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<table class="setbox">
+				<tr>
+					<td class="scset5">
+						${gold_name | h}
+					</td>
+					<td class="scset6">
+						${player['gold']}CG
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<%doc>エイプリル仕様</%doc>
+		${self.drawChampagneCall()}
+		
+		%if overlimit_treasure or overlimit_card:
+			<div class="caution">
+				%if overlimit_card:
+					所属キャストが上限に達しています<br />
+				%endif
+				%for treasure_type in (overlimit_treasure or []):
+					${Defines.TreasureType.NAMES[treasure_type] | h}が最大数に達しています<br />
+				%endfor
+			</div>
+		%endif
+		
+		%if is_last_area:
+			<div class="topcap">
+				スカウトエリア上限に到達しました
+			</div>
+		% endif
+		
+		% if player['level'] < Defines.BIGINNER_PLAYERLEVEL:
+			<div class="topcap">
+				Lv10まで体力消費せず進めます
+			</div>
+		% endif
+		
+		%if not is_tutorial:
+			<div style="padding: 8px 0px;">
+				<table>
+					<tr>
+						<td style="width:290px;">
+							<span style="font-size:12px;">スカウト演出をスキップする場合は<br />チェックボックスにチェックを入れてください。</span>
+						</td>
+						<td style="width:30px;">
+							<div class="precheck">
+								%if flag_skip:
+									<input id="scoutskip" type="checkbox" checked="checked" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+								%else:
+									<input id="scoutskip" type="checkbox" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+								%endif
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+		%endif
+		
+		${self.drawChampagneList()}
+		
+		% for scout in scoutlist:
+			<div class="areastatus">
+				<span class="wrapper">${scout['name'] | h}</span>
+				<table class="areabox">
+					<tr>
+						<td class="areaset1" style="width:60px;">
+							達成度
+						</td>
+						<td class="areaset1" style="width:40px;">
+							${scout['percent']}%
+						</td>
+						<td class="areaset1" style="width:184px; margin-left:-10px;">
+							<div class="st_frame_big">
+								<div class="st_gauge04" style="width:${int(scout['percent'] * 155 / 100)}px"><%doc>バーは仮</%doc></div>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<table class="areabox2">
+					<tr>
+						<td class="areaset1">
+							体力
+						</td>
+						<td class="areaset2"  style="color:#FF0000;">
+							-${scout['apcost']}
+						</td>
+					</tr>
+					<tr>
+						<td class="areaset1">
+							経験値
+						</td>
+						<td class="areaset2">
+							${scout['exp']}
+						</td>
+					</tr>
+					<tr>
+						<td class="areaset1">
+							CG
+						</td>
+						<td class="areaset2">
+							＋${scout['goldmin']}〜${scout['goldmax']}
+						</td>
+					</tr>
+				</table>
+				
+				<table>
+					% for index, dropitem in enumerate(scout['dropitems']):
+						<tr class="area_deck" style="top:120px;left:${index * 54 + 10}px;">
+							<td> 
+								<img src="${url_static_img}01/scout_frame_photo.png"width="52px" height="52px"/><!--キャバ嬢写真の枠のみ-->
+							</td>
+							<td class="deck_photo">
+								% if dropitem['drop']:
+									<img src="${dropitem['thumbUrl']}"width="50px" height="50px"/><!--キャバ嬢の写真-->
+								% else:
+									<img src="${url_static_img}00/id_00_02/side_no_data.png"width="50px" height="50px"/>
+								% endif
+							</td>
+						</tr>
+					% endfor
+				</table>
+				
+				<!--スカウトボタン-->
+				%if is_tutorial:
+					<%doc>チュートリアル</%doc>
+					<div class="scoutbtn">
+						<a onclick="onClickScout('${get_html_param('url_exec', 'sp/scout/scoutdo_swf.html', scout)}');" href="javascript:void(0);"><img src="${url_static_img}common/btn_sukauto.png" width="104px" height="104px"></a>
+					</div>
+				%else:
+					<div class="scoutbtn">
+						<a onclick="onClickScout('${get_html_param('url_exec', 'sp/scout/scoutdo_swf.html', scout)}');" href="javascript:void(0);"><img src="${url_static_img}common/btn_sukauto.png" width="104px" height="104px"></a>
+					</div>
+				%endif
+			</div>
+		% endfor
+	</div>
+	
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_area_prev is not UNDEFINED:
+					<a href="${url_area_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_area_next is not UNDEFINED:
+					<a href="${url_area_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+	
+	%if not is_tutorial:
+		<div>
+			<a class="btnlong_p" style="margin-top: 8px; margin-bottom: 8px;" href="${get_html_param('url_areamap', 'sp/scout/areamap.html')}"><div>エリアマップへ</div></a>
+		</div>
+	%endif
+</%def>

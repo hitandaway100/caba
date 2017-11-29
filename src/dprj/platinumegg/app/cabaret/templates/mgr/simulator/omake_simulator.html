@@ -1,0 +1,74 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>おまけシミュレータ</h1>
+	</div>
+	<div class="well">
+		<div>
+			<form action="" method="post">
+				<p>
+					一覧から:<br />
+					<select name="_mid">
+						<option value="">--------</option>
+						%for gachamaster in gachamaster_list:
+							%if cur_gachamaster and cur_gachamaster.id == gachamaster.id:
+								<option value="${gachamaster.id}" selected="selected">${gachamaster.name | h}(ID:${gachamaster.id}, BOX:${gachamaster.boxid})</option>
+							%else:
+								<option value="${gachamaster.id}">${gachamaster.name | h}(ID:${gachamaster.id}, BOX:${gachamaster.boxid})</option>
+							%endif
+						%endfor
+					</select>
+				</p>
+				<p>
+					IDから:<br />
+					<input type="text" name="_strmid" value="${cur_gachamaster.id if cur_gachamaster else 0}" />
+				</p>
+				<p>
+					実行回数:<br />
+					<input type="text" name="_cnt" value="${cnt if cnt else 0}" />
+				</p>
+				<input type="submit" value="実行" class="btn" />
+			</form>
+		</div>
+	</div>
+
+	%if omakedict:
+		<div class="well">
+			<a id="rate" name="rate"></a>
+			<h3>結果(個別)</h3>
+			<table id="input_table" class="table">
+				<thead>
+					<th>ID</th>
+					<th>おまけ名</th>
+					<th>出現回数</th>
+					<th>確率[％]</th>
+					<th>設定値[％]</th>
+				</thead>
+				%for omakeid, omakevalues in omakedict.items():
+				<tbody>
+					<tr>
+						<td>
+							${omakeid}
+						</td>
+						<td>
+							${omakevalues['prize_names']}
+						</td>
+						<td>
+							${omakevalues['occurrences']}
+						</td>
+						<td>
+							${'%.2f' % omakevalues['rate']}
+						</td>
+						<td>
+							${'%.2f' % omakevalues['bonus_rate_s']}
+						</td>
+					</tr>
+				</tbody>
+				%endfor
+			</table>
+		</div>
+	%endif
+
+</%def>

@@ -1,0 +1,231 @@
+#coding:utf-8
+<%inherit file="eventmoviebase.html" />
+
+<%def name="head_opt()">
+	<link href="${url_static_css}album.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<style>
+		.video_frame{
+			width: 320px;
+			height : 196px;
+			position: relative;
+			z-index:1;
+			text-align: center;
+		}
+		.video_frame
+		.circle {
+			border-color: #fff;
+			border-style: solid;
+			border-width: 5px;
+			border-radius:52px;
+			-webkit-border-radius:52px;
+			-moz-border-radius:52px;
+			width: 64px;
+			height: 64px;
+			top:66px;
+			left:128px;
+			position: absolute;
+			
+			-webkit-box-shadow: 0px 0px 8px #2F4F4F;
+			-moz-box-shadow: 0px 0px 8px #2F4F4F;
+			box-shadow: 0px 0px 8px #2F4F4F;
+			z-index:2;
+			pointer-events: none;
+		}
+		.video_frame
+		.triangle {
+			z-index: 3;
+			border-left: 32px solid #fff;
+			border-right: 32px solid #fff;
+			border-top: 16px solid #fff;
+			border-bottom: 16px solid #fff;
+			border-right-color: transparent;
+			border-top-color: transparent;
+			border-bottom-color: transparent;
+			height: 0;
+			width: 0;
+			position: absolute;
+			top: 16px;
+			left: 20px;
+			pointer-events: none;
+		}
+	</style>
+	${self.videoscript()}
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">イベント思い出アルバム</p>
+	</div>
+	<div class="cardname">
+		<span class="wrapper">
+			${eventmovie['cast'] | h}
+		</span>
+	</div>
+	
+	<%doc>動画サムネ</%doc>
+	<div>
+		%if is_pc:
+			<div class="video_frame" onclick="playVideo();">
+				<img src="${eventmovie['thumbUrl']}" width="320" height="196" />
+				<div class="circle">
+					<div class="triangle">
+					</div>
+				</div>
+			</div>
+		%elif is_android:
+			%if os_version < '4.0.0':
+				<object type="application/x-shockwave-flash" data="${url_static}swf/player.swf" width="320" height="180">
+					<param name="movie" value="${url_static}swf/player.swf" />
+					<param name="FlashVars" value="flv=${eventmovie['flvUrl']}&autoplay=1&width=320&height=180" />
+				</object>
+			%else:
+				<div id="video_comment" class="wrapper yellow">動画情報を取得しています</div>
+				<div class="video_frame" id="video_frame">
+					<video id="video" src="${eventmovie['dataUrl'][0]}" width="320" height="196" poster="${eventmovie['thumbUrl']}" onclick="setUpAndPlay(this);">
+					</video>
+					<div class="circle" id="btn_play" style="display: none;">
+						<div class="triangle">
+						</div>
+					</div>
+				</div>
+			% endif
+		%elif is_ios:
+			<video width="320" height="196" controls>
+				%for dataUrl in eventmovie['dataUrl']:
+					<source src="${dataUrl}" />
+				%endfor
+			</video>
+		% endif
+	</div>
+	<div class="albumstatus">
+		<div class="albumstatus_set">${eventmovie['text'] | h}<br /><span class="red" style="text-align: center;font-size: 13px;">イベント終了後は動画の閲覧ができなくなります</span></div>
+	</div>
+	<div class="topcap">
+		動画再生の際は音声が流れます<br />
+		ご注意ください
+	</div>
+	
+	%if scoutevent['is_opened']:
+	<div style="text-align: center; padding-bottom:10px;">
+		<a href="${get_html_param('url_scoutevent_scouttop', 'sp/scout/scout.html')}">
+			<img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_event_scout.png" width="300" height="60"/>
+		</a>
+	</div>
+	%endif
+	
+	<div>
+		<a class="btnlong" href="${get_html_param('url_eventmovie_top', 'sp/scoutevent/ev_album.html')}"><div>イベント思い出アルバムへ</div></a>
+	</div>
+	
+	%if scoutevent['is_opened']:
+		<div class="topcap">
+			ご褒美動画は、イベントエリアを<br>
+			進行すことで開放されます
+		</div>
+	%endif
+	
+	<%doc>イベント動画一覧</%doc>
+	${self.movielist()}
+	
+	%if scoutevent['is_opened']:
+		<%doc>イベントスカウトへ誘導</%doc>
+		<div style="text-align: center;padding: 8px 0px;">
+			<div>
+				<a href="${get_html_param('url_scoutevent_scouttop', 'sp/scoutevent/scout.html')}">
+					<img src="${url_static_img}banner/event/scevent/${scoutevent['codename']}/${scoutevent['codename']}_event_scout.png" width="300" height="60"/>
+				</a>
+			</div>
+		</div>
+	%endif
+	
+	${self.eventfooter()}
+</%def>
+
+<%def name="videoscript()">
+	%if is_pc:
+	<script type="text/javascript">
+		function playVideo() {
+			var xhr = parent.makeHTTPRequest();
+			xhr.open("GET", "${eventmovie['flvUrl']}");
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState === 4 && xhr.status === 200) {
+					parent.playVideo(xhr.responseText);
+				}
+			};
+			xhr.send(null);
+		}
+		addWindowOnLoad(playVideo);
+	</script>
+	%else:
+	<script>
+		var onLoaded = false;
+		var setUp = false;
+		var is_playing = false;
+		
+		function resize(video){
+			var parent = $(video).parent();
+			var movieW = 320;
+			var movieH = 180;
+			var scW = $(window).width();
+			
+			var videoW = scW;
+			var videoH = parseInt(movieH * scW / movieW);
+			if(video.width != videoW || video.height != videoH){
+				video.setAttribute("width", videoW);
+				video.setAttribute("height", videoH);
+				parent.attr({"width" : videoW, "height" : videoH});
+				parent.css("width", videoW);
+				parent.css("height", videoH);
+				parent.css("left", parseInt((movieW - videoW) / 2));
+				var btn_play = document.getElementById('btn_play');
+				if(btn_play){
+					$(btn_play).css("left", parseInt((videoW - 64) / 2));
+					$(btn_play).css("top", parseInt((videoH - 64) / 2));
+				}
+			}
+		}
+		function setUpAndPlay(video){
+			if(!onLoaded){
+				return;
+			}
+			var btn_play = document.getElementById('btn_play');
+			
+			if(is_playing){
+				if(btn_play){
+					$(btn_play).css("display", "");
+				}
+				video.pause();
+				is_playing = false;
+			}
+			else{
+				if(btn_play){
+					$(btn_play).css("display", "none");
+				}
+				video.play();
+				is_playing = true;
+			}
+			
+			if(!setUp){
+				setUp = true;
+				resize(video);
+				setInterval(function(){resize(video);}, 1000);
+			}
+		}
+		addWindowOnLoad(function() {
+			var video_comment = document.getElementById("video_comment");
+			if(video_comment){
+				video_comment.innerHTML = "タップすると再生します";
+			}
+			var video = document.getElementById("video");
+			if(video){
+				resize(video);
+			}
+			var btn_play = document.getElementById('btn_play');
+			if(btn_play){
+				$(btn_play).css("display", "");
+			}
+			onLoaded = true;
+		});
+	</script>
+	%endif
+</%def>

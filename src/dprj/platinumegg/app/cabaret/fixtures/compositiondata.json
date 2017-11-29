@@ -1,0 +1,14 @@
+[
+    {
+        "pk": 1,
+        "model": "cabaret.compositiondata",
+        "fields": {
+            "mid": 10001,
+            "exp": 24,
+            "level": 3,
+            "skilllevel": 1,
+            "takeover": 765,
+            "result": "{'lvpre': 3L, 'exp_pre': 24L, 'gold': 400L, 'material': [4294967297L], 'base': 4294967296L, 'exp': 163L, 'skilllvup': 0, 'is_great_success': False, 'lvup': 6L}"
+        }
+    }
+]

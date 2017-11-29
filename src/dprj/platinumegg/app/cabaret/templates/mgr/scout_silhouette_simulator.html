@@ -1,0 +1,120 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>スカウトシルエットシミュレータ</h1>
+    </div>
+
+	<div class="well">
+		<div>
+			<form action="" method="post">
+				<p>
+					一覧から:<br />
+					<select name="_mid">
+						<option value="">--------</option>
+						%for scoutevent in scouteventmaster_list:
+							%if cur_scoutevent and cur_scoutevent.id == scoutevent.id:
+								<option value="${scoutevent.id}" selected="selected">${scoutevent.name | h}(ID:${scoutevent.id})</option>
+							%else:
+								<option value="${scoutevent.id}">${scoutevent.name | h}(ID:${scoutevent.id})</option>
+							%endif
+						%endfor
+					</select>
+				</p>
+				<p>
+					ステージID:<br />
+					<input type="text" name="_stgid" value="${stgid if stgid else 0}" />
+				</p>
+				<p>
+					ユーザーID:<br />
+					<input type="text" name="_uid" value="${uid if uid else 0}" />
+				</p>
+				<p>
+					実行回数:<br />
+					<input type="text" name="_cnt" value="${cnt if cnt else 0}" />
+				</p>
+				<input type="submit" value="実行" class="btn" />
+			</form>
+		</div>
+	</div>
+
+	%if silhouette_dict and silhouette_rate:
+		<h3>結果(シルエットタイプ別)</h3>
+		<div class="well">
+			<table id="rate_table" class="table">
+				<thead>
+					<th>シルエット</th>
+					<th>出現回数</th>
+					<th>確率[％]</th>
+					<th>設定値[％]</th>
+				</thead>
+				%for item in silhouette_rate:
+					<tr>
+						<td>${item['name']}</td>
+						<td>${item['occurrences']}</td>
+						<td>${'%.2f' % item['rate']}</td>
+						<td>${'%.2f' % item['bonus_rate_s']}</td>
+					</tr>
+				%endfor
+			</table>
+		</div>
+
+		%for key, value_dict in silhouette_dict.items():
+			<div class="well">
+			<h3>結果(${key})</h3>
+			<table id="input_table" class="table">
+				<thead>
+					<th>ID</th>
+					<th>カード名</th>
+					<th>出現回数</th>
+					<th>確率[％]</th>
+					<th>設定値[％]</th>
+				</thead>
+				<tbody>
+				<%
+					def sortfun(sil_dict):
+						return sil_dict[1]['bonus_rate_s'], sil_dict[1]['occurrences']
+
+					sorted_dict = (sorted(value_dict.items(), key=sortfun, reverse=True))
+				%>
+				%for sid, values in sorted_dict:
+					<tr>
+						<td>
+							${sid}
+						</td>
+						<td>
+							${values['name']}
+						</td>
+						<td>
+							${values['occurrences']}
+						</td>
+						<td>
+							${'%.2f' % values['rate']}
+						</td>
+						<td>
+							${'%.2f' % values['bonus_rate_s']}
+						</td>
+					</tr>
+				%endfor
+
+					<%doc> 合計 </%doc>
+					<%
+						values = value_dict.values()
+						total_occurences = sum(k['occurrences'] for k in values)
+						total_rate = sum(k['rate'] for k in values)
+						total_set_rate = sum(k['bonus_rate_s'] for k in values)
+					%>
+					<tr>
+						<td><b>合計</b></td>
+						<td></td>
+						<td>${total_occurences}</td>
+						<td>${total_rate}</td>
+						<td>${total_set_rate}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		%endfor
+	%endif
+</%def>

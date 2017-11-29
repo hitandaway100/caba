@@ -1,0 +1,201 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="head_additional()">
+	<script>
+		$(function(){
+			var platform_select_obj = document.getElementById("platform_select");
+			var status_select_obj = document.getElementById("status_select");
+			
+			function updateMovieListByPlatform(){
+				var platform = platform_select_obj.options[platform_select_obj.selectedIndex].value;
+				switch(platform){
+				case "ALL":
+					$(".tr_pc").css("display", "");
+					$(".tr_sp").css("display", "");
+					break;
+				case "SP":
+					$(".tr_pc").css("display", "none");
+					$(".tr_sp").css("display", "");
+					break;
+				case "PC":
+					$(".tr_pc").css("display", "");
+					$(".tr_sp").css("display", "none");
+					break;
+				}
+			}
+			function updateMovieListByStatus(){
+				if(!status_select_obj){
+					return;
+				}
+				var status = status_select_obj.options[status_select_obj.selectedIndex].value;
+				switch(status){
+				case "UPDATE":
+					$(".tr_latest").css("display", "none");
+					break;
+				}
+			}
+			function updateFilter(){
+				updateMovieListByPlatform();
+				updateMovieListByStatus();
+			}
+			updateFilter();
+			$(".movielist_filter").change(updateFilter);
+		});
+	</script>
+</%def>
+
+<%def name="content()">
+	<div class="page-header">
+		<h1>動画の管理　<small>動画の登録・確認ができます</small></h1>
+	</div>
+	
+	%if is_dev:
+		<div class="well">
+			<form enctype="multipart/form-data" action="${url_movie}" method="post" id="uploadform" onsubmit="return confirm('本当に保存しますか？');">
+				<input type="hidden" name="_proc" value="upload" />
+				<dl>
+					<dt>動画ファイル:</dt>
+					<dd>
+						<fieldset>
+							%for field in uploadform:
+								<p>${field}</p>
+								%for error in field.errors:
+									<span class="help-inline">${error}</span>
+								%endfor
+							%endfor
+						</fieldset>
+					</dd>
+					<dt>コンテンツ名:</dt>
+					<dd>
+						<input type="text" name="_name" value="" />
+					</dd>
+					<dt>キャプチャ:</dt>
+					<dd>
+						<input type="text" name="_sec" value="" />[秒]
+					</dd>
+					<dt>プラットフォーム:</dt>
+					<dd>
+						<input type="radio" name="_platform" value="0" checked="checked" /> スマートフォン
+						<input type="radio" name="_platform" value="1" /> PC
+					</dd>
+				</dl>
+				<div class="actions" style="padding-left:0;padding-bottom:0;">
+					<input type="submit" class="btn btn-primary" value="動画アップロード" />
+				</div>
+			</form>
+		</div>
+	%endif
+	
+	<select id="platform_select" class="movielist_filter">
+		<option value="ALL">全て</option>
+		<option value="SP">SP版</option>
+		<option value="PC">PC版</option>
+	</select>
+	%if downloadable:
+		<select id="status_select" class="movielist_filter">
+			<option value="UPDATE">更新分のみ</option>
+			<option value="ALL">全て</option>
+		</select>
+	%endif
+	
+	<table id="infos" class="table table-bordered table-striped">
+		<thead>
+			<tr>
+				<th>
+					ID
+				</th>
+				<th>
+					コンテンツ名
+				</th>
+				<th>
+					プレイリスト名
+				</th>
+				<th>
+					複合キー
+				</th>
+				<th>
+					キャプチャ画像
+				</th>
+				<th>
+					プラットフォーム
+				</th>
+				%if downloadable:
+					<th>
+						更新
+					</th>
+					<th>
+						更新フラグ
+					</th>
+				%endif
+			</tr>
+		</thead>
+		<tbody>
+			%for movieinfo in movielist:
+				<%
+					classlist = []
+					if movieinfo['is_pc']:
+						classlist.append('tr_pc')
+					else:
+						classlist.append('tr_sp')
+					if downloadable:
+						if movieinfo['stgonly'] or movieinfo['is_old']:
+							classlist.append('tr_need_update')
+						else:
+							classlist.append('tr_latest')
+				%>
+				<tr class="${' '.join(classlist)}">
+					<td>
+						${movieinfo['id']}
+					</td>
+					<td>
+						${movieinfo['name'] | h}
+					</td>
+					<td>
+						${movieinfo['filename'] | h}
+					</td>
+					<td>
+						${movieinfo['data'] | h}
+					</td>
+					<td>
+						<img src="${movieinfo['thumbUrl']}" width="140" height="80" />
+					</td>
+					<td>
+						%if movieinfo['is_pc']:
+							PC
+						%else:
+							スマートフォン
+						%endif
+					</td>
+					%if downloadable:
+						<td>
+							<form action="${url_self}" method="POST" onsubmit="return confirm('本当に更新しますか？');">
+								%if movieinfo['is_pc']:
+									<input type="hidden" name="_proc" value="updatepc" />
+								%else:
+									<input type="hidden" name="_proc" value="update" />
+								%endif
+								<input type="hidden" name="_name" value="${movieinfo['filename']}" />
+								<input type="submit" class="btn btn-primary" value="更新" />
+							</form>
+						</td>
+						<td>
+							%if movieinfo['stgonly']:
+								<span class="label label-yellow">新規</span>
+							%elif movieinfo['is_old']:
+								<span class="label label-red">更新あり</span>
+							%else:
+								<span class="label label-blue">最新です</span>
+							%endif
+						</td>
+					%endif
+				</tr>
+			%endfor
+		</tbody>
+	</table>
+	
+</%def>
+
+
+
+

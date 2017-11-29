@@ -1,0 +1,37 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}mypage.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="header()">
+	<div class="bar">
+		<img src="${url_static_img}common/bar_01.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="topimage">
+		<div class="topback">
+			<!-- 画像ランダム表示 -->
+			<img src="${url_topimage}" width="320px" height="240px" />
+		</div>
+		<div class="topwaku2">
+			<!-- 下枠 -->
+			<img src="${url_static_img}00/id_00_01/bar_02.png" width="320px" height="33px" />
+		</div>
+	</div>
+		
+	<div class="bnback" style="margin-top: 280px;">
+		<a href="${url_enter}"><img src="${url_static_img}00/id_00_01/id_00-01_btn_001.png" width="320px" height="52px"/></a>
+	</div>
+	
+	<div><img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" ></div>
+	<div class="topcap" style="font-size:12px;">
+		この作品はフィクションです。<br />
+		実在の人物、団体、事件などには関係ありません
+	</div>
+</%def>
+
+<%def name="footer()"></%def>

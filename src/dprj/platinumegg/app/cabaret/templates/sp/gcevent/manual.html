@@ -1,0 +1,152 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}help.js"></script>
+</%def>
+
+<%def name="contents()">
+	${self.topheader()}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	<div class="wrapper">
+		${self.event_schedule()}
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	<div> 
+		${self.eventtopic()}
+	</div>
+
+	<div class="titlesub" style="padding-top:4px;">
+		<div class="wrapper">
+			イベントの流れ
+		</div>
+	</div>
+	<img src="${url_static_img}event/gcevent/${battleevent['codename']}/${battleevent['codename']}_rule.png" width="320" height="auto" style="padding-bottom:10px;"/>
+	
+	%if is_opened:
+		<div class="titlesub" style="padding-top:4px;">
+			<div class="wrapper">
+				期間限定ガチャ
+			</div>
+		</div>
+		<div class="topcap">
+			イベント限定のキャストをゲットしよう!!
+		</div>
+		<div style="text-align: center; padding-bottom:10px;">
+			<a href="${get_html_param('url_battleevent_gacha', 'sp/gacha/gacha_premium.html')}"><!--
+				--><img src="${url_static_img}banner/event/gcevent/${battleevent['codename']}/${battleevent['codename']}_gacha_banner.png" width="240" height="100"/><!--
+			--></a>
+		</div>
+	%endif
+	
+	<div style="padding-top:10px;">
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="「${battleevent['subname'] | h}」とは?" class="help_btn"/>
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・毎日集計後最初にイベントページに遷移した際、「意中の女性」を選択します。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・同じ女性を狙うユーザー同士で、レベルの近いユーザーのみでグループを作り、好感度PTを競います。<br />
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・１日の獲得好感度PTでグループ内順位が変動し、その順位に応じた報酬が獲得できます。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・獲得した総好感度PTでイベント全体のランキングが決定します。
+				</div>
+				<br />
+			</div>
+		</div>
+		
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="好感度PTとは?" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベントページのイベントバトルから他ユーザーとバトルをすることで獲得できます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベントバトル以外で獲得することはできません。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・バトル勝利時には100PTを獲得できます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・バトル敗北時には10PTを獲得できます。
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・本イベントでは、挑まれたバトルに勝利しても好感度PTを獲得できません。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em; color:yellow">
+					・本イベントでは前回の合コンイベントと獲得量算出方法に関して変更が行われています。<br />
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em; color:yellow">
+					・相手の接客力により、獲得PTが変化します。<br />しかし、100PTは保証されます。<br />
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em; color:yellow">
+					・自分の接客力は獲得PTに影響しません。<br />
+				</div>
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・互いのレベルはPT算出には関わりません。<br />
+				</div>
+				<br />
+			</div>
+		</div>
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="属性ボーナスとは？" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・イベントバトル限定で特定の属性に接客力ボーナスが付きます。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・ボーナスの倍率はレア度とハメ管理Lvによって変わります。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・属性ボーナスとは別に、イベント限定でボーナスの入る特効カードがあります。そちらの詳細に関しては「特効キャスト」ページをご覧下さい。
+				</div>
+				<br />
+			</div>
+		</div>
+		<div>
+			<div class="help_slide">
+				<input type="submit" value="新店舗ランキングとは?" class="help_btn"/>	
+			</div>
+			<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:15px; font-size:13px;">
+				<br />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・各イベント開始日時より30日以前にゲームを開始されたユーザーのみ参加できるランキングです
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・新店舗ランキング報酬はイベント自体のランキング報酬とは別途で獲得する事ができます。
+				</div>
+				<hr />
+				<div style="text-align:left;text-indent:-1em;padding-left:1em;">
+					・また、イベント開催時にランキング対象となった後、イベント開催期間中に「ゲーム開始から30日」を超過した場合におきましても、イベント期間内はランキングが継続されます。
+				</div>
+				<br />
+			</div>
+		</div>
+	</div>
+	
+	${self.eventfooter()}
+
+</%def>

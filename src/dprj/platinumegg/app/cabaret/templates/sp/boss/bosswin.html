@@ -1,0 +1,98 @@
+#coding:utf-8
+<%inherit file="../happening/happeningbase.html" />
+<%def name="head()">
+	<link href="${url_static_css}battle.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}scout.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<link href="${url_static_css}skilllist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}battleskilllist.js"></script>
+</%def>
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+		<div class="tutorial_ms" style="padding:20px;10px;">
+			よし!太客を満足させる事ができた!<br />
+			太客を攻略すると新しいエリアで<br />
+			スカウトできるようになるぞ。
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+</%def>
+
+<%def name="contents()">
+	<img src="${url_static_img}11/tutorial_win.png" width="320px" height="60px" />
+	<div class="scouttop" style="height:242px;">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${area['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutpic2">
+			<img src="${boss['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		<div class="scoutflame">
+			<img src="${area['thumbUrl']}" width="320px" height="180px" />
+		</div>
+		
+		<div class="scouttime" style="top:136;">
+			<%include file="../includes/inc_tutorialsatisfaction.html" args="hp=boss['hp_rest'],hpmax=boss['hp'],damage=boss['hp']-boss['hp_rest']" />
+		</div>
+		<div class="boss_coment">
+			<div class="coment_text">
+				${boss['commentwin'] | h}
+			</div>
+		</div>
+	</div>
+	
+	%if eventmovie:
+	<div class="topcap">
+		イベント思い出「<span class="orange">${eventmovie['title'] | h}</span>」が<br />
+		開放されました
+		<div>
+			<a class="btnpink" href="${get_html_param('url_eventmovie_detail', 'sp/scoutevent/scev_08/ev_album.html')}"><p style="margin-top:0;">イベント思い出へ</p></a>
+		</div>
+	</div>
+	%endif
+	
+	<%include file="../includes/prize_info.html" args="prize=prize, url_static_img=url_static_img" />
+	
+	%if earlybonus:
+		<%doc>早期クリアボーナス</%doc>
+		<div class="titlesub" >
+			<div class="wrapper">
+				イベントエリア解禁前クリア報酬
+			</div>
+		</div>
+		<%include file="../includes/prize_info.html" args="prize=earlybonus, url_static_img=url_static_img" />
+		<div class="topcap">
+			現在の公開エリアはここまでとなります。<br />
+			エリア開放まで少々お待ちください。
+		</div>
+	%endif
+	
+	%if next_area:
+		<div class="topcap">
+			${next_area['name'] | h}が開放されました
+		</div>
+	%endif
+	
+	%if is_tutorial:
+		<div class="btn_ontext">
+			<a href="${get_html_param('url_next', 'sp/tutorial/matome.html')}"><img src="${url_static_img}11/btn_tl_02.png" style="width:232px;height:49px;" /></a>
+		</div>
+	%else:
+		<div class="btn_ontext">
+			<a href = "${get_html_param('url_scout', 'sp/scout/scoutdo_swf.html')}"><img src="${url_static_img}01/btn_sc_yoko.png" style="width:232px;height:49px;" /></a>
+		</div>
+	%endif
+	
+	<%include file="../includes/inc_deckinfo.html" args="power_total=power_total, cost_total=cost_total, cardlist=cardlist, url_static_img=url_static_img, skilllist=skilllist" />
+	
+	%if url_scoutevent_top:
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_scoutevent_top', 'sp/scoutevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+		</div>
+	%endif
+	%if url_raidevent_top:
+		<div class="link_arrow_re">
+			<a class="btnfoot" href="${get_html_param('url_raidevent_top', 'sp/raidevent/top.html')}" ><div style="margin-left:14px;">イベントTOPへ</div></a>
+		</div>
+	%endif
+</%def>

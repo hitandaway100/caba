@@ -1,0 +1,151 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>スカウトクリアフラグ操作</strong>　特定のスカウトまでのクリアフラグを立てます</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_scoutclearflag" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for scout in scoutlist:
+            <option value="${scout.id}">${scout.name | h}(ID:${scout.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="クリア済みにする" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>スカウトクリアフラグリセット</strong>　スカウトのクリアフラグを全削除します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="flush_scoutclearflag" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="削除" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ハプニング発生</strong>　ハプニングを発生させます</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="happeningstart" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for happening in happeninglist:
+            <option value="${happening.id}">${happening.name | h}(ID:${happening.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_event">
+            <option value="">------</option>
+            %if cur_raidevent:
+            <option value="${cur_raidevent.id}">${cur_raidevent.name | h}(ID:${cur_raidevent.id})</option>
+            %endif
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="発生" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ハプニング終了</strong>　ハプニングを強制終了させます</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="happeningend" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="終了" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>レイド発生</strong>　発生中のハプニングにレイドを発生させます</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="raidstart" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="レイド開始" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>レイド接客回数変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_raiddestroycnt" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_mid">
+            <option value="">------</option>
+            %for raid in raidlist:
+            <option value="${raid.id}">${raid.name | h}(ID:${raid.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="レイド開始" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

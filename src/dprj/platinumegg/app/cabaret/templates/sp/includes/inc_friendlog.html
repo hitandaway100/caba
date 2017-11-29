@@ -1,0 +1,22 @@
+#coding:utf-8
+<%doc>フレンドログテキスト</%doc>
+<%page args="friendlog, Defines, **kwargs">
+	<%
+		logtype = friendlog['logtype']
+		username = friendlog['params']['username']
+		get_html_param = kwargs.get('get_html_param', None)
+	%>
+	%if logtype in (Defines.FriendLogType.BOSS_WIN, Defines.FriendLogType.EVENTBOSS_WIN, Defines.FriendLogType.RAIDEVENTBOSS_WIN):
+		%if get_html_param:
+			<a href="get_html_param('params.url', 'sp/profile.html', friendlog)">${username | h}</a>さんが${friendlog['params']['area'] | h}を<br />クリアしました!<br />
+		%else:
+			<span style="color:#4169e1;">${username | h}</span>さんが${friendlog['params']['area'] | h}を<br />クリアしました!<br />
+		%endif
+	%elif logtype in (Defines.FriendLogType.SCOUT_CLEAR, Defines.FriendLogType.EVENTSTAGE_CLEAR, Defines.FriendLogType.RAIDEVENTSTAGE_CLEAR):
+		%if get_html_param:
+			<a href="get_html_param('params.url', 'sp/profile.html', friendlog)">${username | h}</a>さんが${friendlog['params']['scout'] | h}の<br />スカウトを完了しました!<br />
+		%else:
+			<span style="color:#4169e1;">${username | h}</span>さんが${friendlog['params']['scout'] | h}の<br />スカウトを完了しました!<br />
+		%endif
+	%endif
+</%page>

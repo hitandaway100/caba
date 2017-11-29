@@ -1,0 +1,281 @@
+<%namespace name='lib' file='functions.html' />
+
+<%def name='list()'>
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>バトルイベントのやりなおし</strong>　バトルイベントをやりなおせるように状態をリセットします。メンテナンスモード且つ、バトルイベントの開催時間前の時に実行が可能です。</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_battleevent_status" />
+        <input class="btn" type="submit" value="初期化" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>バトルイベントパラメータ変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_battleeventscore" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectBattleEvent(label="イベント:<br />")}
+        <p>
+          何を:<br />
+          <select name="_target">
+            <option value="point">本日バトルポイント</option>
+            <option value="point_total">バトルポイント</option>
+            <option value="point_rank">ランク別獲得ポイント</option>
+          </select>
+        </p>
+        <p>
+          値:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>オープニング・エピローグ閲覧フラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_battleevent_opening" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectBattleEvent(label="イベント:<br />")}
+        <p>
+          オープニング:<br />
+          <select name="_flag_op">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          エピローグ:<br />
+          <select name="_flag_ep">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>ログインボーナスをもう一度</strong>　イベントバトルのログインボーナスを未受け取りの状態にします。イベント初日は演出に飛びません。</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_battleevent_loginbonus" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        ${self.drawSelectBattleEvent(label="イベント:<br />")}
+        <p>
+          ログイン前の名声PT:<br />
+          <input name="_fame" value=""/>
+        </p>
+        <p>
+          加算する名声PT:<br />
+          <input name="_fame_add" value="0"/>
+        </p>
+        <input class="btn" type="submit" value="設定" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>対戦時間を更新</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_battleevent_battletime" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          <select name="_oid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          対戦時間:<br />
+          <input name="_date" value="${now}"/>
+        </p>
+        <input class="btn" type="submit" value="設定" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>バトルイベント贈り物変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_battleevent_present" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          プレゼント:<br />
+          <select name="_present">
+            %for battleeventpresent in battleeventpresentlist:
+            <option value="${battleeventpresent.id}">${battleeventpresent.name | h}(ID:${battleeventpresent.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          中身:<br />
+          <select name="_content">
+            %for battleeventpresentcontent in battleeventpresentcontentlist:
+            <option value="${battleeventpresentcontent.id}">${battleeventpresentcontent.name | h}(ID:${battleeventpresentcontent.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          蓄積バトルPT:<br />
+          <input name="_point" value="0"/>
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>バトルイベント贈り物出現回数変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_battleevent_present_count" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          プレゼント:<br />
+          <select name="_present">
+            %for battleeventpresent in battleeventpresentlist:
+            <option value="${battleeventpresent.id}">${battleeventpresent.name | h}(ID:${battleeventpresent.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          回数:<br />
+          <input name="_count" value="0"/>
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  %if cur_battleevent_piecelist:
+  <li>
+    <div class="well">
+      <p><strong>バトルイベントピースの獲得状況変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_battleevent_piece_collection" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          ピース:<br />
+          <select name="_mid">
+            %for piece in cur_battleevent_piecelist:
+            <option value="${piece.id}">${piece.name | h}(ID:${piece.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          ピースの状態:<br />
+          <%
+          PIECE_NUM = 9
+          COLNUM = 3
+          %>
+          %for i in xrange(PIECE_NUM):
+          <label for="piece_number${i}" style="display:inline;">${i}</label><select name="piece_number${i}"><option value="0">未取得</option><option value="1">取得済</option></select>
+          %if i % COLNUM == (COLNUM-1):
+          <br />
+          %endif
+          %endfor
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>バトルイベントピースのコンプ回数変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_battleevent_piece_complete_cnt" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>の
+        </p>
+        <p>
+          ピース:<br />
+          <select name="_mid">
+            %for piece in cur_battleevent_piecelist:
+            <option value="${piece.id}">${piece.name | h}(ID:${piece.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          回数:<br />
+          <input type="text" name="_count" value="0" />
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+  %endif
+</ul>
+</%def>
+
+<%def name="drawSelectBattleEvent(name='_mid', label=None)">
+	${lib.drawSelectEvent(cur_battleevent, battleevent, name=name, label=label)}
+</%def>

@@ -1,0 +1,35 @@
+#coding:utf-8
+<%page args="star_num, star_num_max, is_fever, codename, url_static_img, starimg_on, starimg_off">
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		<%
+			_row_num = max(1, min(int((star_num_max + 1) / 2), 5))
+			_line_num = int((star_num_max + _row_num - 1) / _row_num)
+			star_num = min(star_num, star_num_max)
+			if is_fever:
+				star_num = star_num_max
+			star_codename = codename
+		%>
+		%for _line in xrange(_line_num):
+			<table style="margin: auto;">
+				<tr>
+					%for _row in xrange(_row_num):
+						<%
+							_idx = _row + _line * _row_num
+						%>
+						%if _idx < star_num_max:
+							<td>
+								%if _idx < star_num:
+									<img src="${url_static_img}item/scevent/${starimg_on}" width="58px" height="58px" />
+								%else:
+									<img src="${url_static_img}item/scevent/${starimg_off}" width="58px" height="58px" />
+								%endif
+							</td>
+						%endif
+					%endfor
+				</tr>
+			</table>
+		%endfor
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+	</div>
+</%page>

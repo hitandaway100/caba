@@ -1,0 +1,101 @@
+#coding:utf-8
+<%inherit file="scoutresultbase.html" />
+
+<%def name="topcap()">
+	${self.feverinfo()}
+	${self.scoregetinfo(line=False)}
+</%def>
+
+<%def name="resulttop()">
+	<div class="wrapper">
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+		レベルが<span style="color:#ff0000;">${levelup_info['level']}</span>にあがった<br />
+		体力と気力が<span style="color:#ff0000;">全回復</span><br />
+		%if levelup_info.get('ap'):
+			体力の最大が<span style="color:#ff0000;">${levelup_info['ap']}</span>に上昇<br />
+		%endif
+		%if levelup_info.get('deckcapacity'):
+			総人件費が<span style="color:#ff0000;">${levelup_info['deckcapacity']}</span>に上昇<br />
+		%endif
+		%if levelup_info.get('cardlimit'):
+			キャスト所属枠が<span style="color:#ff0000;">${levelup_info['cardlimit']}</span>に上昇<br />
+		%endif
+		%if levelup_info.get('friendlimit'):
+			フレンド上限が<span style="color:#ff0000;">${levelup_info['friendlimit']}</span>に上昇<br />
+		%endif
+	</div>
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320px" height="5px" />
+</%def>
+
+<%def name="scouttop()">
+	<div class="scouttop">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${scout['thumbUrl']}" style="width:320px;height:180px;"/>
+		</div>
+		
+		%if boss:
+			<div class="scoutpic2">
+				<img src="${boss['thumbUrl']}" width="320" height="180"/>
+			</div>
+			<div class="boss_coment">
+				<div class="coment_text">
+					${boss['commentappear'] | h}
+				</div>
+			</div>
+		%else:
+			${self.stagebustup()}
+		%endif
+		
+		<div class="scoutflame" style="position:absolute;">
+			<span class="wrapper">${scout['name'] | h}</span>
+		</div>
+		${self.scouttime()}
+	</div>
+</%def>
+
+<%def name="resultbodywrapp()">
+	
+	${self.drawScoutResultInfo(line=False)}
+	
+	%if earlybonus:
+		<%doc>早期クリアボーナス</%doc>
+		<div class="titlesub" >
+			<div class="wrapper">
+				イベントエリア解禁前クリア報酬
+			</div>
+		</div>
+		<%include file="../includes/prize_info.html" args="prize=earlybonus, url_static_img=url_static_img" />
+		<div class="topcap">
+			現在の公開エリアはここまでとなります。<br />
+			エリア開放まで少々お待ちください。
+		</div>
+	%endif
+	
+	%if boss:
+		<%doc>スカウトクリアでボスが出現した時</%doc>
+		<div style="padding: 2px 0px;">
+			<div class="btn_ontext">
+				<a href = "${get_html_param('url_bossbattle', 'sp/boss/bosspre.html')}"><img src="${url_static_img}01/id_01_20/btn_boss.png" style="width:232px;height:49px;"/></a>
+			</div>
+		</div>
+	%elif next_area:
+		<%doc>スカウトクリアでボスが出現しなくて次のエリアを遊べる時</%doc>
+		<div style="padding: 2px 0px;">
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_next', 'sp/scout/scoutdo_swf.html', next_scout)}');" class="btnpink"><p>${next_area | h}へ進む</p></a>
+		</div>
+	%elif next_stage:
+		<%doc>スカウトクリアでボスが出現しなくて次のステージを遊べる時</%doc>
+		<div style="padding: 2px 0px;">
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_next', 'sp/scout/scoutdo_swf.html', next_scout)}');" class="btnpink"><p>${next_stage | h}へ進む</p></a>
+		</div>
+	%else:
+		<%doc>最後のステージでボスがいない時</%doc>
+		<div class="btn_ontext">
+			<a href="javascript:void(0);" onclick="onClickScoutExecButton('${get_html_param('url_scoutdo', 'sp/scout/scoutdo_swf.html')}');"><img src="${url_static_img}01//btn_sc_yoko.png" style="width:232px;height:49px;"/></a>
+		</div>
+	%endif
+	
+	${self.playerstatus()}
+	
+	${self.resultbody()}
+</%def>

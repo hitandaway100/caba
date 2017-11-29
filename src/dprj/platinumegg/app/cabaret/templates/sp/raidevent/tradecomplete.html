@@ -1,0 +1,31 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">秘宝アイテム交換</p>
+	</div>
+	
+	<div class="wrapper">
+		${raidevent['ticketname'] | h}と交換しました
+	</div>
+	
+	<div class="icon_l">
+		<img src="${raidevent['ticketThumbnail']['middle']}" width="90" height="90" />
+	</div>
+	
+	<div class="wrapper">
+		<span class="red">所持数&nbsp; :&nbsp; </span>${raideventscore['ticket'] - add_num}枚⇒<span class="red">${raideventscore['ticket']}</span>枚<br/>
+		${raidevent['pointname']}&nbsp; :&nbsp; ${raideventscore['point'] + add_num * raidevent['pointratio']}⇒${raideventscore['point']}<br />
+	</div>
+	
+	%if obj_lead:
+		<div>
+			<a class="btnpink" href="${get_html_param('url', 'sp/gacha/gacha_ticket.html', obj_lead)}"><p class="caption">${obj_lead['text'] | h}</p></a>
+		</div>
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>

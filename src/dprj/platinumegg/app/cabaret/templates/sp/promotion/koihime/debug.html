@@ -1,0 +1,110 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+	<link href="${url_static_css}gachacardlist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}gachacardlist.js"></script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">クロスプロモーションデバッグ</p>
+	</div>
+	
+	%if result_info:
+		<div class="back_black">
+			%if result_info['is_error']:
+				<div class="wrapper yellow">
+					${result_info['msg'] | h}
+				</div>
+			%else:
+				<div class="wrapper red">
+					${result_info['msg'] | h}
+				</div>
+			%endif
+		</div>
+	%endif
+	
+	<div class="cardlist">
+		<div class="cardlist_bg" style="background-color: #f02020;">
+		</div>
+		<div class="cardlist_body">
+			<div class="topcap">
+				達成条件と状態
+			</div>
+			<form action="${url_self}" method="post">
+				<input type="hidden" name="_proc" value="update_requirement" />
+				<div style="text-align: center;">
+					レベル:<input type="text" name="level" value="${level}" /><input type="submit" value="変更">
+				</div>
+			</form>
+			<table width="100%">
+				%for requirement in requirementlist:
+					<tr>
+						<td width="80%">
+							${requirement['text'] | h}
+						</td>
+						<td width="20%">
+							%if requirement['flag']:
+								<span class="yellow">済</span>
+							%else:
+								未
+							%endif
+						</td>
+					</tr>
+				%endfor
+			</table>
+		</div>
+	</div>
+	
+	<div class="cardlist">
+		<div class="cardlist_bg" style="background-color: #20f020;">
+		</div>
+		<div class="cardlist_body">
+			<div class="topcap">
+				報酬受取状態
+			</div>
+			<form action="${url_self}" method="post">
+				<input type="hidden" name="_proc" value="update_prizedata" />
+				
+				<table width="100%">
+					%for prize in prizelist:
+						<tr>
+							<td width="50%">
+								${prize['name'] | h}
+							</td>
+							<td width="50%" style="text-align:center;">
+								<select name="prize_${prize['id']}">
+									%for k,v in Defines.PromotionStatus.NAMES.items():
+										%if k == prize['status']:
+											<option value="${k}" selected="selected">${Defines.PromotionStatus.NAMES[k] | h}</option>
+										%else:
+											<option value="${k}">${Defines.PromotionStatus.NAMES[k] | h}</option>
+										%endif
+									%endfor
+								</select>
+							</td>
+						</tr>
+					%endfor
+				</table>
+				<p style="text-align:center;">
+					<input type="submit" value="更新">
+				</p>
+			</form>
+		</div>
+	</div>
+	
+	<div style="padding: 8px 0;text-align:center;">
+		<div style="display:inline-block;">
+			<a class="btnlong" href="${get_html_param('url_promotion_top', 'sp/promotion/prizelist.html')}" style="margin:0;">クロスプロモTOPへ</a>
+		</div>
+	</div>
+	<div>
+		<p class="caption">
+			<a class="btnpink" href="${get_html_param('url_top', 'sp/top/top.html')}">トップページへ</a>
+		</p>
+	</div>
+</%def>
+
+<%def name="header()"></%def>
+<%def name="footer()"></%def>

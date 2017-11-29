@@ -1,0 +1,99 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%doc>ガチャ出現カード一覧ページ</%doc>
+
+<%def name="head()">
+	<link href="${url_static_css}gachacardlist.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="${url_static_js}gachacardlist.js"></script>
+</%def>
+
+<%def name="contents()">
+	<%
+		rate_total = gachacardlistinfo['rate_total']
+		weight_dict = gachacardlistinfo['weight_dict']
+		cardlist_dict = gachacardlistinfo['cardlist_dict']
+		cardnum = gachacardlistinfo['cardnum']
+	%>
+	<div class="titlebar">
+		<p>${gacha_name | h}</p>
+	</div>
+	
+	<div class="wrapper">
+		<!-- 出現するキャスト総数 -->
+		キャスト総数:${gachacardlistinfo['cardnum'] | h}
+	</div>
+	
+	<div style="margin-bottom: 32px;">
+		<!-- レアリティごとの獲得率 -->
+		<div class="titlesub">
+			<div class="wrapper">
+				レアリティごとの獲得率
+			</div>
+		</div>
+		%for rare in sorted(Defines.Rarity.LIST, reverse=True):
+			%if 0 < weight_dict.get(rare, 0):
+				<table width="60%" style="margin-left: 5%">
+					<tr>
+						<td width="50%">
+							${Defines.Rarity.NAMES[rare] | h}
+						</td>
+						<td width="50%" style="text-align: right;">
+							${'%2.1f' % (100.0 * weight_dict.get(rare, 0) / rate_total) | h}%
+						</td>
+					</tr>
+				</table>
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			%endif
+		%endfor
+	</div>
+	
+	<div>
+		<!-- キャスト一覧 -->
+		<div class="titlesub">
+			<div class="wrapper">
+				キャスト一覧
+			</div>
+		</div>
+		
+		%for ctype in Defines.CharacterType.LIST:
+			<%
+				flag_draw_wrapp = False
+			%>
+			%for rare in sorted(Defines.Rarity.LIST, reverse=True):
+				<%
+					cardlist = None
+					rare_cardlist_dict = cardlist_dict.get(rare)
+					if rare_cardlist_dict:
+						cardlist = rare_cardlist_dict.get(ctype)
+				%>
+				%if cardlist:
+					%if not flag_draw_wrapp:
+					<div class="cardlist">
+						<!-- ${Defines.CharacterType.NAMES[ctype] | h} -->
+						<div class="cardlist_bg" style="background-color: ${Defines.CharacterType.COLORS[ctype]};">
+						</div>
+						<div class="cardlist_body">
+							<div class="topcap">
+								${Defines.CharacterType.NAMES[ctype] | h}
+							</div>
+					%endif
+					%for card in cardlist:
+						${card | h}<br />
+					%endfor
+					%if not flag_draw_wrapp:
+							</div>
+						</div>
+						<%
+							flag_draw_wrapp = True
+						%>
+					%endif
+				%endif
+			%endfor
+		%endfor
+	</div>
+	
+	<!-- 戻る -->
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_trade', 'sp/trade/trade.html')}"><span style="margin-left:14px;">戻る</span></a>
+	</div>
+</%def>

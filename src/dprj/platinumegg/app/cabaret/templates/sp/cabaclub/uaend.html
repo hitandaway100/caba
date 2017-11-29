@@ -1,0 +1,24 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">対策</p>
+	</div>
+	<div class="wrapper orange">
+		対策を実行しました
+	</div>
+	
+	<div class="wrapper">
+		所持経営マネー<br />
+		${cabaclub_management_info['money'] + cabaclubstoreeventmaster['ua_cost']}&nbsp;→&nbsp;<span class="red">${cabaclub_management_info['money']}</span>
+	</div>
+	
+	<div style="margin:8px 0px;">
+		<a class="btnlong" href="${get_html_param('url_store', 'sp/cabaclub/store_opened.html')}">店舗へ戻る</a>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

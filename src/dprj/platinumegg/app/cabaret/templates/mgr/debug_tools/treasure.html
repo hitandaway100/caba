@@ -1,0 +1,135 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>金の宝箱付与</strong>　金の宝箱を付与します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="add_treasure" />
+        <input type="hidden" name="_type" value="${Defines.TreasureType.GOLD}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          宝箱:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for treasure in treasurelist_gold:
+            <option value="${treasure.id}">ID:${treasure.id}</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          付与数:<br />
+          <input type="text" name="_num" value="1" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="付与" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>銀の宝箱付与</strong>　銀の宝箱を付与します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="add_treasure" />
+        <input type="hidden" name="_type" value="${Defines.TreasureType.SILVER}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          宝箱:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for treasure in treasurelist_silver:
+            <option value="${treasure.id}">ID:${treasure.id}</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          付与数:<br />
+          <input type="text" name="_num" value="1" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="付与" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>銅の宝箱付与</strong>　銅の宝箱を付与します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="add_treasure" />
+        <input type="hidden" name="_type" value="${Defines.TreasureType.BRONZE}" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          宝箱:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for treasure in treasurelist_bronze:
+            <option value="${treasure.id}">ID:${treasure.id}</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          付与数:<br />
+          <input type="text" name="_num" value="1" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="付与" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>秘宝交換回数変更</strong>　秘宝交換を行った回数を変更します</p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_trade_cnt" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          秘宝交換:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for trademaster in trademaster_list:
+            %if 0 < trademaster.stock:
+            <option value="${trademaster.id}">ID:${trademaster.id}</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          交換回数:<br />
+          <input type="text" name="_num" value="1" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="更新" />
+        </p>
+      </form>
+    </div>
+  </li>
+</ul>

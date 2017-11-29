@@ -1,0 +1,157 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+	${self.payment_script_pc()}
+</%def>
+
+<%def name="shopitem_body(shopitem, index)">
+	<%
+		div_class = ''
+		need_bar = False
+		if index % 2 == 1:
+			div_class = 'class="back_black"'
+			need_bar = True
+	%>
+	<div ${div_class}>
+		%if need_bar:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		%endif
+		<div class="itembox">
+			<table style="310px;">
+				<tr>
+					<td style="width:70px;">
+						<img src="${shopitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+					</td>
+					<td class="itemtext" style="width:240px;">
+						${shopitem['name'] | h}<br />
+						<div style="font-size:12px;">
+							${shopitem['text'] | h}
+						</div>
+						%if shopitem.get('num', None) is not None:
+							<span class="orange">所持数:</span><span  class="yellow">${shopitem['num']}</span>${shopitem['unit'] | h}<br />
+						%endif
+						<%
+							if shopitem['consumetype'] == Defines.ShopConsumeType.PAYMENT:
+								unit = 'ポイント'
+							elif shopitem['consumetype'] == Defines.ShopConsumeType.GOLD:
+								unit = Defines.ItemType.UNIT[Defines.ItemType.GOLD]
+							elif shopitem['consumetype'] == Defines.ShopConsumeType.CABAKING:
+								unit = Defines.ItemType.UNIT[Defines.ItemType.CABARETKING_TREASURE]
+							else:
+								unit = ''
+						%>
+						<span class="orange">値段:</span><span  class="yellow">${shopitem['price']}</span>${unit | h}<br />
+					</td>
+				</tr>
+			</table>
+			%if shopitem['consumetype'] == Defines.ShopConsumeType.PAYMENT:
+				${self.shopitem_payment_form(shopitem,index)}
+			%else:
+				${self.shopitem_form(shopitem,index)}
+			%endif
+		</div>
+		%if need_bar:
+			<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		%endif
+	</div>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">ショップ</p>
+	</div>
+	
+	%for i in xrange(len(shopitemlist)):
+		${self.shopitem_body(shopitemlist[i], i)}
+	%endfor
+</%def>
+
+<%def name="shopitem_payment_form(shopitem, index)">
+	<form action="${get_html_param('url_buy', 'sp/shop/buyresult.html', shopitem)}" method="post">
+		<table class="pullmenuset" style="margin-left:120px;">
+			<tr>
+				<%
+					buyable_num = 10
+					if 0 < shopitem['stock']:
+						buyable_num = min(10, shopitem.get('rest', 0))
+				%>
+				%if buyable_num == 1:
+					<td width="88px">
+						<input type="hidden" name="${num_key}" value="1" />
+					</td>
+				%else:
+					<td class="pullmenu3">
+						<select class="select_type" name="${num_key}" style="width: 80px; height: 31px;">
+							%for i in xrange(buyable_num):
+								<option value="${i+1}">${i+1}${shopitem['unit'] | h}</option>
+							%endfor
+						</select>
+						<div id="pull1"></div>
+					</td>
+				%endif
+				<td style="width:98px;">
+					<input type="submit" value="ポイントで購入" class="buttonshop" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/>
+				</td>
+			</tr>
+		</table>
+	</form>
+</%def>
+
+<%def name="shopitem_form(shopitem, index)">
+	<%
+		submit_value = '購入'
+		error_message = None
+		if shopitem['consumetype'] == Defines.ShopConsumeType.GOLD:
+			if shopitem['price'] <= player['gold']:
+				submit_value = '{}で購入'.format(Defines.ItemType.SMALL_NAMES[Defines.ItemType.GOLD])
+			else:
+				error_message = '{}が足りません'.format(Defines.ItemType.NAMES[Defines.ItemType.GOLD])
+		elif shopitem['consumetype'] == Defines.ShopConsumeType.CABAKING:
+			if shopitem['price'] <= player['cabaretking']:
+				submit_value = '秘宝で購入'
+				#submit_value = '{}で購入'.format(Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE])
+			else:
+				error_message = '{}が足りません'.format(Defines.ItemType.NAMES[Defines.ItemType.CABARETKING_TREASURE])
+	%>
+	%if error_message:
+		<div class="red wrapper">
+			${error_message | h}
+		</div>
+	%else:
+		<form action="${get_html_param('url_buy', 'sp/shop/buyresult.html', shopitem)}" method="post">
+			<table class="pullmenuset" style="margin-left:120px;">
+				<tr>
+					<%
+						buyable_num = 10
+						if 0 < shopitem['stock']:
+							buyable_num = min(10, shopitem.get('rest', 0))
+					%>
+					%if buyable_num == 1:
+						<td width="88px">
+							<input type="hidden" name="${num_key}" value="1" />
+						</td>
+					%else:
+						<td class="pullmenu3">
+							<select class="select_type" name="${num_key}" style="width: 80px; height: 31px;">
+								%for i in xrange(buyable_num):
+									<option value="${i+1}">${i+1}${shopitem['unit'] | h}</option>
+								%endfor
+							</select>
+							<div id="pull1"></div>
+						</td>
+					%endif
+					<td style="width:98px;">
+						<input type="submit" value="${submit_value}" class="buttonshop" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/>
+					</td>
+				</tr>
+			</table>
+		</form>
+	%endif
+</%def>
+
+<%doc>PC用拡張;</%doc>
+<%def name="payment_script_pc()"></%def>

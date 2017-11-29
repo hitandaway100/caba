@@ -1,0 +1,80 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="scouttop" style=" width : 320px;">
+		<div class="scoutpic" style="position:relative;">
+			<img src="${scoutevent_tanzaku['castbg']}" style="width:320px;height:180px;"/>
+		</div>
+		<div class="scoutpic2">
+			<img src="${scoutevent_tanzaku['castthumb']}" width="320" height="180"/>
+		</div>
+		<div class="scoutflame">
+			<span class="wrapper">${scoutevent_tanzaku['castname'] | h}</span>
+		</div>
+		<div class="boss_coment">
+			<div class="coment_text">
+				${scoutevent_tanzaku['castname'] | h}さんに<br />
+				${scoutevent['lovetime_pointname'] | h}を何枚あげますか?
+			</div>
+		</div>
+	</div>
+	
+	%if 0 < scouteventscore['tip']:
+		<table class="pullmenuset" style="margin:8px auto 8px 80px;">
+			<td class="pullmenu2">
+				<select id="select_tip" class="select_type" style="width: 173px; height: 31px; left:73px; margin-left: -73px;">
+					%for num in tip_usenums:
+						%if scouteventscore['tip'] != num:
+							<option value="${num}">${num}</option>
+						%endif
+					%endfor
+					<option selected="selected" value="${scouteventscore['tip']}">全て</option>
+				</select>
+				<div id="pull2"></div>
+			</td>
+		</table>
+		<div>
+			<a class="btnlong" id="btn_submit" href="javascript:void();"><div>${scoutevent['lovetime_pointname'] | h}をあげる</div></a>
+		</div>
+		<script>
+			$("#btn_submit").click(function(event){
+				event.preventDefault();
+				var obj = $("#select_tip")[0];
+				var opt = obj.options[obj.options.selectedIndex];
+				
+				// フォームを作成.
+				var form = document.createElement("form");
+				form.method = "POST";
+				form.action = "${get_html_param('url_self', 'sp/scoutevent/tip_populate_complete.html')}";
+				
+				var obj = document.createElement("input");
+				obj.type = "hidden";
+				obj.name = "${Defines.URLQUERY_NUMBER}";
+				obj.value = opt.value;
+				form.appendChild(obj);
+				
+				document.getElementById("body_main").appendChild(form);
+				form.submit();
+			});
+		</script>
+	%else:
+		<div class="list_not_found">
+			${scoutevent['lovetime_pointname'] | h}を持っていません
+			<div class="topcap">
+				<div>
+					<a class="btnlong" href="${get_html_param('url_scoutevent_tiptrade', 'sp/scoutevent/tip_trade.html')}"><div>${scoutevent['tanzaku_name'] | h}を交換</div></a>
+				</div>
+			</div>
+		</div>
+	%endif
+	
+	<div class="caution" style="margin-bottom: 10px;">
+		※1枚以上${scoutevent['lovetime_pointname'] | h}をあげるまで<br />
+		キャストは指名されたままの状態となります。<br />
+	</div>
+	
+	${self.drawTip()}
+	
+	${self.eventfooter()}
+</%def>

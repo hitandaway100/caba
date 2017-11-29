@@ -1,0 +1,120 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}select.js"></script>
+</%def>
+
+<%def name="contents()">
+	${self.eventhdr()}
+	${self.eventtopic()}
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+
+	%if scoutevent_present_result:
+		<%doc>アイテム使用後</%doc>
+		<div class="topcap">
+			${scoutevent['point_name']}を<br />
+			${scoutevent_present_result['point']}個プレゼントしました！
+		</div>
+		%if scoutevent_present_result['prize']:
+			<div class="itembox">
+				<table>
+					%for prizeitem in scoutevent_present_result['prize']['listitem_list']:
+						<tr>
+							<td>
+								<img src="${prizeitem['thumbMiddle']}" width="60" class="itemimg" />
+							</td>
+							<td class="itemtext">
+								%if prizeitem['icon']:
+									<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+								%else:
+									<span><!--
+								%endif
+								--><span class="orange">${prizeitem['name'] | h}</span><!--
+								%if prizeitem['rare'] is not None:
+									-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+								%endif
+								-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}<br />
+								を獲得しました!
+							</td>
+						</tr>
+					%endfor
+				</table>
+			</div>
+		%endif
+	%endif
+
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>		
+	<img src="${scoutevent['img_produce']}" width="320" height="400"/>
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	
+	<div class="topcap">
+		現在の${scoutevent['point_name']}所持数：${scoutevent_heartnum}個
+	</div>
+	
+	%if scoutevent_flag_allreceived:
+		<div class="red list_not_found">
+			すべての報酬を獲得しました
+		</div>
+	%else:
+		<form action="${get_html_param('url_post', 'sp/scoutevent/scev_09/present.html')}" method="post" >
+			<input type="hidden" name="${Defines.URLQUERY_FLAG}" value="${player['req_confirmkey']}" />
+			<table class="pullmenuset" style="margin:8px auto 8px 80px;">
+				<td class="pullmenu2">
+					<select class="select_type" style="width: 173px; height: 31px;" name="${Defines.URLQUERY_NUMBER}">
+						%for obj in scoutevent_presentprizelist:
+							%if not obj['all_received']:
+								<option value="${obj['number']}">${obj['name'] | h}</option>
+							%endif
+						%endfor
+					</select>
+					<div id="pull2"></div>
+				</td>
+			</table>
+			<input type="submit" value="プレゼントする" class="btnpink ev_btn" />
+		</form>
+	%endif
+	
+	<div class="titlesub3">
+		<div class="wrapper">
+			次の報酬まで
+		</div>
+	</div>
+	%for obj in scoutevent_presentprizelist:
+		<div class="titlesub">
+			<div class="wrapper">
+				${obj['name'] | h}
+			</div>
+		</div>
+		%if obj['all_received']:
+			<div class="list_not_found">
+				${obj['name'] | h}の報酬は全て獲得しました
+			</div>
+		%else:
+			<%
+				prizeitem = obj['prize']['listitem_list'][0]
+			%>
+			<div class="itembox">
+				<table>
+					<td>
+						<img src="${prizeitem['thumbMiddle']}" width="60" alt="カード" height="75" class="itemimg" />
+					</td>
+					<td class="itemtext">
+						あと<span class="yellow">${obj['pointnext']}個</span>で<br />
+						%if prizeitem['icon']:
+							<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+						%else:
+							<span><!--
+						%endif
+						--><span class="orange">${prizeitem['name'] | h}</span><!--
+						%if prizeitem['rare'] is not None:
+							-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+						%endif
+						-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}獲得!
+					</td>
+				</table>
+			</div>
+		%endif
+	%endfor
+	${self.eventfooter()}
+</%def>

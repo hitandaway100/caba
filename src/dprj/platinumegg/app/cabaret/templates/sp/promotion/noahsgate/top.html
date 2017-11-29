@@ -1,0 +1,174 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${get_html_param('url_static_js')}jumptop.js"></script>
+  <script type="text/javascript">
+   function onClickBanner(){
+     to_top("${get_html_param('url_noahs_gate')}");
+   }
+  </script>
+</%def>
+
+<%def name="contents()">
+  <img src="${get_html_param('url_static_img')}banner/event/crosspromo/04/cross_promo_header.png" width="320" height="auto">
+  <div style="text-align: center; margin-top: 20px; margin-bottom: 10px;">${get_html_param('cross_promo_time_limit')}まで</div>
+  <div class="wrapper" style="margin-bottom: 8px;">
+    % if is_pc:
+      <a href="javascript:void(0);" onclick="onClickBanner()">
+    % else:
+      <a href="${get_html_param('url_noahs_gate')}">
+    % endif
+      <img src="${get_html_param('url_static_img')}banner/event/crosspromo/04/banner_noah_640_180.png" width="240" height="auto">
+    </a>
+    <div style="line-height:1.2;">
+      <span class="yellow" style="font-size: 13px;">↑Noah's Gateへはこちらから</span>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="4">
+    <a href="${get_html_param('url_gacha')}">
+      <img src="${get_html_param('url_static_img')}banner/gacha/collabo_step_04/collabo_step_04_banner.png" width="240" height="auto" style="padding-top: 10px;"><br>
+    </a>
+    <span class="yellow" style="font-size: 13px;">↑コラボガチャ開催中!!</span>
+  </div>
+
+  <div class="back_black">
+    <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="4" style="margin-top: 10px;">
+    <div style="padding: 8px 0px; text-align: center; line-height: 1;">
+      <div style="display: inline-block; width: 144px;">
+        <img src="${get_html_param('url_static_img')}banner/event/crosspromo/04/cross_promo_price02.png" width="140" height="auto">
+      </div>
+      <div style="display: inline-block; width: 144px;">
+        <img src="${get_html_param('url_static_img')}banner/event/crosspromo/04/cross_promo_price01.png" width="140" height="auto">
+      </div>
+    </div>
+  </div>
+  <div class="wrapper">
+    <div class="yellow" style="font-size: 13px; margin-top: 10px;">
+      各ゲームで貰える報酬をチェックしよう!
+    </div>
+  </div>
+
+  % if is_recipient:
+    ${putTab_recipient()}
+  % else:
+    ${putTab()}
+  % endif
+
+  <%
+  missions = [
+  {'name': 'チュートリアルを突破', 'btn_text': "Noah's Gateへ", 'jump_to': 'url_noahs_gate', 'rewards': [{'thumb_dirname': 'akahabu_l', 'item_name': '赤ハブドリンク[大]x3'}, {'thumb_dirname': 'kiryoku_l', 'item_name': '気力回復剤[大]x3'}]},
+  {'name': '闘剣楼で10F到達', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'dress_cocktail', 'item_name': 'カクテルドレスx1'}]},
+  {'name': 'えっちシーン解放', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'ticket_srover', 'item_name': 'SR以上確定ガチャチケットx1'}]},
+  {'name': 'レイドボスを1体撃破', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'catch', 'item_name': 'スカウト雇用券x3'}]},
+  {'name': '期間中に5日間ログイン', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'ticket_ssr100', 'item_name': 'SSR確定ガチャチケットx1'}]},
+  {'name': 'レイドボスを10体撃破', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'dress', 'item_name': 'ドレスx5'}]},
+  {'name': '闘剣楼で20F到達', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'kanzashi_oiran', 'item_name': '花魁のかんざしx1'}]},
+  {'name': 'ユーザーランク20に到達', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'ticket_call_cast', 'item_name': 'キャスト指定チケットx5'}]},
+  {'name': '取引所で交換', 'jump_to': 'url_noahs_gate', 'btn_text': "Noah's Gateへ", 'rewards': [{'thumb_dirname': 'ring_diamond', 'item_name': 'ダイヤの指輪x1'}]},
+  ]
+
+  missions_recipient = [
+  {'name': 'チュートリアル突破', 'jump_to': '', 'btn_text': '', 'rewards': [{'thumb_dirname': 'NG_potion1', 'item_name': '体力ポーションLx5'}, {'thumb_dirname': 'NG_medicine1', 'item_name': '強化成長薬x5'}]},
+  {'name': 'コラボイベント中に5日間ログイン', 'jump_to': '', 'btn_text': '', 'rewards': [{'thumb_dirname': 'NG_collaboticket', 'item_name': 'コラボ用SSR確定ガチャチケットx1'}]},
+  {'name': 'コラボ期間中に金の空箱を開ける', 'jump_to': 'url_treasurelist', 'btn_text': '宝箱へ', 'rewards': [{'thumb_dirname': 'NG_potion2', 'item_name': 'スキル強化ポーションx5'}]},
+  {'name': '「経営」をプレイする', 'jump_to': 'url_cabaclubtop', 'btn_text': '経営へ', 'rewards': [{'thumb_dirname': 'NG_medicine2', 'item_name': '限界成長薬x5'}]},
+  {'name': '秘宝交換を行う', 'jump_to': 'url_trade', 'btn_text': '秘宝交換へ', 'rewards': [{'thumb_dirname': 'NG_srticket', 'item_name': 'SRガチャチケットx1'}]},
+  {'name': 'レベルを10にする', 'jump_to': 'url_scout', 'btn_text': 'スカウトへ', 'rewards': [{'thumb_dirname': 'NG_devil', 'item_name': 'デビルドリンクx2'}]},
+  {'name': 'レベルを20にする', 'jump_to': 'url_scout', 'btn_text': 'スカウトへ', 'rewards': [{'thumb_dirname': 'NG_angel', 'item_name': 'エンジェルドリンクx2'}]},
+  {'name': '「キャバ道」をプレイする', 'jump_to': 'url_battle', 'btn_text': '「キャバ道」へ', 'rewards': [{'thumb_dirname': 'NG_rareticket', 'item_name': 'レアガチャチケットx5'}]},
+  {'name': '「キャバ道」で連勝する', 'jump_to': 'url_battle', 'btn_text': '「キャバ道」へ', 'rewards': [{'thumb_dirname': 'NG_ssrboticket', 'item_name': 'イチオシSSR100%ガチャチケットx1'}]},
+  ]
+  %>
+
+  % if is_recipient:
+    ${print_missions(missions_recipient)}
+  % else:
+    ${print_missions(missions)}
+  % endif
+
+  <section class="basicinfo" style="padding-bottom: 10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${get_html_param('url_static_img')}/common/kyoutsu_bar_07.png" width="282" height="3">
+    </div>
+    <div class="basicBack">
+      <ul>
+        <div style="margin: 0px 20px 0px;">
+          <li>${get_html_param('cross_promo_time_limit')}までの期間に達成された場合報酬が配布されます。</li>
+          <li>また、チュートリアル突破、レベル達成のミッションに関しては、既に達成している場合はイベント期間内にマイページに入った時に条件が達成されます。</li>
+          <li>上記に該当しないミッションに関してはイベント期間中にミッションを達成する必要があります。</li>
+          <li>報酬配布はイベント終了後となり、一週間以内を予定しております。</li>
+        </div>
+      </ul>
+    </div>
+    <div class="basicbtm"></div>
+  </section>
+</%def>
+
+<%def name="print_missions(missions)">
+  % for mission in missions:
+    <div class="back_black">
+      <img src="${get_html_param('url_static_img')}00/id_00_01/bar_03.png" width="320" height="12">
+      <div>
+        % for i, reward in enumerate(mission['rewards'], 1):
+          <table width="310" style="margin: 0 auto;">
+            <td width="64">
+              <img src="${get_html_param('url_static_img')}item/${reward['thumb_dirname']}/Item_thumb_90_90.png" width="60" height="60" alt="報酬画像">
+            </td>
+            <td style="font-size: 12px; vertical-align: middle;">
+              ${reward['item_name']}
+            </td>
+          </table>
+          % if i is not len(mission['rewards']):
+            <img src="${get_html_param('url_static_img')}common/kyoutsu_bar_06.png" width="320" height="2">
+          % endif
+        % endfor
+      </div>
+    </div>
+    <p style="font-size: 13px;">条件: ${mission['name']}</p>
+    % if mission['jump_to']:
+      % if is_pc and not is_recipient:
+          <a class="btnlong" style="margin-top: 10px;" href="javascript:void(0);" onclick="onClickBanner()">${mission['btn_text']}</a>
+      % else:
+          <a class="btnlong" style="margin-top: 10px;" href="${get_html_param(mission['jump_to'])}">${mission['btn_text']}</a>
+      % endif
+    % endif
+  % endfor
+</%def>
+
+<%def name="putTab()">
+  <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+    <tr>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s">
+          キャバ王
+        </div>
+      </td>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s" style="text-align :center; font-weight: normal; background: url(${get_html_param('url_static_img')}common/btn_97_off.png) no-repeat; background-size: cover;">
+          <a href="${get_html_param('url_recipient')}"><span style="color: #9c957d; font-size: 13px;">Noah's Gate</span></a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</%def>
+
+<%def name="putTab_recipient()">
+  <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+    <tr>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s" style="text-align :center; font-weight: normal; background: url(${get_html_param('url_static_img')}common/btn_97_off.png) no-repeat; background-size: cover;">
+          <a href="${get_html_param('url_cabaret')}"><span style="color: #9c957d;">キャバ王</span></a>
+        </div>
+      </td>
+      <td width="96" style="text-align: center;">
+        <div class="btn_pink_s" style="font-size: 13px;">
+          Noah's Gate
+        </div>
+      </td>
+    </tr>
+  </table>
+</%def>

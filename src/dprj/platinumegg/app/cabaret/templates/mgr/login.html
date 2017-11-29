@@ -1,0 +1,38 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="body_wrap()">
+	<body style="background:none;">
+		<div class="container" style="width:300px;padding-top:200px;">
+			
+			<div class="well">
+				<div class="page-header">
+					<h1>${apptitle}管理</h1>
+				</div>
+				
+				<form action="${url_login}" method="POST">
+					
+					<%include file='inc_alert.html' />
+					
+					<div class="clearfix">
+						<label for="nameInput">ユーザー名</label>
+						<div class="input">
+							<input type="text" id="nameInput" name="_name" value="" /><br />
+						</div>
+					</div>
+					<div class="clearfix">
+						<label for="passInput">パスワード</label>
+						<div class="input">
+							<input type="password" id="passInput" name="_pass" value="" /><br />
+						</div>
+					</div>
+					
+					<div class="actions" style="padding-left:0;padding-bottom:0;text-align:center;">
+						<input class="btn btn-primary" type="submit" value="ログイン"/>
+					</div>
+				</form>
+			</div>
+			
+		</div>
+	</body>
+</%def>

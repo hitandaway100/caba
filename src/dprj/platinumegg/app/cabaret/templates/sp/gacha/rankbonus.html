@@ -1,0 +1,62 @@
+#coding:utf-8
+<%inherit file="rankinggachabase.html" />
+
+<%def name="contents()">
+	
+	${self.rankinggachaslide()}
+	
+	<div style="margin: 16px 0px;">
+		<a class="btnlong" href="${get_html_param('url_ranking', 'sp/gacha/ranking.html')}">ランキングを見る</a>
+	</div>
+	
+	${self.drawRankingPrizeTabs(False)}
+	
+	%if rankinggacha['is_support_totalranking']:
+		<div align="center" style="background-color: #8D35B8; width:310px; height:30px; border-radius: 3px; line-height:2; margin-top:0px; margin-left:5px;">
+			%if is_single:
+				単発ランキング報酬
+				|
+				<a href="${get_html_param('url_prize_total', 'sp/gacha/rankingprize.html')}" style="color: #FFff00;">累計ランキング報酬</a>
+			%else:
+				<a href="${get_html_param('url_prize_single', 'sp/gacha/rankingprize.html')}" style="color: #FFff00;">単発ランキング報酬</a>
+				|
+				累計ランキング報酬
+			%endif
+		</div>
+	%endif
+	
+	%for rankingprize in rankingprizelist:
+		<div>
+			<div class="titlesub" style="padding-top:4px;">
+				<div class="wrapper">
+					%if rankingprize['rank_min'] == rankingprize['rank_max']:
+						${rankingprize['rank_min']}位
+					%else:
+						${rankingprize['rank_min']}位〜${rankingprize['rank_max']}位
+					%endif
+				</div>
+			</div>
+			%for prizeitem in rankingprize['prizeinfo']['listitem_list']:
+			<table style="margin-left:8px; width:300px; height:90px;">
+				<td  width="70">
+					<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+				</td>
+				<td>
+					<div class="itemtext" style="margin-top:-24px;">
+						%if prizeitem['icon']:
+							<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+						%else:
+							<span><!--
+						%endif
+						-->${prizeitem['name'] | h}<!--
+						%if prizeitem['rare'] is not None:
+							-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+						%endif
+						-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+					</div>
+				</td>
+			</table>
+			%endfor
+		</div>
+	%endfor
+</%def>

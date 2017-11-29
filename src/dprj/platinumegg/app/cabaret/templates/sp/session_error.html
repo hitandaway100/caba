@@ -1,0 +1,33 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="session_script()">
+	<script type="text/javascript">
+		if(window.navigator.cookieEnabled){
+			// Cookieが無効.
+			$(function () {
+				top.location.href="${url_dmm_top}";
+			});
+		}
+		else{
+			$(function () {
+				$("#error_mess").css("display", "");
+			});
+		}
+	</script>
+</%def>
+<%def name="header()"></%def>
+<%def name="contents()">
+	<div id="error_mess" style="display:none;">
+		<div class="titlebar">
+			<p class="caption">利用できません</p>
+		</div>
+		<div class="wrapper" style="margin-top:32px;margin-bottom:64px;">
+			ブラウザのCookieがブロックされているため、<br />
+			キャバ王を利用できません。<br />
+			設定からCookieを有効にしてください。
+		</div>
+	</div>
+</%def>
+<%def name="footer()"></%def>
+

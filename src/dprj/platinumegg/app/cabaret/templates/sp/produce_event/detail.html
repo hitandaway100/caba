@@ -1,0 +1,146 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+
+	${self.eventslide()}
+
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	${self.eventperiod(produceevent['starttime'], produceevent['endtime'], produceevent['is_opened'])}
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+
+	<div>
+		${self.eventtopic()}
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+	</div>
+
+	<div>
+		<% event_id = "{0:0>2}".format(produceevent["id"]) %>
+		<img src="${url_static_img}event/produce/${event_id}/produce_${event_id}_rule.png" width="320" height="auto" style="padding-bottom:10px;"/>
+	</div>
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="${produceevent["mainname"]}とは" class="help_btn"/>
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			期間中イベント限定エリアが解放されます。<br />
+			そのエリアでのスカウトを進めることで出現する太客へ接客を行うと、プロデュースポイント(PP)等を獲得する事ができます。<br />
+			イベント期間中に手に入れたPPの総獲得量に応じてランキングが決定し、最終順位にあった報酬がイベント終了後に配布されます。<br/>
+			<br />
+		</div>
+	</div>
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="プロデュースキャストについて" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			イベントのメインとなるキャストです。<br />
+			イベント中は彼女の教育レベルを上げて、各種レアリティのキャストの獲得を目指します。<br />
+			今自分が、どのレアリティをプロデュース中かは、イベントトップなどで確認できます。<br />
+			<br />
+		</div>
+	</div>
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="教育レベルについて" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			プロデュース中のキャストのレベルを表します。<br />
+			教育レベルは1から始まり、接客によって手に入れたハートが、一定数に達した場合に教育レベルが1上がります。<br />
+			教育レベルが指定数に達した時に、キャストのレアリティが1段階上昇します。<br />
+			レアリティが上がることで、レア度上昇前のキャストを獲得することができます。<br />
+			教育レベルは、イベントトップなどで確認できます。<br />
+			＝＝<br />
+			例<br />
+			HRキャストのレアリティがSRになる→HRキャストが獲得できます。<br />
+			SRキャストのレアリティがSSRになる→SRキャストが獲得できます。<br />
+			SSRキャストの教育レベル、ハート量が最大になる→SSRキャストが獲得できます。<br />
+			<br />
+		</div>
+	</div>
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="全力探索について" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			イベント中にのみ使用できる特別な探索です。<br />
+			通常より多くの体力を使用することで、太客の発見率を上げることができます。<br />
+			使用するには、イベントエリアトップの、全力探索チェックボックスにチェックを入れてください。<br />
+			チェックが入っている間は、全力探索が行われます。<br />
+			全力探索を止めるには、チェックボックスからチェックを外してください。<br />
+			<br />
+		</div>
+	</div>
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="2種類の接客評価について" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			イベントエリアに登場する太客を接客をすることで、成功or大成功のどちらかの評価が与えれらます。<br />
+			成功と大成功では、接客の結果で得られる、ハートの数や、PPに差があります。<br />
+			<br />
+		</div>
+	</div>
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="通常接客と超接客について" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			通常接客では、成功か大成功は確率で決定されますが、超接客を行うことで、接客評価を必ず大成功にすることができます。<br />
+			ただし超接客を行うためには、イベント専用のアイテムが必要になります。<br />
+			今回の接客では気力を消費することはありません。<br />
+			<br />
+		</div>
+	</div>
+	
+	%if change_item:
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="イベント専用アイテムについて" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			イベントでのみ使用できる特別なアイテムです。<br />
+			このアイテムを使用することで超接客を行うことできます。<br />
+			1回の超接客につき、アイテムを1個使用します。<br />
+			専用アイテムは、イベント間での持ち越しはできません。<br />
+			イベント終了後に、余っている専用アイテムは、1個につき${change_item['name']}1個と交換されます。<br />
+			<br />
+		</div>
+	</div>
+	%endif
+	
+	<div>
+		<div class="help_slide">
+			<input type="submit" value="特効キャストについて" class="help_btn"/>	
+		</div>
+		<div style="display: none; width:290px; margin:auto; line-height:1.4; margin-left:20px;">
+			<br />
+			特効キャストを超太客編成に入れることで、接客時にキャストの接客力にボーナスが加わります。<br />
+			各レアリティ、ハメ管理ごとの詳細な上昇値は「特効キャスト」のページをご確認ください。<br />
+			異なるキャストの場合、それぞれのキャストに特効効果が発動します。<br />
+			同一キャストの場合、下記例の様に特効効果が発動します。<br />
+			＝＝<br />
+			例<br />
+			女優Aのハメ管理Lv4が2人編成にいる場合<br />
+			　→接客力の高い片方のみ効果が発揮されます。（接客力が同じ場合はどちらか片方のみ効果が発揮されます。）<br />
+			女優Aのハメ管理Lv4と女優Aのハメ管理Lv3が2人編成にいる場合<br />
+			　→それぞれの女優Aの接客力に効果が発揮されます。<br />
+			<br />
+		</div>
+	</div>
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding:10px 0px;"/>
+	${self.show_gacha_banner()}
+	${self.shop_banner(produceevent["id"], shop_url)}
+	${self.eventfooter()}
+
+</%def>

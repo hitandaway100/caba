@@ -1,0 +1,83 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+<%namespace name="parts" file="parts.html" />
+
+<%def name="drawGachaList()">
+	<%
+		gachabox_dict = {}
+		for gacha in gachadata.values():
+			if gacha['consumetype'] != Defines.GachaConsumeType.PAYMENT:
+				continue
+			boxid = gacha['boxid']
+			gachabox_dict[boxid] = gachabox_dict.get(boxid) or []
+			gachabox_dict[boxid].append(gacha)
+	%>
+	%for arr in gachabox_dict.values():
+		<%
+			names = {}
+			for gacha in arr:
+				names[gacha['continuity']] = gacha['unique_name']
+			name1 = names.get(1)
+			name6 = names.get(6)
+			name12 = names.get(12)
+			slidename = name1 or name6 or name12
+		%>
+		${self.drawGachaListSub(name12, name6, name1, slidename, slidename, slidename)}
+	%endfor
+</%def>
+
+<%def name="drawGachaListSub(name12, name6, name1, banner, header, slide)">
+	
+	%if banner:
+		${self.drawBoxBanner(banner)}
+	%endif
+	%if header:
+		${self.drawHeader(header)}
+	%endif
+	
+	%if slide:
+		${self.drawSlide(slide)}
+	%endif
+	
+	%if gachadata.has_key(name1):
+		${self.reaSetsumei()}
+	%endif
+	
+	${self.drawGachaPremium(name12, name6, name1, True)}
+	
+	%if gachadata.has_key(name1):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[name1])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endif
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(name1, do_render_time=False)}
+	
+	${self.drawGachaPremium(name12, name6, name1, True)}
+	
+	%if gachadata.has_key(name1):
+		<div align="center" style="width:310px; height:30px; margin:4 6 4 6px; font-size:14;">
+			&nbsp;<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gachadata[name1])}" class="orange">獲得可能キャスト一覧</a>&nbsp;
+		</div>
+	%endif
+</%def>
+
+<%doc>プレミアムガチャテキスト</%doc>
+<%def name="drawFooterText()">
+  <%
+  texts = (
+  'レア以上のキャストを獲得できるガチャです。',
+  '<span class="orange">DMMポイント</span>を消費して、キャストを獲得できます。',
+  )
+  %>
+  <%parts:drawFooterText texts="${texts}" args="text">
+    ${text}
+  </%parts:drawFooterText>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(2); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

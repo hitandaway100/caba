@@ -1,0 +1,31 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	
+	<div class="titlebar">
+		<p class="caption">ショップ</p>
+	</div>
+	
+	<div class="wrapper">
+		${shopitem['name'] | h}を購入しました
+	</div>
+	
+	<div class="icon_l">
+		<img src="${shopitem['thumbUrl']}" width="90" height="90" />
+	</div>
+	
+	<div class="wrapper">
+		<span  class="orange">所持数:</span>${shopitem['num'] - buy_num}個⇒<span  class="red">${shopitem['num']}</span>${shopitem['unit'] | h}<br />
+	</div>
+	
+	%if shopitem.get('url_use'):
+		<div>
+			<a class="btnpink" href="${get_html_param('url_use', 'sp/item/useyesno.html', shopitem)}"><p class="caption">使用する</p></a>
+		</div>
+	%endif
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_shop', 'sp/shop/shop.html')}"><span style="margin-left:14px;">ショップTOPへ戻る</span></a>
+	</div>
+</%def>

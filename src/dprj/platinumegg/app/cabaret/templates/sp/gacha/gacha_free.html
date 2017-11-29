@@ -1,0 +1,42 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+<%namespace name="parts" file="parts.html" />
+
+<%def name="drawGachaList()">
+  ${self.drawSlide('')}
+  <img src="${url_static_img}gacha/common/sr_nomal_gacha_640_220.png" width="320" height="110" />
+  ${self.reaSetsumei()}
+  ${self.drawGachaFree('free', True)}
+
+  <%doc>運試しチケット</%doc>
+  ${self.drawGachaTicket('ticket', player['tryluckticket'], True)}
+
+  <%doc>キャスト雇用履歴</%doc>
+  ${self.drawCastGetListByTopic(Defines.GachaConsumeType.GachaTopTopic.FREE)}
+
+  ${self.drawGachaFree('free', True)}
+
+  <%doc>運試しチケット</%doc>
+  ${self.drawGachaTicket('ticket', player['tryluckticket'], True)}
+</%def>
+
+
+<%def name="setCurrentTopic()">
+  <script type="text/javascript">
+   topics(4); //タブボックス用の関数の呼び出し
+  </script>
+</%def>
+
+<%doc>無料ガチャテキスト</%doc>
+<%def name="drawFooterText()">
+  <%
+  texts = (
+  'ポイント、チケットを消費して引くことのできるガチャです。',
+  '「<span class="orange">運試しガチャチケット</span>」は、超太客の接客をすることで獲得できる「<span class="orange">キャバ王の秘宝</span>」と交換する事などで獲得できます。',
+  '「<span class="orange">レア以上チケット</span>」は「<span class="orange">チケットページ</span>」で使用してください。',
+  )
+  %>
+  <%parts:drawFooterText texts="${texts}" args="text">
+    ${text}
+  </%parts:drawFooterText>
+</%def>

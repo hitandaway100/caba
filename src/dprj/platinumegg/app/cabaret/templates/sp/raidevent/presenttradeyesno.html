@@ -1,0 +1,60 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">贈り物交換確認</p>
+	</div>
+	<table>
+		<tr>
+			<td style="width:90px; text-align: center; vertical-align: sub;">
+				<img src="${recipe['thumbUrl']}"width="60px" height="60px" />
+			</td>
+			<td style="width:230px;">
+				<div style="text-align: left;">
+					<span class="yellow">交換必要数</span>
+					<%
+						empty_cnt = 0
+					%>
+					%for _number in xrange(Defines.RAIDEVENT_MATERIAL_KIND_MAX):
+						<%
+							num = recipe['materialnum%d' % _number] * trade_num
+							empty_cnt += 1 if num < 1 else 0
+						%>
+						%if 0 < num:
+							<%
+								material = raidevent_materials.get(_number) or {}
+								name = (material.get('name', '不明') + '　' * 5)[:5]
+								unit = material.get('unit') or ''
+								material_num = material.get('num') or 0
+							%>
+							<dl style="font-size:13px; margin-top:0;">
+								%if 100000 <= num:
+									<dt>${name | h}：${material_num}${unit | h}⇛</dt><dd style="margin-left:66px;">${material_num - num}${unit | h}</dd>
+								%else:
+									${name | h}：${material_num}${unit | h}⇛${material_num - num}${unit | h}
+								%endif
+							</dl>
+						%endif
+					%endfor
+					${'<br />' * empty_cnt}
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="caution">
+		「${recipe['name'] | h}」を${trade_num}${recipe['unit'] | h}交換します。
+	</div>
+	
+	<div style="padding: 10px 0px;text-align:center;">
+		<div style="display:inline-block;width:140px;">
+			<a class="buttonshop" href="${get_html_param('url_raidevent_recipelist', 'sp/raidevent/presenttrade.html')}" >キャンセル</a>
+		</div>
+		<div style="display:inline-block;width:140px;">
+			<a class="buttonshop" href="${get_html_param('url_raidevent_recipedo', 'sp/raidevent/presenttradecomp.html')}" >交換する</a>
+		</div>
+	</div>
+	
+	${self.eventfooter()}
+</%def>

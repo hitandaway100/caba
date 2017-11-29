@@ -1,0 +1,177 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head()">
+	<script type="text/javascript" src="${url_static_js}btn_tab.js"></script>
+	<script type="text/javascript" src="${url_static_js}check_btn.js"></script>
+	<link href="${url_static_css}present.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="pagenation()">
+	%if url_prev or url_next:
+		<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+			<tr>
+				<td width="160px" style="text-align: left;">
+					% if url_prev is not UNDEFINED:
+						<a href="${url_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+				<td width="160px" style="text-align: right;">
+					% if url_next is not UNDEFINED:
+						<a href="${url_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+					%else:
+						<div style="font-size: 0px opacity:0;">　</div>
+					%endif
+				</td>
+			</tr>
+		</table>
+	% endif
+</%def>
+
+<%def name="drawPresentSortButton()">
+	%if url_desc or url_asc:
+		<table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+			<tr>
+				<td width="128px" style="text-align: center;">
+					% if cur_sort == "desc":
+						<div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background: url(${url_static_img}common/btn_97_off.png) no-repeat;background-size:cover;">
+							<a href="${url_asc}"><span style="color:#9c957d;">古い10件<b>表示</b></span></a>
+						</div>
+					%else:
+						<div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background-size:cover;">
+							<a href="javascript:void(0);">古い10件<b>表示</b></a>
+						</div>
+					%endif
+				</td>
+				<td width="128px" style="text-align: center;">
+					% if cur_sort == "desc":
+						<div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background-size:cover;">
+							<a href="javascript:void(0);">最新10件<b>表示</b></a>
+						</div>
+					%else:
+						<div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background: url(${url_static_img}common/btn_97_off.png) no-repeat;background-size:cover;">
+							<a href="${url_desc}"><span style="color:#9c957d;">最新10件<b>表示</b></span></a>
+						</div>
+					%endif
+				</td>
+			</tr>
+		</table>
+	% endif
+</%def>
+
+<%def name="drawRecievedList()">
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-top:5px;" />
+</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">プレゼントボックス</p>
+		</div>
+		
+		%if presentlist:
+			<form action="${get_html_param('url_receive_all', 'sp/presentrecieve.html')}" method="post">
+				<p class="caption">
+					<input type="submit" class="btnpink_submit" value="ページ内一括受取" />
+				</p>
+				<table class="precheck" style="width:248px; text-align:right;">
+					<tr>
+						<td style="width:150px;">
+							<input type="checkbox" name="${key_except_gold}" style="position:relative; left:4px width:20px;height:20px;"/><label>${gold_name | h}除く</label>
+						</td>
+						<td style="width:98px;">
+							<input type="checkbox" name="${key_except_card}" style="position:relative; left:2px width:20px;height:20px" /><label>キャスト除く</label>
+						</td>
+					</tr>
+				</table>
+			</form>
+		%endif
+		
+		<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" />
+		
+		<div class="pretab">
+			<ul class="tabs clearFix" id="tabs" style="height:38px;">
+				<%
+					table = (
+						('tab1', 'url_all', Defines.PresentTopic.ALL, '全て'),
+						('tab2', 'url_card', Defines.PresentTopic.CARD, 'キャスト'),
+						('tab3', 'url_item', Defines.PresentTopic.ITEM, 'アイテム'),
+						('tab4', 'url_etc', Defines.PresentTopic.ETC, 'その他'),
+					)
+				%>
+				%if flag_template_test:
+					%for tab_id, url_key, topic_id, text in table:
+						<li id="${tab_id}">
+							<a onclick="topics(${topic_id}); return false;">${text}</a>
+						</li>
+					%endfor
+				%else:
+					%for tab_id, url_key, topic_id, text in table:
+						<li id="${tab_id}">
+							<a href="${get_html_param(url_key, '')}">${text}</a>
+						</li>
+					%endfor
+				%endif
+			</ul>
+			<script type="text/javascript">
+				//タブボックス用の関数の呼び出し.
+				%if flag_template_test:
+					topics(1);
+				%else:
+					topics(${cur_topic});
+				%endif
+			</script>
+		</div>
+		
+		%if presentlist:
+			${self.drawPresentSortButton()}
+		%endif
+		
+		${self.pagenation()}
+		
+		${self.drawRecievedList()}
+		
+		% if presentlist:
+			% for present in presentlist:
+				<div class="itembox">
+					<table style="310px;">
+						<td>
+							<img src="${present['thumbUrl']}" width="60" height="60" class="itemimg" />
+						</td>
+						<td class="itemtext">
+							<span class="orange">${present['name'] | h}</span>${present['numtext'] | h}<br />
+							${present['ctime']}<br />
+							${present['text'] | h}<br />
+							%if present['limittime']:
+								<span class="orange">受取期限:</span>${present['limittime']}<br/>
+							%endif
+						</td>
+					</table>
+				</div>
+				%if present['err'] == 'card_over':
+					<div class="red" style="text-align: center;">
+						所属キャストが上限に達しています
+					</div>
+				%else:
+					<div>
+						<a class="button_pre" style="margin-left:110; margin-bottom:4px;" href="${present['url_receive']}"><div>受け取る</div></a>
+					</div>
+				%endif
+				<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			% endfor
+		% else:
+			<div class="list_not_found">
+				届いているプレゼントはありません
+			</div>
+		% endif
+		
+		${self.pagenation()}
+		
+		<div class="btmcap1">
+			※プレゼントは30日間保存されます。<br />
+			30日を越えたプレゼントは受け取れなくなります｡<br />
+		</div>
+		
+	</div>
+</%def>

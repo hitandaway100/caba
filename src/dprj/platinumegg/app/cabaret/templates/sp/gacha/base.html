@@ -1,0 +1,97 @@
+<%inherit file="/sp/base.html" />
+
+<%def name="head()">
+  <%include file="/sp/gacha/header/script.html" />
+
+  %if is_pc:
+    <%include file="/sp/gacha/header/script_pc.html" args="url_static_js=url_static_js_pc" />
+  %else:
+    <%include file="/sp/gacha/header/script_sp.html" args="url_static_js=url_static_js" />
+  %endif
+
+  <link href="${url_static_css}gacha.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+
+  ${self.payment_script_pc()}
+
+  <%include file="/sp/gacha/header/style.html" />
+  <script type="text/javascript">
+   $(function(){
+     var blink_target = $('.blink');
+     if(0 < blink_target.length){
+       setInterval(function(){
+         blink_target.fadeOut(1200, function(){$(this).fadeIn(200)});
+       }, 1400);
+     }
+   });
+  </script>
+</%def>
+
+<%def name="contents()">
+  <div style="background-color:rgba(0,0,0,0.4); width:320;">
+    <div class="titlebar">
+      <p>引抜ガチャ</p>
+    </div>
+  </div>
+
+  <%doc>画面上部の情報表示</%doc>
+  <%namespace file="/sp/gacha/contents/info.html" name="info" />
+  ${info.status(cardnum, player['cardlimitlv'], player['cardlimititem'])}
+
+  <%doc>レイドイベント用シートガチャバナー</%doc>
+  ${self.drawRaidEventSheetGachaBanner()}
+
+  <%
+  tabs = (
+  ('url_gacha', '/sp/gacha/gacha_stepup.html', '期間限定'),
+  ('url_gacha_usually', '/sp/gacha/gacha_usually.html', 'プレミアム'),
+  ('url_gacha_ticket', '/sp/gacha/gacha_ticket.html', 'チケット'),
+  ('url_gacha_pt', '/sp/gacha/gacha_free.html', '無料'),
+  )
+  %>
+  <%doc>切り替えタブ</%doc>
+  <%namespace file="/sp/gacha/contents/tab.html" name="tab" />
+  <div class="gachatab" style="height:50px;"><!--タブ -->
+    ${tab.list(tabs)}
+  </div>
+  <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+  ${self.setCurrentTopic()}
+
+  ${self.drawPremiumTabs()}
+
+  <%doc>ガチャ一覧表示</%doc>
+  <div style="margin-top:8px;">
+    ${self.drawGachaList()}
+  </div>
+
+  <%doc>注意事項等の画面下部テキスト</%doc>
+  %if explain_text:
+    ${self.drawFooterTextByExplainText(explain_text)}
+  %else:
+    ${self.drawFooterText()}
+  %endif
+</%def>
+
+<%def name="drawGachaList()"></%def>
+<%def name="drawFooterText()"></%def>
+<%def name="setCurrentTopic()"></%def>
+
+<%doc>ガチャ説明テキスト</%doc>
+<%def name="drawFooterTextByExplainText(explain_text)">
+  <section class="basicinfo" style="padding-bottom:10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+    </div>
+
+    <div class="basicBack">
+      <ul>
+        ${explain_text}
+      </ul>
+      <div style="font-size:0px;">
+        .
+      </div>
+    </div>
+    <div class="basicbtm">.
+    </div>
+  </section>
+</%def>

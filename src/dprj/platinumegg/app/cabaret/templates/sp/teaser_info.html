@@ -1,0 +1,41 @@
+#coding:utf-8
+<%inherit file="base.html" />
+
+<%def name="contents()">
+	<%
+		teaser = evenbanner['teaser']
+	%>
+	%if teaser['header']:
+		<img src="${teaser['header']}" width="320" style="margin-bottom:4px;" />
+	%endif
+	
+	%if teaser['scheduletext']:
+		<div style="background-color:#003399 ; width:320; color:#ffffff; text-align:center; line-height:2; font-size:medium;"  >
+			${teaser['scheduletext']}
+		</div>
+	%endif
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-top:8px;"/>
+	<div class="wrapper">
+		${teaser['bodytitle'] or 'イベント概要' | h}
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	%if teaser['body']:
+		<img src="${teaser['body']}" width="320" height="auto" style="padding-bottom:2px;" />
+	%endif
+	
+	<div class="topcap">
+		${teaser['bodybottom']}
+	</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" style="padding:2 0 2 0px;"/>
+	
+	<div class="wrapper">
+		※イベント内容・開催日は<br />
+		予告無く変更させて頂く場合がございます。
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+</%def>

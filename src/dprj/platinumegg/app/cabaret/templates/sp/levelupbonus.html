@@ -1,0 +1,127 @@
+#coding:utf-8
+<%inherit file="./base.html" />
+<%def name="head()">
+    ${parent.head()}
+    <link href="${url_static_css}/levelupbonus.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+
+<%def name="contents()">
+<style>
+  .fottertextline{
+    text-align:left;
+    text-indent:-1em;
+    padding-left:1em;
+    margin:4px 0;
+  }
+</style>
+  <%doc>ヘッダ画像</%doc>
+  %if header_banner:
+    <div>
+      <img src="${url_static_img}${header_banner}" width="320" height="auto" />
+    </div>
+  %endif
+
+  <div>
+    <div>
+      <%doc>全達成報酬</%doc>
+      <div class="titlesub" style="padding-top:4px;">
+        <div class="wrapper">
+          レベルアップ達成ボーナス
+        </div>
+      </div>
+
+      <section class="topinfo" style="padding-bottom:10px;">
+          <div class="top">
+              ーー初心者応援！ーー
+          </div>
+          <div class="center">
+              通常スカウトやイベントスカウト<br />
+                  を進めてレベルを上げよう！<br />
+              <br />
+              レベル200までの間<br />
+                  レベルが10上がる毎に<br />
+                  SSR確定ガチャチケット、<br />
+                  花魁のかんざし、プラチナの指輪等を含めた<br />
+                  豪華報酬をゲットできる！
+          </div>
+      </section>
+
+      <%doc>各ミッションの報酬</%doc>
+      %for mission in missions:
+        <div class="titlesub" style="padding-top:4px;">
+          <div class="wrapper">
+            ${mission['name'] | h}
+          </div>
+        </div>
+        %for idx, item in enumerate(mission['items']):
+          %if 0 < idx:
+            <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+          %endif
+            <table style="margin-left:8px; width:300px; height:90px;">
+              <td  width="70">
+                <img src="${item['thumbUrl']}" width="60" height="60" class="itemimg" />
+              </td>
+              <td class="info_block">
+                <div class="itemtext" style="margin-top:-24px;">
+                %if mission.get('cleared'):
+                  <span class="yellow">[受取済み]</span><br />
+                %endif
+                %if item['icon']:
+                  <img src="${item['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+                %else:
+                  <span><!--
+                %endif
+                -->${item['name'] | h}<!--
+                %if item['rare'] is not None:
+                  -->[<span style="color:${Defines.Rarity.COLORS.get(item['rare'], '#ffffff')};">${item['rare'] | h}</span>]<!--
+                %endif
+                -->${item['sep'] | h}<span class="yellow">${item['num']}</span>${item['unit'] | h}
+                </div>
+              </td>
+            </table>
+        %endfor
+      %endfor
+    </div>
+  </div>
+
+  <%doc>ルール画像</%doc>
+  %if rule:
+    <div>
+      <img src="${rule}" width="320" height="auto" />
+    </div>
+  %endif
+
+  <%doc>注意書き</%doc>
+  <section class="basicinfo" style="padding-bottom:10px;">
+    <div class="basictop">
+      <p>注意</p>
+      <img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+    </div>
+
+    <div class="basicBack">
+      <ul>
+        <li>
+          <div class="fottertextline">
+              ・達成ボーナス獲得後、報酬はプレゼントボックスへ送られます。
+          </div>
+        </li>
+        <li>
+            ・報酬条件となるレベルを達成している場合、各報酬はプレゼントボックスへ送られます。
+        </li>
+      </ul>
+      <div style="font-size:0px;">
+        &nbsp;
+      </div>
+    </div>
+    <div class="basicbtm">&nbsp;
+    </div>
+  </section>
+
+  <a class="btnlong" href="${scoutpage}">
+      <div>スカウトへ</div>
+  </a>
+
+  <div class="link_arrow_re">
+    <a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}" ><div style="margin-left:14px;">マイページへ</div></a>
+  </div>
+</%def>

@@ -1,0 +1,45 @@
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>シリアルコードの再入力</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="reset_serialcode" />
+        <p>
+          シリアルコード:<br />
+          <input type="text" name="_code" value="" />
+        </p>
+        <input class="btn" type="submit" value="再入力可能にする" />
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>シリアルコード入力回数を変更する</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="update_serialcount" />
+        <p>
+          ユーザ:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          マスター:<br />
+          <select name="_mid">
+            %for master in serialcampaignlist:
+            <option value="${master.id}">${master.name | h}(ID:${master.id})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          回数:<br />
+          <input type="text" name="_count" value="0" />
+        </p>
+        <input class="btn" type="submit" value="変更" />
+      </form>
+    </div>
+  </li>
+</ul>

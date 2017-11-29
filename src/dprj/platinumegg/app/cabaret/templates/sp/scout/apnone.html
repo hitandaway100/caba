@@ -1,0 +1,39 @@
+#coding:utf-8
+<%inherit file="scoutresultbase.html" />
+
+<%def name="scouttime()">
+	<div class="scouttime">残り時間:${player['str_aprtime_diff'] | h}</div>
+</%def>
+
+<%def name="resultbodywrapp()">
+	<div class="back_black">
+		${self.playerstatus()}
+		
+		${self.drawScoutResultInfo(line=False)}
+		
+		<div class="caution" style="margin:10px; auto 10px; auto">
+			体力が尽きました
+		</div>
+		
+		%for item in item_list:
+			<div class="itembox">
+				% if index > 0:
+					<!-- ↓のラインは最下段には不要-->
+					<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+				% endif
+				<table>
+					<td>
+						<img src="${item['master']['thumbUrl']}" width="60" height="60" class="itemimg"/>
+					</td>
+					<td class="itemtext">
+						${item['master']['name'] | h}<br/>
+						<span style="color:#FF9900;">所持数:</span>
+							<span style="color:#FFFF00;">${item['num']}</span>${item['master']['unit'] | h}<br/>
+					</td>
+				</table>
+				${self.drawItemLeadLinkButton(item)}
+			</div>
+		%endfor
+		<div style="padding-bottom:10px;">
+	</div>
+</%def>

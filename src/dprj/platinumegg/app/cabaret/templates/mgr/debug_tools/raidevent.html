@@ -1,0 +1,290 @@
+<%namespace name='lib' file='functions.html' />
+
+<%def name="list()">
+<ul class="debug-tree">
+  <li>
+    <div class="well">
+      <p><strong>レイドイベントパラメータ変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_raideventscore" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectRaidEvent()}
+        <p>
+          <select name="_target">
+            <option value="point">所持秘宝数</option>
+            <option value="point_total">通算秘宝数</option>
+            <option value="destroy">接客成功数</option>
+            <option value="destroy_big">大ボス接客成功数</option>
+          </select>
+        </p>
+        <p>
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>シナリオ閲覧フラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_opening" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectRaidEvent()}
+        <p>
+          オープニング:<br />
+          <select name="_flag_op">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          エピローグ:<br />
+          <select name="_flag_ep">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>大ボス出現閲覧フラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_boss_ec" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectRaidEvent()}
+        <p>
+          <select name="_flag">
+            <option value="1">閲覧済</option>
+            <option value="0">未閲覧</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>タイムボーナス閲覧フラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_timebonus" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectRaidEvent()}
+        <p>
+          <input class="btn" type="submit" value="未閲覧に変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>報酬受取りフラグ</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_destroyprize" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectRaidEvent(label="イベント:<br />")}
+        <p>
+          討伐回数:<br />
+          <input type="text" name="_value" value="" />&nbsp;<input type="checkbox" name="_big" value="1" />大ボス
+        </p>
+        <p>
+          <input class="btn" type="submit" value="受取済み" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>SHOWTIME状態を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_champagne_call" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          <select name="_flag">
+            <option value="1">On</option>
+            <option value="0">Off</option>
+          </select>
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>シャンパン数を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_champagne_num" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          シャンパン数:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  <li>
+    <div class="well">
+      <p><strong>交換所の贈り物数を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_material_num" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          贈り物数:<br />
+          %for i in xrange(Defines.RAIDEVENT_MATERIAL_KIND_MAX):
+          ${cur_raidevent_materials[i].name if cur_raidevent_materials.get(i) else i}:<input type="text" name="_value${i}" value="0" /><br />
+          %endfor
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  %if cur_raidevent_recipe_list:
+  <li>
+    <div class="well">
+      <p><strong>交換所の贈り物交換回数を変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="set_material_trade_num" />
+        <p>
+          ユーザー:<br />
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        <p>
+          交換するもの:<br />
+          <select name="_mid">
+            <option value="">------</option>
+            %for recipe in cur_raidevent_recipe_list:
+            %if 0 < recipe.stock:
+            <option value="${recipe.id}">${recipe.id}:${recipe.name | h}</option>
+            %endif
+            %endfor
+          </select>
+        </p>
+        <p>
+          回数:<br />
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  %endif
+  %if cur_raidevent and cur_raidevent.flag_dedicated_stage:
+  <li>
+    <div class="well">
+      <p><strong>レイドイベントステージ情報変更</strong></p>
+      <form action="" method="post">
+        <input type="hidden" name="method" value="change_raideventstage" />
+        <p>
+          <select name="_uid">
+            <option value="">------</option>
+            %for player in players:
+            <option value="${player['id']}">UserID:${player['id']}(DMMID:${player['dmmid']})</option>
+            %endfor
+          </select>
+        </p>
+        ${self.drawSelectRaidEvent()}
+        <p>
+          <select name="_target">
+            <option value="stage">現在ステージ</option>
+            <option value="progress">ポチポチ回数</option>
+          </select>
+        </p>
+        <p>
+          <input type="text" name="_value" value="0" />
+        </p>
+        <p>
+          <input class="btn" type="submit" value="変更" />
+        </p>
+      </form>
+    </div>
+  </li>
+  %endif
+</ul>
+</%def>
+
+<%def name="drawSelectRaidEvent(name='_mid', label=None)">
+	${lib.drawSelectEvent(cur_raidevent, raidevent, name=name, label=label)}
+</%def>

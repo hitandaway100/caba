@@ -1,0 +1,83 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+  ${self.topheader(produceevent['id'])}
+
+    <%doc>開催期間</%doc>
+  ${self.eventperiod(produceevent['starttime'], produceevent['endtime'], produceevent['is_opened'])}
+
+    <%doc>タブ</%doc>
+  <div>
+    ${self.eventtopic()}
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+  </div>
+    ${self.show_card()}
+    %if produceevent['is_opened']:
+        <%doc>イベントスカウトへ</%doc>
+        <div>
+            %if producehappening:
+                <div class="topcap" style="line-height:1;">
+          ${producehappening['raid']['name'] | h}来店中
+                    <div class="btn_ontext">
+              <a href="${get_html_param('url_battlepre', 'sp/produce_event/bossappear.html', producehappening)}"><img src="${url_static_img}01/btn_service.png" style="width:232px;height:49px;"/></a>
+            </div>
+        </div>
+
+                %if producehappening['event'] == produceevent['id']:
+          <div class="wrapper red">
+            イベント太客来店中！
+          </div>
+        %endif
+
+                ${self.drawToScoutButton()}
+
+                <div class="topcap">
+          <%doc>レイドデッキ編成へのリンク(dummy)</%doc>
+          ▼超太客キャスト編成が登場▼<br />
+          <div style="padding-top:8px;">
+            <a class="btnlong" href="${get_html_param('url_deck_raid', 'sp/deck/deck.html')}"><div>超太客キャストを編成する</div></a>
+          </div>
+        </div>
+            %else:
+                <div class="topcap" style="line-height:1;">
+          イベント太客は来店していません
+        </div>
+                ${self.drawToScoutButton()}
+            %endif
+        </div>
+
+        <%doc>現在プロデュース中のカード</%doc>
+
+        <%doc>現在の教育</%doc>
+
+        <%doc>ユーザーのイベントデータの概要</%doc>
+        ${self.eventdata()}
+
+        <%doc>イベントで獲得できる報酬のスライド</%doc>
+        ${self.eventslide()}
+
+        <%doc>イベントスカウトへ</%doc>
+        ${self.drawToScoutButton()}
+
+        <%doc>各ページへ遷移させるためのバナー</%doc>
+        <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2" style="padding-bottom:10px;"/>
+        ${self.show_gacha_banner()}
+        <div class="topcap">
+          ※同名の特効キャストの効果は<br>
+          重複してかかりません
+        </div>
+        ${self.shop_banner(produceevent["id"], shop_url)}
+
+        <%doc>マイページへ遷移する</%doc>
+        <div class="link_arrow_re">
+        <a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ</div></a>
+      </div>
+    %endif
+</%def>
+
+<%def name="drawToScoutButton()">
+    <div>
+        <a class="btnlong" href="${get_html_param('url_produceevent_scouttop', 'sp/produce_event/scout/scout.html')}">イベントスカウトへ</a>
+    </div>
+</%def>

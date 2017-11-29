@@ -1,0 +1,26 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="tutorialtext()">
+	<div class="back_black">
+	<div class="tutorial_ms">
+      特別サービス！<br />
+      エロ動画を見るための<br />
+      方法を伝授しよう。
+	</div>
+<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+</div>
+</%def>
+
+
+<%def name="contents()">
+	<div class="tutorial_bn">
+		<img src="${url_static_img}tutorial_new/tutorial_01_how_to_caba_01.png" style="width:320px;">
+		<img src="${url_static_img}tutorial_new/tutorial_01_how_to_caba_02.png" style="width:320px;">
+	</div>
+
+	<div>
+			<a class="btnlong_p" style="margin:30px auto 30px auto;" href="${get_html_param('url_next', 'sp/tutorial/complete.html')}">先に進む</a>
+	</div>
+	
+</%def>

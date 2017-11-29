@@ -1,0 +1,113 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+	<%def name="tutorialtext()">
+		<div class="back_black">
+		<div class="tutorial_ms">
+			それでは実際に教育してみよう。<br />
+			今回はサービスで無料で教育できるぞ。<br />
+			先程スカウトした子で教育してみよう。
+		</div>
+	<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	</div>
+	</%def>
+
+<%def name="contents()">
+	<div class="back_black">
+		<div class="titlebar">
+			<p class="caption">教育</p>
+		</div>
+		
+		<%
+			clickable = True
+			if is_tutorial:
+				clickable = False
+		%>
+		<div class="topcap">
+			教育するキャスト
+		</div>
+		
+		<%include file="../includes/listcard.html" args="card=basecard, url_static_img=url_static_img, card_select_type='basechange', get_html_param=get_html_param, clickable=clickable, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+	%if cost_over:
+	</div>
+	<div class="wrapper">
+		<span class="red">${gold_name | h}が足りません</span>
+	</div>
+	%else:
+		%if not_skillup:
+			<div class="caution" style="font-size:11px;">
+				※スキルアップ対象外のキャストが含まれています
+			</div>
+		%endif
+		%if flag_include_rare:
+			<div class="caution" style="font-size:11px;">
+				%if flag_include_rare:
+					※R以上のキャストが含まれています
+				%endif
+			</div>
+			<table class="precheck">
+				<tr>
+					<td style="width:290px; ">
+						<span style="font-size:14px;">本当に教育する場合はチェックボックスにチェックを入れてください</span>
+					</td>
+					<td style="width:30px;" >
+						<input type="checkbox" id="_accept" style=" position: relative; left:1px; width:20px;height:20px"  /><label>&nbsp;</label>
+					</td>
+				</tr>
+			</table>
+		%endif
+	</div>
+	<div>
+		<script>
+			function onClickSellButton(){
+				%if flag_include_rare:
+				if($("#_accept")[0].checked != true){
+					return;
+				}
+				%endif
+				%if is_pc:
+				if(window.parent.reserveGetStatus){
+					window.parent.reserveGetStatus();
+				}
+				%endif
+				location.href = "${get_html_param('url_do', 'sp/composition/effect_swf.html')}";
+			}
+		</script>
+		<a class="btnpinkbig" href="javascript:void(0);" onclick="onClickSellButton();"><p class="caption">教育する</p></a>
+	</div>
+	%endif
+	
+	<div class="confirm">
+		%if is_tutorial:
+			今回は無料で教育ができます。<br />
+		%else:
+			<span class="name">消費${gold_name | h}&nbsp;:&nbsp;</span>${cost}<br/>
+			%if 0 <= gold_post:
+				<span class="name">所持${gold_name | h}&nbsp;:&nbsp;</span>${player['gold']}⇒<span class="orange">${gold_post}</span><br/>
+			%else:
+				<span class="name">所持${gold_name | h}&nbsp;:&nbsp;</span>${player['gold']}<br />
+			%endif
+		%endif
+		%if not cost_over:
+			下記のキャストを教育のパートナーにします。<br/>
+			よろしいですか?
+		%endif
+	</div>
+	
+	<div class="back_black">	
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+			<div class="wrapper" style="color:#ffffff;">パートナー
+			</div>
+		</div>
+		
+		%for card in cardlist:
+			<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+		%endfor
+		
+		%if not is_tutorial:
+			<div class="link_arrow_re">
+				<a class="btnfoot" href="${get_html_param('url_composition', 'sp/composition/materialselect.html', card)}" ><span style="margin-left:14px;">戻る</span></a>
+			</div>
+		%endif
+	</div>
+</%def>

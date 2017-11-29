@@ -1,0 +1,76 @@
+#coding:utf-8
+<%inherit file="gacha.html" />
+
+<%def name="drawPremiumTabs()">
+	${self.drawPremiumTabSub(Defines.GachaConsumeType.MINI_SEAT)}
+</%def>
+
+<%def name="drawGachaList()">
+	%for gacha in gachadata.values():
+		%if gacha['consumetype'] == Defines.GachaConsumeType.MINI_SEAT and gacha['tabengname'] == current_tab:
+			${self.drawGachaListSub(gacha)}
+		%endif
+	%endfor
+</%def>
+
+<%def name="drawGachaListSub(gacha)">
+	<%
+		unique_name = gacha['unique_name']
+		seatinfo = gacha['seatinfo']
+	%>
+	${self.drawSchedule(unique_name)}
+	${self.drawHeader(unique_name)}
+	${self.drawSlide(unique_name)}
+	${self.reaSetsumei()}
+	
+	${self.drawGachaMiniSeat(unique_name)}
+	
+	${self.drawSeatThumbnail(unique_name)}
+	
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+		<div class="wrapper">▽現在のシート状況▽</div>
+	<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320" height="2"/>
+	
+	${self.drawSeatInfoByKey(unique_name)}
+	
+	<div align="right" style="width:310px; height:30px; font-size:13;">
+		<a href="${get_html_param('url_supcard', 'sp/gacha/supcard.html', gacha)}" class="orange">獲得可能キャスト一覧</a>
+	</div>
+	
+	<%doc>レアキャスト雇用速報</%doc>
+	${self.drawCastGetListByUniqueName(unique_name)}
+	
+	${self.drawGachaMiniSeat(unique_name)}
+</%def>
+
+<%def name="drawFooterText()">
+	<section class="basicinfo" style="padding-bottom:10px;">
+		<div class="basictop">
+			<p>注意</p>
+			<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+		</div>
+		
+		<div class="basicBack">
+			<ul>
+				<li>
+					%for gacha in gachadata.values():
+						%if gacha['consumetype'] == Defines.GachaConsumeType.MINI_SEAT and gacha['tabengname'] == current_tab:
+							${self.drawExplainTextMiniSheet(gacha)}
+						%endif
+					%endfor
+				</li>
+			</ul>
+			<div style="font-size:0px;">
+				.
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+</%def>
+
+<%def name="setCurrentTopic()">
+	<script type="text/javascript">
+		topics(1); //タブボックス用の関数の呼び出し
+	</script>
+</%def>

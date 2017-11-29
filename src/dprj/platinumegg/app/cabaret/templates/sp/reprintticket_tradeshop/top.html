@@ -1,0 +1,205 @@
+#coding:utf-8
+<%inherit file="base.html" />
+<%def name="head()">
+    ${parent.head()}
+    <link href="${url_static_css}/tradeshop/top.css?v=${self.css_version}" rel="stylesheet" type="text/css" />
+</%def>
+<%def name="drawSlide()"></%def>
+
+<%def name="castdata(item)">
+  <div class="carddetail_frame" style="background: url(${url_static_img}common/card_frame_01.png) no-repeat; margin-left:auto; margin-right:auto; width:310px; height:200px; background-size:cover; -moz-background-size:cover; min-height: 153px;"><!--
+    --><div class="carddetail_main" style="padding-bottom:6px;">
+    <table>
+      <tr>
+        <td>
+          <div class="cardspace">
+            <img src="${item['thumbUrlMiddle']}" width="110px" height="138px" />
+          </div>
+        </td>
+        <td>
+          <table class="kyaba_name">
+            <tr>
+              <td class="name_st1l"><img src="${item['iconUrl']}" width="28px" height="28px" /></td>
+              <td class="name_st2l">${item['name']}</td>
+            </tr>
+          </table>
+          <table class="kyaba_set2">
+            <tr>
+              <td class="kyaba_st1">レベル</td>
+              <td class="kyaba_st2">1/50</td>
+            </tr>
+            <tr>
+              <td class="kyaba_st1" style="color:#f470cf;">経験値</td>
+              <td class="kyaba_st2">
+                <div class="st_frame_small" style="height:16px;">
+                  <div class="st_gauge05" style="width:${0}"><%doc>バーは仮</%doc></div>
+                </div>
+              </td>
+            </tr>
+            
+            <tr>
+              <td class="kyaba_st1">接客力</td>
+              <td class="kyaba_st2">${item['basepower']}</td>
+            </tr>
+            
+            <tr>
+              <td class="kyaba_st1" style="color:#f470cf;">ハメ管理度</td>
+              <td class="kyaba_st2">
+                <div>
+                  <%doc>
+                  % for _ in xrange(card['master']['hklevel'] - 1):
+                    <img src="${url_static_img}common/heart.png" width="14px" height="14px" />
+                  % endfor
+                  </%doc>
+                </div>
+              </td>
+            </tr>
+            
+            <tr>
+              <td class="kyaba_st_s">人件費</td>
+              <td class="kyaba_st2">${item['cost']}</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <table class="kyaba_set3">
+      <tr>
+        <td class="kyaba_st3">
+          サービス
+        </td>
+        <td class="kyaba_st4">
+          <b>&nbsp; ${item['skillname']}:</b>LV1
+        </td>
+      </tr>
+      <tr>
+        <td colspan=2 class="kyaba_st5">
+          ${item['skilltext']}
+        </td>
+      </tr>
+    </table>
+    </div>
+  </div>
+</%def>
+
+<%def name="itemdata_body(item)">
+  <div>
+    <div class="itembox">
+      ${self.itemtitle(item)}
+
+      ${self.castdata(item)}
+
+      <table class="tablecenter" style="310px;">
+        <td class="itemtext">
+          <div>
+            <span class="pt_text">必要チケット:</span>　${item['ticket_name']}
+          </div>
+          <span class="pt_text">必要交換枚数:</span>　${item['use_ticketnum']}枚<br />
+        </td>
+      </table>
+      <div style="clear:both;"></div>
+      %if item['is_maxcount']:
+        <div class="alert_message" align="center" style="color: red;margin: 10px 0 20px 0;">交換可能回数が上限に達しています</div>
+      %else:
+        %if item['stock'] != 0:
+          <div class="wrapper">
+            交換可能回数残り：${max(item['stock'] - item['tradecount'], 0)} 回
+          </div>
+        %endif
+        <form action="${get_html_param('next_url', 'sp/reprintticket_tradeshop/yesno.html', item)}" method="post" class="trade_form">
+        %if item["is_trade"]:
+          ${self.show_selectbox(item)}
+        %else:
+          <div class="alert_message">
+            チケットが足りません。
+          </div>
+        %endif
+      %endif
+      </form>
+    </div>
+    %if need_bar:
+      <img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+    %endif
+  </div>
+</%def>
+
+<%def name="show_selectbox(item)">
+  <table class="pullmenuset" style="margin-left:120px;">
+    <tr>
+      <td class="pullmenu3">
+        <select class="select_type" name="${Defines.URLQUERY_NUMBER}" style="width: 80px; height: 31px;">
+          %for num in (1, 2, 3, 4, 5, 10):
+            %if num <= (item['player_ticketnum'] / item['use_ticketnum']) and item['stock'] == 0 or num <= (item['stock'] - item['tradecount']):
+              <option value="${num}">${num}</option>
+            %endif
+          %endfor
+        </select>
+        <div id="pull1"></div>
+      </td>
+      <td style="width:98px;"><input type="submit" value="交換する" class="buttonshop" style="font-size:12px; letter-spacing: -1.4px; text-align:center;"/></td>
+    </tr>
+  </table>
+</%def>
+
+<%def name="show_number_of_gacha_tickets()">
+  <div class="titlebar">
+    <p class="caption">秘宝アイテム交換</p>
+  </div>
+
+  <div class="itembox">
+    <table style="310px;">
+      <tr>
+        <td>
+          <img src="${url_static_img}${gacha_ticket_thumbnail}/Item_thumb_60_60.png" width="60" height="60" class="itemimg" />
+        </td>
+        <td class="itemtext">
+          ${gacha_ticket_label}<br />
+          ${gacha_ticket_num}枚
+        </td>
+      </tr>
+    </table>
+  </div>
+</%def>
+
+<%def name="contents()">
+  ${self.topheader()}
+  %if headerlist:
+    <div>
+      <img src="${headerlist[0]}" width="320" />
+    </div>
+  %endif
+
+  ${self.drawSlide()}
+  <div>
+    %if is_open:
+      %if len(itemdata) != 0 and len(ticket_tabs) != 0:
+        <table align="center" width="256" border="0" cellpadding="0" cellspacing="0" style="margin:10px auto 0 auto;">
+          <tr>
+            <td width="96px" style="text-align: center;">
+              %for ticket_tab in ticket_tabs:
+                %if ticket_tab.is_selected:
+                  <div class="btn_pink_s" style="text-align:center; font-weight:normal;margin:0;background-size:cover;">
+                    <a href="javascript:void(0);">${ticket_tab.name}</a>
+                  </div>
+                %else:
+                  <div class="btn_pink_s" style="text-align:center; font-weight:normal; margin:0;background: url(${url_static_img}common/btn_97_off.png) no-repeat;background-size:cover;">
+                    <a href="${ticket_tab.url}"><span style="color:#9c957d;">${ticket_tab.name}</span></a>
+                  </div>
+                %endif
+              %endfor
+            </td>
+          </tr>
+        </table>
+      %endif
+
+      <%doc>チケット所持枚数表示</%doc>
+      ${self.show_number_of_gacha_tickets()}
+
+      %for item in itemdata:
+        ${self.itemdata_body(item)}
+      %endfor
+    %else:
+      <div align="center" style="margin: 10px 0 20px 0;">現在交換可能なキャストはありません</div>
+    %endif
+  </div>
+</%def>

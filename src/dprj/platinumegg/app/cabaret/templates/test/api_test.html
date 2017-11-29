@@ -1,0 +1,206 @@
+#coding:utf-8
+<%inherit file="../sp/base.html" />
+<%def name="header()">
+	<%include file="include_test.html" />
+</%def>
+<%def name="contents()">
+	<!-- People -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			People
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="People" />
+			<p>
+				guid:<input type="text" name="_guid" value="${viewer_id}" />
+			</p>
+			<p>
+				selector:<select name="_selector">
+					<option value="@self">self</option>
+					<option value="@friends">friends</option>
+					<option value="@all">all</option>
+				</select>
+			</p>
+			<p>
+				pid:<input type="text" name="_pid" value="" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	
+	<!-- Activity -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			Activity
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="Activity" />
+			<p>
+				title:<input type="text" name="_title" value="Activityテストです" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	
+	
+	<!-- Message -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			Message
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="Message" />
+			<p>
+				title:<input type="text" name="_title" value="Messageテストです" />
+			</p>
+			<p>
+				body:<input type="text" name="_body" value="ID:${viewer_id}が送信しました" />
+			</p>
+			<p>
+				recipients:<input type="text" name="_recipients" value="" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	
+	
+	<!-- Payment -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			PaymentGet
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="PaymentGet" />
+			<p>
+				guid:<input type="text" name="_guid" value="" />
+			</p>
+			<p>
+				paymentId:<input type="text" name="_paymentId" value="" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			PaymentPost
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="PaymentPost" />
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	
+	
+	<!-- Inspection -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			InspectionGet
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="InspectionGet" />
+			<p>
+				textId:<input type="text" name="_textId" value="" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			InspectionPost
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="InspectionPost" />
+			<p>
+				data:<input type="text" name="_data" value="InspectionPostテストです" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			InspectionPut
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="InspectionPut" />
+			<p>
+				textId:<input type="text" name="_textId" value="" />
+			</p>
+			<p>
+				data:<input type="text" name="_data" value="InspectionPutテストです" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			InspectionDelete
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="InspectionDelete" />
+			<p>
+				textId:<input type="text" name="_textId" value="" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	
+	
+	<!-- Ignorelist -->
+	<div style="color : #000000;background-color : #99ff99;">
+		<div style="color : #ffffff;background-color : #669900; text-align: center;">
+			Ignorelist
+		</div>
+		<form action="${url_apitest}" method="post">
+			<input type="hidden" name="_api" value="Ignorelist" />
+			<p>
+				guid:<input type="text" name="_guid" value="${viewer_id}" />
+			</p>
+			<p>
+				pid:<input type="text" name="_pid" value="" />
+			</p>
+			<p>
+				<input type="submit" value="テスト" />
+			</p>
+		</form>
+	</div>
+	
+	<!-- 結果 -->
+	%if result is not UNDEFINED:
+		<div style="color : #ffffff;background-color : #990000;">
+			<div style="color : #000000;background-color : #ffcccc; text-align: center;">
+				結果
+			</div>
+			<p>
+				API :${result['apiname']}
+			</p>
+			<p>
+				レスポンス :
+				<p>
+					${result['data']}
+				</p>
+			</p>
+		</div>
+	%endif
+	
+	<div>
+		<a href="${url_movie_test}">動画テスト</a>
+	</div>
+</%def>

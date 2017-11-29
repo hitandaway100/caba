@@ -1,0 +1,63 @@
+#coding:utf-8
+<%inherit file="../../base.html" />
+<%namespace name="repticket" file="../../reprintticket_tradeshop/top.html" />
+
+<%def name="head()">
+  <script type="text/javascript" src="${url_static_js}jumptop.js"></script>
+	<script type="text/javascript">
+	 function onClickBanner(){
+		 to_top("${get_html_param('url_sengoku', '')}");
+	 }
+	</script>
+</%def>
+
+<%def name="contents()">
+  <%doc>ページヘッダー</%doc>
+  <div class="back_black">
+    <img src="${url_static_img}event/crosspromo/sengoku/collaboration_header.png" width="320px" height="130px" />
+    <div style="text-align:center;margin:10 0;">${cross_promo_time_limit}まで</div>
+
+    <div class="wrapper" style="margin-bottom:10px;">
+      <img src="${url_static_img}event/crosspromo/sengoku/collaboration_info.png" width="320px" height="320px" />
+    </div>
+    <div class="wrapper" style="margin-bottom:8px;">
+      <a href="javascript:void(0);" onclick="onClickBanner()">
+        <img src="${url_static_img}event/crosspromo/sengoku/banner_480.png" width="300px" height="75px" />
+      </a>
+      <div style="line-height:1.2;">
+        <span class="yellow" style="font-size:13px;">↑戦国愛撫へはこちらから</span>
+      </div>
+    </div>
+
+    <div class="wrapper" style="margin-bottom:8px;margin-top:8px;">
+      <img src="${url_static_img}banner/gacha/collabo_step_02/collabo_step_02_rule2.png" width="320px" height="970px" />
+    </div>
+    <%doc>報酬一覧</%doc>
+    <%
+    cast = {'thumbUrlMiddle': url_static_img+'card/tachibana_harumi_5/H1/Card_thumb_110_138.png', 'iconUrl': url_static_img+'common/zokusei_3.png', 'name': '立花はるみ', 'basepower': '9300', 'cost': '16', 'skillname': '上目づかい [小]', 'skilltext': '[相:全]小↓'}
+    %>
+    ${print_missions(2, cast)}
+    ${print_missions(3, cast)}
+    ${print_missions(5, cast)}
+
+    <div class="wrapper" style="margin:10px;">
+      <a href="javascript:void(0);" onclick="onClickBanner()">
+        <img src="${url_static_img}event/crosspromo/sengoku/banner_480.png" width="300px" height="75px" />
+      </a>
+      </a>
+      <div style="line-height:1.2;">
+        <span class="yellow" style="font-size:13px;">↑戦国愛撫へはこちらから</span>
+      </div>
+    </div>
+    <img src="${url_static_img}common/kyoutsu_bar_05.png" width="320px" height="2px" />
+  </div>
+</%def>
+
+<%def name="print_missions(n, cast)">
+  <div class="titlesub">
+    <div class="wrapper">
+      ログイン${n}日目
+    </div>
+  </div>
+  ${repticket.castdata(cast)}
+</%def>

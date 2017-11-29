@@ -1,0 +1,43 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">解約確認</p>
+	</div>
+	<div class="wrapper orange">
+		本当に解約しますか？
+	</div>
+	
+	<div style="margin:16px 0px;">
+		<section class="basicinfo">
+			<div class="basictop">
+				<p>注意</p>
+				<img src="${url_static_img}common/kyoutsu_bar_07.png" width="282" height="3" />
+			</div>
+			<div class="basicBack">
+				<ul>
+					<li>
+						※解約した場合、店舗に設定されていたキャストは設定解除されます。<br />
+						また、レンタル期間が残っていても経営マネーは返却されません。
+					</li>
+				</ul>
+				<div style="font-size:0px;">.</div>
+			</div>
+			<div class="basicbtm">.</div>
+		</section>
+	</div>
+	
+	<div style="margin:8px 0px;">
+		<div>
+			<a class="btnlong" href="${get_html_param('url_store', 'sp/cabaclub/store_opened.html', cabaclubstoremaster)}">解約しない</a>
+		</div>
+		<div>
+			<a class="btnlong" href="${get_html_param('url_write', 'sp/cabaclub/cancelend.html')}">解約する</a>
+		</div>
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_cabaclubtop', 'sp/cabaclub/top.html')}"><span style="margin-left:14px;">経営Top</span></a>
+	</div>
+</%def>

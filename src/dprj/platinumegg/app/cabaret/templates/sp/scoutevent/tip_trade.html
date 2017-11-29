@@ -1,0 +1,154 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">${scoutevent['lovetime_pointname'] | h}交換</p>
+	</div>
+	<div class="wrapper">
+		${scoutevent['lovetime_pointname'] | h}に交換したい<br />
+		${scoutevent['tanzaku_name']}を選択してください。
+	</div>
+	<table class="pullmenuset" style="margin:8px auto 8px 80px;">
+		<td class="pullmenu2">
+			<select id="select_tanzaku" class="select_type" style="width: 173px; height: 31px; left:73px; margin-left: -73px;">
+				%for tanzaku in scoutevent_tanzaku_list:
+					<option value="${tanzaku['number']}">${tanzaku['tanzakuname'] | h}</option>
+				%endfor
+			</select>
+			<div class="pulltext"></div>
+		</td>
+	</table>
+	
+	<dl class="tip_flame" style="background-color: #BA55D3;">
+		<dt class="tip_text">所持枚数</dt>
+		<dd class="tip_text_3 tanzaku_user_num"></dd>
+	</dl>
+	<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+	
+	<div id="select_tip_block">
+	</div>
+	
+	<div>
+		<a class="sell_on btn_trade" href="javascript:void();"><div>${scoutevent['lovetime_pointname'] | h}に交換</div></a>
+	</div>
+	
+	<div class="caution" style="margin-bottom: 10px;">
+		※${scoutevent['lovetime_pointname'] | h}から${scoutevent['tanzaku_name']}に戻す事は出来ません。<br />
+	</div>
+	
+	${self.eventfooter()}
+	
+	<div id="select_tip_block_on" style="display: none;">
+		<div class="wrapper">
+			${scoutevent['lovetime_pointname'] | h}に交換したい<br />
+			<span class="tanzakuunit"></span>数を選択してください。
+		</div>
+		<table class="pullmenuset" style="margin:8px auto 8px 80px;">
+			<td class="pullmenu2">
+				<select class="select_type select_tip" style="width: 173px; height: 31px; left:73px; margin-left: -73px;">
+				</select>
+				<div class="pulltext"></div>
+			</td>
+		</table>
+	</div>
+	
+	<div id="select_tip_block_off" style="display: none;">
+		<div class="list_not_found red"></div>
+	</div>
+	
+	<script>
+		$(function(){
+			// 現在の情報.
+			var tanzaku_data = {};
+			%for tanzaku in scoutevent_tanzaku_list:
+			tanzaku_data["${tanzaku['number']}"] = {'name':"${tanzaku['tanzakuname']}", 'number':${tanzaku['number']}, 'unit':"${tanzaku['tanzakuunit']}", 'num':${tanzaku['userdata']['tanzaku']}, 'nums':${tanzaku['userdata']['tanzaku_usenums']}};
+			%endfor
+			
+			function getCurrentTanzakuData(){
+				var obj = $("#select_tanzaku")[0];
+				var opt = obj.options[obj.options.selectedIndex];
+				var data = tanzaku_data[opt.value];
+				return data;
+			}
+			
+			function updateHtml(){
+				var data = getCurrentTanzakuData();
+				
+				// 短冊所持数.
+				$(".tanzaku_user_num").html(""+data.num+data.unit);
+				
+				// 短冊の単位.
+				$(".tanzakuunit").html(data.unit);
+				
+				if(0 < data.num){
+					// 交換可能.
+					if(!$(".btn_trade").hasClass("sell_on")){
+						$(".btn_trade").removeClass("sell_off").addClass("sell_on");
+					}
+					var html = "";
+					for(var i=0; i<data.nums.length; i++){
+						if(data.nums[i] == data.num){
+							continue;
+						}
+						html += "<option value="+data.nums[i]+">"+data.nums[i]+"</option>";
+					}
+					html += "<option value="+data.num+">全て</option>";
+					$(".select_tip").html(html);
+					$("#select_tip_block").html($("#select_tip_block_on")[0].innerHTML);
+					
+					function updateSelectText(target){
+						var text = $("option:selected", target).text();
+						$(target).parent().children(".pulltext").text(text);
+					}
+					$(".select_tip").change(function(){
+						updateSelectText(this);
+					}).trigger("change");
+				}
+				else{
+					// 交換不可能.
+					if(!$(".btn_trade").hasClass("sell_off")){
+						$(".btn_trade").removeClass("sell_on").addClass("sell_off");
+					}
+					$(".list_not_found").html(""+data.name+"を所持していません");
+					$("#select_tip_block").html($("#select_tip_block_off")[0].innerHTML);
+				}
+			}
+			$("#select_tanzaku").change(updateHtml);
+			updateHtml();
+			
+			function onClickNominateButton(event){
+				event.preventDefault();
+				
+				if($(".btn_trade").hasClass("sell_off")){
+					return;
+				}
+				// フォームを作成.
+				var form = document.createElement("form");
+				form.method = "POST";
+				form.action = "${get_html_param('url_do', 'sp/scoutevent/tip_trade_complete.html')}";
+				
+				var data = getCurrentTanzakuData();
+				var obj = document.createElement("input");
+				obj.type = "hidden";
+				obj.name = "${Defines.URLQUERY_ID}";
+				obj.value = data.number;
+				form.appendChild(obj);
+				
+				obj = document.createElement("input");
+				obj.type = "hidden";
+				obj.name = "${Defines.URLQUERY_NUMBER}";
+				obj.value = (function(){
+					var obj = $(".select_tip")[0];
+					var opt = obj.options[obj.options.selectedIndex];
+					return opt.value;
+				})();
+				form.appendChild(obj);
+				
+				document.getElementById("body_main").appendChild(form);
+				form.submit();
+			}
+			$(".btn_trade").click(onClickNominateButton);
+		});
+	</script>
+</%def>

@@ -1,0 +1,279 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	<style>
+		.omake_tab {
+			text-align:center;
+			font-weight:normal;
+			margin:0;
+			background-size:cover;
+			height:34px;
+		}
+		.omake_tab a div {
+			display:inline-block;
+			padding-top:6px;
+			font-size:10px;
+		}
+		.omake_tabsub {
+			text-align:center;
+			font-weight:normal;
+			margin:0;
+			background-size:cover;
+			height:34px;
+		}
+		.omake_tabsub a div {
+			display:inline-block;
+			padding-top:6px;
+			font-size:10px;
+		}
+		.omake_tab_off {
+			background: url(${url_static_img}common/btn_97_off.png) no-repeat;
+		}
+		.omake_tab_off a div {
+			color:#9c957d;
+		}
+	</style>
+	<script>
+		var selectSpecial = function(){};
+		(function(){
+			var cur_omake = null;
+			var cur_omake_idx = null;
+			
+			updateOmakeListName = function(gachaid){
+				var obj = $("#omake_name_"+gachaid);
+				var listname = null;
+				if(obj.length < 1){
+					listname = "おまけ";
+				}
+				else{
+					listname = obj[0].innerHTML;
+				}
+				$(".omake_name").html(listname);
+			};
+			
+			selectSpecial = function (gachaid){
+				if(cur_omake == gachaid){
+					// 現在と同じ.
+					return;
+				}
+				// タブ切り替え.
+				$(".omake_tab").addClass("omake_tab_off");
+				$("#omake_tab_"+gachaid).removeClass("omake_tab_off");
+				
+				// バナー切り替え.
+				$(".omake_banner").css("display", "none");
+				$("#omake_banner_"+gachaid).css("display", "");
+				
+				// コンテンツ切り替え.
+				$(".omake_content").css("display", "none");
+				$("#omake_content_"+gachaid).css("display", "");
+				
+				// 一覧名を変更.
+				updateOmakeListName(gachaid);
+				
+				// 現在のタブを更新.
+				cur_omake = gachaid;
+				cur_omake_idx = null;
+				selectSpecialSub(cur_omake, 0);
+			}
+			
+			selectSpecialSub = function (gachaid, idx){
+				if(cur_omake_idx == idx){
+					// 現在と同じ.
+					return;
+				}
+				// タブ切り替え.
+				$(".omake_tabsub").addClass("omake_tab_off");
+				$("#omake_tabsub_"+gachaid+"_"+idx).removeClass("omake_tab_off");
+				
+				// コンテンツ切り替え.
+				$(".omake_contentsub").css("display", "none");
+				$("#omake_content_"+gachaid+"_"+idx).css("display", "");
+				
+				// 現在のタブを更新.
+				cur_omake_idx = idx;
+			}
+			%if omakeinfo_list:
+			$(function(){
+				updateOmakeListName(${omakeinfo_list[0]['id']});
+			});
+			%endif
+		})();
+	</script>
+</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p><span class="omake_name"></span>一覧</p>
+	</div>
+	%if omakeinfo_list:
+		<%doc>バナー</%doc>
+		<div style="text-align:center;">
+			%for idx,omakeinfo in enumerate(omakeinfo_list):
+				<div id="omake_banner_${omakeinfo['id']}" class="omake_banner" style="${'' if idx==0 else 'display:none;'}">
+					<img src="${omakeinfo['thumbUrl']}" width="280" />
+				</div>
+			%endfor
+		<div>
+		
+		<%doc>タブ</%doc>
+		%if 1 < len(omakeinfo_list):
+			<%
+				if len(omakeinfo_list) % 2 == 0:
+					td_width = 160
+					cellspacing = 0
+					colnum = 2
+				else:
+					td_width = 106
+					cellspacing = 1
+					colnum = 3
+			%>
+			<table align="center" width="320" border="0" cellpadding="0" cellspacing="${cellspacing}" style="margin:10px auto 0 auto;">
+				<tr>
+					%for idx, omakeinfo in enumerate(omakeinfo_list):
+						<td width="${td_width}px" style="text-align: center;">
+							% if idx == 0:
+							<div class="btn_pink_s omake_tab" style="width:${td_width}px;" id="omake_tab_${omakeinfo['id']}">
+							%else:
+							<div class="btn_pink_s omake_tab omake_tab_off" style="width:${td_width}px;" id="omake_tab_${omakeinfo['id']}">
+							%endif
+								<a href="javascript:void(0);" onclick="selectSpecial(${omakeinfo['id']});"><div>${omakeinfo['name'] | h}</div></a>
+							</div>
+						</td>
+						%if idx % colnum == colnum - 1:
+						</tr><tr>
+						%endif
+					%endfor
+				</tr>
+			</table>
+		%endif
+		
+		<%doc>コンテンツ</%doc>
+		%for idx,omakeinfo in enumerate(omakeinfo_list):
+			${self.drawOmakeInfo(omakeinfo, idx==0)}
+		%endfor
+	%endif
+	
+	<!-- 戻る -->
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${url_back}"><span style="margin-left:14px;">前へ</span></a>
+	</div>
+</%def>
+
+<%def name="drawOmakeInfo(omakeinfo, view)">
+	<div id="omake_content_${omakeinfo['id']}" class="omake_content" style="${'' if view else 'display:none;'}">
+		<%doc>ガチャ名</%doc>
+		<div class="titlebar">
+			<p style="font-size: 12px;padding-top: 6px;">${omakeinfo['name'] | h}</p>
+		</div>
+		
+		%if omakeinfo['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO:
+			<%doc>福袋</%doc>
+			<%
+				if len(omakeinfo['prizelist']) % 2 == 0:
+					td_width = 160
+					cellspacing = 0
+					colnum = 2
+				else:
+					td_width = 106
+					cellspacing = 1
+					colnum = 3
+			%>
+			<table align="center" width="320" border="0" cellpadding="0" cellspacing="${cellspacing}" style="margin:10px auto 0 auto;">
+				<tr>
+					%for idx, prizeinfo in enumerate(omakeinfo['prizelist']):
+						<td width="${td_width}px" style="text-align: center;">
+							% if idx == 0:
+							<div class="btn_pink_s omake_tabsub" style="width:${td_width}px;" id="omake_tabsub_${omakeinfo['id']}_${idx}">
+							%else:
+							<div class="btn_pink_s omake_tabsub omake_tab_off" style="width:${td_width}px;" id="omake_tabsub_${omakeinfo['id']}_${idx}">
+							%endif
+								<a href="javascript:void(0);" onclick="selectSpecialSub(${omakeinfo['id']}, ${idx});"><div>${prizeinfo.get('name', 'おまけ%d' % (idx+1)) | h}</div></a>
+							</div>
+						</td>
+						%if idx % colnum == colnum - 1:
+						</tr><tr>
+						%endif
+					%endfor
+				</tr>
+			</table>
+			
+			<%doc>おまけ</%doc>
+			%for idx,prizeinfo in enumerate(omakeinfo['prizelist']):
+				<div id="omake_content_${omakeinfo['id']}_${idx}" class="omake_contentsub" style="${'' if idx==0 else 'display:none;'}">
+					%for idx,prizeitem in enumerate(prizeinfo['listitem_list']):
+						%if 0 < idx:
+							<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+						%endif
+						<table style="margin-left:8px; width:300px; height:90px;">
+							<td  width="70">
+								<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+							</td>
+							<td>
+								<div class="itemtext" style="margin-top:-24px;">
+									%if prizeitem['icon']:
+										<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+									%else:
+										<span><!--
+									%endif
+									-->${prizeitem['name'] | h}<!--
+									%if prizeitem['rare'] is not None:
+										-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+									%endif
+									-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+								</div>
+							</td>
+						</table>
+					%endfor
+				</div>
+			%endfor
+		%else:
+			<%doc>おまけ</%doc>
+			%for i,prizeinfo in enumerate(omakeinfo['prizelist']):
+				<div>
+					<div class="titlesub">
+						<div class="wrapper">
+							${prizeinfo.get('name', 'おまけ%d' % (i+1)) | h}
+						</div>
+					</div>
+					%for idx,prizeitem in enumerate(prizeinfo['listitem_list']):
+						%if 0 < idx:
+							<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="3" />
+						%endif
+						<table style="margin-left:8px; width:300px; height:90px;">
+							<td  width="70">
+								<img src="${prizeitem['thumbUrl']}" width="60" height="60" class="itemimg" />
+							</td>
+							<td>
+								<div class="itemtext" style="margin-top:-24px;">
+									%if prizeitem['icon']:
+										<img src="${prizeitem['icon']}" width="28px" height="28px" /><span style="height:28px; vertical-align:50%;">&nbsp;<!--
+									%else:
+										<span><!--
+									%endif
+									-->${prizeitem['name'] | h}<!--
+									%if prizeitem['rare'] is not None:
+										-->[<span style="color:${Defines.Rarity.COLORS.get(prizeitem['rare'], '#ffffff')};">${Defines.Rarity.NAMES[prizeitem['rare']] | h}</span>]<!--
+									%endif
+									-->${prizeitem['sep'] | h}<span class="yellow">${prizeitem['num']}</span>${prizeitem['unit'] | h}
+								</div>
+							</td>
+						</table>
+					%endfor
+				</div>
+			%endfor
+		%endif
+		
+		%if omakeinfo['is_random']:
+			<div class="wrapper red" style="font-size: 12px;">
+				上記のおまけの内、1種類が貰えます！
+			</div>
+		%endif
+	</div>
+	%if omakeinfo['consumetype'] == Defines.GachaConsumeType.FUKUBUKURO:
+		<div style="display:none;" id="omake_name_${omakeinfo['id']}">福袋</div>
+	%else:
+		<div style="display:none;" id="omake_name_${omakeinfo['id']}">おまけ</div>
+	%endif
+</%def>

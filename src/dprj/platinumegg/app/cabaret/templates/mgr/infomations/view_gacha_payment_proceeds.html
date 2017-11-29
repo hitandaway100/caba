@@ -1,0 +1,120 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head_additional()">
+	<script type="text/javascript">
+		$(function(){
+			$(".monthtitle").click(function(event){
+				var monthlist = $(event.target).parent().children(".monthlist");
+				if($(monthlist).css("display") == 'none'){
+					monthlist.slideDown();
+				}
+				else{
+					monthlist.slideUp();
+				}
+				return false;
+			});
+			
+			$(".daytitle").click(function(event){
+				var daylist = $(event.target).parent().children(".daylist");
+				if($(daylist).css("display") == 'none'){
+					daylist.slideDown();
+				}
+				else{
+					daylist.slideUp();
+				}
+			});
+			$(".daylist").css("display", "none");
+			$(".monthlist").css("display", "none");
+			
+			function makeCSV(monthlist){
+				var rows = [];
+				
+				var monthdata = $(monthlist).children("li");
+				for(var i=0; i<monthdata.length; i++){
+					var daytitle = $(monthdata[i]).children(".daytitle").attr("name").replace("年", "/").replace("月", "/");
+					var table = $(monthdata[i]).children(".daylist").children("table")[0];
+					
+					for(var j=0; j<table.rows.length; j++){
+						var cells = table.rows[j].cells;
+						var line = [];
+						
+						var s = "0"+cells[0].innerText.replace("日", "");
+						line.push('"'+daytitle + s.slice(s.length-2)+'"');
+						for(var k=1; k<cells.length; k++){
+							line.push('"'+cells[k].innerText.replace(/(\n|\r)+/g, "").replace('"', '""').replace("ポイント", "").replace("人", "").replace("回", "")+'"');
+						}
+						var str_line = line.join(",");
+						rows.push(str_line);
+					}
+				}
+				return rows.join('\n');
+			}
+			var monthtitle = $(".monthtitle");
+			for(var i=0; i<monthtitle.length; i++){
+				var monthlist = $(monthtitle[i]).parent().children(".monthlist");
+				var csvdata = makeCSV(monthlist);
+				
+				monthtitle[i].href = "data:application/octet-stream," + encodeURIComponent(csvdata);
+				monthtitle[i].innerHTML += "(右クリック⇛リンク先を保存でCSVを保存できます)";
+			}
+		});
+	</script>
+</%def>
+
+<%def name="content()">
+	
+	<div class="page-header">
+		<h1>
+			ガチャ売上情報
+		</h1>
+	</div>
+	
+	<div>
+		<form action="" method="post">
+			<select name="_mid">
+				%for master in masterlist:
+					%if master['id'] == mid:
+						<option value="${master['id']}" selected="selected">${master['name'] | h}(ID:${master['id']})</option>
+					%else:
+						<option value="${master['id']}">${master['name'] | h}(ID:${master['id']})</option>
+					%endif
+				%endfor
+			</select><br />
+			<input type="submit" value="表示" class="btn btn-info" />
+		</form>
+	</div>
+	
+	%if proceeds:
+		<div style="margin: 8px 0px;">
+			%for proceeddata in proceeds:
+				<div class="well" style="font-size:larger;">
+					<a class="monthtitle" style="font-weight: bold; font-size:larger;">
+						${proceeddata['name'] | h}(ID:${proceeddata['id']})　合計:${proceeddata['total']}ポイント　UU:${len(proceeddata['uu'])}　回数:${proceeddata['count']}
+					</a>
+					<ul class="monthlist">
+						%for tabledata in proceeddata['table']:
+							<li style="margin: 4px 0px;">
+								<a class="daytitle" name="${tabledata['name']}" href="javascript:void(0);">
+									${tabledata['name']}　合計:${tabledata['total']}ポイント　UU:${len(tabledata['uu'])}　回数:${tabledata['count']}
+								</a>
+								<div class="daylist" style="font-size:smaller;">
+									<table class="table table-bordered">
+										%for data in tabledata['datalist']:
+											<tr>
+												<td>${data['day']}日</td>
+												<td>${data['price']}ポイント</td>
+												<td>${len(data['uu'])}人</td>
+												<td>${data['count']}回</td>
+											</tr>
+										%endfor
+									</table>
+								</div>
+							</li>
+						%endfor
+					</ul>
+				</div>
+			%endfor
+		</div>
+	%endif
+</%def>

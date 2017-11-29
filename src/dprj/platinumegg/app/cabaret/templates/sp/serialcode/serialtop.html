@@ -1,0 +1,40 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+<%def name="contents()">
+	<img src="${serialcampaign['header']}" alt="キャンペーンヘッダー" width="320" height="200" style="margin-bottom:10px;"/>
+	
+	<section class="basicinfo">
+		<div class="basictop">　
+		</div>
+		<div class="basicBack" style="padding-bottom: 20px;">
+			<div class="wrapper">
+				${serialcampaign['rtime'].month}月${serialcampaign['rtime'].day}日発売の<span class="yellow">${serialcampaign['name'] | h}</span><br />
+				に掲載されている<span class="yellow">シリアルコード</span>を入力して
+			</div>
+			<div class="icon_l">
+				<img src="${serialcampaign['prize_img']}" width="90" height="90" />
+			</div>
+			<div class="wrapper">
+				<%
+					prizeitem = prize['listitem_list'][0]
+				%>
+				<span class="yellow">「${prizeitem['name'] | h}」</span><br />
+				を<span class="red">${prizeitem['num'] | h}${prizeitem['unit'] | h}</span>入手しよう!
+			</div>
+		</div>
+		<div class="basicbtm">.
+		</div>
+	</section>
+	
+	<div style="padding-bottom: 16px;">
+		%if is_open:
+			<a class="btnpink" href="${get_html_param('url_input', 'sp/serialcode/input.html')}"><p>コードを入力する</p></a>
+		%else:
+			<div class="caution">キャンペーンは終了しました</div>
+		%endif
+	</div>
+	
+	<div class="link_arrow_re">
+		<a class="btnfoot" href="${get_html_param('url_mypage', 'sp/mypage.html')}"><div style="margin-left:14px;">マイページへ戻る</div></a>
+	</div>
+</%def>

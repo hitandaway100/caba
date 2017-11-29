@@ -1,0 +1,128 @@
+#coding:utf-8
+<%inherit file="eventbase.html" />
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">贈り物交換所</p>
+	</div>
+	
+	%for idx,recipe in enumerate(recipelist):
+		<%
+			trade_max_material = None
+		%>
+		<div style="margin-bottom: 1em;">
+			%if 0 < idx:
+				<img src="${url_static_img}common/kyoutsu_bar_05.png" width="320px" height="2px" />
+			%endif
+			
+			<div class="titlesub">
+				<div class="wrapper"><!--
+					%if recipe['item']['iconUrl']:
+						--><img src="${recipe['item']['iconUrl']}" width="20" height="20" style="vertical-align: middle" /><!--
+					%endif
+					-->${recipe['name'] | h}<!--
+					%if recipe['item']['rareData']:
+						-->(<span style="color:${recipe['item']['rareData']['color']}">${recipe['item']['rareData']['text'] | h}</span>)<!--
+					%endif
+				--></div>
+			</div>
+			
+			<div style="padding: 10px 0px;text-align:center;">
+				<div style="display:inline-block;width:102px;">
+					<img src="${recipe['thumbUrl']}"width="60px" height="60px" />
+				</div>
+				<div style="display:inline-block;width:160px;">
+					<div style="text-align: left;">
+						<span class="yellow">交換必要数</span><br />
+						<%
+							empty_cnt = 0
+						%>
+						%for _number in xrange(Defines.RAIDEVENT_MATERIAL_KIND_MAX):
+							<%
+								num = recipe['materialnum%d' % _number]
+								empty_cnt += 1 if num < 1 else 0
+							%>
+							%if 0 < num:
+								<%
+									material = raidevent_materials.get(_number)
+									name = ((material['name'] if material else '不明') + '　' * 5)[:5]
+									unit = material['unit'] if material else ''
+									trade_max_per_material = int(material['num'] / num)
+									if trade_max_material is None or trade_max_per_material < trade_max_material:
+										trade_max_material = trade_max_per_material
+								%>
+								${name | h}：${num}${unit | h}<br />
+							%endif
+						%endfor
+						${'<br />' * empty_cnt}
+					</div>
+				</div>
+			</div>
+			
+			%if trade_max_material is None or trade_max_material < 1:
+				<div class="caution">
+					交換に必要な贈り物が足りません
+				</div>
+			%elif not (0 < recipe['stock'] <= recipe['trade_cnt']):
+				%if recipe['itype'] == Defines.ItemType.CARD and is_cardnum_max:
+					<div class="caution">
+						所属キャストが上限に達しています
+					</div>
+				%elif recipe['err_mess']:
+					<div class="caution">
+						${recipe['err_mess'] | h}
+					</div>
+				%else:
+					<%
+						trade_max = min(trade_max_material, recipe['trade_max']) if recipe['trade_max'] is not None else trade_max_material
+					%>
+					<form action="${get_html_param('url_yesno', 'sp/raidevent/presenttradeyesno.html', recipe)}" method="post" style="margin-bottom:0;">
+						<table style="padding: 6px 0 ;text-align:center;">
+							<tr>
+								<td style="width:150px;">
+									<div class="pullmenuset pullmenu3" style="margin-left:40px; text-align: left; font-size: 11px;">
+										<select name="${Defines.URLQUERY_NUMBER}" class="select_type" style="width: 80px; height: 31px;">
+											<%
+												if 0 < recipe['stock']:
+													trade_max = min(trade_max, recipe['stock']-recipe['trade_cnt'])
+												
+												do_draw_all = True
+												if trade_max in Defines.TradeNumChoices.TABLE:
+													do_draw_all = False
+												elif Defines.ItemType.TRADE_NUM_MAX.get(recipe['itype'], trade_max+1) <= trade_max:
+													do_draw_all = False
+											%>
+											%if trade_max == 1:
+												<option value="1">1${recipe['unit'] | h}</option>
+											%else:
+												%for num in Defines.TradeNumChoices.TABLE:
+													%if num <= trade_max:
+														<option value="${num}">${num}${recipe['unit'] | h}</option>
+													%endif
+												%endfor
+												%if do_draw_all:
+													<option value="${Defines.TradeNumChoices.ALL}">全て</option>
+												%endif
+											%endif
+										</select>
+										<div id="pull3" style="padding-top:8px;"></div>
+									</div>
+								</td>
+								<td style="width:150px;">
+									<input type="submit" value="交換する" class="buttonshop" style="margin: 8px auto; line-height: 2.0;"/>
+								</td>
+							</tr>
+						</table>
+					</form>
+				%endif
+			%endif
+			%if 0 < recipe['stock']:
+				<div class="topcap" style="font-size: 15px;">
+					在庫数：${max(0, recipe['stock']-recipe['trade_cnt'])}${recipe['unit'] | h}
+				</div>
+			%endif
+		</div>
+	%endfor
+	
+	${self.eventfooter()}
+</%def>

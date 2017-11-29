@@ -1,0 +1,150 @@
+#coding:utf-8
+<%inherit file="../base.html" />
+
+<%def name="head()">
+	%if not is_pc:
+		<script type="text/javascript" src="${url_static_js}jquery-1.10.1.min.js"></script>
+	%endif
+	<script type="text/javascript" src="${url_static_js}sell.js?v=0"></script>
+</%def>
+
+<%def name="pagenation()">
+	<table align="center" width="320" border="0" cellpadding="0" cellspacing="0" style="margin-top:10px;">
+		<tr>
+			<td width="160px" style="text-align: left;">
+				% if url_page_prev is not UNDEFINED:
+					<a href="${url_page_prev}"><img src="${url_static_img}common/btn_back.png" width="68" height="21" alt="前へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+			<td>
+				<div class="count" style="font-size:12px; white-space: nowrap; font-weight: bold;">&#40;${cur_page}/${page_max}&#41;</div>
+			</td>
+			<td width="160px" style="text-align: right;">
+				% if url_page_next is not UNDEFINED:
+					<a href="${url_page_next}"><img src="${url_static_img}common/btn_next.png" width="68" height="21" alt="次へ"/></a>
+				%else:
+					<div style="font-size: 0px opacity:0;">　</div>
+				%endif
+			</td>
+		</tr>
+	</table>
+</%def>
+
+	<%def name="tutorialtext()">
+		<div class="back_black">
+			<div class="tutorial_ms">
+				パートナーとなるキャストを選択してくれ<br />
+			</div>
+				<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+		</div>
+	</%def>
+
+<%def name="contents()">
+	<div class="titlebar">
+		<p class="caption">教育</p>
+	</div>
+	
+	<table style="font-size:14; width:320;" align="center">
+		<tr>
+			<td>
+				<span class="orange" style="text-align:right;">${gold_name | h}:</span>
+			</td>
+			<td>
+			<span style="text-align:left;">${player['gold']}</span>
+			</td>
+			<td>
+				<span class="orange" style="text-align:right;">キャスト:</span>
+			</td>
+			<td>
+			<span style="text-align:left; margin:0;">${cardnum}人</span>
+			</td>
+		</tr>
+	</table>
+	
+	<div class="back_black">
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		<div class="topcap">
+			教育するキャスト
+		</div>
+		
+	<%
+		clickable=True
+		if is_tutorial:
+			clickable=False
+	%>
+		<%include file="../includes/listcard.html" args="card=basecard, url_static_img=url_static_img, card_select_type='basechange', get_html_param=get_html_param, clickable=clickable, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+		<img src="${url_static_img}common/kyoutsu_bar_06.png" width="320" height="5" />
+		<div class="wrapper">
+			パートナーを選択
+		</div>
+		<img src="${url_static_img}00/id_00_01/bar_03.png" width="320px" height="12px" />
+	
+	%if not is_tutorial:
+		<%
+			ckindlist = (
+				Defines.CardKind.ListFilterType.CAST_ONLY,
+				Defines.CardKind.ListFilterType.ACCESSORIES_ONLY,
+				Defines.CardKind.ListFilterType.ALL_KIND,
+			)
+			skill = basecard['master']['skill']
+			card_skillid = skill['id'] if skill else None
+		%>
+		<%include file="../includes/select_card.html" args="Defines=Defines, url_post=url_self, ctype=ctype, sortby=sortby, rare=maxrare, ckind=ckind_type, ckindlist=ckindlist, checked_skill=skillid, skill=card_skillid" />
+	%endif
+	
+	%if is_tutorial:
+		<div>
+			${self.pagenation()}
+			
+			%for i,card in enumerate(cardlist):
+				<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, test_skill=True, is_tutorial=is_tutorial, Defines=Defines"/>
+			%endfor
+			
+			${self.pagenation()}
+			
+			<div>
+				<a class="btnlong_p" href="${get_html_param('url_yesno', 'sp/composition/yesno.html')}"><div>教育を確認</div></a>
+			</div>
+		</div>
+	%else:
+		%if cardlist:
+			%if is_tutorial:
+				<div>
+					<a class="btnlong_p" onclick="onClickAllCheckButton('#material_form'); return false;"><div>すべてチェック</div></a>
+				</div>
+			%else:
+				<div>
+					<a class="btnlong" onclick="onClickAllCheckButton('#material_form'); return false;"><div>すべてチェック</div></a>
+				</div>
+			%endif
+			
+			<form id="material_form" action="${get_html_param('url_yesno', 'sp/composition/yesno.html')}" method="post">
+				<div style="text-align:center; margin:8 0 8 0px;">
+					<input type="submit" value="教育を確認" class="sell_on btnsell_on" style="display:none;" onclick="location.href='${get_html_param('url_yesno', 'sp/composition/yesno.html')}';"/>
+					<input type="submit" value="教育を確認" disabled="true" class="sell_off btnsell_off" / >
+				</div>
+				
+				%for i,card in enumerate(cardlist):
+					<%include file="../includes/listcard.html" args="card=card, url_static_img=url_static_img, card_select_type='materialselect', get_html_param=get_html_param, test_skill=True, checkboxname='%s%s' % (Defines.URLQUERY_CARD, i), is_tutorial=is_tutorial, Defines=Defines"/>
+				%endfor
+				
+				${self.pagenation()}
+				
+				<div style="text-align:center; margin-top:8px;">
+					<input type="submit" value="教育を確認" class="sell_on btnsell_on" style="display:none;"/>
+					<input type="submit" value="教育を確認" disabled="true" class="sell_off btnsell_off"/ >
+				</div>
+			</form>
+		%else:
+			<div class="list_not_found">
+				条件に合うキャストがいません
+			</div>
+		%endif
+	%endif
+		<div style="padding-bottom:20px;">
+		</div>
+	</div>
+	
+</%def>
